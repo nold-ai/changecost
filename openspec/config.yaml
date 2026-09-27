@@ -3,9 +3,12 @@ schema: spec-driven
 context: |
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
   cost estimates and settlement for AI-assisted software changes.
-  Phase: repository bootstrap / To-Validate; private; Apache-2.0; no releases.
-  Product language, packaging, schemas, CLI commands, storage, providers, and
-  pilot criteria are undecided. Do not create implementation plans until requested.
+  Phase: pilot planning / To-Validate; private; Apache-2.0; no releases.
+  Authorized delivery: nine OpenSpec changes and linked GitHub backlog only.
+  Product implementation and live telemetry collection require a separate request.
+  Selected defaults: Python 3.11+, Typer, Pydantic, SQLite, Decimal; uv/Hatchling,
+  pytest, Ruff, BasedPyright. Personal Cursor/Copilot IDE and CLI use is the pilot.
+  Plan quote, bind, settle, check, explain and changecost/v1 portable artifacts.
   Proposed loop: quote -> bind -> meter -> settle -> calibrate.
   Research is input, not an approved specification or proof of provider capability.
   Treat provider charges, credits, raw usage, and estimated cost distinctly.
@@ -46,4 +49,4 @@ rules:
     - Record actual commands, timestamps, and outcomes in TDD_EVIDENCE.md for behavior changes.
     - Include applicable quality gates and fresh SpecFact review; resolve or justify findings.
     - Include documentation updates, strict OpenSpec validation, and a focused PR.
-    - Do not require module signatures, release version bumps, or issue hierarchies at bootstrap.
+    - Keep Epic/Feature/User Story source tracking and native dependencies aligned with CHANGE_ORDER.md; no module signing or release bumps for planning.

@@ -1,7 +1,7 @@
 # Non-negotiable checklist
 
-- Respect the explicit phase: scaffold now; product planning and implementation
-  need a subsequent request. Do not turn research suggestions into commitments.
+- Respect the explicit phase: pilot planning is authorized; product implementation
+  and live collection need a subsequent request. Research is not additional scope.
 - Inspect existing changes and preserve work belonging to others.
 - Use focused branches for normal changes. A branch in the existing checkout
   is enough when there is no concurrent work to isolate.

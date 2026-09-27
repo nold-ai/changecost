@@ -6,9 +6,11 @@ ChangeCost is an early NOLD AI project exploring how to quote the cost of an
 agentic software change, reconcile its actual provider-reported cost, and use
 that history to improve future estimates.
 
-**Status: repository bootstrap / To-Validate.** There is no installable
+**Status: pilot planning / To-Validate.** There is no installable
 ChangeCost package, working CLI, validated estimator, or stable schema yet.
-Implementation planning has not started. This repository remains private.
+Nine changes are planned in [the pilot backlog](openspec/CHANGE_ORDER.md).
+Product implementation and live collection require a subsequent request.
+This repository remains private.
 
 ## Direction
 
@@ -23,8 +25,9 @@ their contract is proven. It is not a runtime dependency.
 
 Initial boundaries exclude a general LLM gateway, observability backend,
 dashboard, custom billing database, employee productivity scoring, and a complex
-prediction model. The language, storage format, providers, commands, and pilot
-criteria remain open for the next planning phase.
+prediction model. The planned personal Cursor/Copilot pilot uses Python 3.11+, Typer/Pydantic,
+SQLite/Decimal and the `quote`, `bind`, `settle`, `check`, `explain` command family.
+Provider support is subject to the [evidence gate](docs/research/pilot-source-assessment.md).
 
 Read the [project brief](docs/project-brief.md) and
 [research provenance and limitations](docs/research/README.md) before proposing
@@ -33,7 +36,10 @@ implementation. Research examples are proposals, not supported commands.
 ## Work on the repository
 
 Bootstrap tooling uses Python 3.11+ for pre-commit and Node.js 20.19+ for OpenSpec.
-These are contributor tools, not a choice of product language.
+The current commands below run planning checks only. The
+[Python foundation change](openspec/changes/core-01-python-foundation/proposal.md)
+will introduce `pyproject.toml`, `uv.lock`, uv-managed environments and Hatchling
+builds, then replace this temporary setup. No Python package exists yet.
 
 ```sh
 python3 -m venv .venv
@@ -44,8 +50,9 @@ PATH="$PWD/.venv/bin:$PATH" make check
 ```
 
 OpenSpec is already initialized with shared skills under `.agents/skills/`.
-`make check` runs repository hygiene and validates OpenSpec artifacts. An empty
-spec/change set is expected at bootstrap; it is not evidence of product behavior.
+`make check` runs repository hygiene and validates OpenSpec artifacts. The nine
+change specifications describe future behavior; passing validation does not prove
+that behavior has been implemented.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and
 [AGENTS.md](AGENTS.md) for coding-agent instructions. The

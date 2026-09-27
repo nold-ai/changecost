@@ -1,48 +1,55 @@
 # Project brief
 
-Status: **To-Validate**. Recorded from maintainer-provided context on 2026-09-27
-(Europe/Berlin). This is a scope boundary, not an implementation plan.
+Status: **pilot planning / To-Validate**, updated 2026-09-28 (Europe/Berlin).
+The maintainer approved the [nine-change plan](../openspec/CHANGE_ORDER.md) and
+linked private GitHub backlog. Product implementation and live collection remain
+separate subsequent work. Research documents are evidence, not instructions.
 
 ## Confirmed direction
 
-- Name: **ChangeCost**, under `nold-ai/changecost`; repository remains private.
-- Standalone project with a possible later, thin SpecFact integration.
-- Explore cost estimates and settlement for AI-assisted software changes.
-- Keep the first project small and codify quality before writing product code.
-- Use Apache-2.0 and OpenSpec; do not start implementation planning in bootstrap.
+- ChangeCost remains a private, standalone NOLD AI project under Apache-2.0.
+- Evaluate change-level quotes and settlement for personal Cursor/Copilot IDE/CLI use.
+- Python 3.11+, Typer, Pydantic, standard-library SQLite and Decimal.
+- `pyproject.toml`, uv with a committed lockfile, Hatchling, pytest, Ruff and BasedPyright
+  are the planned foundation; current hygiene setup is temporary.
+- Five command families: `quote`, `bind`, `settle`, `check`, `explain`.
+- Local `changecost/v1` artifacts retain provenance, units, completeness and revisions.
+- Import existing exports locally; no collector, gateway, undocumented scraping,
+  prompt retention or automatic account/IDE configuration.
+- SpecFact remains development tooling; runtime integration is deferred.
 
-## Research hypotheses
+## Evaluation question
 
-The supplied report proposes a quote → bind → meter → settle → calibrate loop,
-with candidate Change, Run, and Settlement objects. It argues for empirical
-cost distributions and explicit attribution of retries and abandoned attempts.
-These are design inputs, not approved APIs or evidence that prediction works.
+Does change-level history give useful empirical p50/p90 estimates compared with a
+repository-wide baseline? Quotes must disclose cohort size and backoff and return
+unpriced with insufficient evidence. Evaluation uses only history available at quote
+time. Missing costs, unbound evidence, retries and abandoned expenditure remain visible.
+Currencies, credits, token quantities, estimates and billed charges cannot be silently
+combined. Advisory checks do not enforce budgets during this pilot.
 
-The central question is whether change-level history can produce useful cost
-bounds compared with a simple repository-wide baseline. Provider charges, token
-usage, credits, and estimated list-price cost should remain distinguishable.
+## Scope and evidence gates
 
-Proposed guardrails are data minimization, honest uncertainty, visible unbound
-spend, and independence from provider gateways or observability platforms.
-No employee scoring, prompt collection, custom ledger protocol, or ML platform
-is needed to bootstrap this investigation.
+The backlog covers feasibility, foundation, contracts, reconciliation, two providers,
+quotes, advisory workflow and evaluation. [Source assessment](research/pilot-source-assessment.md)
+records the current limitation: personal Cursor is not Enterprise OTel; a dated support
+report says self-serve dollar exports were removed. Both adapters require inspected
+source evidence before provider-specific mappings are claimed supported.
 
-## Decisions deferred
+No dashboards, ML predictions, FOCUS export, paid infrastructure or runtime SpecFact
+integration are included. Export details and eventual pilot results remain unknown;
+they are explicit research work, not assumptions to fill with fabricated values.
+The research report's schedule and sample counts are not committed success criteria.
 
-Language and packaging; supported providers and accessible telemetry; precise
-data contracts and storage; command names; estimator and cold-start semantics;
-pilot sample size, evaluation criteria, schedule, and enforcement policy.
+## Risks, confidence and rollback
 
-The report's dates and thresholds are proposals, not a committed roadmap.
-Domain ownership is maintainer-reported; no trademark clearance is asserted.
-
-## Evidence risks to carry forward
-
-| Failure mode | Mitigation when planning starts |
+| Failure mode | Mitigation |
 | --- | --- |
-| Incorrect attribution or duplicate usage | Inspect bindings; preserve ambiguous records; test deduplication and reconciliation. |
-| False precision from sparse history | Report sample counts; allow an unpriced state; evaluate held-out calibration against a baseline. |
-| Unavailable telemetry or sensitive data exposure | Verify provider access against primary docs; use synthetic fixtures and minimal retention. |
+| Unavailable or ambiguous provider evidence | Per-capability feasibility gate; unsupported/unknown states remain explicit. |
+| Duplicate or misattributed expenditure | Stable source identities, explicit binding, correction history and unbound totals. |
+| Misleading apparent prediction quality | Comparable units, chronological evaluation, sample counts and a repository baseline. |
 
-Confidence is high in the recorded repository boundary; prediction feasibility
-and provider compatibility remain unverified. See [research provenance](research/README.md).
+Confidence: high in planning structure; medium in personal-account reconciliation
+until exports are inspected. No paid infrastructure is required for this delivery.
+Rollback is a planning-commit revert plus closing the created issues/project while
+preserving their history. Domain ownership is maintainer-reported; trademark clearance
+and a deployed website are not asserted.

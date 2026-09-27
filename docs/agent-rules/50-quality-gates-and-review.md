@@ -1,6 +1,6 @@
 # Quality gates and review
 
-## Bootstrap gates
+## Current planning gates
 
 Run `make check` from the repo root. It invokes the pinned pre-commit hygiene
 checks and `openspec validate --all --strict --no-interactive`.
@@ -13,9 +13,9 @@ Check generated files and credentials before staging, even when ignore rules exi
 
 ## Before the first product implementation
 
-Choose the smallest appropriate toolchain in that change: reproducible dependencies,
-formatter, linter, type checking where applicable, and meaningful tests. Add runnable
-commands and CI gates for that language. Review dependency licenses and security
+Implement the approved Python foundation: `pyproject.toml`, committed `uv.lock`,
+uv-managed environments, Hatchling builds, pytest, Ruff and BasedPyright. Add runnable
+commands and matching CI gates. The foundation proposal defines the smoke tests. Review dependency licenses and security
 advisories. Test numerical units, rounding, missing usage, retries, and deduplication
 when relevant to the approved behavior. Do not add empty tests to claim coverage.
 
@@ -42,14 +42,14 @@ The pre-commit configuration includes a **manual** hook for Python source paths:
 pre-commit run specfact-code-review --hook-stage manual --all-files
 ```
 
-It is ready for later use without choosing Python for the product. If another
-language is selected, verify review support and adapt the hook and gates in that
-implementation change. A hook with no matching source files is skipped, not passed.
+Python is selected, but no source exists yet. Activate and verify review coverage
+when the foundation is implemented. A hook with no matching source files is skipped,
+not passed.
 
 Portable dependency-sensitive review may require a supported Linux runtime.
 The inspected SpecFact documentation describes automatic capsule preparation for
 Linux x86-64 / CPython 3.11–3.13, not macOS or Windows. Verify the installed module's
-current support; do not invent a runtime descriptor before a stack exists.
+current support; do not invent a runtime descriptor before the supported review environment has been verified.
 
 For behavior changes, retain fresh `.specfact/code-review.json` locally, and record
 the command, versions, reviewed commit/diff, timestamp, and result in
