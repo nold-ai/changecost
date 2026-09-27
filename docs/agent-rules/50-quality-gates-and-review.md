@@ -1,6 +1,6 @@
 # Quality gates and review
 
-## Bootstrap gates
+## Current planning gates
 
 Run `make check` from the repo root. It invokes the pinned pre-commit hygiene
 checks and `openspec validate --all --strict --no-interactive`.
@@ -13,9 +13,9 @@ Check generated files and credentials before staging, even when ignore rules exi
 
 ## Before the first product implementation
 
-Choose the smallest appropriate toolchain in that change: reproducible dependencies,
-formatter, linter, type checking where applicable, and meaningful tests. Add runnable
-commands and CI gates for that language. Review dependency licenses and security
+Implement the approved Python foundation: `pyproject.toml`, committed `uv.lock`,
+uv-managed environments, Hatchling builds, pytest, Ruff and BasedPyright. Add runnable
+commands and matching CI gates. The foundation proposal defines the smoke tests. Review dependency licenses and security
 advisories. Test numerical units, rounding, missing usage, retries, and deduplication
 when relevant to the approved behavior. Do not add empty tests to claim coverage.
 
@@ -42,14 +42,14 @@ The pre-commit configuration includes a **manual** hook for Python source paths:
 pre-commit run specfact-code-review --hook-stage manual --all-files
 ```
 
-It is ready for later use without choosing Python for the product. If another
-language is selected, verify review support and adapt the hook and gates in that
-implementation change. A hook with no matching source files is skipped, not passed.
+Python is selected, but no source exists yet. Activate and verify review coverage
+when the foundation is implemented. A hook with no matching source files is skipped,
+not passed.
 
 Portable dependency-sensitive review may require a supported Linux runtime.
 The inspected SpecFact documentation describes automatic capsule preparation for
 Linux x86-64 / CPython 3.11–3.13, not macOS or Windows. Verify the installed module's
-current support; do not invent a runtime descriptor before a stack exists.
+current support; do not invent a runtime descriptor before the supported review environment has been verified.
 
 For behavior changes, retain fresh `.specfact/code-review.json` locally, and record
 the command, versions, reviewed commit/diff, timestamp, and result in
@@ -60,3 +60,27 @@ Resolve findings at every severity, including naming, KISS, YAGNI, DRY, and SOLI
 issues, or document a narrow justified exception. An unknown/skipped analyzer or
 absent tool must be addressed before claiming the behavior gate is complete.
 Code review supplements tests and independent security analysis.
+
+## CodeRabbit review policy
+
+[.coderabbit.yaml](../../.coderabbit.yaml) adapts the SpecFact review configuration
+for this standalone project. Automatic reviews target `main`, skip drafts and
+review subsequent pushes. The quiet profile and review instructions request only
+high/critical and medium defects (P0–P2), with concrete impact. Low-severity nits,
+grammar/Markdown lint, decorative summaries and metadata suggestions are suppressed;
+repository quality gates still run independently.
+
+The [official configuration reference](https://docs.coderabbit.ai/reference/configuration)
+and v2 schema were checked on 2026-09-28 (Europe/Berlin). They expose no native
+severity cutoff: these instructions are a review policy, not a guaranteed alert
+filter. Verify actual bot output and configuration acceptance on the PR. Automatic
+reviews may pause after five reviewed commits by default; if paused during a fix
+loop, explicitly request another review instead of treating the pause as a pass.
+
+Knowledge context is repository-local, external integrations are disabled, and
+chat requires an organization member's mention. Automatic approval, label/reviewer
+assignment, issue planning and generated fixes are disabled. No account-wide
+settings or subscription changes are implied. A completed review of the current
+head plus green applicable checks is required before reporting the loop complete;
+absence of a bot response is not a passing review. Revert the configuration commit
+to roll back this policy.

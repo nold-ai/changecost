@@ -2,7 +2,7 @@
 
 OpenSpec 1.13.0 initialized this repository with the `spec-driven` schema and
 shared `.agents/skills/` integration. `openspec/config.yaml` provides concise
-context and artifact rules. No product spec or change is approved at bootstrap.
+context and artifact rules. Pilot changes are planned; their implementation requires a separate request.
 
 When the maintainer requests a behavior change:
 
@@ -23,5 +23,6 @@ Pure documentation/scaffold edits need relevant verification, not fabricated
 runtime tests or a product capability spec. Generated skills describe workflow
 mechanics; they do not authorize implementation beyond the user's scope.
 
-No automatic issue hierarchy, roadmap, version bump, or release is required.
-Use issue links when they already exist and help trace the requested change.
+Use the approved Epic → Feature → User Story hierarchy and native dependencies
+for pilot changes; see [GitHub governance](60-github-change-governance.md).
+Planning creates no release or version bump.

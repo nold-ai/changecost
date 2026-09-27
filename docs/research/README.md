@@ -10,6 +10,9 @@ implementation scope.
 - [Project brief](../project-brief.md), a concise synthesis of the report and the
   supplied discussion; the raw conversation is not duplicated here.
 
+- [Pilot source assessment](pilot-source-assessment.md), dated corrections and
+  evidence gates for the approved 2026-09-28 planning scope.
+
 ## Evidence status
 
 The report retains its original opaque citation markers (`turn...`). The later

@@ -5,6 +5,7 @@ Always read [05-non-negotiable-checklist.md](05-non-negotiable-checklist.md).
 | Task | Additional rules |
 | --- | --- |
 | Product behavior or OpenSpec work | [40-openspec-and-tdd.md](40-openspec-and-tdd.md) |
+| Issues, projects, dependencies or planning PRs | [60-github-change-governance.md](60-github-change-governance.md) |
 | Any edit, verification, or finalization | [50-quality-gates-and-review.md](50-quality-gates-and-review.md) |
 
 These compact rules adapt the SpecFact repositories' bootstrap, scope discipline,

@@ -1,8 +1,8 @@
 # Contributing to ChangeCost
 
-ChangeCost is in bootstrap. Discuss scope with the maintainer before starting
-product implementation; the research does not authorize its proposed timeline,
-adapters, schema, or CLI.
+ChangeCost is in pilot planning. The [approved backlog](openspec/CHANGE_ORDER.md)
+authorizes specifications and tracking. Product implementation and live collection
+require a subsequent request; research does not expand that authorization.
 
 ## Workflow
 
@@ -18,7 +18,7 @@ adapters, schema, or CLI.
    Archive completed OpenSpec changes with `openspec archive <change-id>`.
 
 Documentation-only fixes need relevant checks, not artificial runtime tests.
-The initial repository bootstrap does not create a product change or release.
+Planning artifacts do not create a product release or prove runtime behavior.
 Use conventional commit subjects such as `docs: ...`, `chore: ...`, or `fix: ...`.
 
 ## Local checks
