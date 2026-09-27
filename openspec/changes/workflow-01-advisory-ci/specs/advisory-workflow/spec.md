@@ -24,7 +24,7 @@ The CLI SHALL expose the five approved command families with parseable JSON outp
 
 ### Requirement: Advisory budget semantics
 
-Budget checks SHALL remain advisory and SHALL compare only compatible known economic values.
+Budget checks SHALL remain advisory and SHALL compare only compatible known economic values. A settlement whose requested comparison scope is provisional or incomplete SHALL return unknown with the known subtotal and reason, even when that subtotal exceeds budget. Only complete compatible settlement totals or priced quote values SHALL produce within_budget or over_budget.
 
 #### Scenario: Over budget
 
@@ -37,6 +37,24 @@ Budget checks SHALL remain advisory and SHALL compare only compatible known econ
 - **GIVEN** an unpriced quote or credit budget against USD
 - **WHEN** check runs
 - **THEN** status is unknown with an explanation and exit zero.
+
+#### Scenario: Missing charge below budget
+
+- **GIVEN** a settlement with 10 USD billed known, one missing USD charge and a 15 USD billed budget for the same scope
+- **WHEN** check runs
+- **THEN** status is unknown with the 10 USD subtotal and missing-charge reason, never within_budget, and exit is zero.
+
+#### Scenario: Provisional subtotal above budget
+
+- **GIVEN** a provisional settlement with 20 USD billed known and an unresolved correction against a 15 USD billed budget
+- **WHEN** check runs
+- **THEN** status is unknown with its provisional subtotal and correction reason, not a claimed final over_budget result, and exit is zero.
+
+#### Scenario: Complete settlement within budget
+
+- **GIVEN** a complete 10 USD billed settlement and a compatible 15 USD billed budget for its declared scope
+- **WHEN** check runs
+- **THEN** status is within_budget and exit is zero.
 
 ### Requirement: Safe standalone CI summary
 

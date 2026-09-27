@@ -20,7 +20,13 @@ package or runtime. This design describes later implementation, not delivered be
 
 3. Use verified stable source event IDs where present. Otherwise exact-file hash plus row index makes repeated identical files idempotent only; overlapping exports remain a documented ambiguity and cannot silently double-count or assume identical rows are one event. Reject ambiguous overlap from final reconciliation pending explicit evidence.
 
-4. Manual mappings identify exact source records and the explicit target run/change, with timestamp and mapping provenance. Timestamp proximity alone never creates a provider-backed join. No run/session ID means unbound by default.
+4. Use the [core evidence references and mappings](../core-02-change-run-contracts/design.md)
+   for manual attribution. First import the row as unbound and expose its evidence_id;
+   bind then maps that exact reference to an existing run, which is explicitly bound
+   to a change. A portable artifact may import evidence and its mapping atomically.
+   Export/replay retains file-scoped identity and manual provenance; a conflicting
+   mapping fails. Timestamp proximity alone never creates a provider-backed join.
+   No run/session ID means unbound by default.
 
 5. Import locally, validate the whole file before commit, and allowlist fields. Never retain email, prompt text, raw account identity or arbitrary CSV columns. Preserve safe diagnostics and leave originals under user control.
 

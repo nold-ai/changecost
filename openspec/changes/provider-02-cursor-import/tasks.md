@@ -17,7 +17,7 @@ All implementation and research tasks below remain unchecked. Planning approval 
 ## 3. Mapping and overlap
 
 - [ ] 3.1 Write failing exact-file replay, overlapping-file and manual-versus-provider binding tests; verify expected failures.
-- [ ] 3.2 Implement explicit record mapping and overlap diagnostics; verify repeat imports are idempotent and ambiguous overlaps stay incomplete.
+- [ ] 3.2 Integrate core evidence selectors and portable mappings with overlap diagnostics; verify manual attribution survives replay, repeat imports are idempotent and ambiguous overlaps stay incomplete.
 - [ ] 3.3 Document mapping provenance and reconciliation limits with synthetic examples; verify unbound records remain visible through settle and explain.
 
 ## 4. Integration and handoff

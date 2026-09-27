@@ -9,15 +9,15 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 2. Contracts and serialization
 
-- [ ] 2.1 Derive failing contract tests from each scenario, including non-finite decimals and unsupported versions; verify failures reflect absent contracts.
-- [ ] 2.2 Implement versioned Pydantic records and portable JSON validation; verify exact round trips and invalid-value rejection pass.
+- [ ] 2.1 Derive failing contract tests from each scenario, including monetary/nonmonetary currency invariants, non-finite decimals and unsupported versions; verify failures reflect absent contracts.
+- [ ] 2.2 Implement versioned Pydantic records and portable JSON validation; verify exact monetary and nonmonetary round trips and invalid-value rejection pass.
 - [ ] 2.3 Document field semantics, units, completeness and version policy in docs/contracts.md; verify synthetic examples validate.
 
 ## 3. Persistence and binding
 
-- [ ] 3.1 Write failing transactional/restart/concurrent-bind tests; verify conflict and rollback behavior is not already satisfied by a test setup error.
-- [ ] 3.2 Implement SQLite migrations, atomic writes and explicit bind with provenance; verify idempotency, competing writers and restart tests pass.
-- [ ] 3.3 Document local path overrides, backups and binding correction limitations; verify a portable export survives restore into a fresh database.
+- [ ] 3.1 Write failing transactional/restart/concurrent-bind, unknown-evidence, conflicting-mapping and portable mapping replay tests; verify conflict and rollback behavior is not already satisfied by a test setup error.
+- [ ] 3.2 Implement SQLite migrations, atomic writes, exposed evidence references and both bind relationships with provenance; verify idempotency, competing writers, invalid references, conflicting attribution and restart/replay tests pass.
+- [ ] 3.3 Document source selectors, identity scopes, manual versus verified provenance, local path overrides, backups and binding correction limitations; verify a portable export survives restore into a fresh database.
 
 ## 4. Integration and handoff
 

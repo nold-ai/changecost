@@ -14,7 +14,7 @@ package or runtime. This design describes later implementation, not delivered be
 
 ## Decisions
 
-1. Normalized evidence carries provider/surface, source schema, source event key, recorded/effective timestamps, run/session IDs when present, unit/basis, amount or null, completeness and correction target. Store a minimal source fingerprint and provenance, never a raw prompt-bearing payload.
+1. Normalized evidence carries provider/surface, source schema, source event key, recorded/effective timestamps, run/session IDs when present, unit/basis, amount or null, completeness and correction target. Expose the core evidence_id and identity scope in import results and explain, and consume portable evidence-to-run mappings without weakening their provenance. Store a minimal source fingerprint and provenance, never a raw prompt-bearing payload.
 
 2. Deduplicate by stable source event identity and source namespace. Same key/same normalized payload is idempotent; same key/different payload is a conflict unless a documented correction relationship exists. Without stable cross-export identity, mark dedupe limited; file hash plus row position prevents exact-file reimport only and must not claim overlap dedupe.
 
@@ -24,7 +24,7 @@ package or runtime. This design describes later implementation, not delivered be
 
 5. Keep change outcome (open/accepted/abandoned) separate from financial completeness (provisional/reconciled). Accepted changes include all known linked attempts. Abandoned changes retain expenditure. Reconciled means complete for a declared source interval/unit and supported evidence, never proof of invoice agreement without a bill comparison.
 
-6. Aggregate only identical unit, currency and basis components; report unknown counts and reasons next to known subtotals. Unbound evidence contributes to a repository remainder, not an arbitrary change. Use Decimal without intermediate display rounding.
+6. Aggregate only identical economic kind, unit and basis components, with matching currency for money and currency=null for nonmonetary quantities; report unknown counts and reasons next to known subtotals. Unbound evidence contributes to a repository remainder, not an arbitrary change. Use Decimal without intermediate display rounding.
 
 ## Dependencies and evidence
 

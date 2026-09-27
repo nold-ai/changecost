@@ -18,7 +18,18 @@ package or runtime. This design describes later implementation, not delivered be
 
 2. For successful check evaluation return advisory status within_budget, over_budget or unknown. All three exit zero during the pilot; invalid input, unsupported schema, database failure or malformed evidence returns nonzero with a structured error. Never suppress technical failures as budget advice.
 
-3. Budgets must name matching unit/currency/basis. Incompatible or unpriced comparisons return unknown with a reason; no implicit FX or credit-to-cash conversion. Human output shows basis, completeness, n when applicable, and source/correction notes; JSON preserves these details.
+3. Budgets must match economic kind, unit and basis, plus currency for money;
+   nonmonetary budgets use currency=null. Incompatible or unpriced comparisons return
+   unknown with a reason; no implicit FX or credit-to-cash conversion. For settlements,
+   evaluate completeness for the exact requested source/interval/unit scope before
+   comparing amounts. A provisional total, missing same-unit charge, unresolved
+   correction or overlap affecting that scope returns unknown, whether the known
+   subtotal is below or above budget. Show that subtotal and the missing evidence,
+   but do not claim a complete budget result. The pilot does not infer lower-bound
+   over_budget semantics from provisional records. Complete compatible settlements
+   and priced quotes compare their selected value (quote p90 by default) to budget:
+   greater means over_budget, otherwise within_budget. Human and JSON output name the
+   scope, comparison value, basis, completeness, n when applicable and reasons.
 
 4. Use GitHub Actions job summaries with read-only repository permission and sanitized local artifacts. The example invokes the standalone CLI, never interpolates issue titles or artifact values into shell code, escapes Markdown/HTML and controls summary size. No account tokens or live provider calls are needed.
 

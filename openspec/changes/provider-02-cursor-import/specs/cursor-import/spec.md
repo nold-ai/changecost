@@ -44,9 +44,9 @@ The adapter SHALL distinguish manual mappings from provider-backed joins and SHA
 
 #### Scenario: Manual attribution
 
-- **GIVEN** a source row without session ID and an explicit mapping to run R
-- **WHEN** the row is imported
-- **THEN** it is linked to R with manual provenance.
+- **GIVEN** an imported source row without session ID, its exposed evidence_id and an existing run R
+- **WHEN** bind explicitly maps that evidence_id to R
+- **THEN** only that row is linked to R with manual provenance, preserved by portable export/replay.
 
 #### Scenario: Ambiguous overlap
 

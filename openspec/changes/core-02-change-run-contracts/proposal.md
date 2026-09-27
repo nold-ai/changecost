@@ -6,9 +6,9 @@ Change-level accounting needs stable identity and portable evidence before provi
 
 ## What Changes
 
-- Define versioned Change, Run, Quote and Settlement records and explicit bindings.
+- Define versioned Change, Run, Quote and Settlement records, source-evidence references and portable evidence-to-run and run-to-change bindings.
 - Persist validated records transactionally in local SQLite.
-- Provide changecost/v1 portable artifacts with exact economic values, provenance and revision history.
+- Provide changecost/v1 portable artifacts with exact economic values, provenance and revision history; require currency for known money and mark it non-applicable for nonmonetary quantities.
 
 ## Capabilities
 
