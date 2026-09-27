@@ -26,6 +26,36 @@ package or runtime. This design describes later implementation, not delivered be
 
 6. Aggregate only identical economic kind, unit and basis components, with matching currency for money and currency=null for nonmonetary quantities; report unknown counts and reasons next to known subtotals. Unbound evidence contributes to a repository remainder, not an arbitrary change. Use Decimal without intermediate display rounding.
 
+## Full-change coverage
+
+A reconciled source interval is not necessarily a complete Change. Each settlement
+revision records its scope (source profiles, intervals and exact economic identity)
+and coverage entries keyed by full RunRef, with outcome revision, work interval and
+supporting source-completeness evidence references. Missing or unsupported coverage
+stays provisional for the larger scope; a caller cannot assert completeness simply
+by choosing a shorter interval or setting an outcome.
+
+A total-change observation requires a terminal Change, at least one linked Run,
+terminal outcomes for every linked Run, and supported source coverage over every
+Run's entire work interval in the requested kind/unit/currency/basis. Cover all
+applicable sources and components, including failed/cancelled retries. Coverage
+must establish interval boundaries and source finality from a verified source
+profile; last-seen timestamps or a terminal outcome alone do not establish finality.
+Unknown amounts, missing intervals, unresolved overlaps/corrections or potentially
+relevant unbound evidence prevent full-change eligibility. A source that cannot
+establish this coverage remains unsupported for total-change observations in that
+unit. Empty evidence is not an observed zero; zero requires explicit supported
+zero/not-billed evidence covering that Run and unit. Zero-run Changes are excluded
+from total-change estimation in the pilot rather than assigned a vacuous zero.
+
+Record the complete linked-Run set and coverage proof in the immutable revision.
+At any as-of cutoff, eligibility checks that revision against the linked-Run set,
+outcomes and relevant evidence available then. New bindings, late evidence or
+corrections require a new revision and re-evaluation; they cannot silently preserve
+a stale full-change flag. Historical replay retains the old cutoff and revision.
+Explicitly scoped reporting/checks may still use a reconciled subset, labeled with
+its limited scope; that subset is never a total-change peer or evaluation truth.
+
 ## Dependencies and evidence
 
 - [core-02-change-run-contracts](../core-02-change-run-contracts/proposal.md)

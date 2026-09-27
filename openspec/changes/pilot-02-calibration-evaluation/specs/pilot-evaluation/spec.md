@@ -34,6 +34,25 @@ Evaluation SHALL compare the candidate and repository-wide baseline chronologica
 - **WHEN** evaluation validates the pair
 - **THEN** it reports a comparison error and stops accuracy reporting for that run rather than hiding the mismatch.
 
+### Requirement: Complete reproducible evaluation truth
+
+Evaluation SHALL score only full-change truth with complete coverage of all linked
+attempts in the requested economic identity. It SHALL record the truth cutoff and
+settlement/coverage revisions separately from the quote cutoff. Unavailable complete
+truth SHALL remain visible in exclusion counts, outside accuracy denominators.
+
+#### Scenario: Refuse partial truth
+
+- **GIVEN** a priced quote whose terminal Change has only a reconciled partial source interval
+- **WHEN** evaluation computes calibration
+- **THEN** that case is reported as missing full-change truth and does not enter the scored denominator or become a zero actual.
+
+#### Scenario: Freeze later truth without leaking it
+
+- **GIVEN** a complete corrected settlement available after the quote but before the declared truth cutoff
+- **WHEN** the evaluation is replayed
+- **THEN** the fixed truth revision is scored while quote reconstruction uses only its earlier evidence cutoff, and corrections after the truth cutoff affect neither result.
+
 ### Requirement: Explicit metric denominators
 
 Evaluation SHALL report metric definitions, units, counts and unknown cases alongside calibration, width, attribution and abandoned expenditure.

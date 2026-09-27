@@ -15,8 +15,8 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 3. Corrections and aggregation
 
-- [ ] 3.1 Write failing correction-order, missing-cost, mixed-unit and abandoned-outcome tests; record actual results.
-- [ ] 3.2 Implement immutable settlement revisions, pending corrections, exact Decimal aggregates and unbound remainder; verify all scenarios and restart replay pass.
+- [ ] 3.1 Write failing correction-order, missing-cost, mixed-unit, partial-interval/open-run/zero-evidence coverage, late-binding and abandoned-outcome tests; record actual results.
+- [ ] 3.2 Implement immutable settlement revisions, pending corrections, exact Decimal aggregates, revisioned full-change coverage and unbound remainder; verify all scenarios and restart replay pass.
 - [ ] 3.3 Document provisional versus reconciled scope and explain traces; verify a synthetic corrected settlement can be traced to every contributing or excluded record.
 
 ## 4. Integration and handoff

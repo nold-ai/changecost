@@ -44,6 +44,26 @@ The estimator SHALL follow the documented cohort order and return unpriced when 
 - **WHEN** a USD quote requiring 20 peers runs
 - **THEN** credits are excluded and the result is unpriced.
 
+### Requirement: Complete total-change observations
+
+The estimator SHALL admit only one full-change aggregate per eligible terminal
+Change at the quote cutoff. Every linked attempt SHALL be terminal with supported
+coverage over its full work interval for the requested economic identity, as defined
+by reconciliation. Reconciled subsets, zero-run Changes and unresolved or missing
+coverage SHALL be excluded with reasons at every cohort level, including fallback.
+
+#### Scenario: Exclude a reconciled partial subtotal
+
+- **GIVEN** 19 fully covered historical Changes and one accepted Change reconciled only for one of its two attempts
+- **WHEN** a total-change quote requires 20 observations
+- **THEN** the partial Change is excluded from every cohort and the result is unpriced rather than trained on its subtotal.
+
+#### Scenario: Count all attempts once
+
+- **GIVEN** a terminal Change with three terminal Runs fully covered in one economic unit and several settlement revisions
+- **WHEN** it qualifies at the quote cutoff
+- **THEN** its selected complete revision supplies one observation including all three attempts, not three observations or multiple revisions.
+
 ### Requirement: Reproducible pre-quote features
 
 The estimator SHALL use and embed normalized, versioned registration snapshots for

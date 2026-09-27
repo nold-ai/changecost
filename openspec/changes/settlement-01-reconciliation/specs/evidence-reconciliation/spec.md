@@ -54,6 +54,40 @@ Settlements SHALL separate incompatible units and unknown amounts and SHALL NOT 
 - **WHEN** the source has no verified precedence rule
 - **THEN** the result is incomplete and the two lanes are not summed.
 
+### Requirement: Auditable full-change coverage
+
+Settlements SHALL distinguish reconciled source intervals from full-change coverage.
+Full-change eligibility SHALL require a terminal Change with at least one Run, all
+linked Runs terminal and complete supported coverage of their entire work intervals
+for the requested economic identity. Coverage SHALL retain full RunRefs, linked-Run
+membership, outcome revisions, source profiles, intervals and evidence references.
+Missing or ambiguous coverage SHALL remain unknown, never inferred zero. Relevant
+new evidence or bindings SHALL require a new coverage revision.
+
+#### Scenario: Reconciled interval omits an attempt
+
+- **GIVEN** a terminal Change with two Runs and a reconciled interval covering only the first
+- **WHEN** full-change completeness is evaluated
+- **THEN** the scoped subtotal remains available but full-change coverage is incomplete with the omitted Run identified.
+
+#### Scenario: Terminal change with an open run
+
+- **GIVEN** an accepted Change with a linked Run still open and some known charges
+- **WHEN** full-change completeness is evaluated
+- **THEN** it remains incomplete regardless of the Change outcome or the known subtotal.
+
+#### Scenario: Missing evidence versus observed zero
+
+- **GIVEN** one terminal Run lacks economic evidence while another has supported zero evidence covering its full work interval and requested unit
+- **WHEN** their coverage is evaluated
+- **THEN** the first stays unknown and only the second contributes an observed zero; a zero-run Change is ineligible rather than free.
+
+#### Scenario: Re-evaluate late coverage changes
+
+- **GIVEN** a previously complete revision followed by a newly linked existing Run or unresolved late correction
+- **WHEN** settlement is recomputed at the later cutoff
+- **THEN** a new revision is incomplete until the additional coverage or correction is resolved, while replay at the earlier cutoff retains its original revision.
+
 ### Requirement: Outcomes and unbound remainder
 
 Settlements SHALL preserve all linked retry and abandoned expenditure and expose unbound evidence separately.

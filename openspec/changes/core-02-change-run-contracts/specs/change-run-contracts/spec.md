@@ -85,6 +85,31 @@ The system SHALL bind runs to changes only through explicit, namespaced identifi
 - **WHEN** changes are loaded
 - **THEN** the run remains unbound.
 
+### Requirement: Complete run references
+
+The system SHALL use the full structured RunRef (repository_id, provider, surface,
+run_id) for identity and every Run reference, including portable mappings, command
+selectors, outcomes and settlement coverage. Bare or incomplete selectors SHALL fail
+without mutation; source-evidence namespace SHALL NOT substitute for the target RunRef.
+
+#### Scenario: Replay colliding raw run identifiers
+
+- **GIVEN** Runs with the same raw run_id in different repositories, providers or surfaces and distinct explicit evidence mappings
+- **WHEN** they are exported and imported twice into a fresh store
+- **THEN** each Run and mapping retains its full identity without collisions or cross-attribution.
+
+#### Scenario: Reject an incomplete run selector
+
+- **GIVEN** two Runs share a raw run_id across surfaces
+- **WHEN** bind or settle selects only that raw run_id
+- **THEN** it rejects the incomplete reference without changing either Run or its mappings.
+
+#### Scenario: Preserve an explicit mapping target namespace
+
+- **GIVEN** a manual source-evidence mapping explicitly selects a RunRef whose surface differs from the evidence surface
+- **WHEN** the mapping is replayed and that full RunRef receives an outcome update
+- **THEN** both operations target only the named Run, retain manual provenance and do not derive a replacement namespace from the source.
+
 ### Requirement: Portable source-evidence mapping
 
 The system SHALL expose a stable evidence reference for each imported source record

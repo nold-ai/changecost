@@ -9,7 +9,7 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 2. Estimator and comparable cohorts
 
-- [ ] 2.1 Write failing nearest-rank, permutation, normalized-feature, incompatible/missing-feature, mixed-unit and minimum-count tests; verify expected failures before estimator code.
+- [ ] 2.1 Write failing nearest-rank, permutation, normalized-feature, incompatible/missing-feature, mixed-unit, partial-change exclusion, one-observation-per-change and minimum-count tests; verify expected failures before estimator code.
 - [ ] 2.2 Implement Decimal quantiles, versioned feature selection, eligibility and fixed cohort backoff; verify exact expected p50/p90 and explicit unpriced reasons.
 - [ ] 2.3 Document estimator formula, minimum-count default, features/v1 domains/capture timing and cohort order in docs/quotes.md; verify examples reproduce without unstated features.
 

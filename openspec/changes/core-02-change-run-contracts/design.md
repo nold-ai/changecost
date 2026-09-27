@@ -14,7 +14,7 @@ package or runtime. This design describes later implementation, not delivered be
 
 ## Decisions
 
-1. Use Pydantic contracts with explicit kind and schema=changecost/v1. Change has a caller-supplied stable change_id within an explicit repository_id, optional commit/PR references and separate outcome. Run has a namespaced provider/surface/run_id plus optional provider session/trace IDs. Quote embeds quantiles or unpriced reason, unit/basis, cohort, evidence cutoff, algorithm version and creation time. Settlement embeds aggregate components, completeness, provenance and revision references.
+1. Use Pydantic contracts with explicit kind and schema=changecost/v1. Change has a caller-supplied stable change_id within an explicit repository_id, optional commit/PR references and separate outcome. Run identity is the structured RunRef tuple (repository_id, provider, surface, run_id), with optional provider session/trace IDs as separate metadata. Quote embeds quantiles or unpriced reason, unit/basis, cohort, evidence cutoff, algorithm version and creation time. Settlement embeds aggregate components, completeness, provenance and revision references.
 
 2. Use standard-library SQLite under .changecost/changecost.sqlite3 by default, with explicit path override. Tables for records/bindings/revisions use uniqueness constraints and transactions; schema migrations are numbered. No ORM or daemon is needed. Portable JSON is independent of SQLite and contains only allowlisted economic metadata.
 
@@ -26,7 +26,7 @@ package or runtime. This design describes later implementation, not delivered be
    source event key, or an exact-file digest plus logical record ordinal. Import
    results and explain expose these references so users can select a record without
    retaining its raw payload. File-scoped references make no cross-export identity claim.
-   A portable mapping carries evidence_id, repository_id, run_id, method (manual or
+   A portable mapping carries evidence_id, the complete target RunRef, method (manual or
    verified_provider), recorded_at and effective_at; an explicit user mapping is always
    manual. Referenced evidence and target run must exist, or be present in the same
    atomic artifact import. Repeating either identical relationship is idempotent;
@@ -47,6 +47,18 @@ package or runtime. This design describes later implementation, not delivered be
    presentation, with displayed precision and half-even rounding; keep exact amounts.
 
 5. Use UTC timestamps with offsets normalized, plus recorded_at and effective_at to support historical replay. Local display may use Europe/Berlin. Atomic import validates the entire artifact before commit; unknown versions and conflicts leave state unchanged. Export/import round trips retain stable IDs and correction links.
+
+## Run identity and references
+
+Use the same structured RunRef (repository_id, provider, surface, run_id) in persisted
+keys, portable records, both binding relationships, bind/settle/explain selectors,
+outcome revisions and settlement coverage references. Tuple fields are separate
+strings, not delimiter-concatenated keys; compare exact values without case folding
+raw identifiers. A bare run_id is not a valid Run selector, even if locally unique.
+Do not infer the target Run namespace from source evidence: a manual mapping names
+its target explicitly. Equal raw IDs in different repositories/providers/surfaces
+are distinct Runs and survive export/import without collision. Same full RunRef with
+conflicting metadata remains an atomic conflict, not a second Run.
 
 ## Registration, outcomes and cohort inputs
 

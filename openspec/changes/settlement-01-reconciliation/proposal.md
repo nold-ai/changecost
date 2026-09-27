@@ -9,6 +9,7 @@ Retries and duplicate exports can inflate spend while missing charges can hide i
 - Normalize allowlisted evidence independently of provider parsers.
 - Deduplicate imports, preserve actual retries and apply identifiable corrections as revisions.
 - Aggregate bound and unbound evidence separately, retaining accepted and abandoned outcomes.
+- Record auditable full-change coverage separately from reconciled source intervals; incomplete attempts never become total-change observations.
 
 ## Capabilities
 
