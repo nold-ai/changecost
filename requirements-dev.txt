@@ -1,0 +1,2 @@
+# Repository hygiene only; product language and dependencies are undecided.
+pre-commit==4.6.2

@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pdf binary
+# Preserve intentional Markdown line breaks in the supplied research export.
+docs/research/deep-research-report.md whitespace=-blank-at-eol

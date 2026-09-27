@@ -1,0 +1,49 @@
+schema: spec-driven
+
+context: |
+  ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
+  cost estimates and settlement for AI-assisted software changes.
+  Phase: repository bootstrap / To-Validate; private; Apache-2.0; no releases.
+  Product language, packaging, schemas, CLI commands, storage, providers, and
+  pilot criteria are undecided. Do not create implementation plans until requested.
+  Proposed loop: quote -> bind -> meter -> settle -> calibrate.
+  Research is input, not an approved specification or proof of provider capability.
+  Treat provider charges, credits, raw usage, and estimated cost distinctly.
+  Make uncertainty, unbound spend, and missing evidence visible. Use synthetic data.
+  Minimize data retention; no prompts, source transcripts, or employee scoring.
+  Keep the project small: no gateway, dashboard, custom price database, hash-chain
+  ledger, plugin framework, or ML platform in the bootstrap.
+  SpecFact is development tooling, not a runtime dependency. A later integration
+  should consume a proven standalone contract.
+  Read AGENTS.md, docs/project-brief.md, docs/research/README.md, and applicable
+  docs/agent-rules/ before changes. No sibling repository is required.
+  Behavior changes follow spec -> failing tests -> implementation -> passing tests,
+  with actual TDD_EVIDENCE.md. Pure docs/scaffold changes need relevant checks only.
+  Current gate: make check. Add stack-specific format/lint/type/test gates when
+  implementation is approved. Keep fresh SpecFact review evidence for behavior
+  changes; missing/skipped analyzers are limitations, not passes.
+  Prefer clear names, KISS, YAGNI, DRY, and proportionate SOLID; no speculative layers.
+  Keep documentation in English. Do not change repository visibility or publish
+  packages/sites without explicit authorization.
+
+rules:
+  proposal:
+    - Include Why, What Changes, Capabilities, Impact, and Non-goals.
+    - Separate confirmed requirements from research hypotheses and open decisions.
+    - Name affected docs, verification, material risks, and a proportionate rollback.
+    - Do not add implementation scope merely because it appears in the research.
+  specs:
+    - Use Given/When/Then scenarios as the source of meaningful behavior tests.
+    - Define units, rounding, missing data, attribution, and retries where applicable.
+    - Make uncertainty and insufficient-evidence behavior explicit when quoting costs.
+    - Use synthetic fixtures; include privacy and offline behavior where applicable.
+  design:
+    - Choose the smallest design that satisfies approved scope; justify dependencies.
+    - Verify provider interfaces against current primary sources before adopting them.
+    - Keep runtime independent of SpecFact; document trust boundaries and failure modes.
+  tasks:
+    - Order behavior work as branch, specs, failing tests, implementation, passing tests.
+    - Record actual commands, timestamps, and outcomes in TDD_EVIDENCE.md for behavior changes.
+    - Include applicable quality gates and fresh SpecFact review; resolve or justify findings.
+    - Include documentation updates, strict OpenSpec validation, and a focused PR.
+    - Do not require module signatures, release version bumps, or issue hierarchies at bootstrap.

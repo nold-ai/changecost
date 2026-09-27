@@ -1,0 +1,1247 @@
+Citations · 27
+
+langfuse.com
+langfuse.com
+
+1
+https://langfuse.com/docs/observability/features/token-and-cost-tracking
+https://langfuse.com/docs/observability/features/token-and-cost-tracking
+github.com
+github.com
+
+2
+https://github.com/infracost/infracost
+https://github.com/infracost/infracost
+
+4
+https://github.com/karpathy/micrograd
+https://github.com/karpathy/micrograd
+
+11
+https://github.com/lucianareynaud/agent-cost
+https://github.com/lucianareynaud/agent-cost
+•
+
+3
+README.md
+README.md
+arxiv.org
+arxiv.org
+
+5
+https://arxiv.org/abs/2604.22750
+https://arxiv.org/abs/2604.22750
+docs.litellm.ai
+docs.litellm.ai
+
+6
+https://docs.litellm.ai/docs/proxy/virtual_keys
+https://docs.litellm.ai/docs/proxy/virtual_keys
+
+12
+https://docs.litellm.ai/docs/proxy/users
+https://docs.litellm.ai/docs/proxy/users
+
+18
+https://docs.litellm.ai/blog/litellm-roi-calculator
+https://docs.litellm.ai/blog/litellm-roi-calculator
+superpenguin.ai
+superpenguin.ai
+
+7
+https://superpenguin.ai/
+https://superpenguin.ai/
+usegitai.com
+usegitai.com
+
+8
+https://usegitai.com/blog/token-cost-by-pull-request
+https://usegitai.com/blog/token-cost-by-pull-request
+usenori.ai
+usenori.ai
+
+9
+https://usenori.ai/for-finance.html
+https://usenori.ai/for-finance.html
+agentmeter.app
+agentmeter.app
+
+10
+https://agentmeter.app/
+https://agentmeter.app/
+docs.github.com
+docs.github.com
+
+13
+https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/usage-and-billing
+https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/usage-and-billing
+
+21
+https://docs.github.com/en/copilot/concepts/billing-and-usage/individuals/billing
+https://docs.github.com/en/copilot/concepts/billing-and-usage/individuals/billing
+
+24
+https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations
+https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations
+prod.cursor.com
+prod.cursor.com
+
+14
+https://prod.cursor.com/docs/hooks
+https://prod.cursor.com/docs/hooks
+
+15
+https://prod.cursor.com/docs/enterprise/opentelemetry-export
+https://prod.cursor.com/docs/enterprise/opentelemetry-export
+
+23
+https://prod.cursor.com/docs/enterprise/opentelemetry-export/wire
+https://prod.cursor.com/docs/enterprise/opentelemetry-export/wire
+opentelemetry.io
+opentelemetry.io
+
+16
+https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/
+https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/
+focus.finops.org
+focus.finops.org
+
+17
+https://focus.finops.org/what-is-focus/
+https://focus.finops.org/what-is-focus/
+
+19
+https://focus.finops.org/focus-1-5-release-scope/
+https://focus.finops.org/focus-1-5-release-scope/
+finops.org
+finops.org
+
+20
+https://www.finops.org/wg/genai-finops-how-token-pricing-really-works/
+https://www.finops.org/wg/genai-finops-how-token-pricing-really-works/
+tokeneconomics.com
+tokeneconomics.com
+
+22
+https://www.tokeneconomics.com/projects/big-t-notation/
+https://www.tokeneconomics.com/projects/big-t-notation/
+gesetze-im-internet.de
+gesetze-im-internet.de
+
+25
+https://www.gesetze-im-internet.de/betrvg/__87.html
+https://www.gesetze-im-internet.de/betrvg/__87.html
+eur-lex.europa.eu
+eur-lex.europa.eu
+
+26
+https://eur-lex.europa.eu/legal-content/DE/ALL/?uri=uriserv%3AOJ.L_.2016.119.01.0001.01.ENG
+https://eur-lex.europa.eu/legal-content/DE/ALL/?uri=uriserv%3AOJ.L_.2016.119.01.0001.01.ENG
+bundesarbeitsgericht.de
+bundesarbeitsgericht.de
+
+27
+https://www.bundesarbeitsgericht.de/entscheidung/1-abr-13-17/
+https://www.bundesarbeitsgericht.de/entscheidung/1-abr-13-17/
+Sources scanned · 344
+
+arxiv.org
+arxiv.org
+Beyond Memory: A Templated Substrate for Heterogeneous Collaborative Knowledge Work with LLM Agents
+
+https://arxiv.org/abs/2607.24759
+Memory as Metabolism: A Design for Companion Knowledge Systems
+
+https://arxiv.org/abs/2604.12034
+Deep Visual-Semantic Alignments for Generating Image Descriptions
+
+https://arxiv.org/abs/1412.2306
+Potential for Enhanced Learning in Machine Learning Classes by Using Wiki LLM Indexing
+
+https://arxiv.org/abs/2609.25303
+ImageNet Large Scale Visual Recognition Challenge
+
+https://arxiv.org/abs/1409.0575
+PixelCNN++: Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications
+
+https://arxiv.org/abs/1701.05517
+Deep Fragment Embeddings for Bidirectional Image Sentence Mapping
+
+https://arxiv.org/abs/1406.5679
+Reducing Cost of LLM Agents with Trajectory Reduction
+
+https://arxiv.org/abs/2509.23586
+Token-Budget-Aware Pool Routing for Cost-Efficient LLM Inference
+
+https://arxiv.org/abs/2604.09613
+BudgetMLAgent: A Cost-Effective LLM Multi-Agent system for Automating Machine Learning Tasks
+
+https://arxiv.org/abs/2411.07464
+Dual-Pool Token-Budget Routing for Cost-Efficient and Reliable LLM Serving
+
+https://arxiv.org/abs/2604.08075
+How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks
+
+https://arxiv.org/abs/2604.22750
+Enumerative tropical algebraic geometry in R2
+
+https://arxiv.org/abs/math/0312530
+Deep neural networks algorithms for stochastic control problems on finite horizon: convergence analysis
+
+https://arxiv.org/abs/1812.04300
+Not Just a Black Box: Learning Important Features Through Propagating Activation Differences
+
+https://arxiv.org/abs/1605.01713
+wikillm.wiki
+wikillm.wiki
+WikiLLM — Your Knowledge, Maintained
+
+https://wikillm.wiki/
+en.wikipedia.org
+en.wikipedia.org
+A Logical Calculus of the Ideas Immanent in Nervous Activity
+
+https://en.wikipedia.org/wiki/A_Logical_Calculus_of_the_Ideas_Immanent_in_Nervous_Activity
+Attention Is All You Need
+
+https://en.wikipedia.org/wiki/Attention_Is_All_You_Need
+Computing Machinery and Intelligence
+
+https://en.wikipedia.org/wiki/Computing_Machinery_and_Intelligence
+Vibe coding
+
+https://en.wikipedia.org/wiki/Vibe_coding
+Andrej Karpathy
+
+https://en.wikipedia.org/wiki/Andrej_Karpathy
+llmwikidemo.lovable.app
+llmwikidemo.lovable.app
+WIKILLM
+
+https://llmwikidemo.lovable.app/
+es.wikipedia.org
+es.wikipedia.org
+Software 2.0
+
+https://es.wikipedia.org/wiki/Software_2.0
+Vibe coding
+
+https://es.wikipedia.org/wiki/Vibe_coding
+reuters.com
+reuters.com
+Former OpenAI, Tesla engineer Andrej Karpathy starts AI education platform
+
+Andrej Karpathy, a former engineer at OpenAI and Tesla, has launched an AI-based education platform called Eureka Labs. Drawing on his extensive experience in artificial intelligence, Karpathy announced that the platform will feature AI teaching assistants designed to aid educators in course creation and guide students through the learning process. The first offering from Eureka Labs is "LLM101n," an undergraduate-level course in which students learn to train their own scaled-down AI models. Karpathy—who was a founding member of OpenAI in 2015 and later led Tesla’s Autopilot division—described Eureka Labs as the result of his two-decade-long passion for both AI and education. He holds a PhD from Stanford University and has previously shared educational content online related to AI and problem-solving techniques such as Rubik’s cube tutorials. The launch of this platform aligns with the broader trend of integrating generative AI into digital learning since the advent of tools like ChatGPT.
+jsdelivr.com
+jsdelivr.com
+wikillm CDN by jsDelivr - A CDN for npm and GitHub
+
+https://www.jsdelivr.com/package/npm/wikillm
+andrej-karpathy.com
+andrej-karpathy.com
+Andrej Karpathy Wiki
+
+https://andrej-karpathy.com/
+berkay.se
+berkay.se
+wikillm: LLM-Maintained Knowledge Bases | Project | Berkay Orhan | Berkay Orhan
+
+https://berkay.se/projects/wikillm
+docs.cursor.com
+docs.cursor.com
+Cursor – Admin API
+
+https://docs.cursor.com/en/account/teams/admin-api
+Cursor – AI Code Tracking API
+
+https://docs.cursor.com/en/account/teams/ai-code-tracking-api
+Cursor – Dashboard
+
+https://docs.cursor.com/en/account/teams/dashboard
+Cursor – API Keys
+
+https://docs.cursor.com/settings/api-keys
+Cursor – Models & Pricing
+
+https://docs.cursor.com/account/pricing
+cursor.com
+cursor.com
+Analytics | Cursor Docs
+
+https://cursor.com/docs/account/teams/analytics
+Cursor TypeScript SDK | Cursor Documentation
+
+https://cursor.com/docs/sdk/typescript
+Members, Roles, and Seat Types | Cursor Docs
+
+https://cursor.com/docs/account/teams/members
+Customize Cursor · Cursor
+
+https://cursor.com/changelog/customize
+Bugbot | Cursor Docs
+
+https://cursor.com/docs/bugbot
+Cloud Agents | Cursor Docs
+
+https://cursor.com/docs/cloud-agent
+precompact | Cursor Hook
+
+https://cursor.com/marketplace/hooks/precompact
+pretooluse | Cursor Hook
+
+https://cursor.com/marketplace/hooks/pretooluse
+My Machines | Cursor Docs
+
+https://cursor.com/docs/cloud-agent/self-hosted/my-machines
+Agent metadata | Cursor Docs
+
+https://cursor.com/docs/cloud-agent/metadata
+Cloud Agent Builds | Cursor Docs
+
+https://cursor.com/docs/cloud-agent/builds
+Cursor Docs — Agent, Rules, MCP, Skills & CLI
+
+https://cursor.com/docs
+docs.github.com
+docs.github.com
+Requests in GitHub Copilot (legacy) - GitHub Docs
+
+https://docs.github.com/en/copilot/reference/copilot-billing/request-based-billing-legacy/copilot-requests
+What changed with Copilot billing (legacy) - GitHub Docs
+
+https://docs.github.com/en/copilot/reference/copilot-billing/request-based-billing-legacy/what-changed-with-billing
+Overview of request-based billing (legacy) - GitHub Docs
+
+https://docs.github.com/en/copilot/reference/copilot-billing/request-based-billing-legacy/github-copilot-premium-requests
+Using artifact attestations to establish provenance for builds - GitHub Docs
+
+https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations
+Managing the lifecycle of artifact attestations - GitHub Docs
+
+https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/manage-attestations
+Enforcing artifact attestations with a Kubernetes admission controller - GitHub Docs
+
+https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/enforce-artifact-attestations
+Utilisation des attestations d’artefacts pour établir la provenance des builds - Documentation GitHub
+
+https://docs.github.com/fr/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations
+Using artifact attestations - GitHub Docs
+
+https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations
+Artifact attestations - GitHub Docs
+
+https://docs.github.com/en/actions/concepts/security/artifact-attestations
+Uso de atestaciones de artefactos para establecer la procedencia de las compilaciones - Documentación de GitHub
+
+https://docs.github.com/es/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations
+Verifying attestations offline - GitHub Docs
+
+https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/verify-attestations-offline
+Gestion du cycle de vie des attestations d'artefacts - Documentation GitHub
+
+https://docs.github.com/fr/actions/how-tos/secure-your-work/use-artifact-attestations/manage-attestations
+Usar atestados de artefatos para estabelecer a procedência de compilações - Documentos do GitHub
+
+https://docs.github.com/pt/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations
+prod.cursor.com
+prod.cursor.com
+Admin API | Cursor Docs
+
+https://prod.cursor.com/docs/account/teams/admin-api
+Organization API | Cursor Docs
+
+https://prod.cursor.com/docs/account/organizations/organization-admin-api
+Team Pricing | Cursor Docs
+
+https://prod.cursor.com/docs/account/teams/pricing
+Usage and limits | Cursor Docs
+
+https://prod.cursor.com/help/models-and-usage/usage-limits
+Hooks | Cursor Docs
+
+https://prod.cursor.com/docs/hooks
+Plugins Reference | Cursor Docs
+
+https://prod.cursor.com/docs/reference/plugins
+Cloud Agents | Cursor Docs
+
+https://prod.cursor.com/docs/cloud-agent
+Bring your own API key | Cursor Docs
+
+https://prod.cursor.com/help/models-and-usage/api-keys
+Cloud Agents | Cursor Docs
+
+https://prod.cursor.com/help/ai-features/cloud-agents
+AWS Bedrock | Cursor Docs
+
+https://prod.cursor.com/docs/customizing/aws-bedrock
+OpenTelemetry Export | Cursor Docs
+
+https://prod.cursor.com/docs/enterprise/opentelemetry-export
+OpenTelemetry Export Wire Reference | Cursor Docs
+
+https://prod.cursor.com/docs/enterprise/opentelemetry-export/wire
+helicone.ai
+helicone.ai
+Helicone Pricing | Ship Your AI App With Confidence
+
+https://www.helicone.ai/pricing
+O1 Models: Support Added with Token and Cost Tracking
+
+https://www.helicone.ai/changelog/20240916-o1-support
+New Claude 3.7 Sonnet Support: Full Cost Tracking and Integration
+
+https://www.helicone.ai/changelog/20250224-claude-3-7-sonnet
+Helicone / AI Gateway & LLM Observability
+
+https://www.helicone.ai/
+Anthropic Prompt Caching Support
+
+https://www.helicone.ai/changelog/20250214-anthropic-prompt-caching
+User Histograms: Analyze LLM Usage Patterns
+
+https://www.helicone.ai/changelog/20241219-user-histograms
+Groq Streaming Support: Enhanced Token Tracking
+
+https://www.helicone.ai/changelog/20250326-groq-streaming
+Thinking Beyond RAG: Why Context-Augmented Generation Is Changing the Game
+
+https://www.helicone.ai/blog/implement-and-monitor-cag
+Helicone Changelog | Latest Updates & New Features
+
+https://www.helicone.ai/changelog
+openrouter.helicone.ai
+openrouter.helicone.ai
+OpenRouter API and Models | OpenRouter
+
+https://openrouter.helicone.ai/openrouter
+For AI Crawlers | OpenRouter (Text-Only) | OpenRouter
+
+https://openrouter.helicone.ai/for-ai
+OpenRouter API Reference | Complete API Documentation | OpenRouter | Documentation
+
+https://openrouter.helicone.ai/docs/api/reference
+opentelemetry.io
+opentelemetry.io
+Gen AI | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/
+OpenTelemetry semantic conventions 1.44.0 | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/
+Semantic conventions for HTTP spans | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/http/http-spans/
+Documentation | OpenTelemetry
+
+https://opentelemetry.io/docs/
+Semantic conventions for CLI (command line interface) programs | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/cli/cli-spans/
+Trace semantic conventions | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/general/trace/
+Semantic conventions for RPC spans | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans/
+Semantic conventions for Function-as-a-Service | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/faas/
+Semantic conventions for CI/CD | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/cicd/
+General semantic conventions | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/general/
+Semantic conventions for database calls and systems | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/db/
+Semantic convention groups | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/general/semantic-convention-groups/
+Semantic conventions for exceptions on spans | OpenTelemetry
+
+https://opentelemetry.io/docs/specs/semconv/exceptions/exceptions-spans/
+Inside the LLM Call: GenAI Observability with OpenTelemetry | OpenTelemetry
+
+https://opentelemetry.io/blog/2026/genai-observability/
+finops.org
+finops.org
+FinOpsly
+
+https://www.finops.org/members/finopsly/
+Flexera
+
+https://www.finops.org/members/flexera/
+PointFive
+
+https://www.finops.org/members/pointfive/
+Kion
+
+https://www.finops.org/members/kion/
+Token Economics: The Atomic Unit of AI Value
+
+https://www.finops.org/insights/token-economics-the-atomic-unit-of-ai-value/
+Introducing FOCUS 1.4: Invoice Reconciliation, Commitment Details, and Specification Maturity
+
+https://www.finops.org/insights/introducing-focus-1-4/
+Allocation FinOps Framework Capability
+
+https://www.finops.org/framework/capabilities/allocation/
+State of FinOps 2026 Report Now Available
+
+https://www.finops.org/update/state-of-finops-2026-report-now-available/
+Executive Strategy Alignment FinOps Framework Capability
+
+https://www.finops.org/framework/capabilities/executive-strategy-alignment/
+Introducing FOCUS 1.2: SaaS/PaaS Support, Invoice Reconciliation, and Deeper Cloud Allocation
+
+https://www.finops.org/insights/focus-1-2-available/
+FinOps for AI - FinOps Framework Technology Category
+
+https://www.finops.org/framework/technology-categories/ai/
+FinOps Capabilities
+
+https://www.finops.org/framework/capabilities/
+Surveil
+
+https://www.finops.org/members/surveil/
+Rate Optimization FinOps Framework Capability
+
+https://www.finops.org/framework/capabilities/rate-optimization/
+Usage Optimization FinOps Framework Capability
+
+https://www.finops.org/framework/capabilities/usage-optimization/
+The FinOps Foundation announced the General Availability (GA) of the FinOps Open Cost and Usage Specification (FOCUS™) Version 1.0
+
+https://www.finops.org/insights/focus-1-0-available/
+Revenium
+
+https://www.finops.org/members/revenium/
+Aquila Clouds
+
+https://www.finops.org/members/aquila-clouds/
+AI for FinOps - FinOps Topic
+
+https://www.finops.org/topic/ai-for-finops/
+FinOps X 2026 Day 1 Keynote: The Wild West of AI, Token Economics and the Evolving Role of FinOps
+
+https://www.finops.org/insights/finops-x-2026-day-1-keynote/
+Amnic
+
+https://www.finops.org/members/amnic/
+Envisor
+
+https://www.finops.org/members/envisor/
+Yasu
+
+https://www.finops.org/members/yasu/
+CloudZero
+
+https://www.finops.org/members/cloudzero/
+Vantage
+
+https://www.finops.org/members/vantage/
+AI Value - FinOps Topic
+
+https://www.finops.org/topic/ai-value/
+GenAI FinOps: How Token Pricing Really Works
+
+https://www.finops.org/wg/genai-finops-how-token-pricing-really-works/
+FinOps for AI Overview
+
+https://www.finops.org/wg/finops-for-ai-overview/
+Cost Estimation of AI Workloads
+
+https://www.finops.org/wg/cost-estimation-of-ai-workloads/
+How to Build a Generative AI Cost and Usage Tracker
+
+https://www.finops.org/wg/how-to-build-a-generative-ai-cost-and-usage-tracker/
+How to Forecast AI Services Costs in Cloud
+
+https://www.finops.org/wg/how-to-forecast-ai-services-costs-in-cloud/
+GenAI FinOps vs. Cloud FinOps: Similar Roots, Different Challenges
+
+https://www.finops.org/wg/genai-finops-vs-cloud-finops/
+framework.finops.org
+framework.finops.org
+Allocation FinOps Framework Capability
+
+https://framework.finops.org/framework/capabilities/allocation/
+focus.finops.org
+focus.finops.org
+FOCUS 1.5 Release Scope: Confirmed and Stretch Features
+
+https://focus.finops.org/focus-1-5-release-scope/
+FOCUS™ - FinOps Open Cost & Usage Specification
+
+https://focus.finops.org/
+What is FOCUS? Understand the FinOps Open Cost and Usage Specification
+
+https://focus.finops.org/what-is-focus/
+docs.aws.amazon.com
+docs.aws.amazon.com
+Using IAM principal for cost allocation - AWS Billing
+
+https://docs.aws.amazon.com/en_en/awsaccountbilling/latest/aboutv2/iam-principal-cost-allocation.html
+Hauptzuweisung nach IAM - Amazon Bedrock
+
+https://docs.aws.amazon.com/de_de/bedrock/latest/userguide/cost-mgmt-iam-principal-tracking.html
+Application inference profiles - Amazon Bedrock
+
+https://docs.aws.amazon.com/bedrock/latest/userguide/cost-mgmt-application-inference-profiles.html
+Markieren von Amazon-Bedrock-Ressourcen - Amazon Bedrock
+
+https://docs.aws.amazon.com/de_de/bedrock/latest/userguide/tagging.html
+Arbeitsbereiche - Amazon Bedrock
+
+https://docs.aws.amazon.com/de_de/bedrock/latest/userguide/cost-mgmt-workspaces.html
+Attribuzione principale IAM - Amazon Bedrock
+
+https://docs.aws.amazon.com/it_it/bedrock/latest/userguide/cost-mgmt-iam-principal-tracking.html
+Projekte - Amazon Bedrock
+
+https://docs.aws.amazon.com/de_de/bedrock/latest/userguide/cost-mgmt-projects.html
+Pertanyaan umum - Amazon Bedrock
+
+https://docs.aws.amazon.com/id_id/bedrock/latest/userguide/cost-mgmt-faq.html
+Per-request metadata tagging - Amazon Bedrock
+
+https://docs.aws.amazon.com/bedrock/latest/userguide/cost-mgmt-request-metadata.html
+Bewährte Methoden für die Kostenzuweisung - Amazon Bedrock
+
+https://docs.aws.amazon.com/de_de/bedrock/latest/userguide/cost-mgmt-best-practices.html
+Workspaces - Amazon Bedrock
+
+https://docs.aws.amazon.com/en_en/bedrock/latest/userguide/cost-mgmt-workspaces.html
+Understanding your Amazon Bedrock Cost and Usage Report data - Amazon Bedrock
+
+https://docs.aws.amazon.com/hi_in/bedrock/latest/userguide/cost-mgmt-understanding-cur-data.html
+platform.openai.com
+platform.openai.com
+Usage | OpenAI API Reference
+
+https://platform.openai.com/docs/api-reference/usage/audio_transcriptions_object
+docs.cloud.google.com
+docs.cloud.google.com
+Understand pipeline run costs  |  Gemini Enterprise Agent Platform  |  Google Cloud Documentation
+
+https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/pipelines/understand-pipeline-cost-labels
+docs.anthropic.com
+docs.anthropic.com
+获取消息 API 的使用报告 - Anthropic
+
+https://docs.anthropic.com/zh-CN/api/admin-api/usage-cost/get-messages-usage-report
+视觉能力 - Anthropic
+
+https://docs.anthropic.com/zh-CN/docs/build-with-claude/vision
+Soporte para PDF - Claude Platform Docs
+
+https://docs.anthropic.com/es/docs/build-with-claude/pdf-support
+Claude Code GitHub Actions - Anthropic
+
+https://docs.anthropic.com/it/docs/claude-code/github-actions
+Errores de la Claude API - Claude Platform Docs
+
+https://docs.anthropic.com/es/api/errors
+Начало работы с Claude Code - Anthropic
+
+https://docs.anthropic.com/ru/docs/claude-code/getting-started
+Google Sheets add-on - Anthropic
+
+https://docs.anthropic.com/en/docs/build-with-claude/claude-for-sheets
+Complemento do Google Sheets - Anthropic
+
+https://docs.anthropic.com/pt/docs/agents-and-tools/claude-for-sheets
+LLM gateway configuration - Anthropic
+
+https://docs.anthropic.com/en/docs/claude-code/llm-gateway
+SDK Claude Code - Anthropic
+
+https://docs.anthropic.com/fr/docs/claude-code/sdk
+Guida alla migrazione - Claude Platform Docs
+
+https://docs.anthropic.com/it/docs/about-claude/models/migrating-to-claude-4
+Claude와 함께하는 도구 사용 - Anthropic
+
+https://docs.anthropic.com/ko/docs/agents-and-tools/tool-use/overview
+infracost.io
+infracost.io
+Get started | Infracost
+
+https://www.infracost.io/docs/
+Add to CI/CD | Infracost
+
+https://www.infracost.io/docs/integrations/cicd/
+Plan JSON API | Infracost
+
+https://www.infracost.io/docs/integrations/infracost_api/
+Cloud Pricing API | Infracost
+
+https://www.infracost.io/docs/supported_resources/cloud_pricing_api/
+FAQ | Infracost
+
+https://www.infracost.io/docs/faq/
+FinOps policies | Infracost
+
+https://www.infracost.io/docs/infracost_cloud/finops_policies/
+Engineer guide | Infracost
+
+https://www.infracost.io/docs/infracost_cloud/engineer_guide/
+Usage costs | Infracost
+
+https://www.infracost.io/docs/features/usage_based_resources/
+API | Infracost
+
+https://www.infracost.io/docs/infracost_cloud/api/
+We cut Claude's token usage 79% by redesigning our CLI for agents - Infracost
+
+https://www.infracost.io/resources/blog/we-cut-claude-s-token-usage-79-by-redesigning-our-cli-for-agents
+github.com
+github.com
+GitHub - IBM-Cloud/infracost-cloud-pricing-api: GraphQL API for cloud pricing. Contains over 3M public prices from AWS, Azure and GCP. Self-updates prices via an automated weekly job. · GitHub
+
+https://github.com/IBM-Cloud/infracost-cloud-pricing-api
+GitHub - Scalr/infracost-cloud-pricing-api · GitHub
+
+https://github.com/Scalr/infracost-cloud-pricing-api
+GitHub - api-evangelist/infracost: Infracost — independent third-party profile of a public API surface, by API Evangelist. Infracost is a cloud cost estimation tool for Terraform that shows infrastructure cost breakdowns and diffs directly in pull requests. Infracost provides an API for programmatic access to cloud pricing data and cost estimates. · GitHub
+
+https://github.com/api-evangelist/infracost
+GitHub - infracost/infracost: Cloud cost intelligence for engineers, AI coding agents, and CI/CD 💰📉 Shift FinOps Left! · GitHub
+
+https://github.com/infracost/infracost
+Infracost · GitHub Marketplace · GitHub
+
+https://github.com/marketplace/infracost
+GitHub - elecnix/infra-cost-model: DAG-based infrastructure cost modeling: deriving resource consumption from higher-level parameters through dependency graphs · GitHub
+
+https://github.com/elecnix/infra-cost-model
+GitHub - c3xdev/c3x-pricing-api: Self-hosted cloud pricing API for AWS, Azure, and GCP. GraphQL endpoint backed by PostgreSQL. · GitHub
+
+https://github.com/c3xdev/c3x-pricing-api
+GitHub - defilantech/infercost: Kubernetes-native cost intelligence for on-premises AI inference. Computes true cost-per-token from GPU amortization, electricity, and real power draw. · GitHub
+
+https://github.com/defilantech/infercost
+GitHub - infracost/jetbrains-infracost: See cost estimates for Terraform right in your editor💰📉 · GitHub
+
+https://github.com/infracost/jetbrains-infracost
+GitHub - gmh5225/GPT-nanoGPT: The simplest, fastest repository for training/finetuning medium-sized GPTs. · GitHub
+
+https://github.com/gmh5225/GPT-nanoGPT
+GitHub - elusznik/nanoGPT-1.58b: The simplest, fastest repository for training/finetuning medium-sized GPTs. Forked with intent to run quantization-aware training at 1.58b. · GitHub
+
+https://github.com/elusznik/nanoGPT-1.58b
+GitHub - tml-tuebingen/nanoGPT-monitored: The simplest, fastest repository for training/finetuning medium-sized GPTs. · GitHub
+
+https://github.com/tml-tuebingen/nanoGPT-monitored
+GitHub - karpathy/micrograd: A tiny scalar-valued autograd engine and a neural net library on top of it with PyTorch-like API · GitHub
+
+https://github.com/karpathy/micrograd
+GitHub - ZouXinn/nanoGPT-Karpathy: The simplest, fastest repository for training/finetuning medium-sized GPTs. forked from Karpathy · GitHub
+
+https://github.com/ZouXinn/nanoGPT-Karpathy
+GitHub - activeloopai/nanoGPT_ft_DeepLake: The simplest, fastest repository for training/finetuning medium-sized GPTs streaming from Deep Lake · GitHub
+
+https://github.com/activeloopai/nanoGPT_ft_DeepLake
+GitHub - cgarciae/nanoGPT-jax: The simplest, fastest repository for training/finetuning medium-sized GPTs. · GitHub
+
+https://github.com/cgarciae/nanoGPT-jax
+GitHub - UX-01/nanoGPT: creating chatGPT from scratch using a minimal textual dataset · GitHub
+
+https://github.com/UX-01/nanoGPT
+GitHub - tinygrad/tinygrad: You like pytorch? You like micrograd? You love tinygrad! ❤️ · GitHub
+
+https://github.com/tinygrad/tinygrad
+GitHub - Lucid-Frameworks/nanoGPT · GitHub
+
+https://github.com/Lucid-Frameworks/nanoGPT
+GitHub - hafeild/nanoGPT-colab: This is a fork of Andrej Karpathy's nanoGPT (https://github.com/karpathy/nanoGPT) project, with added support to run easily in Google Colab. · GitHub
+
+https://github.com/hafeild/nanoGPT-colab
+GitHub - myhub/nanoRWKV: RWKV in nanoGPT style · GitHub
+
+https://github.com/myhub/nanoRWKV
+nanochat/README.md at master · karpathy/nanochat · GitHub
+
+https://github.com/karpathy/nanochat/blob/master/README.md
+GitHub - Muawiya-contact/-micrograd-mini: # The is a micrograd-mini. Inspired by Andrej Karpathy. · GitHub
+
+https://github.com/Muawiya-contact/-micrograd-mini
+GitHub - unworld11/tinygrad: a tiny autograd engine based on karpathy's micrograd repository with improvements · GitHub
+
+https://github.com/unworld11/tinygrad
+GitHub - diego-magana/micrograd: Scalar-valued autograd engine from first principles — reverse-mode autodiff, MLP, trained on make_moons. · GitHub
+
+https://github.com/diego-magana/micrograd
+GitHub - sheneman/nanogpt: A tiny LLM based on nanoGPT · GitHub
+
+https://github.com/sheneman/nanogpt
+GitHub - fundou/karpathy-micrograd: A tiny scalar-valued autograd engine and a neural net library on top of it with PyTorch-like API · GitHub
+
+https://github.com/fundou/karpathy-micrograd
+GitHub - lucianareynaud/agent-cost: FinOps cost attribution for AI code agents: maps Kiro, Cursor, and Claude Code spend to git commits to reveal per-task cost, waste patterns, and agent ROI signals. · GitHub
+
+https://github.com/lucianareynaud/agent-cost
+startuphub.ai
+startuphub.ai
+Andrej Karpathy's Nano* Repos: 120,000 GitHub Stars (2026)
+
+https://www.startuphub.ai/ai-news/ai-figures/2026/figure-andrej-karpathy-nano-series-technical-contribution-2026-07-16
+karpathy.ai
+karpathy.ai
+Andrej Karpathy
+
+https://karpathy.ai/
+pt.wikipedia.org
+pt.wikipedia.org
+Andrej Karpathy
+
+https://pt.wikipedia.org/wiki/Andrej_Karpathy
+time.com
+time.com
+Andrej Karpathy
+
+Andrej Karpathy is a pivotal figure in modern artificial intelligence, known for both his research contributions and his prowess as an educator. A founding member of OpenAI in 2015, Karpathy played a key role as a research scientist. He later led Tesla’s computer vision efforts beginning in 2017 and rejoined OpenAI in 2023 to contribute to the development of GPT-4. However, his broader influence may stem from his exceptional ability to teach neural networks and deep learning principles. Karpathy co-designed Stanford University's first deep learning course (CS231n) with Professor Fei-Fei Li in 2015, becoming its primary instructor. His lecture videos have garnered over 800,000 views, and his instructional YouTube content has reached millions. Recognized for simplifying complex AI topics, Karpathy credits his physics background for his clarity and teaching style, inspired by renowned physicist Richard Feynman. In July 2024, he launched Eureka Labs, a venture aimed at creating an AI-native educational platform. Its inaugural offering will be an undergraduate-level AI course co-developed and assisted by AI, reflecting Karpathy's commitment to innovating education at the intersection of technology and human learning.
+forum.cursor.com
+forum.cursor.com
+`preToolUse` hook `updated_input` is silently ignored for the `Task` tool - Bug Reports - Cursor - Community Forum
+
+https://forum.cursor.com/t/pretooluse-hook-updated-input-is-silently-ignored-for-the-task-tool/151985
+Cursor hooks intermittently emit empty `conversation_id` / `session_id` on tool-execution events - Bug Reports - Cursor - Community Forum
+
+https://forum.cursor.com/t/cursor-hooks-intermittently-emit-empty-conversation-id-session-id-on-tool-execution-events/167095
+Cursor CLI doesn't send all events defined in hooks - #13 by deanrie - Help - Cursor - Community Forum
+
+https://forum.cursor.com/t/cursor-cli-doesnt-send-all-events-defined-in-hooks/148316/13
+Hooks intermittently non-functional on Windows — preToolUse worked then stopped after hooks.json edit - Bug Reports - Cursor - Community Forum
+
+https://forum.cursor.com/t/hooks-intermittently-non-functional-on-windows-pretooluse-worked-then-stopped-after-hooks-json-edit/154608
+Cursor CLI doesn't send all events defined in hooks - #11 by deanrie - Help - Cursor - Community Forum
+
+https://forum.cursor.com/t/cursor-cli-doesnt-send-all-events-defined-in-hooks/148316/11
+Cursor CLI omits beforeSubmitPrompt, afterAgentResponse, and stop hooks, loses token usage, and emits inconsistent generation_id values - Bug Reports - Cursor - Community Forum
+
+https://forum.cursor.com/t/cursor-cli-omits-beforesubmitprompt-afteragentresponse-and-stop-hooks-loses-token-usage-and-emits-inconsistent-generation-id-values/169059
+langfuse.com
+langfuse.com
+Token & Cost Tracking - Langfuse
+
+https://langfuse.com/docs/observability/features/token-and-cost-tracking
+Pricing - Langfuse
+
+https://langfuse.com/pricing
+How do I track LLM cost and tokens in Langfuse? - Langfuse
+
+https://langfuse.com/faq/all/costs-tokens-langfuse
+Billable Units - Langfuse
+
+https://langfuse.com/docs/administration/billable-units
+Custom model prices (Langfuse v2.0) - Langfuse
+
+https://langfuse.com/changelog/2024-01-29-custom-model-prices
+LLM Metrics & Analytics - Langfuse
+
+https://langfuse.com/docs/metrics/overview
+LangSmith Alternative: Langfuse vs. LangSmith - Langfuse
+
+https://langfuse.com/compare/langsmith
+Tags - Langfuse
+
+https://langfuse.com/docs/observability/features/tags
+portkey.ai
+portkey.ai
+Portkey | Control Panel for Production AI
+
+https://portkey.ai/pricing
+new.portkey.ai
+new.portkey.ai
+Anthropic models on Azure are now accessible via Portkey! | Frill.co
+
+https://new.portkey.ai/announcements/anthropic-models-on-azure-are-now-accessible-via-portkey-1
+docs.helicone.ai
+docs.helicone.ai
+OpenRouter Integration - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/getting-started/integration-method/openrouter
+Add Experiment Evaluators (v2) - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/rest/experiment/post-v2experiment-evaluators
+Quickstart - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/getting-started/quick-start
+Delete Experiment Evaluator - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/rest/experiment/delete-v1experiment-evaluators
+Query Table Metadata - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/rest/experiment/post-v1experimenttable-metadataquery
+Create Experiment Hypothesis - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/rest/experiment/post-v1experimenthypothesis
+Get Experiment Input Keys - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/rest/experiment/get-v2experiment-input-keys
+Add Manual Row (v2) - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/rest/experiment/post-v2experiment-add-manual-row
+Resell a Model with Customer Portal - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/guides/applications/resell-a-model
+Custom Logs with the Logger SDK - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/integrations/data/logger-sdk
+Post v1stripesubscriptionnew customerupgrade to pro - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/rest/stripe/post-v1stripesubscriptionnew-customerupgrade-to-pro
+Get Experiment Score - Helicone OSS LLM Observability
+
+https://docs.helicone.ai/rest/experiment/get-v2experiment-
+docs.langchain.com
+docs.langchain.com
+ChatAmazonNova integration - Docs by LangChain
+
+https://docs.langchain.com/oss/python/integrations/chat/amazon_nova
+braintrust.dev
+braintrust.dev
+Pricing - Braintrust
+
+https://www.braintrust.dev/pricing
+arize.com
+arize.com
+Phoenix - Arize AI
+
+https://arize.com/phoenix/
+Arize Phoenix | Phoenix
+
+https://arize.com/docs/phoenix/
+Pricing - Arize AI
+
+https://arize.com/pricing
+Cost Tracking - Arize AX Docs
+
+https://arize.com/docs/ax/security-and-settings/cost-tracking
+Add cost tracking - Arize AX Docs
+
+https://arize.com/docs/ax/observe/tracing/configure/add-cost-tracking
+Tracing Tutorial - Phoenix
+
+https://arize.com/docs/phoenix/tracing
+What is my Phoenix Endpoint? | Phoenix
+
+https://arize.com/docs/phoenix/learn/faqs/what-is-my-phoenix-endpoint
+What are Traces | Phoenix
+
+https://arize.com/docs/phoenix/learn/tracing
+Arize AX Pricing: AI agent observability and evaluation - Arize AI
+
+https://arize.com/pricing/
+Braintrust Open Source Alternative? LLM Evaluation Platform Comparison | Arize Phoenix
+
+https://arize.com/docs/phoenix/learn/resources/faqs/braintrust-open-source-alternative-llm-evaluation-platform-comparison
+Send Traces From Your App - Phoenix
+
+https://arize.com/docs/phoenix/tracing/llm-traces-1
+Phoenix - Arize AI
+
+https://arize.com/phoenix
+braintrust-e0c9l3u78.preview.braintrust.dev
+braintrust-e0c9l3u78.preview.braintrust.dev
+Pricing - Braintrust
+
+https://braintrust-e0c9l3u78.preview.braintrust.dev/pricing
+braintrust-cgn0uy4su.preview.braintrust.dev
+braintrust-cgn0uy4su.preview.braintrust.dev
+Pricing - Braintrust
+
+https://braintrust-cgn0uy4su.preview.braintrust.dev/pricing
+loop-bug-fix.preview.braintrust.dev
+loop-bug-fix.preview.braintrust.dev
+Pricing - Braintrust
+
+https://loop-bug-fix.preview.braintrust.dev/pricing
+docs.datadoghq.com
+docs.datadoghq.com
+Cost
+
+https://docs.datadoghq.com/llm_observability/investigate/cost/
+docs.litellm.ai
+docs.litellm.ai
+LiteLLM AI Gateway (LLM Proxy) | liteLLM
+
+https://docs.litellm.ai/docs/simple_proxy
+Virtual Keys | liteLLM
+
+https://docs.litellm.ai/docs/proxy/virtual_keys
+Budgets, Rate Limits | liteLLM
+
+https://docs.litellm.ai/docs/proxy/users
+Getting Started | liteLLM
+
+https://docs.litellm.ai/docs/
+LiteLLM - Getting Started | liteLLM
+
+https://docs.litellm.ai/
+Claude Desktop (Cowork) | liteLLM
+
+https://docs.litellm.ai/docs/tutorials/claude_desktop_cowork
+Introducing the LiteLLM ROI Calculator | liteLLM
+
+https://docs.litellm.ai/blog/litellm-roi-calculator
+Introducing LiteAdmin MCP | liteLLM
+
+https://docs.litellm.ai/blog/litellm-admin-mcp
+Day 0 Support: GPT-6 Sol and GPT-6 Luna | liteLLM
+
+https://docs.litellm.ai/blog/gpt_6_sol_luna
+LiteAdmin MCP | liteLLM
+
+https://docs.litellm.ai/docs/proxy/liteadmin_mcp
+Nadir | liteLLM
+
+https://docs.litellm.ai/docs/providers/nadir
+Quickstart | liteLLM
+
+https://docs.litellm.ai/docs/proxy/docker_quick_start
+Customer Usage | liteLLM
+
+https://docs.litellm.ai/docs/proxy/customer_usage
+Codex CLI - Granular Cost Tracking | liteLLM
+
+https://docs.litellm.ai/docs/tutorials/codex_customer_tracking
+community.finops.org
+community.finops.org
+FinOps ITAM Community Call - AI Value - FinOps Foundation
+
+https://community.finops.org/meeting/ai-value-ITAM-may-2026
+FinOps Foundation APJ Virtual Summit - FinOps Foundation
+
+https://community.finops.org/meeting/finops-x-recap-apac
+FinOps ITAM Community Call - FinOps for AI - FinOps Foundation
+
+https://community.finops.org/meeting/finops-for-ai-January-2026-ITAM
+FinOps Foundation - Europe Community Call - FinOps Foundation
+
+https://community.finops.org/meeting/finops-for-ai-february-2026-europe
+FinOps X 2026 Keynote Livestream - FinOps Foundation
+
+https://community.finops.org/meeting/keynote-livestreams
+tokeneconomics.com
+tokeneconomics.com
+Big-T Notation Project - Tokenomics Foundation
+
+https://www.tokeneconomics.com/projects/big-t-notation/
+The Tokenomics Foundation - AI Value
+
+https://www.tokeneconomics.com/
+Big-T Notation Paper
+
+https://www.tokeneconomics.com/docs/projects/big-t/big-t-notation-paper/
+techtimes.com
+techtimes.com
+Tokenomics Foundation Launches: JPMorgan and IBM Back AI's First Billing Standards Body
+
+https://www.techtimes.com/articles/323059/20260804/tokenomics-foundation-launches-jpmorgan-ibm-back-ais-first-billing-standards-body.htm
+okchanger.ru
+okchanger.ru
+Токеномика: разбираем Big-T нотацию на примере механики работы Yandex AI Studio
+
+https://www.okchanger.ru/news/2026/9/7/tokenomika-razbiraem-bigt-notatsiyu-na
+aionpulse.com
+aionpulse.com
+Economía de tokens en Ámsterdam: Dentro del primer Tokenomicon - AIOnPulse
+
+https://www.aionpulse.com/es/news/article/01M3CZFC1BFM2EPVDPMRRQ81HK/
+linkedin.com
+linkedin.com
+Big-T is Big-O for AI consumption. A shared language for reasoning about how AI consumption grows as it scales, so teams can see the cost curve before the invoice arrives. The notation is T(n · k ·… | Tokenomics Foundation
+
+https://www.linkedin.com/posts/tokenomics-foundation_big-t-is-big-o-for-ai-consumption-a-shared-activity-7501293090628919297-cIdi
+Tokenomics Foundation | LinkedIn
+
+https://www.linkedin.com/company/tokenomics-foundation/
+indianexpress.com
+indianexpress.com
+What is Jev, an AI 'generalist' model with a new take on decision-making?
+
+Jev is a newly launched AI model by TypeSafe AI, introduced on September 15, 2026. Distinct from traditional large language models like ChatGPT, Jev focuses on generating calibrated decisions rather than text. Developed with involvement from Diogo Almeida, whose past research contributed to ChatGPT's instruction-following features, Jev operates by producing fast and cost-effective probability-based decisions. It aids AI agents in determining next steps and whether to retry tasks, offering responses in under half a second at a cost of $0.042 per million input tokens, with output provided free. The model is already being integrated into major platforms like Vercel, Cloudflare, LangChain, and Langfuse. With a starting credit package of $5—equivalent to about 120 million tokens—Jev is now accessible to all developers without a waitlist. It is particularly attractive to companies operating multiple AI agents, offering a lower-cost alternative to reliance on expensive language-model outputs. Positioned at the decision-making layer within AI ecosystems, Jev represents a strategic move toward scalable smart software development, echoing a decentralized growth model akin to the early Internet rather than centralized mega-app structures.
+arxiv.deeppaper.ai
+arxiv.deeppaper.ai
+BAGEN: Are LLM Agents Budget-Aware? | Arxiv - DeepPaper
+
+https://arxiv.deeppaper.ai/papers/2606.00198v1
+AgentRouter: Heterogeneous Model Routing for Cost-Optimal Multi-Step Agentic Workflows | Arxiv - DeepPaper
+
+https://arxiv.deeppaper.ai/papers/2609.22951v1
+Dual-Pool Token-Budget Routing for Cost-Efficient and Reliable LLM Serving | Arxiv - DeepPaper
+
+https://arxiv.deeppaper.ai/papers/2604.08075v1
+Prompt-Induced Waste in Coding Agents: Reasoning, Effort, Harness Design, and End-to-End Cost | Arxiv - DeepPaper
+
+https://arxiv.deeppaper.ai/papers/2608.01347v4
+tokenade.net
+tokenade.net
+Stanford & Michigan Ran the Numbers on Agent Costs
+
+https://tokenade.net/en/case-studies/swe-bench-agent-token-study
+alatirok.com
+alatirok.com
+Tokens Per Agentic Coding Task: The 2026 Variance Data
+
+https://alatirok.com/tokens-per-agentic-coding-task/
+agentmarketcap.ai
+agentmarketcap.ai
+SWE-bench Cost-Per-Run Rankings 2026: The 10x Efficiency Gap Reshaping AI Coding Agent Selection | AgentMarketCap
+
+https://agentmarketcap.ai/blog/2026/04/07/swe-bench-cost-per-run-rankings-2026-efficiency-gap
+digitaleconomy.stanford.edu
+digitaleconomy.stanford.edu
+How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks - Stanford Digital Economy Lab
+
+https://digitaleconomy.stanford.edu/publication/how-do-ai-agents-spend-your-money-analyzing-and-predicting-token-consumption-in-agentic-coding-tasks/
+agentpatterns.ai
+agentpatterns.ai
+Probe-Run Calibration for Predicting Agent Token Spend - AgentPatterns.ai
+
+https://www.agentpatterns.ai/token-engineering/probe-run-cost-calibration/
+scixplorer.org
+scixplorer.org
+Token Reduction Is Not Cost Reduction - Science Explorer Abstract
+
+https://scixplorer.org/abs/2026arXiv260712161W/abstract
+theverge.com
+theverge.com
+Google says its new Gemini 3.8 Flash model 'works harder' but might cost more
+
+Google has launched Gemini 3.8 Flash, an upgraded AI model following closely after version 3.7 Flash. It maintains the same per-token pricing—$0.75 per million input tokens and $3.75 per million output tokens—but Google warns that increased token usage to enhance performance may lead to higher overall costs. Early reviews indicate a ~40% cost increase per task due to higher output token use and more agentic evaluation steps. Despite this, the model is praised for offering high intelligence at a competitive price and fast performance. Gemini 3.8 Flash demonstrates improved capabilities in software engineering, outperforming rivals like Anthropic’s Fable 5 on benchmarks such as DeepSWE v1.1, Vals Finance Agent V2, and Harvey’s Legal Agent benchmark. It also includes robust safeguards against misuse in sensitive domains like chemical and cyber warfare. Additionally, Google introduced Gemini 3.8 Flash Cyber under its Fairwind Program, restricted to governments and trusted partners, to enhance cybersecurity using AI tools like CodeMender. The model is now available for Google AI Pro and Ultra subscribers, as well as for developers and enterprise users.
+Google is bringing Gemini CLI to developers' terminals
+
+Google has launched Gemini CLI, a new open-source AI agent that brings the capabilities of its Gemini platform directly into developers’ command line interfaces. Built using the Gemini 2.5 Pro model, the tool supports a 1 million token context window and integrates with Gemini Code Assist. It allows developers to perform a range of tasks using natural language prompts, including coding, content generation, deep research, and even multimedia creation with AI tools like Veo and Imagen. The Gemini CLI supports Google's Model Context Protocol (MCP) and Google Search, enhancing its utility for development and task management. Currently in preview, Gemini CLI is free to use with a Gemini Code Assist license obtainable via a personal Google account. The generous usage limit of 60 requests per minute and 1,000 requests daily is among the highest in the industry. Google has not yet stated whether the tool will remain free or what provisions exist for users who exceed the limits, but the offering is positioned as a strong competitor to coding assistants such as GitHub Copilot, Anthropic’s Claude, and Microsoft’s terminal AI.
+businessinsider.com
+businessinsider.com
+Anthropic doubles its estimate of what Claude Code tokens will cost engineers
+
+Anthropic has significantly revised its estimated token costs for Claude Code, more than doubling previous figures. As of April 15, 2026, the company now states that enterprise developers spend around $13 per active day, up from $6, with 90% of users staying under $30 daily—previously estimated at under $12. Monthly costs are between $150-$250 per developer. This update reflects a shift in the dominant model used—Opus 4.7—replacing Sonnet 3.7 as the standard. Anthropic clarified that this change does not indicate a price increase but rather an adjustment based on current usage patterns as model capabilities have advanced. The information was updated quietly without major announcements, prompting concerns about transparency, first highlighted by Ed Zitron. This shift underscores a broader trend of rising AI costs impacting everyone from individuals to large enterprises, largely due to increased demand and the emergence of AI agents straining computational resources. Anthropic also faced criticism for temporarily removing Claude Code from Pro user subscriptions and acknowledged that current plans are struggling to keep up with rising user engagement.
+JPMorgan rolls out Claude changes: $2,000 spending limits and extra security
+
+JPMorgan is implementing stricter cost controls and enhanced security measures for its use of Anthropic's AI tool, Claude. Selected employees now face a $2,000 monthly spending cap on Claude usage, introduced to curb rising token expenses and reinforce accountability amid increasing AI costs. This financial control accompanies a broader security initiative, including a new software environment called "Devspace." Hosted on Amazon Web Services, Devspace isolates Claude from sensitive internal systems and employee data, functioning as a sandbox to safely manage AI operations. JPMorgan aims to prevent rogue AI behavior and unauthorized access, a growing concern as powerful AI agents have demonstrated potential to escape testing environments. Currently, only a fraction of JPMorgan’s 65,000 technology workers—around 8,000—have Claude licenses, and fewer than 2,000 are involved in the Devspace rollout. The initiative aligns with JPMorgan’s goal of securely scaling AI tools across its operations, reinforcing its leadership in Wall Street’s AI adoption while mitigating cybersecurity risks.
+Anthropic launched an AI code reviewer. Some developers say it's expensive and undermines senior engineers.
+
+Anthropic recently launched a new "Claude Code Review" feature for its AI tool Claude, aimed at offering in-depth code reviews that can detect complex issues and propose fixes. Announced via blog post, the feature is touted for its depth but comes with a higher price point, averaging $15–$25 per pull request, based on token usage and code complexity. This cost and potential impact on the role of senior engineers have sparked backlash from several developers on social media. Some, including AI and fintech professionals, argue that the Code Review offers little improvement over existing GitHub integrations and criticize the pricing model. Detractors suggest the tool undermines high-paid engineers and raises concerns about the growing cost of AI development tools. This criticism is part of a broader industry trend, with other developers and companies like investor Chamath Palihapitiya’s startup 8090 also expressing concern over rising AI infrastructure expenses, which are reportedly tripling every few months. While Claude Code Review may be more cost-effective than some competitors like Cursor, the overall surge in AI operational costs is driving reevaluations across development teams.
+wsj.com
+wsj.com
+Meta Releases Coding Agent to Compete With OpenAI and Anthropic
+
+Meta Platforms has launched a new AI-powered coding agent called Muse Code, presenting it as a lower-cost alternative to existing options like OpenAI’s Codex and Anthropic’s Claude Code. Muse Code is designed to assist users in software development without requiring them to write code, and it's already in internal use at Meta. The coding agent is available in two pricing tiers: one similar to its general Muse Spark model, and a significantly cheaper option at 20 cents per million output tokens, provided users submit feedback to help refine the model. This undercuts rival offerings, whose output tokens often cost up to $30 per million. The move is part of Meta’s effort to demonstrate returns on its substantial investment in AI development, especially after investor concerns over recent quarterly outcomes. Following restructuring last summer, Meta created Meta Superintelligence Labs, led by ScaleAI co-founder Alexandr Wang. Wang aggressively recruited top talent and spearheaded development of Muse Spark, which debuted in April. Meta now joins a competitive market already dominated by OpenAI and Anthropic but seeks to differentiate itself through aggressive pricing and flexibility for users.
+tomshardware.com
+tomshardware.com
+OpenClaw creator burned through $1.3 million in OpenAI API tokens in a single month - bill covered 603 billion tokens across 7.6 million requests and 100 coding agents
+
+Peter Steinberger, the developer behind the open-source AI coding project OpenClaw, accrued a staggering $1.3 million in OpenAI API charges within a single month. This cost, fully covered by OpenAI (his employer), resulted from generating 603 billion tokens across 7.6 million requests using around 100 Codex agents. These agents autonomously manage various software development tasks like reviewing pull requests, detecting security issues, updating performance benchmarks, and even contributing to project discussions and writing fixes based on them. The spike in spending was attributed to Codex’s “Fast Mode,” which significantly increases token consumption. Steinberger clarified that disabling this mode would reduce the bill to roughly $300,000 monthly, equivalent to 60 high-tier Codex Pro subscriptions. His experiment demonstrates the gap between real computational costs and what developers usually pay, raising questions about the economic sustainability of AI development tools. Despite the huge expenses, Steinberger framed the project as a research study in unconstrained AI-assisted development. OpenClaw has stirred both controversy and innovation, influencing major players like Meta and Nvidia. OpenAI recently switched Codex to token-based billing, making cost transparency more apparent, especially for high-intensity users like Steinberger.
+finopsllm.com
+finopsllm.com
+Agent Economics: What a Coding Agent Really Costs · FinOps LLM
+
+https://finopsllm.com/research/agent-economics
+superpenguin.ai
+superpenguin.ai
+SuperPenguin: Know where your AI spend goes
+
+https://superpenguin.ai/
+agentmeter.app
+agentmeter.app
+AgentMeter — Your AI coding bill shouldn't be a surprise
+
+https://agentmeter.app/
+usegitai.com
+usegitai.com
+Tokens per Pull Request | Git AI
+
+https://usegitai.com/blog/token-cost-by-pull-request
+usenori.ai
+usenori.ai
+Nori — A centralized layer for tracking agent spend.
+
+https://usenori.ai/for-finance.html
+git.hubp.de
+git.hubp.de
+GitHub - bhvbhushan/codeledger: Token-level cost intelligence for AI coding tools — budget alerts, anomaly detection, and multi-tool tracking across Claude Code, Codex CLI, Cline, and Gemini CLI · GitHub
+
+https://git.hubp.de/bhvbhushan/codeledger
+cloudcost.live
+cloudcost.live
+CloudCost AI — Know the cost before you merge
+
+https://cloudcost.live/
+kunalganglani.com
+kunalganglani.com
+AI Agent Cost Per Task [2026]: Token Budgets & Math
+
+https://www.kunalganglani.com/blog/ai-agent-cost-per-task-2026
+techradar.com
+techradar.com
+GitHub integrates Claude and Codex AI coding agents directly into GitHub
+
+GitHub has officially integrated support for third-party AI coding agents, including Anthropic's Claude and OpenAI's Codex, into its platform. These agents are now available alongside GitHub's Copilot and can be accessed across the website, mobile app, and Visual Studio Code to provide users with flexible and seamless development experiences. Available to Copilot Pro+ and Enterprise users, each agent session consumes a premium request during the public preview stage, with formal pricing to be announced. Users can operate multiple agents simultaneously to generate draft pull requests and interact with them via mentions like @copilot, @claude, and @codex, mimicking collaboration with human teammates. GitHub also provides tools in repositories and agent sessions to manage integrations smoothly. The initiative aims to empower developers by embedding powerful reasoning tools directly into their workflows. GitHub plans to expand its support to other agents, with ongoing collaborations with companies like Google, Cognition, and xAI.
+itpro.com
+itpro.com
+Everything you need to know about the GitHub Copilot pricing changes
+
+GitHub is transitioning GitHub Copilot to a new usage-based billing system starting June 1, 2026, replacing the current Premium Request Units (PRU) model with GitHub AI Credits. This change comes as GitHub addresses rising costs due to enhanced Copilot features that have increased computational demand. Under the new system, users will consume credits based on token usage—including inputs, outputs, and cached tokens—per model API rates. Features like code completions and "Next Edit" suggestions won't consume credits, but code review will also use GitHub Actions minutes. Pricing for Copilot subscriptions remains unchanged: Copilot Business at $19/month and Copilot Enterprise at $39/month, each including equivalent value in AI credits. As a transition aid, Business and Enterprise users will receive bonus monthly credits for June through August. Pooled credit usage across organizations will allow efficient allocation, especially for managing heavy and light users. Admins will have tools to set spending caps and monitor usage. For individuals, Copilot Pro and Pro+ users will receive equivalent AI credits to their $10 or $39/month plans. Annual subscribers remain on legacy pricing until expiration, after which they'll convert to free or monthly plans. GitHub has already begun preparations for the shift, including temporary usage limits.
+bundesarbeitsgericht.de
+bundesarbeitsgericht.de
+1 ABR 13/17 - Das Bundesarbeitsgericht
+
+https://www.bundesarbeitsgericht.de/entscheidung/1-abr-13-17/
+9 AZR 48/24 - Das Bundesarbeitsgericht
+
+https://www.bundesarbeitsgericht.de/entscheidung/9-azr-48-24/
+1 ABR 43/12 - Das Bundesarbeitsgericht
+
+https://www.bundesarbeitsgericht.de/en/entscheidung/1-abr-43-12/
+1 ABR 20/21 - Das Bundesarbeitsgericht
+
+https://www.bundesarbeitsgericht.de/entscheidung/1-abr-20-21/
+1 ABR 16/23 - Das Bundesarbeitsgericht
+
+https://www.bundesarbeitsgericht.de/entscheidung/1-abr-16-23/
+1 ABR 46/15 - Das Bundesarbeitsgericht
+
+https://www.bundesarbeitsgericht.de/entscheidung/1-abr-46-15/
+1 ABR 7/15 - Das Bundesarbeitsgericht
+
+https://www.bundesarbeitsgericht.de/entscheidung/1-abr-7-15/
+eur-lex.europa.eu
+eur-lex.europa.eu
+Verordnung - 2016/679 - EN - gdpr - EUR-Lex
+
+https://eur-lex.europa.eu/legal-content/DE/ALL/?uri=uriserv%3AOJ.L_.2016.119.01.0001.01.ENG
+Regulation - 2016/679 - EN - gdpr - EUR-Lex
+
+https://eur-lex.europa.eu/legal-content/EN-PT/TXT/?uri=CELEX%3A32016R0679
+Regulation - EU - 2018/1725 - DE - EUDPR - EUR-Lex
+
+https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv%3AOJ.L_.2018.295.01.0039.01.ENG
+Regulation - 2016/679 - EN - gdpr - EUR-Lex
+
+https://eur-lex.europa.eu/legal-content/EN-BG/TXT/?uri=CELEX%3A32016R0679
+EUR-Lex - 62021CJ0268 - FR - EUR-Lex
+
+https://eur-lex.europa.eu/legal-content/en/TXT/?uri=CELEX%3A62021CJ0268
+Regulation - 2016/679 - EN - gdpr - EUR-Lex
+
+https://eur-lex.europa.eu/legal-content/EN-RO/TXT/?from=EN&uri=CELEX%3A32016R0679
+EUR-Lex - 52014AP0212 - IT - EUR-Lex
+
+https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=oj%3AJOC_2017_378_R_0056
+EUR-Lex - 02016R0679-20160504 - EN - EUR-Lex
+
+https://eur-lex.europa.eu/eli/reg/2016/679
+gesetze-im-internet.de
+gesetze-im-internet.de
+§ 87 BetrVG - Einzelnorm
+
+https://www.gesetze-im-internet.de/betrvg/__87.html
+Connector sources scanned
+
+No connector sources scanned
