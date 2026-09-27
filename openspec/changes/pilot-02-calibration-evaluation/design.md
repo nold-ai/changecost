@@ -14,7 +14,12 @@ package or runtime. This design describes later implementation, not delivered be
 
 ## Decisions
 
-1. Replay quotes in timestamp order using only revisions available at each cutoff. Both candidate and repository-wide baseline use identical unit/basis, eligibility, population, minimum count and quantile method; the baseline omits narrow cohort features. Score paired priced cases and separately count asymmetric and joint unpriced cases.
+1. Replay quotes in timestamp order using only revisions available at each cutoff. Both candidate and repository-wide baseline use identical unit/basis, eligibility, population, minimum count and quantile method; the baseline omits narrow cohort features. The candidate's final repository fallback is exactly the baseline cohort, so availability must match: both priced when it meets the minimum, otherwise both unpriced. Score paired priced cases and report jointly unpriced cases with counts/reasons. If observed availability differs, report a comparison/configuration error and stop accuracy reporting for that run rather than treating it as a supported pilot outcome.
+
+Use one initial pre-run Quote per evaluated Change, with the frozen feature snapshot
+and cutoff defined by the [estimator contract](../quote-01-empirical-estimation/design.md#feature-selection-and-capture-time).
+Later diagnostic quotes do not create extra observations. Missing features lead to
+repository fallback for the candidate, not removal of baseline-eligible history.
 
 2. Report p50/p90 empirical coverage as count(actual <= quantile)/priced comparable count, with numerator and denominator; report signed errors and interval width p90-p50 in original units. Include sample-count uncertainty (for example Wilson intervals for coverage), not a claim that observed 90% is a guarantee. Do not score incomplete or noncomparable truth as zero.
 

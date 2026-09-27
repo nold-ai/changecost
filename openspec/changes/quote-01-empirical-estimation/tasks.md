@@ -9,14 +9,14 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 2. Estimator and comparable cohorts
 
-- [ ] 2.1 Write failing nearest-rank, permutation, mixed-unit and minimum-count tests; verify expected failures before estimator code.
-- [ ] 2.2 Implement Decimal quantiles, eligibility and fixed cohort backoff; verify exact expected p50/p90 and explicit unpriced reasons.
-- [ ] 2.3 Document estimator formula, minimum-count default and cohort order in docs/quotes.md; verify examples reproduce without unstated features.
+- [ ] 2.1 Write failing nearest-rank, permutation, normalized-feature, incompatible/missing-feature, mixed-unit and minimum-count tests; verify expected failures before estimator code.
+- [ ] 2.2 Implement Decimal quantiles, versioned feature selection, eligibility and fixed cohort backoff; verify exact expected p50/p90 and explicit unpriced reasons.
+- [ ] 2.3 Document estimator formula, minimum-count default, features/v1 domains/capture timing and cohort order in docs/quotes.md; verify examples reproduce without unstated features.
 
 ## 3. Historical replay and explanation
 
-- [ ] 3.1 Write failing future-correction, target-exclusion and historical-cutoff tests; record actual failure evidence.
-- [ ] 3.2 Persist quote evidence references and cutoff and implement explainable replay; verify future changes cannot alter a stored historical quote.
+- [ ] 3.1 Write failing future-correction, post-work/imported-late feature, target-exclusion and historical-cutoff tests; record actual failure evidence.
+- [ ] 3.2 Persist the exact feature snapshot, evidence/outcome revision references and cutoff and implement explainable replay; verify future changes cannot alter a stored historical quote.
 - [ ] 3.3 Document population, exclusions and limits of empirical p90; verify explain shows n, unit/basis, backoff and excluded-evidence counts.
 
 ## 4. Integration and handoff

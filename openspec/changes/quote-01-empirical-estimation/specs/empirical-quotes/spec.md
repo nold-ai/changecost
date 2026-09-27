@@ -44,6 +44,32 @@ The estimator SHALL follow the documented cohort order and return unpriced when 
 - **WHEN** a USD quote requiring 20 peers runs
 - **THEN** credits are excluded and the result is unpriced.
 
+### Requirement: Reproducible pre-quote features
+
+The estimator SHALL use and embed normalized, versioned registration snapshots for
+change_shape, trajectory and execution_profile. Narrow cohorts SHALL require matching
+supported versions and pre-run features available by the quote cutoff. Missing, late
+or incompatible feature evidence SHALL skip affected narrow levels with a reason,
+without excluding otherwise eligible observations from repository-wide fallback.
+
+#### Scenario: Equivalent normalized inputs
+
+- **GIVEN** Changes registered with " BugFix " and "bugfix" plus equivalent other features and the same eligible evidence
+- **WHEN** quotes select cohorts
+- **THEN** both use the same canonical bugfix value and deterministic cohort membership, recording features/v1 and capture times.
+
+#### Scenario: Ignore post-work feature reconstruction
+
+- **GIVEN** a peer's category was reconstructed after its first run or became available after the quote cutoff
+- **WHEN** a historical cohort is selected
+- **THEN** that peer supplies no narrow-cohort feature match; its otherwise eligible cost can still enter repository-wide fallback.
+
+#### Scenario: Missing or incompatible feature version
+
+- **GIVEN** sufficient repository history but missing target features or an unsupported peer feature version
+- **WHEN** quote considers narrow cohorts
+- **THEN** affected levels or peer matches are skipped with reasons and repository fallback remains available.
+
 ### Requirement: Historical information boundary
 
 The estimator SHALL use only revisions available at the quote cutoff and SHALL exclude the target change from its own cohort.

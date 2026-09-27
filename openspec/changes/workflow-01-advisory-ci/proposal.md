@@ -6,7 +6,7 @@ Developers need readable and machine-consumable results from the standalone CLI 
 
 ## What Changes
 
-- Present quote, bind, settle, check and explain consistently in human and JSON formats.
+- Present quote, bind, settle, check and explain consistently in human and JSON formats, including a complete fresh-store registration and outcome workflow.
 - Compare compatible budgets with explicit advisory statuses; incomplete settlement totals remain unknown rather than treating known subtotals as final.
 - Provide a GitHub Actions example that writes a safe job summary using local artifacts.
 

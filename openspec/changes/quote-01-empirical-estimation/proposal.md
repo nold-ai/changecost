@@ -7,7 +7,7 @@ The pilot needs an explainable estimate whose calibration can be evaluated witho
 ## What Changes
 
 - Generate embedded p50/p90 records using deterministic empirical quantiles.
-- Use a documented cohort backoff with sample counts and reasons.
+- Use documented cohort backoff over immutable features/v1 registration snapshots, with sample counts and reasons.
 - Persist evidence cutoff and estimator parameters and return unpriced when comparable evidence is insufficient.
 
 ## Capabilities

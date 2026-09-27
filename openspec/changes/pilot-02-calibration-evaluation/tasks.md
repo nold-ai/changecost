@@ -10,8 +10,8 @@ All implementation and research tasks below remain unchecked. Planning approval 
 ## 2. Protocol and replay
 
 - [ ] 2.1 Write the chronological protocol, metric formulas, exclusions and decision rubric before inspecting live outcomes; verify a review records the protocol version.
-- [ ] 2.2 Write failing replay/leakage, asymmetric-unpriced and denominator tests with synthetic fixtures; verify expected failures.
-- [ ] 2.3 Implement the offline evaluation harness and repository-wide baseline; verify exact synthetic metrics and rerun determinism.
+- [ ] 2.2 Write failing replay/leakage, repository-fallback equivalence, joint-unpriced, unexpected-asymmetry rejection and denominator tests with synthetic fixtures; verify expected failures.
+- [ ] 2.3 Implement one-initial-quote-per-change replay, the offline evaluation harness and repository-wide baseline with matched availability checks; verify exact synthetic metrics and rerun determinism.
 - [ ] 2.4 Document invocation and environment in docs/pilot/evaluation.md; verify another contributor can reproduce the synthetic report.
 
 ## 3. Pilot assessment

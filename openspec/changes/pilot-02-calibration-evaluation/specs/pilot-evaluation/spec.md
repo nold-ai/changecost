@@ -8,7 +8,7 @@ The pilot must test whether change-level cohorts add value over repository-wide 
 
 ### Requirement: Leakage-free baseline comparison
 
-Evaluation SHALL compare the candidate and repository-wide baseline chronologically using the same eligible evidence and economic units.
+Evaluation SHALL compare the candidate and repository-wide baseline chronologically using the same eligible evidence and economic units, scoring one initial pre-run Quote per Change. Their priced/unpriced availability SHALL match under shared repository fallback; unexpected asymmetry SHALL be reported as a comparison error rather than scored.
 
 #### Scenario: Future correction
 
@@ -16,11 +16,23 @@ Evaluation SHALL compare the candidate and repository-wide baseline chronologica
 - **WHEN** evaluation replays history
 - **THEN** neither candidate nor baseline sees the correction early.
 
-#### Scenario: One unpriced method
+#### Scenario: Matched repository fallback
 
-- **GIVEN** only one method has enough peers at a cutoff
-- **WHEN** results are summarized
-- **THEN** the case is counted as asymmetric availability and excluded from paired accuracy without disappearing.
+- **GIVEN** narrow cohorts below the minimum but sufficient comparable repository history
+- **WHEN** candidate and baseline are evaluated at the same cutoff
+- **THEN** both are priced with identical repository quantiles and sample counts; the candidate records its fallback reason.
+
+#### Scenario: Joint insufficient evidence
+
+- **GIVEN** comparable repository history below the shared minimum
+- **WHEN** candidate and baseline are evaluated
+- **THEN** both are unpriced and the report retains that case with counts and reasons outside accuracy metrics.
+
+#### Scenario: Detect unexpected availability mismatch
+
+- **GIVEN** a faulty replay result in which only one method is priced under the shared configuration
+- **WHEN** evaluation validates the pair
+- **THEN** it reports a comparison error and stops accuracy reporting for that run rather than hiding the mismatch.
 
 ### Requirement: Explicit metric denominators
 

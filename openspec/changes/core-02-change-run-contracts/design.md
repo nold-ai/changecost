@@ -48,6 +48,54 @@ package or runtime. This design describes later implementation, not delivered be
 
 5. Use UTC timestamps with offsets normalized, plus recorded_at and effective_at to support historical replay. Local display may use Europe/Berlin. Atomic import validates the entire artifact before commit; unknown versions and conflicts leave state unchanged. Export/import round trips retain stable IDs and correction links.
 
+## Registration, outcomes and cohort inputs
+
+The following operations belong to the existing command families; no sixth family
+or manually authored bootstrap artifact is required:
+
+- `bind --register-change` takes repository_id, change_id and optional cohort inputs.
+  It creates an open Change, even in an empty store, without inventing a Run.
+- `bind --register-run` takes repository_id, change_id, provider, surface and run_id.
+  The Change must exist and be open. It atomically creates an open Run and its
+  explicit run-to-change binding. Register each retry with a different run_id.
+- Plain `bind` associates existing records as defined above; it does not silently
+  create missing targets. Registration modes and evidence-binding mode are mutually
+  exclusive. Repeating a registration with identical immutable inputs is a no-op;
+  conflicting metadata fails atomically. A repeated identical registration does not
+  reopen an existing terminal record or replace its original timestamps.
+- `settle --run-outcome succeeded|failed|cancelled` records a named Run's terminal
+  outcome; `settle --outcome accepted|abandoned` records a named Change's terminal
+  outcome. Outcome-only requests need no imported costs. Outcomes are explicit user
+  declarations with recorded_at/effective_at, not inferred from cost completeness.
+  Repeating the same outcome is idempotent. A different terminal outcome requires
+  `--correct-outcome` and a nonempty reason; append a revision rather than overwriting
+  history. Returning to open is outside this pilot. Late source evidence/corrections
+  can still revise settlement amounts; they neither reopen records nor drop retries.
+  New Runs cannot be registered against terminal Changes.
+
+Change registration stores an immutable `features/v1` snapshot with captured_at and
+recorded_at set to registration time in UTC. Optional values are:
+
+| Field | Canonical values | Meaning at registration |
+| --- | --- | --- |
+| change_shape | bugfix, feature, refactor, docs, maintenance, other | Intended category of the requested change. |
+| trajectory | single-pass, iterative, investigative | Intended work pattern, never observed retries or final outcome. |
+| execution_profile | copilot-cli, copilot-ide, cursor-cli, cursor-ide, mixed | Intended tool/surface; mixed means multiple planned surfaces. |
+
+For every field, trim ASCII whitespace and lowercase ASCII letters; missing or blank
+input becomes null, and any other value is rejected rather than guessed. Null means
+unavailable, not an additional cohort category. Registration persists the normalized
+snapshot; later registration cannot update it. Inputs that change during execution
+remain differences between intent and actual execution, not retroactive edits to the
+quote's features. New feature semantics require a new version, never silent relabeling.
+
+Portable records retain snapshot version, values and original capture/record times;
+imports additionally record local available_at. Historical selectors use the actual
+availability cutoff of the evaluated store, not a backdated import timestamp. A
+pre-run feature snapshot must have been captured before the first run registration
+and before any known earlier run evidence. Missing, late or incompatible snapshots
+remain unusable for narrow cohorts; repository-wide eligibility is unaffected.
+
 ## Dependencies and evidence
 
 - [core-01-python-foundation](../core-01-python-foundation/proposal.md)

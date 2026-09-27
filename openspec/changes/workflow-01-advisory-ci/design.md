@@ -14,7 +14,13 @@ package or runtime. This design describes later implementation, not delivered be
 
 ## Decisions
 
-1. Keep only five public command families. quote creates the economic record; bind records explicit association; settle accepts local evidence/artifact paths; check compares a quote/settlement to a compatible budget; explain traces a selected record. All support structured JSON as appropriate; diagnostics go to stderr, not mixed into JSON stdout.
+1. Keep only five public command families. bind owns explicit Change/Run registration
+   and association; quote reads a registered Change and creates its economic Quote;
+   settle accepts local evidence/artifacts and explicit Run/Change outcomes; check
+   compares a quote/settlement to a compatible budget; explain traces a selected
+   record. Use the [core lifecycle contract](../core-02-change-run-contracts/design.md#registration-outcomes-and-cohort-inputs)
+   for registration, immutable features and outcome revision semantics. All support
+   structured JSON as appropriate; diagnostics go to stderr, not mixed into JSON stdout.
 
 2. For successful check evaluation return advisory status within_budget, over_budget or unknown. All three exit zero during the pilot; invalid input, unsupported schema, database failure or malformed evidence returns nonzero with a structured error. Never suppress technical failures as budget advice.
 
@@ -34,6 +40,23 @@ package or runtime. This design describes later implementation, not delivered be
 4. Use GitHub Actions job summaries with read-only repository permission and sanitized local artifacts. The example invokes the standalone CLI, never interpolates issue titles or artifact values into shell code, escapes Markdown/HTML and controls summary size. No account tokens or live provider calls are needed.
 
 5. CI example must remain opt-in and advisory; do not add a required budget check or automatic mutation of branch protection. Document integration with whatever developer workflow already exports local evidence.
+
+## Fresh-store walkthrough
+
+The documented standalone workflow starts with `bind --register-change`, supplying
+repository/change IDs and optional features/v1 inputs. Run quote before work starts;
+cold start yields a valid unpriced record. Then use `bind --register-run` with explicit
+provider/surface/run identity, which creates and binds the attempt. After external
+work, settle imports an existing local export, and bind can explicitly map exposed
+evidence IDs when provider joins are unavailable. Record retry outcomes with
+`settle --run-outcome` and terminal Change outcome with `settle --outcome`; repeat
+registration for a new retry Run before ending the Change. Finally check/explain the
+settlement or quote. No step requires hand-writing a database row or artifact.
+
+Command-level integration scenarios must exercise this sequence on a fresh database,
+including registration retries, missing evidence, failed attempts and an abandoned
+Change. Output names the created IDs and feature/outcome timestamps. Product
+implementation remains separate; these command modes are planned interfaces.
 
 ## Dependencies and evidence
 

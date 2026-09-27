@@ -6,6 +6,63 @@ Change-level accounting needs stable identity and portable evidence before provi
 
 ## ADDED Requirements
 
+### Requirement: Explicit record lifecycle
+
+The system SHALL register Changes and Runs through bind without hand-authored state,
+record explicit outcomes through settle, and preserve immutable identities and
+revisioned outcome provenance. Registration SHALL be idempotent for identical inputs
+and atomic on conflict. New Runs SHALL require an open Change. Financial completeness
+SHALL NOT be inferred from a terminal outcome.
+
+#### Scenario: Register from an empty store
+
+- **GIVEN** an empty local store and explicit repository/change identifiers
+- **WHEN** bind registers the Change, then registers a namespaced Run against it
+- **THEN** an open Change, one open Run and their explicit binding exist without a custom artifact or direct database edit.
+
+#### Scenario: Registration replay and conflict
+
+- **GIVEN** an existing registered Run and its Change
+- **WHEN** registration is repeated with the same inputs, then attempted with conflicting immutable metadata
+- **THEN** the repeat is a no-op preserving timestamps and outcomes, and the conflict fails without partial mutation.
+
+#### Scenario: Record outcome without monetary evidence
+
+- **GIVEN** an open Change with a failed Run and a later successful retry but no known charges
+- **WHEN** settle records the Run outcomes and marks the Change accepted
+- **THEN** both attempts remain recorded with explicit outcome provenance while costs remain unknown/provisional.
+
+#### Scenario: Correct a terminal outcome explicitly
+
+- **GIVEN** a Change recorded as accepted
+- **WHEN** settle requests abandoned, first without and then with an explicit outcome-correction flag and reason
+- **THEN** the first request fails unchanged and the second appends a dated outcome revision preserving the previous accepted declaration.
+
+#### Scenario: Refuse new runs after termination
+
+- **GIVEN** an accepted or abandoned Change
+- **WHEN** bind attempts to register a new Run for it
+- **THEN** registration fails atomically, while later evidence for already registered Runs remains importable.
+
+### Requirement: Versioned registration features
+
+The system SHALL capture immutable normalized features/v1 inputs at Change
+registration, using the documented value domains and UTC capture/record timestamps.
+Invalid values SHALL reject the registration atomically. Portable replay SHALL
+preserve the original snapshot and track local import availability separately.
+
+#### Scenario: Normalize and preserve feature inputs
+
+- **GIVEN** change_shape=" BugFix ", trajectory="ITERATIVE" and a blank execution_profile
+- **WHEN** a Change is registered and exported/imported
+- **THEN** its features/v1 snapshot remains bugfix, iterative and null with original capture/record times and separately recorded destination availability.
+
+#### Scenario: Reject invalid or revised features
+
+- **GIVEN** a request with an unrecognized feature value or a re-registration changing an existing snapshot
+- **WHEN** registration is validated
+- **THEN** the request fails without writing or relabeling the Change.
+
 ### Requirement: Explicit stable binding
 
 The system SHALL bind runs to changes only through explicit, namespaced identifiers and SHALL preserve binding provenance.

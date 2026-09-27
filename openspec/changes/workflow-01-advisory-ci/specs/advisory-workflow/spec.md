@@ -22,6 +22,18 @@ The CLI SHALL expose the five approved command families with parseable JSON outp
 - **WHEN** a command runs in JSON mode
 - **THEN** it exits nonzero with a structured error and no misleading successful result.
 
+### Requirement: Reachable fresh-store workflow
+
+The CLI SHALL expose Change/Run registration through bind and explicit outcome
+updates through settle, following the core lifecycle contract, so a fresh store can
+reach quoting, attribution and settlement without manually authored state.
+
+#### Scenario: First change from registration to settlement
+
+- **GIVEN** an empty store and a supported synthetic provider export
+- **WHEN** the caller registers a Change, quotes it, registers/binds a Run, imports and maps its evidence, then records Run and Change outcomes
+- **THEN** every operation is reachable through the five command families; the cold-start quote is unpriced, explicit provenance is preserved, and check/explain can inspect the resulting records.
+
 ### Requirement: Advisory budget semantics
 
 Budget checks SHALL remain advisory and SHALL compare only compatible known economic values. A settlement whose requested comparison scope is provisional or incomplete SHALL return unknown with the known subtotal and reason, even when that subtotal exceeds budget. Only complete compatible settlement totals or priced quote values SHALL produce within_budget or over_budget.

@@ -9,9 +9,9 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 2. CLI presentation and checks
 
-- [ ] 2.1 Write failing JSON/stdout/stderr, incompatible-unit, incomplete-settlement (subtotals below and above budget), complete-total and advisory-exit tests; verify expected failures.
+- [ ] 2.1 Write failing empty-store registration/quote/bind/import/outcome integration, JSON/stdout/stderr, incompatible-unit, incomplete-settlement (subtotals below and above budget), complete-total and advisory-exit tests; verify expected failures.
 - [ ] 2.2 Implement consistent result/error presentation and scope-aware completeness checks before compatible budget comparisons; verify all five command families follow documented semantics.
-- [ ] 2.3 Document human/JSON examples, provisional-subtotal unknown results and exit codes in docs/cli.md; verify examples run against synthetic artifacts.
+- [ ] 2.3 Document a runnable fresh-store walkthrough and human/JSON examples, provisional-subtotal unknown results and exit codes in docs/cli.md; verify examples run against synthetic artifacts.
 
 ## 3. Actions example
 

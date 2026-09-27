@@ -6,7 +6,7 @@ The pilot must test whether change-level cohorts add value over repository-wide 
 
 ## What Changes
 
-- Define a reproducible chronological evaluation protocol and repository-wide baseline.
+- Define a reproducible chronological evaluation protocol and repository-wide baseline, with matched availability and one initial quote per change.
 - Report attribution, calibration, quote width, abandoned expenditure and runtime/storage overhead.
 - Publish aggregate findings and limitations using safe fixtures; classify unsupported or insufficient evidence explicitly.
 
