@@ -39,8 +39,8 @@ A total-change observation requires a terminal Change, at least one linked Run,
 terminal outcomes for every linked Run, and supported source coverage over every
 Run's entire work interval in the requested kind/unit/currency/basis. Cover all
 applicable sources and components, including failed/cancelled retries. Coverage
-must establish interval boundaries and source finality from a verified source
-profile; last-seen timestamps or a terminal outcome alone do not establish finality.
+must cover the explicit revisioned actual-work bounds from the [core contract](../core-02-change-run-contracts/design.md#work-intervals-and-availability) and establish source finality from a verified source
+profile; missing bounds, last-seen timestamps or a terminal outcome alone do not establish finality.
 Unknown amounts, missing intervals, unresolved overlaps/corrections or potentially
 relevant unbound evidence prevent full-change eligibility. A source that cannot
 establish this coverage remains unsupported for total-change observations in that
@@ -50,7 +50,8 @@ from total-change estimation in the pilot rather than assigned a vacuous zero.
 
 Record the complete linked-Run set and coverage proof in the immutable revision.
 At any as-of cutoff, eligibility checks that revision against the linked-Run set,
-outcomes and relevant evidence available then. New bindings, late evidence or
+intervals, outcomes and relevant evidence available then under the core store-local
+available_at rule. New imports with older source timestamps cannot enter earlier cutoffs. New bindings, late evidence or
 corrections require a new revision and re-evaluation; they cannot silently preserve
 a stale full-change flag. Historical replay retains the old cutoff and revision.
 Explicitly scoped reporting/checks may still use a reconciled subset, labeled with

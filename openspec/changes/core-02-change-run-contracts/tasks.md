@@ -15,8 +15,8 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 3. Persistence and binding
 
-- [ ] 3.1 Write failing fresh-store registration, idempotent/conflicting lifecycle transitions, outcome correction, transactional/restart/concurrent-bind, unknown-evidence, conflicting-mapping, cross-namespace raw-ID collision, incomplete-selector and portable mapping replay tests; verify conflict and rollback behavior is not already satisfied by a test setup error.
-- [ ] 3.2 Implement SQLite migrations, atomic registration, immutable feature snapshots, revisioned settle outcomes, exposed evidence references and both bind relationships with complete RunRef targets and provenance; verify idempotency, competing writers, invalid references, conflicting attribution and restart/replay tests pass.
+- [ ] 3.1 Write failing fresh-store registration, idempotent/conflicting lifecycle transitions, outcome correction, transactional/restart/concurrent-bind, unknown-evidence, conflicting-mapping, cross-namespace raw-ID collision, incomplete-selector, work-interval correction/atomicity, destination-availability and portable mapping replay tests; verify conflict and rollback behavior is not already satisfied by a test setup error.
+- [ ] 3.2 Implement SQLite migrations, atomic registration, immutable feature snapshots, revisioned settle outcomes/work intervals, store-local availability for all records and relationships, exposed evidence references and both bind relationships with complete RunRef targets and provenance; verify idempotency, competing writers, invalid references, conflicting attribution and restart/replay tests pass.
 - [ ] 3.3 Document the fresh-store registration/outcome path, versioned feature domains and normalization, source selectors, identity scopes, manual versus verified provenance, local path overrides, backups and binding correction limitations; verify a portable export survives restore into a fresh database.
 
 ## 4. Integration and handoff

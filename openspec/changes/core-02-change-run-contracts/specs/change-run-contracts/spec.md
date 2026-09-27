@@ -44,6 +44,53 @@ SHALL NOT be inferred from a terminal outcome.
 - **WHEN** bind attempts to register a new Run for it
 - **THEN** registration fails atomically, while later evidence for already registered Runs remains importable.
 
+### Requirement: Revisioned work intervals
+
+Runs SHALL retain nullable actual-work start/end UTC bounds, provenance and interval
+revisions. Registration MAY supply an observed start; settle SHALL allow explicit
+bound updates independent of outcome. Known bounds SHALL obey start <= end and not
+lie after declaration time. Missing bounds SHALL stay unknown. Changing known bounds
+SHALL require an explicit reasoned correction; invalid updates SHALL be atomic.
+
+#### Scenario: Delayed outcome does not extend work
+
+- **GIVEN** a Run registered at 09:00, its 09:10–09:30 work bounds declared at 09:40, and its outcome entered at 11:00
+- **WHEN** its work interval is inspected
+- **THEN** the closed interval remains 09:10–09:30 with its declaration provenance, not 09:00–11:00.
+
+#### Scenario: Missing end and invalid correction
+
+- **GIVEN** a Run with only a known work start
+- **WHEN** an end before that start is submitted together with a terminal outcome
+- **THEN** the whole request fails unchanged; the end remains unknown and no outcome update is applied.
+
+#### Scenario: Correct an interval explicitly
+
+- **GIVEN** new attributed evidence before a known work start
+- **WHEN** a corrected start is submitted with the interval-correction flag and reason
+- **THEN** a new interval revision is appended and coverage is reevaluated, preserving the original interval for earlier cutoffs.
+
+### Requirement: Store-local historical availability
+
+Every record, revision and relationship SHALL retain immutable first-successful-commit
+availability in its destination store separately from origin provenance. Imports SHALL
+NOT backdate local availability and identical reimports SHALL preserve it. Historical
+selection SHALL require every selected dependency to be locally available by cutoff.
+Imported Quotes SHALL retain origin context without claiming destination replay of
+history that was unavailable there.
+
+#### Scenario: Backdated portable evidence
+
+- **GIVEN** December evidence, mappings, outcomes and settlement revisions first imported into a destination in February
+- **WHEN** a January quote cutoff is evaluated there
+- **THEN** none is eligible despite earlier origin recorded/effective times, and reimport does not change February availability.
+
+#### Scenario: Imported quote cannot recreate unavailable history
+
+- **GIVEN** a January Quote from another store imported with all its referenced records in February
+- **WHEN** destination replay requests the Quote's original January cutoff
+- **THEN** the stored Quote is inspectable but replay returns replay_unavailable rather than claiming its inputs were locally known in January.
+
 ### Requirement: Versioned registration features
 
 The system SHALL capture immutable normalized features/v1 inputs at Change

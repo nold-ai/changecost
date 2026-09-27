@@ -92,13 +92,19 @@ without excluding otherwise eligible observations from repository-wide fallback.
 
 ### Requirement: Historical information boundary
 
-The estimator SHALL use only revisions available at the quote cutoff and SHALL exclude the target change from its own cohort.
+The estimator SHALL use only records, revisions and relationships recorded, effective and locally available at the quote cutoff, using the core store-local availability contract. It SHALL exclude the target change from its own cohort and SHALL reject cross-store historical replay when required inputs were unavailable there.
 
 #### Scenario: Late correction
 
 - **GIVEN** an old settlement corrected after quote time
 - **WHEN** the historical quote is replayed
 - **THEN** the original known revision is used.
+
+#### Scenario: Late-imported outcome and coverage
+
+- **GIVEN** a peer's complete December settlement and terminal outcome first enter the current store in February
+- **WHEN** a January Quote is replayed
+- **THEN** the peer is excluded using destination availability even though its source dates predate the cutoff.
 
 #### Scenario: Target exclusion
 

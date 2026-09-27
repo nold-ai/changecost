@@ -15,7 +15,7 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 3. Historical replay and explanation
 
-- [ ] 3.1 Write failing future-correction, post-work/imported-late feature, target-exclusion and historical-cutoff tests; record actual failure evidence.
+- [ ] 3.1 Write failing future-correction, post-work/imported-late feature, backdated evidence/outcome/coverage imports, unavailable cross-store replay, target-exclusion and historical-cutoff tests; record actual failure evidence.
 - [ ] 3.2 Persist the exact feature snapshot, evidence/outcome revision references and cutoff and implement explainable replay; verify future changes cannot alter a stored historical quote.
 - [ ] 3.3 Document population, exclusions and limits of empirical p90; verify explain shows n, unit/basis, backoff and excluded-evidence counts.
 

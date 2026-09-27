@@ -16,6 +16,12 @@ Evaluation SHALL compare the candidate and repository-wide baseline chronologica
 - **WHEN** evaluation replays history
 - **THEN** neither candidate nor baseline sees the correction early.
 
+#### Scenario: Unavailable imported history
+
+- **GIVEN** an imported historical Quote whose evidence and bindings were not available in the destination at its cutoff
+- **WHEN** chronological evaluation requests replay there
+- **THEN** the report records replay_unavailable outside scored cases, rather than reconstructing source-store knowledge from backdated origin fields.
+
 #### Scenario: Matched repository fallback
 
 - **GIVEN** narrow cohorts below the minimum but sufficient comparable repository history

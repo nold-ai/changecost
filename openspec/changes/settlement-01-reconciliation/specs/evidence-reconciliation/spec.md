@@ -82,6 +82,12 @@ new evidence or bindings SHALL require a new coverage revision.
 - **WHEN** their coverage is evaluated
 - **THEN** the first stays unknown and only the second contributes an observed zero; a zero-run Change is ineligible rather than free.
 
+#### Scenario: Evidence contradicts declared work bounds
+
+- **GIVEN** a Run declared to end at 09:30 and attributed work evidence at 09:45
+- **WHEN** full-change coverage is evaluated
+- **THEN** it is incomplete until an explicit interval or audited attribution correction resolves the conflict, regardless of a reconciled source interval.
+
 #### Scenario: Re-evaluate late coverage changes
 
 - **GIVEN** a previously complete revision followed by a newly linked existing Run or unresolved late correction

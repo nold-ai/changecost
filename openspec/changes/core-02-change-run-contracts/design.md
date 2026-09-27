@@ -60,6 +60,56 @@ its target explicitly. Equal raw IDs in different repositories/providers/surface
 are distinct Runs and survive export/import without collision. Same full RunRef with
 conflicting metadata remains an atomic conflict, not a second Run.
 
+## Work intervals and availability
+
+Each Run has revisioned nullable work_started_at and work_ended_at UTC timestamps,
+plus interval method (manual or verified_provider), source references when applicable,
+and recorded_at/effective_at. Bounds describe actual work, not record creation or
+outcome declaration. The interval is closed [start, end]; equal bounds allow a
+single instant. Evidence is still deduplicated by identity, never by interval alone.
+A missing bound means unknown; do not substitute registration, outcome, first/last
+observed event or import time. Known bounds must satisfy start <= end and cannot
+be later than their declaration's recorded_at. Bounds on portable records are
+validated against original declaration time, not silently rewritten on import.
+
+`bind --register-run --work-start <UTC>` may supply an observed start; omission is
+allowed. `settle` with a full RunRef accepts `--work-start` and/or `--work-end` to
+fill unknown bounds, independently of outcome flags. Source import may fill bounds
+only using a feasibility-verified profile that defines actual Run start/end semantics.
+Manual values stay manual; source agreement does not relabel their provenance.
+Identical updates are idempotent. Replacing a known bound requires `--correct-interval`
+and a nonempty reason, appending a revision; invalid ordering or a conflicting
+uncorrected value fails atomically, including any combined outcome update. Provider
+interval corrections require a documented correction relationship.
+
+Source coverage must enclose both declared bounds and all attributed work. Compare
+work timestamps/spans defined by the verified source profile, not billing publication,
+import or correction-arrival times. Evidence of work outside the bounds invalidates
+full-change coverage until an explicit interval
+correction or audited attribution correction resolves the conflict. Manual intervals
+do not establish source completeness/finality: that requires separate verified
+coverage evidence. Retain all interval revisions for cutoff-aware replay.
+
+Every store has an immutable store_id. Every locally created or imported record,
+revision and relationship has a store-local available_at set when first successfully
+committed there: evidence, mappings, registrations/features, interval/outcome revisions,
+coverage/settlement revisions and Quotes alike. Reimport preserves the first local
+availability; rejected writes create none. available_at is not caller-settable or
+backdated from recorded_at/effective_at. Derived records become available no earlier
+than their own commit and all inputs. Export retains origin store/timing provenance;
+import always adds destination store_id/available_at without treating origin times
+as destination knowledge.
+
+Historical selectors require local available_at, recorded_at and effective_at no
+later than the cutoff for every selected dependency (including bindings, Run-set
+membership, interval/outcome and completeness evidence). Quotes retain the store_id,
+cutoff and exact revision references. An imported historical Quote remains inspectable,
+but destination replay cannot claim to reproduce source-store knowledge: if required
+inputs were not locally available at that cutoff, return replay_unavailable with a
+reason instead of validating the old quote or backdating imports. Same-store history
+and its intact original database can support original-cutoff replay; portable import
+alone is not a restoration of that store's availability history.
+
 ## Registration, outcomes and cohort inputs
 
 The following operations belong to the existing command families; no sixth family
