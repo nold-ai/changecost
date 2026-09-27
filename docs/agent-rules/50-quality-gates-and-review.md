@@ -60,3 +60,27 @@ Resolve findings at every severity, including naming, KISS, YAGNI, DRY, and SOLI
 issues, or document a narrow justified exception. An unknown/skipped analyzer or
 absent tool must be addressed before claiming the behavior gate is complete.
 Code review supplements tests and independent security analysis.
+
+## CodeRabbit review policy
+
+[.coderabbit.yaml](../../.coderabbit.yaml) adapts the SpecFact review configuration
+for this standalone project. Automatic reviews target `main`, skip drafts and
+review subsequent pushes. The quiet profile and review instructions request only
+high/critical and medium defects (P0–P2), with concrete impact. Low-severity nits,
+grammar/Markdown lint, decorative summaries and metadata suggestions are suppressed;
+repository quality gates still run independently.
+
+The [official configuration reference](https://docs.coderabbit.ai/reference/configuration)
+and v2 schema were checked on 2026-09-28 (Europe/Berlin). They expose no native
+severity cutoff: these instructions are a review policy, not a guaranteed alert
+filter. Verify actual bot output and configuration acceptance on the PR. Automatic
+reviews may pause after five reviewed commits by default; if paused during a fix
+loop, explicitly request another review instead of treating the pause as a pass.
+
+Knowledge context is repository-local, external integrations are disabled, and
+chat requires an organization member's mention. Automatic approval, label/reviewer
+assignment, issue planning and generated fixes are disabled. No account-wide
+settings or subscription changes are implied. A completed review of the current
+head plus green applicable checks is required before reporting the loop complete;
+absence of a bot response is not a passing review. Revert the configuration commit
+to roll back this policy.
