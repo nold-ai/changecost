@@ -59,6 +59,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and
 [quality rules](docs/agent-rules/50-quality-gates-and-review.md) document SpecFact
 review setup and the gates required when implementation starts.
 
+The [four-stage agent workflow](CONTRIBUTING.md#agent-workflow) supports interactive
+change selection, plan freshness, implementation, delegated verification and PR
+review resolution. [llms.txt](llms.txt) indexes the current agent entry points.
+
 ## Community and license
 
 - [Code of Conduct](CODE_OF_CONDUCT.md)

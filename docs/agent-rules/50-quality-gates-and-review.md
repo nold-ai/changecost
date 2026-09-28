@@ -10,6 +10,10 @@ No source tests or product-security checks are claimed by this scaffold.
 Check Markdown relative links after documentation edits. Keep the original
 research export immutable; it is excluded from whitespace normalization.
 Check generated files and credentials before staging, even when ignore rules exist.
+Before staging new files, also run hygiene against their explicit path manifest
+(or an isolated verification snapshot indexing those additions): pre-commit's
+`--all-files` selection does not include untracked files. Review any auto-fixes
+and refresh affected evidence before committing.
 
 ## Before the first product implementation
 

@@ -34,5 +34,8 @@ SpecFact is development tooling, not a runtime framework.
 - Keep names clear, functions focused, and abstractions justified by current needs.
   Apply naming, KISS, YAGNI, DRY, and SOLID proportionately; do not invent frameworks.
 - Keep documentation in English and update it alongside changed behavior.
+- Use the [four-stage skills](CONTRIBUTING.md#agent-workflow) for change preparation,
+  implementation, verification and PR promotion. Follow their shared freshness
+  and recovery rules; keep `llms.txt`, docs and changelog aligned with the change.
 - Record actual checks, uncertainty, and rollback in the handoff. Do not claim
   research citations or compatibility that have not been verified.

@@ -26,6 +26,10 @@ context: |
   implementation is approved. Keep fresh SpecFact review evidence for behavior
   changes; missing/skipped analyzers are limitations, not passes.
   Prefer clear names, KISS, YAGNI, DRY, and proportionate SOLID; no speculative layers.
+  For the four-stage change workflow, read docs/agent-rules/30-change-workflow.md.
+  Refresh main before preparation/implementation; reconcile prepared artifacts by
+  change identity. Keep functions and branches simple; minimum code must still
+  satisfy every required scenario. Update docs, changelog and llms.txt as applicable.
   Keep documentation in English. Do not change repository visibility or publish
   packages/sites without explicit authorization.
 
@@ -49,4 +53,5 @@ rules:
     - Record actual commands, timestamps, and outcomes in TDD_EVIDENCE.md for behavior changes.
     - Include applicable quality gates and fresh SpecFact review; resolve or justify findings.
     - Include documentation updates, strict OpenSpec validation, and a focused PR.
+    - Verify documentation and llms.txt against current behavior; versions change only when applicable, not for planning.
     - Keep Epic/Feature/User Story source tracking and native dependencies aligned with CHANGE_ORDER.md; no module signing or release bumps for planning.
