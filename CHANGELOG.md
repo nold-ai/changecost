@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add agent skills for fresh change preparation, minimal implementation, delegated
+  verification and commit/push, and PR review resolution; add a portable agent index.
 - Bootstrap the private ChangeCost repository with community files, Apache-2.0,
   research provenance, OpenSpec configuration, compact agent rules, and CI hygiene.
 - Document SpecFact review readiness; no release or runtime functionality is implied.
