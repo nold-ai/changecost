@@ -131,6 +131,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the complete aggregate runs with missing or stale required review evidence
 - **THEN** it is incomplete/non-success even if a manual review hook was skipped; a docs-only applicability decision remains explicit and still runs the documentation gates.
 
+#### Scenario: The required suite uses canonical pytest configuration
+
+- **GIVEN** an alternate root pytest configuration that selects only a passing subset
+- **WHEN** the required tests leaf invokes pytest
+- **THEN** it explicitly loads `pyproject.toml`, detects a failing required test despite the alternate configuration, and passes after the test is repaired
+- **AND** a changed root `conftest.py` remains a behavior input requiring full review because explicit configuration does not disable Python collection hooks; unchanged hook content alone does not trigger review.
+
 #### Scenario: Inherited pytest options cannot narrow the required suite
 
 - **GIVEN** the required tests leaf inherits PYTEST_ADDOPTS from a local or CI environment

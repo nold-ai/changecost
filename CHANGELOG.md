@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Select canonical pyproject pytest configuration for required tests and require
+  full review for changed root collection hooks.
 - Clear inherited PYTEST_ADDOPTS only for the required pytest subprocess so
   environment selection filters cannot silently narrow the repository suite.
 

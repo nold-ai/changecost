@@ -1,10 +1,10 @@
 {
   "README.md": {
-    "reason": "The required pytest subprocess now removes inherited PYTEST_ADDOPTS from a copied child environment. README setup commands, package scope, direct developer pytest usage and other gate invocation remain unchanged. CONTRIBUTING.md and docs/development/quality-gates.md explain full-suite selection and preservation of unrelated environment/configuration.",
-    "digest": "c858df235631ed43a35f8e73807493e2a54c97686fce3513e24ad92c93b6c9ee"
+    "reason": "The tests leaf now explicitly selects canonical pyproject configuration and classifies root conftest.py changes for full review. README setup commands, product scope and direct developer invocations remain unchanged. CONTRIBUTING.md and docs/development/quality-gates.md explain these precise test-input boundaries.",
+    "digest": "c60a549a4ccbfa9ab6c172a774589300cda95c1851c300fd5712e52411f139a1"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "The agent procedure already requires the complete applicable test suite and genuine evidence. Clearing only inherited PYTEST_ADDOPTS at the required tests subprocess enforces that existing contract without changing agent invocation or assurance policy. CONTRIBUTING.md and docs/development/quality-gates.md describe the exact boundary and its limits.",
-    "digest": "c858df235631ed43a35f8e73807493e2a54c97686fce3513e24ad92c93b6c9ee"
+    "reason": "The existing agent rules already require complete applicable tests and review of behavior changes. Explicit canonical pytest configuration and root collection-hook applicability enforce that contract without changing the agent procedure or assurance policy; CONTRIBUTING.md and the development quality guide explain the details.",
+    "digest": "c60a549a4ccbfa9ab6c172a774589300cda95c1851c300fd5712e52411f139a1"
   }
 }

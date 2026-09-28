@@ -349,6 +349,7 @@ def test_spec_leaf_invokes_resolved_external_validator(monkeypatch, tmp_path):
 def test_required_suite_ignores_inherited_pytest_selection(monkeypatch, tmp_path, options):
     import os
 
+    (tmp_path / "pyproject.toml").write_text("[tool.pytest.ini_options]\n")
     (tmp_path / "test_safe.py").write_text("def test_safe():\n    assert True\n")
     required = tmp_path / "test_required.py"
     required.write_text("def test_required():\n    assert False\n")
@@ -372,9 +373,46 @@ def test_tests_leaf_only_removes_addopts_from_child_environment(monkeypatch, tmp
 
     monkeypatch.setattr(runner.subprocess, "run", capture)
     assert runner.leaf("tests", tmp_path, set(), {}) == []
-    assert calls[0][0] == [sys.executable, "-m", "pytest"]
+    assert calls[0][0] == [sys.executable, "-m", "pytest", "-c", "pyproject.toml"]
     child = calls[0][1]
     assert child == {key: value for key, value in os.environ.items() if key != "PYTEST_ADDOPTS"}
     assert os.environ["PYTEST_ADDOPTS"] == "-k selected"
     assert runner.leaf("types", tmp_path, set(), {}) == []
     assert calls[1][1] is None
+
+
+@pytest.mark.parametrize(
+    ("name", "content"),
+    [
+        ("pytest.ini", "[pytest]\naddopts = -k test_safe\n"),
+        ("pytest.toml", '[pytest]\naddopts = ["-k", "test_safe"]\n'),
+    ],
+)
+def test_required_suite_uses_canonical_configuration(tmp_path, name, content):
+    (tmp_path / "pyproject.toml").write_text("[tool.pytest.ini_options]\n")
+    (tmp_path / name).write_text(content)
+    (tmp_path / "test_safe.py").write_text("def test_safe():\n    assert True\n")
+    required = tmp_path / "test_required.py"
+    required.write_text("def test_required():\n    assert False\n")
+    assert runner.leaf("tests", tmp_path, set(), {})
+    required.write_text("def test_required():\n    assert True\n")
+    assert runner.leaf("tests", tmp_path, set(), {}) == []
+
+
+def test_root_collection_hook_requires_review(monkeypatch, tmp_path):
+    (tmp_path / "pyproject.toml").write_text("[tool.pytest.ini_options]\n")
+    (tmp_path / "test_safe.py").write_text("def test_safe():\n    assert True\n")
+    (tmp_path / "test_required.py").write_text("def test_required():\n    assert False\n")
+    assert runner.leaf("tests", tmp_path, set(), {})
+    hook = tmp_path / "conftest.py"
+    hook.write_text(
+        "def pytest_collection_modifyitems(items):\n"
+        "    items[:] = [item for item in items if item.name == 'test_safe']\n"
+    )
+    assert runner.leaf("tests", tmp_path, set(), {}) == []
+    calls = []
+    monkeypatch.setattr(runner.review, "run", lambda *args: calls.append(args) or ["UNKNOWN"])
+    assert runner.leaf("review", tmp_path, {hook.name}, {}) == ["UNKNOWN"]
+    assert len(calls) == 1
+    assert runner.leaf("review", tmp_path, {hook.name}, {hook.name: hook.read_bytes()}) == []
+    assert len(calls) == 1

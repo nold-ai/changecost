@@ -335,3 +335,16 @@ values remain available; the parent environment and non-test gate subprocesses
 are unchanged. This preserves the requested full-suite invocation, not a claim
 that arbitrary plugins or host code are authenticated. Direct developer pytest
 commands can continue to use selection options.
+
+
+The tests leaf explicitly passes `-c pyproject.toml`. Pytest's
+[configuration discovery rules](https://docs.pytest.org/en/stable/reference/customize.html#finding-the-rootdir)
+(accessed 2026-09-28; locked pytest 9.1.1) otherwise prioritize root `pytest.toml`
+and `pytest.ini` over pyproject settings. Explicit selection prevents these
+alternate files from replacing the required gate's canonical configuration, while
+preserving its settings. It does not disable Python hooks: a root `conftest.py`
+can change collection through a documented
+[collection hook](https://docs.pytest.org/en/stable/how-to/writing_hook_functions.html).
+Changes to that root hook therefore require full review, like changes under
+`tests/`; unchanged content does not. No additional config parser, filename ban or
+plugin-authentication guarantee is introduced.

@@ -803,3 +803,29 @@ passed both actual Python versions with 162 tests plus four subtests, the canoni
 Bash template and all ten native analyzers. Its [278 report-bound advisory dispositions](https://github.com/nold-ai/changecost/pull/22#issuecomment-5874840798)
 were independently verified. That evidence remains bound to `a656d8d`; this new
 correction still requires independent verification and fresh hosted CI/reviews.
+
+
+## Canonical pytest configuration and root hook applicability
+
+Security review 5342409029 at `5cd73ea` (comment 4125173957) identified automatic
+pytest config discovery overriding canonical pyproject settings. Official pytest
+configuration and hook documentation, accessed 2026-09-28 and linked in the
+quality guide, confirms `-c` selection and continuing Python collection hooks.
+Four genuine failing regressions precede the implementation: both `pytest.ini`
+and `pytest.toml` selected only a passing test while omitting a failing second
+one; root `conftest.py` altered collection but its isolated addition was marked
+review not applicable; and the subprocess argument contract lacked explicit
+configuration. The corrected command names `pyproject.toml`, and the existing
+review applicability set includes `conftest.py`. No alternate config parser or
+host-authentication policy was added.
+
+All six focused regressions pass, including earlier inherited-option cases.
+Each alternate-config fixture now detects the failing second test and passes
+once repaired. The root-hook fixture proves its continuing collection effect,
+UNKNOWN review propagation for changed content and non-applicability when
+unchanged. The child environment still removes only PYTEST_ADDOPTS. Receipts:
+`promotion/pytest-config-red.log` (four genuine failures) and
+`promotion/pytest-config-green.log` (six passes). Linux CI 36457103218 at the
+previous head passed all ten analyzers and 165 tests per Python version; it does
+not certify this correction, which still requires independent review and fresh
+hosted CI. The separate loader and two host-integrity findings remain open.

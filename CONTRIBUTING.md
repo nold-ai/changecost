@@ -150,4 +150,7 @@ The required tests leaf ignores inherited `PYTEST_ADDOPTS` so local or CI select
 flags cannot narrow the repository suite. It removes only that variable from a
 copy of the pytest child environment. Repository pytest configuration, other
 variables and the caller's environment remain intact; direct developer pytest
-invocations may still use their usual filters.
+invocations may still use their usual filters. The required invocation explicitly
+selects `pyproject.toml` with `-c`, so alternate root pytest configuration cannot
+replace the canonical settings. Root `conftest.py` is still a supported Python
+collection hook, and its changed content requires full review.

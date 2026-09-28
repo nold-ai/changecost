@@ -30,6 +30,7 @@ LEAVES = (
 )
 BEHAVIOR = ("src/", "quality/", "tests/", ".github/workflows/")
 CONFIG = {
+    "conftest.py",
     "openspec/config.yaml",
     "pyproject.toml",
     "uv.lock",
@@ -62,7 +63,7 @@ def leaf(name: str, root: Path, files: set[str], before: dict[str, bytes]) -> li
         "lock": ["uv", "lock", "--check"],
         "lint": ["ruff", "check", "src", "quality", "tests"],
         "types": ["basedpyright"],
-        "tests": [sys.executable, "-m", "pytest"],
+        "tests": [sys.executable, "-m", "pytest", "-c", "pyproject.toml"],
         "spec": ["openspec", "validate", "--all", "--strict", "--no-interactive"],
     }
     if name in commands:
