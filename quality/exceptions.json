@@ -1,0 +1,10 @@
+{
+  "README.md": {
+    "reason": "The documented make test target now routes to the existing shared required tests leaf with a target-only HEAD inventory default. README setup/product scope and aggregate commands are unchanged. CONTRIBUTING.md and the development quality guide explain input arguments, developer filtering and mandatory host Make proof.",
+    "digest": "89750c2e6027366ba075a23bb791c9e6e500c70eaa609ee22da2ced5c0da2ae0"
+  },
+  "docs/agent-rules/50-quality-gates-and-review.md": {
+    "reason": "The agent rules already require parity of local and CI validators and genuine failure proof. Routing make test through the shared tests leaf repairs that promised contract without changing agent workflow or assurance policy. CONTRIBUTING.md and the development quality guide describe the target-only base default and mandatory external-tool proof.",
+    "digest": "89750c2e6027366ba075a23bb791c9e6e500c70eaa609ee22da2ced5c0da2ae0"
+  }
+}

@@ -1,0 +1,1900 @@
+{
+  "schema_version": 1,
+  "reviewed_head": "d48b830bf4d4e32e94183b05c831ccb4c7fb2c52",
+  "ci_run_url": "https://github.com/nold-ai/changecost/actions/runs/36437520340",
+  "reviewed_on": "2026-09-28",
+  "scope": "Promotion triage of exactly these 200 nonblocking findings from the reviewed head. This record does not waive runtime checks, apply to new findings, or attest to later commits. Fresh reports require a new bound promotion disposition or delta.",
+  "finding_id_scheme": "sha256 of UTF-8 json.dumps({tool, rule, file, line, message}, sort_keys=True, separators=(comma, colon), ensure_ascii=True)",
+  "reports": [
+    {
+      "python": "3.11.15",
+      "artifact": "review-evidence-3.11.15/code-review.json",
+      "native_run_id": "review-capsule-0d11f693-542c-4ad2-ba48-2d95fc201e69",
+      "sha256": "778e8ec823ce977f318af2f0d49ad2cf271f43d6b893984d9900fe2b1615d5f9",
+      "assurance_status": "PASS",
+      "overall_verdict": "PASS_WITH_ADVISORY",
+      "ci_exit_code": 0,
+      "finding_count": 200,
+      "blocking_count": 0
+    },
+    {
+      "python": "3.13.14",
+      "artifact": "review-evidence-3.13.14/code-review.json",
+      "native_run_id": "review-capsule-e3e9f9e0-ed95-48a3-b9cf-7ae36db353cc",
+      "sha256": "1597e2fe6c7fea1062bbb36f6254a64896b56dd1730417b40306f51c70f273dc",
+      "assurance_status": "PASS",
+      "overall_verdict": "PASS_WITH_ADVISORY",
+      "ci_exit_code": 0,
+      "finding_count": 200,
+      "blocking_count": 0
+    }
+  ],
+  "rationales": {
+    "R01": {
+      "decision": "accepted_exception",
+      "reason": "Accepted style exception: descriptive validator/test names plus module contracts and assertion bodies document these focused routines; adding repetitive per-test prose does not repair behavior. New extracted helpers have intent docstrings."
+    },
+    "R02": {
+      "decision": "accepted_exception",
+      "reason": "Accepted dispatcher shape: each leaf returns its own diagnostic list; direct returns avoid nesting and preserve the public gate contract."
+    },
+    "R03": {
+      "decision": "non_finding",
+      "reason": "Intentional CLI interface: quality is a command-line validator whose progress and diagnostics are stdout/stderr outputs consumed by local hooks and CI. It is not silent reusable product library code."
+    },
+    "R04": {
+      "decision": "accepted_exception",
+      "reason": "Accepted bounded dispatcher/validator complexity warning: current control branches implement distinct required validation rules; below blocking threshold. Blocking functions were split; no threshold changed."
+    },
+    "R05": {
+      "decision": "accepted_exception",
+      "reason": "Accepted ordered build-proof phases: create constrained sdist, build its wheel outside the checkout, inspect both distributions, install only the runtime into a clean environment and prove offline CLI behavior. Each phase checks a distinct packaging contract; low branching does not make the steps redundant."
+    },
+    "R06": {
+      "decision": "accepted_exception",
+      "reason": "Accepted explicit fixture/path validation shape: inventory checks each explicit manifest path and CLI contract subtests isolate environment/network behavior. The blocking audit nesting was removed."
+    },
+    "R07": {
+      "decision": "non_finding",
+      "reason": "Required callable signatures: Typer option callbacks and generated command metadata need their named parameters; test subprocess doubles accept keyword arguments matching the real API."
+    },
+    "R08": {
+      "decision": "accepted_exception",
+      "reason": "Accepted scoped test-import pattern: these imports keep helper discovery, isolation, mocked module boundaries and standalone installed-wheel CLI tests self-contained. No runtime import loop or import failure is reported."
+    },
+    "R09": {
+      "decision": "accepted_exception",
+      "reason": "Accepted assertion specificity: equality to an empty list verifies the list-valued diagnostic contract; truthiness alone would also accept None or another falsey value."
+    },
+    "R10": {
+      "decision": "accepted_exception",
+      "reason": "Accepted style exception: CliContract is a unittest contract suite and its test names/assertions explain the class purpose."
+    },
+    "R11": {
+      "decision": "accepted_exception",
+      "reason": "Accepted test isolation: CLI offline/read-only contract uses a scoped temporary environment and four invocation cases; setup/cleanup and explicit assertions are meaningful, not redundant product logic."
+    },
+    "R12": {
+      "decision": "non_finding",
+      "reason": "Not an exported product API: the cited definitions are top-level test-only CLI and distribution tests plus a license-metadata fixture helper in tests/test_quality_failures.py. Their descriptive names identify the tested behavior or fixture; changing these test-only names does not repair a product interface."
+    },
+    "R13": {
+      "decision": "accepted_exception",
+      "reason": "Accepted license-evidence fixture phases: installed and remote metadata, wrong installed version with UNKNOWN license evidence, classifier and explicit license-string fallbacks, and unavailable remote metadata exercise distinct audit diagnostics using synthetic inputs. The sequential checks are not redundant production logic."
+    },
+    "R14": {
+      "decision": "accepted_exception",
+      "reason": "Accepted synthetic-fixture scope: these default-encoding reads/writes contain ASCII-only generated test metadata and no user/provider text; no cross-locale product data path is involved. Production encoding contracts are unchanged."
+    },
+    "R15": {
+      "decision": "non_finding",
+      "reason": "Not a defect: pytest intentionally injects fixtures by matching argument names to module-level fixture functions; renaming only one side would break fixture resolution."
+    },
+    "R16": {
+      "decision": "accepted_exception",
+      "reason": "Accepted required integration-proof phases: missing lock, resolvable version drift, exact-byte nonmutation, metadata restoration, successful ordinary update, and repaired check each establish a distinct external-tool contract. No duplicated production path or threshold change."
+    }
+  },
+  "findings": [
+    {
+      "id": "77ff3825a293cab69a1dab5a0c8a4f201d8b0561d83e72f7d5e38e084be10ea0",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/__main__.py",
+      "line": 42,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "a2188d2c849444a865d5fc0fe959ffa030a388500dc20b74f994489dd0fd2b90",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/__main__.py",
+      "line": 49,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "73e94bfb6d5768b1bf2d3b8efadc1bf511775de37e3b4197f7722ab6f18e5a9f",
+      "tool": "pylint",
+      "rule": "R0911",
+      "file": "quality/__main__.py",
+      "line": 49,
+      "message": "Too many return statements (8/6)",
+      "rationale": "R02"
+    },
+    {
+      "id": "c7c18fbdf3d6d2e3440e4087a32d8843b00bfbbe4e9701de0e3d3cbef625f4af",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/__main__.py",
+      "line": 98,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "83d394ce1684d254ad3aab6e2e20a76207c57429ee0a8191c3b6ae440d5563ff",
+      "tool": "semgrep",
+      "rule": "print-in-src",
+      "file": "quality/__main__.py",
+      "line": 102,
+      "message": "Avoid print() in source files; use structured logging or return values instead.",
+      "rationale": "R03"
+    },
+    {
+      "id": "2bcfda34edc59436e280101cb1299c1e054565de6f89de61d5e40d5cd6e6b701",
+      "tool": "semgrep",
+      "rule": "print-in-src",
+      "file": "quality/__main__.py",
+      "line": 107,
+      "message": "Avoid print() in source files; use structured logging or return values instead.",
+      "rationale": "R03"
+    },
+    {
+      "id": "264361cc4f9cf20029c3a7a4c338e580d6812201037ab4ea4edaebddcb962405",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/__main__.py",
+      "line": 112,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "47d6026ee31f424dbf4c6c2f5ee56101a9484f7fee9ad9269beec49774ea8b49",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/__main__.py",
+      "line": 147,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "5d8bb5c3c8bd5944b29cfb5337bf26e1415b002a49fc4587d2a2ad2cf797760c",
+      "tool": "radon",
+      "rule": "CC13",
+      "file": "quality/__main__.py",
+      "line": 147,
+      "message": "Cyclomatic complexity for main is 13.",
+      "rationale": "R04"
+    },
+    {
+      "id": "439aab7cb7039485938dbf484cd891ca80baec82768d6f88c7993b4f37e364b5",
+      "tool": "semgrep",
+      "rule": "print-in-src",
+      "file": "quality/__main__.py",
+      "line": 173,
+      "message": "Avoid print() in source files; use structured logging or return values instead.",
+      "rationale": "R03"
+    },
+    {
+      "id": "afb79d05d16b658c4ae50d592637f7244992bec0b4a12fa4b498eee4cdabe51a",
+      "tool": "semgrep",
+      "rule": "print-in-src",
+      "file": "quality/__main__.py",
+      "line": 179,
+      "message": "Avoid print() in source files; use structured logging or return values instead.",
+      "rationale": "R03"
+    },
+    {
+      "id": "c841548245856a580abd424dd8504f2acfe9ffba85dfac3ba233c84b9f6da4f9",
+      "tool": "semgrep",
+      "rule": "print-in-src",
+      "file": "quality/__main__.py",
+      "line": 185,
+      "message": "Avoid print() in source files; use structured logging or return values instead.",
+      "rationale": "R03"
+    },
+    {
+      "id": "bdfc994f32af9e458a9973f14c9381bdd59c2b9284d910f246a83eda926ac986",
+      "tool": "semgrep",
+      "rule": "print-in-src",
+      "file": "quality/__main__.py",
+      "line": 193,
+      "message": "Avoid print() in source files; use structured logging or return values instead.",
+      "rationale": "R03"
+    },
+    {
+      "id": "747913574b07818880a066448bbf7982d8ba4282dcc0b4283076ff4b23b5ccb4",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/audit.py",
+      "line": 83,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "4398f46af021aca9c2198784c141f31474d7c50a681e89628c4cdf30455254eb",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/build.py",
+      "line": 17,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "f08b45663b0dcad6d31f9faccfea7748503979b3ed5fe48087384acb1b2f7735",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/build.py",
+      "line": 21,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "d4e6011047af3b0ed5e1e030b4e09f3a18f9a577cf40119aa6f408732e5dd063",
+      "tool": "ast",
+      "rule": "ai-bloat.loc-vs-complexity",
+      "file": "quality/build.py",
+      "line": 33,
+      "message": "Function `run` is 52 lines with low branch complexity; look for a stdlib or comprehension collapse.",
+      "rationale": "R05"
+    },
+    {
+      "id": "80bc2a0e0c174fb6391d12d9b8df2313f41b625128de31f8a6e8db181962d77c",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/build.py",
+      "line": 33,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "5cc3e5a26d57afbef789013858e10fb3096285aac05a70e73a5d26681689df90",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/docs.py",
+      "line": 15,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "31c7c18eab1f9fcab38d5c27554030ec7fbcbdb38e47b228607e9202bb58ff7e",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/docs.py",
+      "line": 19,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "ec25815eabb8915f80a27ba14286b2aabc962539fbe3cf9a872726898d818cdc",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/docs.py",
+      "line": 31,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "43baaaaf6d7f1789fc3d8b03afd0b133601c0b99b777e747b69d4b67df90b7c9",
+      "tool": "radon",
+      "rule": "CC13",
+      "file": "quality/docs.py",
+      "line": 31,
+      "message": "Cyclomatic complexity for link_errors is 13.",
+      "rationale": "R04"
+    },
+    {
+      "id": "3c5ae3f84af2fafd9424ee2e94a5b400fdf802ecc5b23cf64add25df4c694178",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/docs.py",
+      "line": 59,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "b66e5fd94e15ab1dc68931fead7936c3dc891019e46996fe5cd6a7c32846b187",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/docs.py",
+      "line": 91,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "bb9d7cecbe4d4365e23619a44f211cac8edc6d4d2828a9b64826e8c3d9befbc1",
+      "tool": "radon",
+      "rule": "CC13",
+      "file": "quality/docs.py",
+      "line": 91,
+      "message": "Cyclomatic complexity for validate is 13.",
+      "rationale": "R04"
+    },
+    {
+      "id": "9658ece90e1e11cc51cb25d33b41a548f0e6bf0fce5da9604554d326e49996dd",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/external_tools.py",
+      "line": 10,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "eb37dbd5c0e27d02bb527b0555c814e5d5c8b2288ee567a9a573d351cf2234eb",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/index.py",
+      "line": 16,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "4bb668369778f179d19e1eb4a84baad4bcf35ae79d163857bf83efc7d4d4d084",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/index.py",
+      "line": 72,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "a8b1429d85e68491be5a298ee135bea841e05d07562e59c59e9c0f7e23715915",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/metadata.py",
+      "line": 15,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "47c7a18a49d853d34390016cd680efae90e01a19bab51a03dc469f5bf339823e",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/metadata.py",
+      "line": 27,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "1250e56fd12ca82265d9a738e5658417b22f97aad5750722e68ea0b22e32db9f",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/metadata.py",
+      "line": 37,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "00cdcd99d963a5c3fe9979ad5e8375e36698131bb066e023d0b50c3ce2a55ec7",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/metadata.py",
+      "line": 46,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "32d77b2d0a89479685e4145e8e26089fef70ba85b260def8ec8f34024dda7a9d",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/repository.py",
+      "line": 10,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "11804d44fb0bc45c0028da67e76ee9d2674a48f741ee338ae35f5ccae01d76aa",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/repository.py",
+      "line": 17,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "75759b33b1caa6e6c8e7ecd94bf4735269bbf1c85f4d640439979c0ee4a0a005",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/repository.py",
+      "line": 26,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "4120b59d7c18dd5710cd37f6e5a11fb513dff46c1659864a34ea9c1fc8d85971",
+      "tool": "radon-kiss",
+      "rule": "kiss.nesting.warning",
+      "file": "quality/repository.py",
+      "line": 26,
+      "message": "Function `inventory` nests control flow 4 levels deep; keep it under 3.",
+      "rationale": "R06"
+    },
+    {
+      "id": "826672537e97afdb6ac99f0a6b46ea61b42a477d55d14a8801822739f8ad19ed",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/repository.py",
+      "line": 40,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "aa1424387a2cdab7c2d18e5f4a55b4230b31df5ad3d5a735ba0a60a579cd1bdd",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/repository.py",
+      "line": 48,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "9d09e2a35f184dc1cd5691ad8f9be54bc4cb4912e57f6f13975adbae221430eb",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/review.py",
+      "line": 29,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "1e967ec523e866d67b8f52ff0fbb1d9617e9b11e6b8e19c130d13520a47f1793",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/review.py",
+      "line": 52,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "ecebab5cf0d04f19b7624033daf397b9ff35595a8eaa15ece2736f4793830ed0",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/workflow.py",
+      "line": 30,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "4f8ed9c5d769ca7157a34fd0001a9b3a80d35165f9f2673b80ec12d711224dfe",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "quality/workflow.py",
+      "line": 61,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "d2250e39963eb93e5ab6093641c1053789fd6743c158797926bc9704cfc1379b",
+      "tool": "radon",
+      "rule": "CC13",
+      "file": "quality/workflow.py",
+      "line": 102,
+      "message": "Cyclomatic complexity for comparison_errors is 13.",
+      "rationale": "R04"
+    },
+    {
+      "id": "7791b7f798c06a81fc2d504d6dc682c9351d678e2f823ad3442ecab0a5853d07",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "src/changecost/cli.py",
+      "line": 21,
+      "message": "Unused argument 'version_option'",
+      "rationale": "R07"
+    },
+    {
+      "id": "0290ea567e267b7395477d31c4689d7510fb3bb7e69a605ce57c1712a1600102",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_build_and_snapshots.py",
+      "line": 8,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "00e7b6a03dc861cc9d3fe981487764500ea0de83fb5037c7e62339ca24f0f515",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_build_and_snapshots.py",
+      "line": 20,
+      "message": "Import outside toplevel (quality.docs.link_errors)",
+      "rationale": "R08"
+    },
+    {
+      "id": "f8710363e9277bcced42e0f03e0c4aabde9e739abea3bdcc43a03cb6ee780d91",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_build_and_snapshots.py",
+      "line": 27,
+      "message": "\"link_errors(...) == []\" can be simplified to \"not link_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "b0f2ea9365434389ec17546513258ca1a7db71770f0dc27e1b2e36ea8d41962e",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_build_and_snapshots.py",
+      "line": 30,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "af2aa0da4d8cd75e9930126851f1ecdf1836b7926dcceb244eec0bda0a0acc36",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_build_and_snapshots.py",
+      "line": 36,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "c3342997fed09e93fdbdaae5fa9d1c9bef9fa9312c28c2851d55d836d69b7fe3",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_build_and_snapshots.py",
+      "line": 37,
+      "message": "Import outside toplevel (importlib.util)",
+      "rationale": "R08"
+    },
+    {
+      "id": "043cd7f9e64a5c29c309d2ed500b3f692134d875be62bc6e921bd30c1a822d6f",
+      "tool": "pylint",
+      "rule": "C0115",
+      "file": "tests/test_cli.py",
+      "line": 10,
+      "message": "Missing class docstring",
+      "rationale": "R10"
+    },
+    {
+      "id": "2a8b7d5232604087d5c58755cfec27ef7a07fde49af14bb288379a53276ff44d",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_cli.py",
+      "line": 11,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "71232991f7b441cfb7f1c155e1c70f86593d26fbd8916b1e09acea35c6ec0398",
+      "tool": "ast",
+      "rule": "ai-bloat.loc-vs-complexity",
+      "file": "tests/test_cli.py",
+      "line": 16,
+      "message": "Function `test_offline_read_only_entrypoint` is 52 lines with low branch complexity; look for a stdlib or comprehension collapse.",
+      "rationale": "R11"
+    },
+    {
+      "id": "1e4e6394f205dbba8fa960de1e6f26a7d4bccbd5382f494c52c17637cedc4ada",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_cli.py",
+      "line": 16,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "09eb92be973945db13f664202942835197d7903d0cd0ccf9f5dddc4f68e951b4",
+      "tool": "radon-kiss",
+      "rule": "kiss.nesting.warning",
+      "file": "tests/test_cli.py",
+      "line": 16,
+      "message": "Function `test_offline_read_only_entrypoint` nests control flow 4 levels deep; keep it under 3.",
+      "rationale": "R06"
+    },
+    {
+      "id": "d035a94b4c8c028df9b172b76edcb4aace1a21e3842120ffe35229e595877543",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_cli.py",
+      "line": 20,
+      "message": "Import outside toplevel (os)",
+      "rationale": "R08"
+    },
+    {
+      "id": "7c193e1d7926b10b57592c15e02600888eb8dc81ddaab3dda988886badd8482f",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_cli.py",
+      "line": 25,
+      "message": "Import outside toplevel (tempfile)",
+      "rationale": "R08"
+    },
+    {
+      "id": "1e4afb9be3a4f8f3d209adf2632c8e5afd84775b41bb65f1a47f3e7dc0c6c511",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_cli.py",
+      "line": 26,
+      "message": "Import outside toplevel (importlib.metadata.version)",
+      "rationale": "R08"
+    },
+    {
+      "id": "d902d3fac9a2bdcc0a902c7b99dcf5b4a2fcb5dc9d273b26bfc5b94071faba8c",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 21,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "a279a65a8ea35ca05fe2a6d09ebe20610efaa679b97b596c01a0550a1b91db68",
+      "tool": "semgrep",
+      "rule": "banned-generic-public-names",
+      "file": "tests/test_quality_failures.py",
+      "line": 21,
+      "message": "Public API names should be specific; avoid generic names like process, handle, or manager.",
+      "rationale": "R12"
+    },
+    {
+      "id": "56ee4b489aa01a6b0f2196c85b1b5ce75d9163ac93be4664b25dc0e688d47e3b",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_quality_failures.py",
+      "line": 22,
+      "message": "Import outside toplevel (changecost.cli.app)",
+      "rationale": "R08"
+    },
+    {
+      "id": "29855cca7671d81e02743a3df7ff7ef7cbe41592a2a4ee7d54055322a4259a5f",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 37,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "c053eefdfedf6950f0bb1dbeaee10e61528d9ab250c69fc630172d8748c16241",
+      "tool": "semgrep",
+      "rule": "banned-generic-public-names",
+      "file": "tests/test_quality_failures.py",
+      "line": 37,
+      "message": "Public API names should be specific; avoid generic names like process, handle, or manager.",
+      "rationale": "R12"
+    },
+    {
+      "id": "76eef50edc00672b9ab3fc5c6d7376f49a4f8005097ccfac701e18762a127b5f",
+      "tool": "ast",
+      "rule": "ai-bloat.loc-vs-complexity",
+      "file": "tests/test_quality_failures.py",
+      "line": 47,
+      "message": "Function `test_license_sources_and_incomplete_evidence` is 50 lines with low branch complexity; look for a stdlib or comprehension collapse.",
+      "rationale": "R13"
+    },
+    {
+      "id": "7c84a708fd86264d571089c757b5dd3ddd2ad1f4e02b509a9889a259b2a9db7f",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 47,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "6942df58975aaf618e62a783bd0594827e36abb1619ef9cb15cdef7958c01a8d",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_quality_failures.py",
+      "line": 67,
+      "message": "Unused argument 'kwargs'",
+      "rationale": "R07"
+    },
+    {
+      "id": "5e8666edc9cfd75e253ea04b2ca674363b893622addde7c4c4b7af58f642a519",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 99,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "6c635d4065c8b556d47a106b1361a47742cfdab622c47b59309548cc6b41b49b",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_quality_failures.py",
+      "line": 111,
+      "message": "Unused argument 'kwargs'",
+      "rationale": "R07"
+    },
+    {
+      "id": "42a541658a69345f717bac79de358b6f715bb1ef7a7e97ee17c37ef7d3074645",
+      "tool": "pylint",
+      "rule": "W1514",
+      "file": "tests/test_quality_failures.py",
+      "line": 112,
+      "message": "Using open without explicitly specifying an encoding",
+      "rationale": "R14"
+    },
+    {
+      "id": "054bcb1d2c552f45f317b9a1d8b41a88df160c08cb364e82a79ab6a53fc4d630",
+      "tool": "pylint",
+      "rule": "W1514",
+      "file": "tests/test_quality_failures.py",
+      "line": 115,
+      "message": "Using open without explicitly specifying an encoding",
+      "rationale": "R14"
+    },
+    {
+      "id": "42744a7fdd1e023c159bf3f2239da8a49a58b52182e8cecb51ecc1b736984074",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 129,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "99d9d3cc062fa7596d6561cfd2d65d8dd1094f4faaeb7ba725b93009ae18b5f8",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 149,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "e586a1c8a9f99d905f7fa30152491a578378df11886b09f3384b17c9ac399f11",
+      "tool": "semgrep",
+      "rule": "banned-generic-public-names",
+      "file": "tests/test_quality_failures.py",
+      "line": 149,
+      "message": "Public API names should be specific; avoid generic names like process, handle, or manager.",
+      "rationale": "R12"
+    },
+    {
+      "id": "1aab902abb996e66f301434ff5b7a174058a3a2a53831103a45793514a0fb64a",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 161,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "a206e3e927c2bc01f8b0c8703243ac27913d8c2dad7fa82bce58aa569cd65f1b",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 193,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "db6a6bca98f97c8dba8f786c8c1ec23fc82cd23b31bc2fda3796ff7e6797b5df",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 210,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "1bf0e7b460a31f818f4f83a045203e2dcde39f272cb43ab59c22f784bd589ac3",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 229,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "1e8dd8461d585167d9ece51f41b6c903215a10ba12e92b0e9decd31436b2ce41",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_quality_failures.py",
+      "line": 245,
+      "message": "Unused argument 'kwargs'",
+      "rationale": "R07"
+    },
+    {
+      "id": "0287a100b6925955259e3c7912c6952a710ed7282f2f4cbe2fbac690eeb106fe",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 271,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "68041cbf673505e17280ab167d3fd4ec2f0bb6c52b1a0a314a242ccc784203be",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_quality_failures.py",
+      "line": 272,
+      "message": "Import outside toplevel (quality.review)",
+      "rationale": "R08"
+    },
+    {
+      "id": "2fc90c8ac992cd5ec3b66c931d815e890e383939446413c5cdcf9b1468bbaaba",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 307,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "b280aa75b4c4012cd316df20a4a056c6d44c1cc77d81e5426f2cad477b45a759",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_quality_failures.py",
+      "line": 308,
+      "message": "Import outside toplevel (quality.external_tools)",
+      "rationale": "R08"
+    },
+    {
+      "id": "6b234a43f34002e5f74cc20f0435d0e37fcba02ef041c6d86a91e8a17534db5a",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_quality_failures.py",
+      "line": 336,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "c59fde6fb28d1c23846f55e5f6f74be6fcb72998994da26118144ee789679390",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 10,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "9928922915229dc15c8c45f6243d8d2c3c61e4c38d31a79c26d64739b9f1a298",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 12,
+      "message": "Import outside toplevel (quality.docs, quality.metadata, quality.repository)",
+      "rationale": "R08"
+    },
+    {
+      "id": "c768c6d9de6fd56dc2348e83589e7dea3a40d58540f0960a090f2069624624f1",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 18,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "b5e06030b15c2d29256c2c09dea3a33dfa0faf491c50eaf017ae84d38413ea76",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 30,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "26f59e8bca01916f2681354245f6f2704127c5c6cc6ecc6c23be8cd62730fd1e",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 30,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "ac838032ef2c6fcd0d0447e406a49a43731639ba4c66897964264147c4c21aef",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 30,
+      "message": "Redefining name 'sample' from outer scope (line 18)",
+      "rationale": "R15"
+    },
+    {
+      "id": "d2b1748fb42c948135b1720dba37012d038ba670e25f7983458c1681deba14f0",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 45,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "9f824f007a4924fc723995971801fffccfa571b17f333a9c5be85bf105fd0721",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 45,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "1fb05ada53ec9a3899254ab66a9c382732faf4ff15392568662d011c200287bb",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 45,
+      "message": "Redefining name 'sample' from outer scope (line 18)",
+      "rationale": "R15"
+    },
+    {
+      "id": "a29bc2d3c13bb9d9123302a285ba2ce03e959d4c9da0e55c7ef26392d0f8e53f",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 54,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "44322104b42a20546befd7cdc6098f868d5e7051a6a6c22bcb09ac4766f9269c",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 54,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "e22097a4e427170112871259ca4498f3897528e3dbae7995d51225482ee32e63",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 54,
+      "message": "Redefining name 'sample' from outer scope (line 18)",
+      "rationale": "R15"
+    },
+    {
+      "id": "23fd75b7d5fa69b3d2ea1508062a7102a3d080faee6c1f17db049984359c1e5c",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 69,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "420440674003a8015c6ef9d84df8a4b3edadef12f5100cd1d3c6b259f10eabce",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 69,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "226fd11bc71dda02aa7fe1d80f7495b60b95b7bac28634e27e2f5c108b1bd229",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 69,
+      "message": "Redefining name 'sample' from outer scope (line 18)",
+      "rationale": "R15"
+    },
+    {
+      "id": "7a9192ff20bad04b192800dbe6f8d766b99b54bbbf5ad679af415d5a97383761",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 71,
+      "message": "Import outside toplevel (hashlib)",
+      "rationale": "R08"
+    },
+    {
+      "id": "2ff46db001e6281f27db66d2596735a3536c671dc045f0d2ddb735181d3851e6",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 85,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "695041ed89916f377391593e8aab3a9761a884f53818a95d99cd8506ba1acc75",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 85,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "9b45beeca3ade5bbc4396cc8fb8aa05ce984ef016a838931468a00fb7697298f",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 99,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "72e58dd71a546dffa44962dc5adc38c6380d2801f4a2a515a54c4b618fb21c67",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 99,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "55f02edc112f0bab8c5ae15fad2ab69b3e044e1214bb988ef64bc7925dc3a024",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 107,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "d41032b238151eabe6121bb13379235b374b80900c70f80beaf49d6c7b3c3abd",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 109,
+      "message": "Import outside toplevel (quality.index.check_outputs)",
+      "rationale": "R08"
+    },
+    {
+      "id": "50d091bd6e6d07a02ae3a9fcca27b5adce0de357b4fc54df53f53f522a6a2308",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 116,
+      "message": "\"check_outputs(...) == []\" can be simplified to \"not check_outputs(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "2e9b84db5b423f926841eeb43b2fd5737b458a1055e60d88f01fbec8a57325d0",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 120,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "1f13432d2243825a13b65b465f544338c3173cf195929316c2fc60c1a67f1856",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 122,
+      "message": "Import outside toplevel (quality.review.evidence_errors)",
+      "rationale": "R08"
+    },
+    {
+      "id": "b76f961225ed6f28e695a4a7fdccb70294305f3d793cc4e2e133789f9f40e640",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 129,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "ca13be7379397fb76867606c56c256d4c6e61ea2d3760674f7aad32c94194026",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 129,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "0e38377f2614e7b415d6d7ef37e3bd71aedfe4c46c62148b2809974cbcdbd6f9",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 135,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "3129121046fa62c09aea9e132bac4c866d4c9ba2890d71541bdb0ee4627f3575",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 136,
+      "message": "Import outside toplevel (quality.index.check_outputs, quality.index.render)",
+      "rationale": "R08"
+    },
+    {
+      "id": "46a25014895ae83606ed975bcddc4a2da5667a8e51c34ac3befa1dc3824c36e7",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 141,
+      "message": "\"check_outputs(...) == []\" can be simplified to \"not check_outputs(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "b93605488413847c5b22f5c7a52992bd470610ab36a59f0886d9ebcd665ae314",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 144,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "aeb07ccfb907bd3ce6e6b15590f672b9580ab7126771929ca69d0e20666b0c0d",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 145,
+      "message": "Import outside toplevel (shutil)",
+      "rationale": "R08"
+    },
+    {
+      "id": "a147eede8f1d855d35314e85fbf92d5a5ecf4d022f1a94cd29a1be1cde08fb6f",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 147,
+      "message": "Import outside toplevel (quality.index.render)",
+      "rationale": "R08"
+    },
+    {
+      "id": "148243109998ccdfe0a39ac72682b2038c7d3536d4ef09b28147656ea1b7b507",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 166,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "0581c4077324ae0930dd3e2a951b84db2d571f1aa0171ad6f4df3a3dd5456730",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 167,
+      "message": "Import outside toplevel (quality.review.REQUIRED, quality.review.evidence_errors)",
+      "rationale": "R08"
+    },
+    {
+      "id": "76164cd5b3aaf3283141b630af7829dd113d2e5e2cf186d1f77b1ee832db8e22",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 180,
+      "message": "\"evidence_errors(...) == []\" can be simplified to \"not evidence_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "20f5c5cbf9929e4e0c08178ac85d8d63f710c9e7e5c093e6b7e61f91dcc5f58c",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 199,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "86eabd67f971dbf505f71ff2c20ed2d8e0b1affa29924168175ec27e87222466",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 200,
+      "message": "Import outside toplevel (quality.repository.git, quality.repository.inventory)",
+      "rationale": "R08"
+    },
+    {
+      "id": "3bbe685119b8878050a19bf4a4e2bb0506c887d0e4e99b58161cf97f828cdf24",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 211,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "0865310274d57cc2ab75b77fbe8b67cf9659b67975963587fd292eb6858d62b1",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 212,
+      "message": "Import outside toplevel (quality.build.archive_errors)",
+      "rationale": "R08"
+    },
+    {
+      "id": "ca208f9c2ef19caf7c01c5cea9f8340b62979d10056b0a47d8761c031f159f23",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 220,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "f78d28637db35ec97d33ba05b1d744a544a57ad78ea7fc52511c5b2d5286dcb4",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 220,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "fa08f0c6d34618a2814f76a4641b83aa523bdd86759078248b575d30263e44b7",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 220,
+      "message": "Redefining name 'sample' from outer scope (line 18)",
+      "rationale": "R15"
+    },
+    {
+      "id": "06f41ceb349b838ce86184e12f294132e34fb65bc9f08b307545b46e24bb0f14",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 228,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "b859617cf40e442bcaf9455c3ebe8b23433c9f72acaca900bf03f8b3232ec0be",
+      "tool": "pylint",
+      "rule": "W0621",
+      "file": "tests/test_repository_gates.py",
+      "line": 228,
+      "message": "Redefining name 'gates' from outer scope (line 10)",
+      "rationale": "R15"
+    },
+    {
+      "id": "65b1e3e60b8f995aa6ee60c93c38e5a916981219d54480e31d641f6f37b1354b",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 234,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "95ca856ee0ec6dfaf31257002f8fe512f57d4f7e93bf6e3eeb0b6f71bae45e7e",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 235,
+      "message": "Import outside toplevel (quality.__main__)",
+      "rationale": "R08"
+    },
+    {
+      "id": "b6acefa8efa22c9c13b96651e064f9b98d2690e82d39cad62197596c09971257",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 248,
+      "message": "Import outside toplevel (sys)",
+      "rationale": "R08"
+    },
+    {
+      "id": "740b052ad647f7ab6d23ba800c1a13b6008b0ddbf4b1dce6e99f553145ba274a",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 269,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "ea239526d6d49bb8b0059d5b239ed4ae7dcfdb5e4ce3d6068f642645530c0490",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 270,
+      "message": "Import outside toplevel (shutil)",
+      "rationale": "R08"
+    },
+    {
+      "id": "172cfd74ba156fce33b5b46bab89fc881d46eb0fc10bdb51ca109c152824784d",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 271,
+      "message": "Import outside toplevel (subprocess)",
+      "rationale": "R08"
+    },
+    {
+      "id": "23e8847d1269241cfcc17de0d701fbe724700962f9631e9a598fa7f4582b5a9d",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 273,
+      "message": "Import outside toplevel (quality.workflow)",
+      "rationale": "R08"
+    },
+    {
+      "id": "4cc2377fcfd8eb389f86b7fd59c3d43a3883754d4ecc48109f75b27c8208a24a",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_repository_gates.py",
+      "line": 279,
+      "message": "Unused argument 'kwargs'",
+      "rationale": "R07"
+    },
+    {
+      "id": "91fe93aca6d12b1abb8929b085e223160f1bc740bec56d87afe6f1d6eba32ba3",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 288,
+      "message": "\"workflow.validate(...) == []\" can be simplified to \"not workflow.validate(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "0d22068b83ab1e0eda635a0f4b4995077fd157d38a70f55f62328d271de8646e",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 292,
+      "message": "\"workflow.validate(...) == []\" can be simplified to \"not workflow.validate(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "487ecafae3874020666c680bc247e23b3bee4d9ade344f8ccc95a0d3cbf452df",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 295,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "888f9cd65c280511487212170522566f0fa691b0cfb98d41c89d4d3a321e4495",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 296,
+      "message": "Import outside toplevel (subprocess)",
+      "rationale": "R08"
+    },
+    {
+      "id": "f7e2a7e151870b6d3058b6ed6dfbd0831236ea6e669bd04968986aea23d2ae5e",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 298,
+      "message": "Import outside toplevel (quality.audit)",
+      "rationale": "R08"
+    },
+    {
+      "id": "f8b9aaea2e6d60c9ab7caaaf53c175adbd2af5e00353bcd6d81ad32501adaa0a",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 307,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "e35813e956fca7eb2654349b3d590edbdde17d55408475296f1a0188b7d5ca6b",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 308,
+      "message": "Import outside toplevel (json)",
+      "rationale": "R08"
+    },
+    {
+      "id": "0e07ca24fd418dc505b3b96fa0495c0799b9517025311068dbcdcacd6aff85ab",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 309,
+      "message": "Import outside toplevel (subprocess)",
+      "rationale": "R08"
+    },
+    {
+      "id": "5dc4d3f648acd41f916d3d322f037569126896a87ffaba16df7ec06230b1c331",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 311,
+      "message": "Import outside toplevel (quality.review)",
+      "rationale": "R08"
+    },
+    {
+      "id": "20fc4e32d28e8f1810d09bf8eded46d6b99a90d617797f87ac4252f21cd15829",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 321,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "59dcf3a7462f18ec678e10819a7f717fece927aeb9b6616e22ae234a20a2dc6e",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 322,
+      "message": "Import outside toplevel (quality.metadata.validate)",
+      "rationale": "R08"
+    },
+    {
+      "id": "f1d16a284499dcebf2d650494711ff7908c91d14d7bcf8c39d51491e5beea8b3",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 323,
+      "message": "Import outside toplevel (quality.repository.digest)",
+      "rationale": "R08"
+    },
+    {
+      "id": "26624bf71acebcfe5919c6e6e8d4eda5318d2edaeb6fd13d8cc1114490d9085b",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 339,
+      "message": "\"validate(...) == []\" can be simplified to \"not validate(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "195dfbc052f3db08e6cb6c0dad73c23e09306d14b884a3e66f30413f0b24f9bf",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 344,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "e48dde1f5c87318f4f8e80768ba089132d29560c1c0b54e3f914476e7ed62cf2",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 345,
+      "message": "Import outside toplevel (yaml)",
+      "rationale": "R08"
+    },
+    {
+      "id": "f1ff370ced2069e1665c7879d6af4e3fdfffe082cd3990d1cd0afffc7a41e051",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 347,
+      "message": "Import outside toplevel (quality.workflow.wiring_errors)",
+      "rationale": "R08"
+    },
+    {
+      "id": "b017b5729b954517bafe5e7e09c1834a00c396eee91878cac35f9ba63340251e",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 351,
+      "message": "\"wiring_errors(...) == []\" can be simplified to \"not wiring_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "144feb599076f37c55b5d54410c49254b199a64f88789d27395b83bbe7bfb73f",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 358,
+      "message": "\"wiring_errors(...) == []\" can be simplified to \"not wiring_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "eeae8bcd02c3358df2facdd6902fa08234364d2f7d0b4d22ccf3d9037c89f540",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 361,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "c08967f03a8cad6a32952e3228159fab7d965dfbfa6d07f9212233be80bef590",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 362,
+      "message": "Import outside toplevel (typer)",
+      "rationale": "R08"
+    },
+    {
+      "id": "43113b1fd31464291c22297514064670495bab41e436c0e12e80fb28465eb5a1",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 364,
+      "message": "Import outside toplevel (quality.index)",
+      "rationale": "R08"
+    },
+    {
+      "id": "d4907c6698310ce810cd064b9fb4c9402ac3117ef8d3a81d8f813680f47c73bc",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_repository_gates.py",
+      "line": 375,
+      "message": "Unused argument 'verbose'",
+      "rationale": "R07"
+    },
+    {
+      "id": "c7c7afec48fae2849b27da6a289473f86f8820eb82d57ac80810a59484ee7ee3",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 386,
+      "message": "Import outside toplevel (json)",
+      "rationale": "R08"
+    },
+    {
+      "id": "a142dbe1828964eab5724c3830459c9dda4973d4dffd8a7e4b7f40a3ec4c9773",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 387,
+      "message": "Import outside toplevel (subprocess)",
+      "rationale": "R08"
+    },
+    {
+      "id": "5920b1e1333b45aec4c77ff928b00621d98bc7e1da168932a9fb86906a346cc7",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 389,
+      "message": "Import outside toplevel (quality.review)",
+      "rationale": "R08"
+    },
+    {
+      "id": "776dced8cd7d3965715763d44ed4c8737eda8caf77479589ddf9013b61252ca4",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_repository_gates.py",
+      "line": 391,
+      "message": "Unused argument 'kwargs'",
+      "rationale": "R07"
+    },
+    {
+      "id": "9ec48da495626899eb6b3bc0c9f589568a443d4519a0595efb1d0eff67756e9a",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 411,
+      "message": "\"review.run(...) == []\" can be simplified to \"not review.run(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "fecd6e9cb66f05405b5621f2c40cdc2f66daccc99e1659b0a3de27a568db6a6d",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 414,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "9f5a262f94a38e6676ce3d17e9ade6e54aaa56de31434d3a0ad54eda7941d074",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 415,
+      "message": "Import outside toplevel (quality.__main__)",
+      "rationale": "R08"
+    },
+    {
+      "id": "542d55e94d36649db04a3971780e6d079de9ff7d47d01f4b194ea50436b1ab85",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 427,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "d6abdfe706657de84df2df403c0367d1a6b02ec95ec111f7f54637c69eab858e",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 428,
+      "message": "Import outside toplevel (quality.repository.git, quality.repository.inventory)",
+      "rationale": "R08"
+    },
+    {
+      "id": "25eb4bd081a3bc22e4e8d0bf7651a2b86f68b44f2a314ba83a77139b76140fa7",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 441,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "ef7dedb7303f40b3504868013ad13760ef4b7a2970748d1bee5e017d56f8616d",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 442,
+      "message": "Import outside toplevel (copy)",
+      "rationale": "R08"
+    },
+    {
+      "id": "8c7b1a7b8c5663aac4fcdf6f68e1399eb6d658ec8013758e94a65f803e02a2e4",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 444,
+      "message": "Import outside toplevel (yaml)",
+      "rationale": "R08"
+    },
+    {
+      "id": "799b0de72b694a9e27c27b22fe8d9baf1b1fbb9f9b7877121059238b76f7c1c7",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 446,
+      "message": "Import outside toplevel (quality.workflow.wiring_errors)",
+      "rationale": "R08"
+    },
+    {
+      "id": "6240e46dc235f02a09ed17ec3e19cc38f6fa5bc73cba358e9cedf10a83ded13f",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 450,
+      "message": "\"wiring_errors(...) == []\" can be simplified to \"not wiring_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "d93eea85aa22fb5fa41a5d2cff9aa210ea5b3c676078dbcacbbc28efc343da08",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 473,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "4b1b8c4f4bf64be0d485dd078c1f121ea1c930d25c788ffe23bd258c27aa01bc",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 474,
+      "message": "Import outside toplevel (shutil)",
+      "rationale": "R08"
+    },
+    {
+      "id": "3833cef9cd670d599229b19f392b17df5cc9ce37c6bbf64ed9faba62b472ee2e",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 475,
+      "message": "Import outside toplevel (subprocess)",
+      "rationale": "R08"
+    },
+    {
+      "id": "6fb38307482d51c0f70c54571e25cfec15c10aca8a55eafab159fce9975db795",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 477,
+      "message": "Import outside toplevel (quality.workflow)",
+      "rationale": "R08"
+    },
+    {
+      "id": "c725d625436aa776d96c9f23e0a5c43e40d35f193f286f0560693f0b3ff2a5c2",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_repository_gates.py",
+      "line": 483,
+      "message": "Unused argument 'kwargs'",
+      "rationale": "R07"
+    },
+    {
+      "id": "2c322f42583c72b34416596c5c6e3fd73497265d3b0c9d566e0685c51e77176f",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 493,
+      "message": "\"errors == []\" can be simplified to \"not errors\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "2d86fff5938d7717308bd45aabdfac004fb50cf1653e87010f3dfe9fb4da2e52",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 500,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "acbb5d05428487dd06f999cff8aca3c3984dc270eb27056c54c460f6cd716fad",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 501,
+      "message": "Import outside toplevel (argparse)",
+      "rationale": "R08"
+    },
+    {
+      "id": "83047e47f49b2e7ce65df9ae69745d06e8a818e1420226ee979e1404f254e0d0",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 502,
+      "message": "Import outside toplevel (subprocess)",
+      "rationale": "R08"
+    },
+    {
+      "id": "f6ad130e1efc65ec7eac59b5228f04bea2210f668e78a3cf56d4e95a2eb36f89",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 504,
+      "message": "Import outside toplevel (quality.__main__)",
+      "rationale": "R08"
+    },
+    {
+      "id": "29204b44cd42f7a5ab3841f83eb0e1fcdb4c56a2c632daf973c4fd8f489e15d5",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_repository_gates.py",
+      "line": 509,
+      "message": "Unused argument 'root'",
+      "rationale": "R07"
+    },
+    {
+      "id": "9f89b45b17b7f55e8e13179570c76e83f31984eefe9cb0fab941bb29e63dd8e3",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_repository_gates.py",
+      "line": 514,
+      "message": "Unused argument 'kwargs'",
+      "rationale": "R07"
+    },
+    {
+      "id": "4d6d35a1eb4673185470db3d9c433d9bb45e743083d92b41e2b38be03351c7fb",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 526,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "84769e0ed7da6be2cf959505f8694a788ba34a25365d0a412a328010a40a800c",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 527,
+      "message": "Import outside toplevel (quality.__main__)",
+      "rationale": "R08"
+    },
+    {
+      "id": "ac7e0396059880b578f47e8a62c3c8a3a2d5456fa8ec6617a4827010ac20427c",
+      "tool": "pylint",
+      "rule": "W0613",
+      "file": "tests/test_repository_gates.py",
+      "line": 531,
+      "message": "Unused argument 'root'",
+      "rationale": "R07"
+    },
+    {
+      "id": "37abe2f3eb6c1644fcf32b59d6a24eca57828e372e2dd44c44d05b0da9af8b52",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 556,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "c19b10243fa7a409cbbeeea87544ba84aa747ed405a895829259c31ba50e87e5",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 557,
+      "message": "Import outside toplevel (yaml)",
+      "rationale": "R08"
+    },
+    {
+      "id": "cacd15dbf992e3519a3f59c91529e14112e38016afd16bed807d31c0fa77caa4",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 559,
+      "message": "Import outside toplevel (quality.workflow.wiring_errors)",
+      "rationale": "R08"
+    },
+    {
+      "id": "969725c9c34f744bb79e81c1fb807c23138e05c79c236edcbdf1832a1fb5cb15",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 563,
+      "message": "\"wiring_errors(...) == []\" can be simplified to \"not wiring_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "8efc443138be3e7be1619a6ac9c3524deecb85edf3507e7b63e4c9afd3fed65e",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 588,
+      "message": "\"wiring_errors(...) == []\" can be simplified to \"not wiring_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "98b77ca0fc433b49c648cc311fbfdd33f810676724a712483a3d1ed53511c2e6",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/test_repository_gates.py",
+      "line": 592,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "24246f578785d04b7750717541b5e44c6c43e7e3498541c814b46edb096a9b2b",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 593,
+      "message": "Import outside toplevel (yaml)",
+      "rationale": "R08"
+    },
+    {
+      "id": "829f2553c200df514e24fc1fde7d9661c66d2e7ed78b3f5d21605bbcb74cdc55",
+      "tool": "pylint",
+      "rule": "C0415",
+      "file": "tests/test_repository_gates.py",
+      "line": 595,
+      "message": "Import outside toplevel (quality.workflow.wiring_errors)",
+      "rationale": "R08"
+    },
+    {
+      "id": "5f7d36ecf9f553806cfee1b3b0a084d39a1effe7c38aee67cd38db77915ec4d0",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 599,
+      "message": "\"wiring_errors(...) == []\" can be simplified to \"not wiring_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "0d478d52b8459b6fda25f833675f3f0bfa2b6ba87d6e230e87590e1c8fc718e3",
+      "tool": "pylint",
+      "rule": "C1803",
+      "file": "tests/test_repository_gates.py",
+      "line": 604,
+      "message": "\"wiring_errors(...) == []\" can be simplified to \"not wiring_errors(...)\", if it is strictly a sequence, as an empty list is falsey",
+      "rationale": "R09"
+    },
+    {
+      "id": "e66ded92a0b095515b04ee37ad71cda324eac9814f3014c4d9dc989fb354fa82",
+      "tool": "ast",
+      "rule": "ai-bloat.loc-vs-complexity",
+      "file": "tests/tool_probes.py",
+      "line": 10,
+      "message": "Function `check_locked_sync` is 43 lines with low branch complexity; look for a stdlib or comprehension collapse.",
+      "rationale": "R16"
+    },
+    {
+      "id": "ad6fe259b8e8d325ce484a94f327695192fc7fb1b65f04c118cd0ceba2593d8e",
+      "tool": "pylint",
+      "rule": "C0116",
+      "file": "tests/tool_probes.py",
+      "line": 10,
+      "message": "Missing function or method docstring",
+      "rationale": "R01"
+    },
+    {
+      "id": "c311c093bcb9cea76c760d6b9b971061da73216a817a8cdd4f4ad48ca5202150",
+      "tool": "semgrep",
+      "rule": "print-in-src",
+      "file": "tests/tool_probes.py",
+      "line": 58,
+      "message": "Avoid print() in source files; use structured logging or return values instead.",
+      "rationale": "R03"
+    }
+  ]
+}

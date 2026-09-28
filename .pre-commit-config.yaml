@@ -18,9 +18,16 @@ repos:
         exclude: ^docs/research/deep-research-(report\.md|sources\.txt)$
   - repo: local
     hooks:
-      - id: specfact-code-review
-        name: SpecFact code review (manual; source code required)
-        entry: specfact code review run --enforcement full --json --out .specfact/code-review.json
+      - id: repository-contracts
+        name: Repository contracts (complete staged snapshot)
+        entry: uv run --locked python -m quality staged
         language: system
-        files: \.pyi?$
+        always_run: true
+        pass_filenames: false
+      - id: specfact-code-review
+        name: SpecFact full review
+        entry: uv run --locked python -m quality review
+        language: system
+        always_run: true
+        pass_filenames: false
         stages: [manual]

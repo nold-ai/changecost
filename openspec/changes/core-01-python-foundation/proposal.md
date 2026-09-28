@@ -13,6 +13,8 @@ The repository currently runs documentation hygiene only. A reproducible Python 
   changelog and package-version consistency checks with shared pre-commit/CI entry points.
 - Prove the gates reject stale or malformed artifacts, including docs-only and
   workflow-only changes; keep repository quality separate from advisory cost checks.
+- Make lock/build drift, installed-wheel isolation, read-only CLI behavior and
+  staged-versus-working-tree checks explicit acceptance cases.
 
 ## Capabilities
 
@@ -26,14 +28,15 @@ None; no main capability specs exist yet.
 
 ## Impact
 
-Future implementation affects the standalone Python CLI and local evidence workflow.
+Implementation affects the standalone Python CLI and repository quality workflow.
 Documentation: README.md, CONTRIBUTING.md, llms.txt, CHANGELOG.md,
 docs/agent-rules/50-quality-gates-and-review.md, documentation ownership metadata,
 and CI contributor instructions. Implementation will add small repository-local
 validators, fixtures and generated command/skill reference artifacts.
 Verification: the scenarios in [the capability spec](specs/python-foundation/spec.md),
 strict OpenSpec validation, applicable quality gates and truthful review evidence.
-No runtime files or dependencies are introduced by this planning proposal.
+The original planning proposal added no runtime; the current branch includes its
+authorized implementation alongside the prepared artifacts.
 
 ## Non-goals
 
@@ -43,7 +46,9 @@ cross-repository documentation checkout, hosted service, or SpecFact runtime dep
 
 ## Dependencies
 
-None.
+None. PR [#21](https://github.com/nold-ai/changecost/pull/21) merged the preceding
+source-feasibility research. Its remaining provider evidence gaps do not block
+this independent foundation or authorize provider imports.
 
 Dependencies are implementation prerequisites; planning can proceed together.
 See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
@@ -51,7 +56,11 @@ See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/
 ## Decisions and uncertainty
 
 The Python/local-first scope is confirmed. Provider access and prediction quality
-remain To-Validate. See [design](design.md) for decisions and evidence gates.
+remain To-Validate. The [preparation evidence](design.md#preparation-evidence)
+records the fresh baseline, tool drift and unresolved implementation verification.
+The preparation changed planning only. The maintainer subsequently authorized
+implementation on 2026-09-28; see [current task evidence](TDD_EVIDENCE.md), including
+the unresolved required analyzer runtime.
 
 ## Risks and rollback
 
@@ -71,5 +80,6 @@ evidence and prior local database versions; do not erase financial history.
 - Parent epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
 - Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status Todo.
 - Source: maintainer-approved pilot plan, 2026-09-28 (Europe/Berlin).
-- Tracking verified: 2026-09-28; implementation is unstarted, unassigned and undated.
+- Tracking verified: 2026-09-28; GitHub remains Todo, unassigned and undated.
+  Implementation exists locally; required verification and publication remain pending.
 <!-- tracking:end -->

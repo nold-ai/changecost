@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "changecost"
+version = "0.1.0.dev0"
+description = "Local foundation for change-level AI cost evidence"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+classifiers = ["Private :: Do Not Upload"]
+dependencies = ["typer>=0.16,<1"]
+
+[project.scripts]
+changecost = "changecost.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.12,<1", "basedpyright==1.39.10", "pre-commit==4.6.2", "packaging>=25", "pyyaml>=6", "types-pyyaml>=6", "pip-audit>=2.9,<3", "uv==0.12.19"]
+build = ["hatchling>=1.27,<2"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/changecost"]
+[tool.hatch.build.targets.sdist]
+only-include = ["src/changecost", "pyproject.toml", "README.md", "LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+
+[tool.specfact.code-review]
+native_tools = ["git"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "C90"]
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+[tool.basedpyright]
+include = ["src", "quality", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+
+[tool.uv]
+# Match the signed SpecFact 0.50.1 analyzer composition.
+constraint-dependencies = ["nodejs-wheel-binaries==24.16.0"]

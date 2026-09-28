@@ -1,0 +1,672 @@
+{
+  "documents": [
+    {
+      "path": ".agents/skills/changecost-implement/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/changecost-implement/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/changecost-prepare/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/changecost-prepare/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/changecost-promote/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/changecost-promote/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/changecost-verify/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/changecost-verify/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/openspec-apply-change/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/openspec-apply-change/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/openspec-archive-change/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/openspec-archive-change/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/openspec-explore/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/openspec-explore/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/openspec-propose/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/openspec-propose/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/openspec-sync-specs/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/openspec-sync-specs/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".agents/skills/openspec-update-change/SKILL.md",
+      "owner": "agent-workflow",
+      "sources": [
+        ".agents/skills/openspec-update-change/SKILL.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "owner": "project",
+      "sources": [
+        ".github/ISSUE_TEMPLATE/bug_report.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/proposal.md",
+      "owner": "project",
+      "sources": [
+        ".github/ISSUE_TEMPLATE/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "owner": "project",
+      "sources": [
+        ".github/pull_request_template.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "AGENTS.md",
+      "owner": "project",
+      "sources": [
+        "AGENTS.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "owner": "project",
+      "sources": [
+        "CHANGELOG.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "owner": "project",
+      "sources": [
+        "CODE_OF_CONDUCT.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "owner": "foundation",
+      "sources": [
+        "src/**/*.py",
+        "quality/*.py",
+        "pyproject.toml",
+        "Makefile",
+        ".github/workflows/*.yml",
+        ".pre-commit*.yaml"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "README.md",
+      "owner": "foundation",
+      "sources": [
+        "src/**/*.py",
+        "quality/*.py",
+        "pyproject.toml",
+        "Makefile",
+        ".github/workflows/*.yml",
+        ".pre-commit*.yaml"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "SECURITY.md",
+      "owner": "project",
+      "sources": [
+        "SECURITY.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "SUPPORT.md",
+      "owner": "project",
+      "sources": [
+        "SUPPORT.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/agent-rules/05-non-negotiable-checklist.md",
+      "owner": "project",
+      "sources": [
+        "docs/agent-rules/05-non-negotiable-checklist.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/agent-rules/30-change-workflow.md",
+      "owner": "project",
+      "sources": [
+        "docs/agent-rules/30-change-workflow.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/agent-rules/40-openspec-and-tdd.md",
+      "owner": "project",
+      "sources": [
+        "docs/agent-rules/40-openspec-and-tdd.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/agent-rules/50-quality-gates-and-review.md",
+      "owner": "foundation",
+      "sources": [
+        "src/**/*.py",
+        "quality/*.py",
+        "pyproject.toml",
+        "Makefile",
+        ".github/workflows/*.yml",
+        ".pre-commit*.yaml"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/agent-rules/60-github-change-governance.md",
+      "owner": "project",
+      "sources": [
+        "docs/agent-rules/60-github-change-governance.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/agent-rules/INDEX.md",
+      "owner": "project",
+      "sources": [
+        "docs/agent-rules/INDEX.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/commands.md",
+      "owner": "foundation",
+      "sources": [
+        "src/**/*.py",
+        "quality/index.py",
+        "quality/index.json",
+        ".agents/skills/*/SKILL.md"
+      ],
+      "kind": "generated"
+    },
+    {
+      "path": "docs/development/quality-gates.md",
+      "owner": "foundation",
+      "sources": [
+        "src/**/*.py",
+        "quality/*.py",
+        "pyproject.toml",
+        "Makefile",
+        ".github/workflows/*.yml",
+        ".pre-commit*.yaml"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/project-brief.md",
+      "owner": "project",
+      "sources": [
+        "docs/project-brief.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/providers/codex-claude-metrics.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/providers/codex-claude-metrics.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/providers/copilot-local-metrics.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/providers/copilot-local-metrics.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/providers/cursor-local-metrics.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/providers/cursor-local-metrics.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/providers/enterprise-schema-review.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/providers/enterprise-schema-review.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/providers/enterprise-v2-schema-review.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/providers/enterprise-v2-schema-review.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/providers/fixtures.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/providers/fixtures.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/providers/source-feasibility.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/providers/source-feasibility.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/research/README.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/research/README.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/research/pilot-source-assessment.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/research/pilot-source-assessment.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/research/sources.md",
+      "owner": "source-research",
+      "sources": [
+        "docs/research/sources.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "llms.txt",
+      "owner": "foundation",
+      "sources": [
+        "src/**/*.py",
+        "quality/index.py",
+        "quality/index.json",
+        ".agents/skills/*/SKILL.md"
+      ],
+      "kind": "generated"
+    },
+    {
+      "path": "openspec/CHANGE_ORDER.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/CHANGE_ORDER.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-01-python-foundation/TDD_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-01-python-foundation/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-01-python-foundation/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-01-python-foundation/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-01-python-foundation/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-01-python-foundation/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-01-python-foundation/specs/python-foundation/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-01-python-foundation/specs/python-foundation/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-01-python-foundation/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-01-python-foundation/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-02-change-run-contracts/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-02-change-run-contracts/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-02-change-run-contracts/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-02-change-run-contracts/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-02-change-run-contracts/specs/change-run-contracts/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-02-change-run-contracts/specs/change-run-contracts/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-02-change-run-contracts/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-02-change-run-contracts/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-01-source-feasibility/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-01-source-feasibility/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-01-source-feasibility/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-01-source-feasibility/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-01-source-feasibility/specs/source-feasibility/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-01-source-feasibility/specs/source-feasibility/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-01-source-feasibility/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-01-source-feasibility/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-02-calibration-evaluation/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-02-calibration-evaluation/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-02-calibration-evaluation/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-02-calibration-evaluation/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-02-calibration-evaluation/specs/pilot-evaluation/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-02-calibration-evaluation/specs/pilot-evaluation/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-02-calibration-evaluation/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-02-calibration-evaluation/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-01-copilot-import/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-01-copilot-import/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-01-copilot-import/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-01-copilot-import/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-01-copilot-import/specs/copilot-import/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-01-copilot-import/specs/copilot-import/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-01-copilot-import/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-01-copilot-import/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-02-cursor-import/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-02-cursor-import/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-02-cursor-import/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-02-cursor-import/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-02-cursor-import/specs/cursor-import/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-02-cursor-import/specs/cursor-import/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-02-cursor-import/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-02-cursor-import/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/quote-01-empirical-estimation/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/quote-01-empirical-estimation/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/quote-01-empirical-estimation/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/quote-01-empirical-estimation/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/quote-01-empirical-estimation/specs/empirical-quotes/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/quote-01-empirical-estimation/specs/empirical-quotes/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/quote-01-empirical-estimation/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/quote-01-empirical-estimation/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/settlement-01-reconciliation/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/settlement-01-reconciliation/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/settlement-01-reconciliation/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/settlement-01-reconciliation/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/settlement-01-reconciliation/specs/evidence-reconciliation/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/settlement-01-reconciliation/specs/evidence-reconciliation/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/settlement-01-reconciliation/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/settlement-01-reconciliation/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/workflow-01-advisory-ci/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/workflow-01-advisory-ci/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/workflow-01-advisory-ci/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/workflow-01-advisory-ci/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/workflow-01-advisory-ci/specs/advisory-workflow/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/workflow-01-advisory-ci/specs/advisory-workflow/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/workflow-01-advisory-ci/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/workflow-01-advisory-ci/tasks.md"
+      ],
+      "kind": "manual"
+    }
+  ],
+  "immutable": {
+    "docs/research/deep-research-report.md": {
+      "sha256": "70a15456cc16d03a88c7b7feb3a6e2639d9a732aa2710de608d9566fdd0dd437",
+      "reason": "Immutable maintainer-supplied research report."
+    },
+    "docs/research/deep-research-sources.txt": {
+      "sha256": "3589251b1e713445080e9698deca5093e0f72bb23d44c3e6a3b6eca252be3396",
+      "reason": "Immutable maintainer-supplied citation export."
+    }
+  }
+}

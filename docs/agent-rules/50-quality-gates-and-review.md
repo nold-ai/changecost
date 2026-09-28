@@ -1,85 +1,24 @@
 # Quality gates and review
 
-## Current planning gates
+## Foundation gates
 
-Run `make check` from the repo root. It invokes the pinned pre-commit hygiene
-checks and `openspec validate --all --strict --no-interactive`.
-GitHub Actions runs the same target on pull requests and pushes to `main`.
-No source tests or product-security checks are claimed by this scaffold.
-Documentation ownership, changelog/version and `llms.txt` consistency are currently
-review responsibilities, not automated gates. Agent instructions do not enforce them.
+The foundation now provides shared validators; see the executable contract and
+setup in [the gate guide](../development/quality-gates.md). Run `make check` with
+an explicit `BASE_REF` and an intended-file manifest before staging new files.
+Local/CI checks cover hygiene, OpenSpec, locked resolution, formatting/lint,
+typing/tests, documentation ownership/links, generated references, metadata,
+workflow syntax, package builds, dependencies and applicable SpecFact review.
+Missing tooling or analyzer coverage remains a failed/incomplete gate.
 
-Check Markdown relative links after documentation edits. Keep the original
-research export immutable; it is excluded from whitespace normalization.
-Check generated files and credentials before staging, even when ignore rules exist.
-Before staging new files, also run hygiene against their explicit path manifest
-(or an isolated verification snapshot indexing those additions): pre-commit's
-`--all-files` selection does not include untracked files. Review any auto-fixes
-and refresh affected evidence before committing.
+SpecFact CLI 0.55.4 and module 0.50.1 are contributor tooling, never package runtime.
+The current macOS controller reports unsupported capsule execution; run the full
+review in supported Linux x86-64 before claiming it passed. Keep actual report,
+versions, content digest and outcomes in ignored .specfact and summarize them in
+TDD_EVIDENCE.md. Review evidence supplements tests and security analysis.
 
-## Before the first product implementation
-
-Implement the approved Python foundation: `pyproject.toml`, committed `uv.lock`,
-uv-managed environments, Hatchling builds, pytest, Ruff and BasedPyright. Add runnable
-commands and matching CI gates. The foundation proposal defines the smoke tests. Review dependency licenses and security
-advisories. Test numerical units, rounding, missing usage, retries, and deduplication
-when relevant to the approved behavior. Do not add empty tests to claim coverage.
-
-The [foundation design](../../openspec/changes/core-01-python-foundation/design.md#repository-gate-contract)
-also requires executable documentation ownership/source mappings, internal links,
-generated command/skill/`llms.txt` integrity, changelog/version coherence, workflow
-syntax and local/pre-commit/CI parity checks. Each requires negative fixtures that
-fail before correction. Checks cover staged additions and docs-only CI changes;
-missing base history or required validators cannot produce green results.
-These gates remain **planned** until that change is implemented and verified.
-
-Adapt SpecFact's canonical-source and freshness patterns to this standalone project.
-Preserve immutable research with explicit provenance exceptions, avoid per-PR
-release bumps for unreleased work, and exclude module signing, registry, paired
-repository checkout and publication/deployment machinery. The later advisory-CI
-change reuses foundation gates; advisory cost policy never waives repository quality.
-
-## SpecFact review readiness
-
-SpecFact is contributor tooling only. This command surface was checked against
-installed SpecFact CLI 0.55.4 on 2026-09-27 (Europe/Berlin):
-
-```sh
-specfact module install nold-ai/specfact-code-review
-specfact code review run --help
-mkdir -p .specfact
-specfact code review run --scope full --enforcement full --json --out .specfact/code-review.json
-```
-
-Install the review module only if missing. Record the CLI and module version used.
-During iteration `--scope changed` can narrow analysis; final review must cover
-the changed behavior and required dependencies. Inspect the report's actual scope
-and analyzer availability rather than relying on its filename or exit code alone.
-
-The pre-commit configuration includes a **manual** hook for Python source paths:
-
-```sh
-pre-commit run specfact-code-review --hook-stage manual --all-files
-```
-
-Python is selected, but no source exists yet. Activate and verify review coverage
-when the foundation is implemented. A hook with no matching source files is skipped,
-not passed.
-
-Portable dependency-sensitive review may require a supported Linux runtime.
-The inspected SpecFact documentation describes automatic capsule preparation for
-Linux x86-64 / CPython 3.11–3.13, not macOS or Windows. Verify the installed module's
-current support; do not invent a runtime descriptor before the supported review environment has been verified.
-
-For behavior changes, retain fresh `.specfact/code-review.json` locally, and record
-the command, versions, reviewed commit/diff, timestamp, and result in
-`TDD_EVIDENCE.md` or the PR. Regenerate after substantive source, test, config,
-workflow, or spec edits. Do not commit machine-specific reports or private data.
-
-Resolve findings at every severity, including naming, KISS, YAGNI, DRY, and SOLID
-issues, or document a narrow justified exception. An unknown/skipped analyzer or
-absent tool must be addressed before claiming the behavior gate is complete.
-Code review supplements tests and independent security analysis.
+Keep original research hashes unchanged. Do not fabricate product TDD for docs-only
+work; record real negative and repaired fixtures for behavior and gate changes.
+Resolve findings at every severity or document a narrow justified exception.
 
 ## CodeRabbit review policy
 
@@ -104,3 +43,28 @@ settings or subscription changes are implied. A completed review of the current
 head plus green applicable checks is required before reporting the loop complete;
 absence of a bot response is not a passing review. Revert the configuration commit
 to roll back this policy.
+
+
+The staged commit hook uses HEAD only when no explicit comparison base is supplied.
+Keep full aggregate/CI comparison bases explicit. Hosted capsule setup has now run;
+read native current-head analyzer results rather than inferring complete assurance
+from successful capsule launch. The [gate guide](../development/quality-gates.md)
+records the disposable hosted-runner trust model and pinned analyzer compatibility.
+
+
+Keep external-tool host proofs in the required gate path when a signed capsule
+cannot perform the tool's own interpreter probe. The uv missing/stale/repaired
+fixture runs through the lock leaf for local, hook and CI invocations; its move
+out of pytest collection does not waive the proof or allow analyzer failures.
+
+Verify the final complete staged snapshot with BASE_REF unset as well as the
+explicit aggregate comparison. A passing main-branch comparison does not prove
+that incremental documentation freshness passes against the hook's HEAD baseline.
+For negative tool fixtures, show the same input succeeds when the guarded check
+is removed or repaired; an unrelated resolution failure is not lock-check proof.
+
+Interpret native review verdicts using the installed report contract: both PASS
+and PASS_WITH_ADVISORY can accompany complete passing assurance. Keep the digest,
+required-member execution/outcome, unknown-evidence and exit-code checks intact;
+record dispositions for advisories instead of treating their presence as failure
+or silently discarding them.
