@@ -1,10 +1,10 @@
 {
   "README.md": {
-    "reason": "Workflow validation now covers sibling-job permission overrides and canonical/event-head checkout correctness. README setup commands, package scope, staged-hook baseline and native advisory-success semantics remain unchanged. Detailed workflow contracts are updated in CONTRIBUTING.md and docs/development/quality-gates.md.",
-    "digest": "ab18c3e7b805c90e17bda380a3a417c3cdc2237745db0296576b82e06108cb00"
+    "reason": "OpenSpec configuration-only edits now trigger full review, and sibling workflow files receive the existing read-only token/event policy. README setup commands, package scope, staged-hook baseline and native advisory-success semantics remain unchanged. Detailed applicability and workflow rules are updated in CONTRIBUTING.md and docs/development/quality-gates.md.",
+    "digest": "f0a2407887e73023783d0e067a7cc6a6056243e484a9f9b76ed1dfa6fc8f2684"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "The quality procedure already requires applicable workflow gates, exact HEAD snapshot checks and incomplete-evidence reporting. All-job permissions and event-head checkout validation change no agent invocation or assurance procedure; the precise new workflow rules are maintained in CONTRIBUTING.md and docs/development/quality-gates.md.",
-    "digest": "ab18c3e7b805c90e17bda380a3a417c3cdc2237745db0296576b82e06108cb00"
+    "reason": "The agent procedure already requires applicable full review and workflow security validation. Classifying openspec/config.yaml as a review input and applying the established read-only token/event policy to sibling workflows correct scope coverage without changing agent invocation or assurance policy; the precise rules are documented in CONTRIBUTING.md and docs/development/quality-gates.md.",
+    "digest": "f0a2407887e73023783d0e067a7cc6a6056243e484a9f9b76ed1dfa6fc8f2684"
   }
 }

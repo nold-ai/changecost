@@ -92,10 +92,16 @@ probe on the host; capsule unit tests verify its failure propagation. Local aggr
 explicit base. Keep the locked development analyzer versions aligned with the
 signed review capsule; see the [gate guide](docs/development/quality-gates.md).
 When editing CI, preserve `contents: read` both at workflow level and in any
-job permission override, including added sibling jobs; the workflow gate rejects
-broader permissions regardless of the job name. Keep the canonical initial
+job permission override, including sibling jobs and additional workflow files.
+Every `.yml`/`.yaml` workflow must declare this root policy and must not use
+`pull_request_target`; legitimate read-only siblings need no quality-job matrix
+or comparison resolver. Keep the canonical initial
 checkout tied to the event head; CI checks actual HEAD before resolving its base.
 
 Inspect and disposition nonblocking native review advisories even when full
 assurance passes. `PASS_WITH_ADVISORY` is a supported successful native verdict,
 not permission to ignore failed, unknown, stale or missing analyzer evidence.
+
+Changes to `openspec/config.yaml` require full review even when no Python source
+changes; this configuration influences the specification workflow and is not a
+docs-only applicability exemption.

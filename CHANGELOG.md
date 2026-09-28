@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Validate read-only token permissions and privileged-event restrictions in every
+  workflow file, retaining quality-specific wiring checks on the quality workflow.
+
+- Require full review for OpenSpec configuration edits, including config-only changes.
+
 - Apply read-only token permission validation to every workflow job, including
   added sibling jobs rather than only the required quality job; validate canonical
   checkout wiring and reject a runtime HEAD that differs from the event head.

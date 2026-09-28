@@ -411,6 +411,23 @@ def test_review_activates_every_required_member(monkeypatch, tmp_path):
     assert review.run(tmp_path, set()) == []
 
 
+def test_openspec_configuration_change_requires_review(monkeypatch, tmp_path):
+    from quality import __main__ as runner
+
+    name = "openspec/config.yaml"
+    policy = tmp_path / name
+    policy.parent.mkdir()
+    before = {name: b"schema: spec-driven\ncontext: Require strict validation.\n"}
+    policy.write_text("schema: spec-driven\ncontext: Validation is optional.\n")
+    calls = []
+    monkeypatch.setattr(runner.review, "run", lambda *args: calls.append(args) or ["UNKNOWN"])
+    assert runner.leaf("review", tmp_path, {name}, before) == ["UNKNOWN"]
+    assert len(calls) == 1
+    policy.write_bytes(before[name])
+    assert runner.leaf("review", tmp_path, {name}, before) == []
+    assert len(calls) == 1
+
+
 def test_hygiene_policy_change_requires_review(monkeypatch, tmp_path):
     from quality import __main__ as runner
 
@@ -599,18 +616,18 @@ def test_workflow_rejects_comparison_base_bypass(mutation):
 def test_workflow_jobs_cannot_override_read_only_permissions(permissions, job_name):
     import yaml
 
-    from quality.workflow import wiring_errors
+    from quality.workflow import security_errors
 
     root = Path(__file__).resolve().parents[1]
     config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
     job = config["jobs"].setdefault(
         job_name, {"runs-on": "ubuntu-24.04", "steps": [{"run": "true"}]}
     )
-    assert wiring_errors(config) == []
+    assert security_errors(config) == []
     job["permissions"] = permissions
-    assert any("contents: read permissions" in error for error in wiring_errors(config))
+    assert any("contents: read permissions" in error for error in security_errors(config))
     job["permissions"] = {"contents": "read"}
-    assert wiring_errors(config) == []
+    assert security_errors(config) == []
 
 
 @pytest.mark.parametrize(
@@ -662,3 +679,53 @@ def test_workflow_requires_one_initial_checkout(mutation):
     if mutation == "late":
         steps.insert(0, checkout)
     assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("suffix", ["yml", "yaml"])
+@pytest.mark.parametrize(
+    "mutation", ["root-write", "root-write-all", "root-missing", "job-write", "event"]
+)
+def test_sibling_workflows_retain_security_policy(monkeypatch, tmp_path, suffix, mutation):
+    import shutil
+    import subprocess
+
+    import yaml
+
+    from quality import workflow
+
+    root = Path(__file__).resolve().parents[1]
+    shutil.copytree(root / ".github", tmp_path / ".github")
+    monkeypatch.setattr(workflow.external_tools, "executable", lambda *args: "/external/actionlint")
+    monkeypatch.setattr(
+        workflow.subprocess,
+        "run",
+        lambda args, **kwargs: subprocess.CompletedProcess(args, 0, stdout="1.7.12\n"),
+    )
+    sibling = tmp_path / f".github/workflows/additional.{suffix}"
+    config = {
+        "on": "push",
+        "permissions": {"contents": "read"},
+        "jobs": {"inspect": {"runs-on": "ubuntu-24.04", "steps": [{"run": "true"}]}},
+    }
+    sibling.write_text(yaml.safe_dump(config))
+    assert workflow.validate(tmp_path) == []
+    job = config["jobs"]["inspect"]
+    changes = {
+        "root-write": (config, "permissions", {"contents": "write"}),
+        "root-write-all": (config, "permissions", "write-all"),
+        "root-missing": (config, "permissions", None),
+        "job-write": (job, "permissions", {"contents": "write"}),
+        "event": (config, "on", "pull_request_target"),
+    }
+    target, key, value = changes[mutation]
+    previous = target.get(key)
+    if value is None:
+        del target[key]
+    else:
+        target[key] = value
+    sibling.write_text(yaml.safe_dump(config))
+    assert any(sibling.name in error for error in workflow.validate(tmp_path))
+    target[key] = previous
+    job["permissions"] = {"contents": "read"}
+    sibling.write_text(yaml.safe_dump(config))
+    assert workflow.validate(tmp_path) == []

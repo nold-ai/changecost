@@ -119,8 +119,8 @@ SpecFact CLI 0.55.4 and review module 0.50.1 produce the native ignored
 `.specfact/code-review.json`. The runner binds its scope to a digest of the complete
 input set in a sidecar and checks actual required analyzer states and assurance.
 Behavior-affecting source, tests, dependencies, validator or CI edits require review;
-changes to either pre-commit configuration, including the shared hygiene policy,
-also require review. Docs-only work states non-applicability and still runs its gates. Missing/skipped
+changes to `openspec/config.yaml` or either pre-commit configuration, including
+the shared hygiene policy, also require review. Docs-only work states non-applicability and still runs its gates. Missing/skipped
 analyzers fail. The manual hook alone is not review completion.
 
 Review capsules currently need a Linux x86-64 controller. Local macOS results
@@ -253,3 +253,9 @@ publishes each advisory's identity, source report hashes and explicit rationale.
 It covers only those reports. Later report-bound dispositions or deltas may be
 recorded in the PR so recording evidence alone does not require another source
 commit. A green native check does not complete this review obligation.
+
+The shared token/event policy applies to every discovered `.yml` and `.yaml`
+workflow: explicit root `contents: read`, inherited or identical job permissions,
+and no `pull_request_target`. Diagnostics identify the offending workflow.
+Quality-specific matrix, checkout and comparison wiring remain requirements of
+`quality.yml`; unrelated read-only workflows do not need that foundation schema.

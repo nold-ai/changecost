@@ -30,6 +30,7 @@ LEAVES = (
 )
 BEHAVIOR = ("src/", "quality/", "tests/", ".github/workflows/")
 CONFIG = {
+    "openspec/config.yaml",
     "pyproject.toml",
     "uv.lock",
     "Makefile",

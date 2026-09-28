@@ -44,6 +44,9 @@ def validate(root: Path) -> list[str]:
         [actionlint, "-shellcheck=", "-pyflakes=", *map(str, paths)], cwd=root, check=False
     )
     errors = [] if result.returncode == 0 else ["workflow syntax validation failed"]
+    for path in paths:
+        candidate = yaml.load(path.read_text(), Loader=yaml.BaseLoader)
+        errors.extend(f"{path.name}: {error}" for error in security_errors(candidate))
     config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
     events = config["on"]
     if not {"pull_request", "push", "workflow_dispatch"} <= events.keys():
@@ -54,12 +57,25 @@ def validate(root: Path) -> list[str]:
             or {"paths", "paths-ignore"} & events[event].keys()
         ):
             errors.append(f"quality event incomplete: {event}")
-    if config.get("permissions") != {"contents": "read"} or "pull_request_target" in events:
-        errors.append("privileged quality workflow")
     text = (root / ".github/workflows/quality.yml").read_text()
     if "make check" not in text or "persist-credentials: false" not in text:
         errors.append("quality workflow must call the aggregate without persisted credentials")
     errors.extend(wiring_errors(config))
+    return errors
+
+
+def security_errors(config: dict) -> list[str]:
+    """Apply the repository's read-only token and event policy to every workflow."""
+    errors = []
+    if config.get("permissions") != {"contents": "read"}:
+        errors.append("workflow must declare contents: read permissions")
+    if "pull_request_target" in config.get("on", {}):
+        errors.append("privileged pull_request_target event is prohibited")
+    if any(
+        "permissions" in candidate and candidate["permissions"] != {"contents": "read"}
+        for candidate in config.get("jobs", {}).values()
+    ):
+        errors.append("workflow jobs must retain contents: read permissions")
     return errors
 
 
@@ -68,11 +84,6 @@ def wiring_errors(config: dict) -> list[str]:
     errors = []
     if "if" in job or job.get("continue-on-error") not in {None, "false"}:
         errors.append("required quality job can be skipped or ignored")
-    if any(
-        "permissions" in candidate and candidate["permissions"] != {"contents": "read"}
-        for candidate in config.get("jobs", {}).values()
-    ):
-        errors.append("workflow jobs must retain contents: read permissions")
     errors.extend(checkout_errors(job))
     errors.extend(capsule_setup_errors(job))
     errors.extend(comparison_errors(config))

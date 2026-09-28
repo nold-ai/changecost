@@ -516,3 +516,45 @@ waive new findings or claim coverage of the next head. Subsequent current-head
 triage must be recorded with its report identity, including through reviewable PR
 evidence, before promotion is complete. No generic runtime waiver or approval
 framework was added, and the two mutable-host scope disputes remain open.
+
+
+## OpenSpec configuration review applicability
+
+Codex review 5340620250 of `a70f845` (comment 4123744916) identified that an
+`openspec/config.yaml`-only edit skipped full review. The spec now explicitly
+covers this configuration boundary. The regression changed only its workflow
+context and injected incomplete native evidence; before correction the leaf
+returned success with “not applicable” instead of propagating UNKNOWN. Adding
+this exact path to the existing configuration set makes the regression pass and
+leaves unchanged configuration non-applicable. The existing hygiene-policy
+regression also passes. Receipts: `promotion/openspec-config-red.log` and
+`promotion/openspec-config-green.log`. No analyzer or assurance requirement changed.
+
+Hosted run [36440386931](https://github.com/nold-ai/changecost/actions/runs/36440386931)
+passed both Python versions at `a70f845`, including every aggregate leaf and all
+ten native analyzers. Its 209 nonblocking findings have a
+[report-bound individual disposition delta](https://github.com/nold-ai/changecost/pull/22#issuecomment-5872803533)
+against the committed baseline: 187 retained, 22 explicitly reviewed additions
+and 13 removals. That evidence covers `a70f845`; this applicability correction
+still requires independent verification and fresh hosted CI/reviews. The two
+mutable-host integrity scope disputes remain open.
+
+
+## Shared security policy across workflow files
+
+Codex security review 5340803594 of `a70f845` (comment 4123896111) identified
+that actionlint received sibling workflows but the token/event policy inspected
+only `quality.yml`. Ten new `.yml`/`.yaml` fixture cases failed before correction:
+root write, root write-all, omitted root permissions, a job write override and
+`pull_request_target`. They now fail validation with a filename-bound diagnostic.
+Each fixture first accepts a read-only push sibling with inherited permissions,
+then repairs the violation and explicitly sets the job to `contents: read`.
+These siblings have no quality matrix, checkout or resolver, demonstrating that
+only shared security invariants apply. Existing quality-job override cases now
+exercise the shared policy directly. The combined 17 affected cases pass.
+Receipts: `promotion/all-workflow-red.log` and `promotion/all-workflow-green.log`.
+
+This correction enforces the approved read-only CI design across workflow files;
+it does not authenticate a hostile PR controller or change the two open integrity
+scope disputes. Current-head CI remains green at `a70f845`; the uncommitted
+configuration and workflow-policy fixes still require fresh verification and CI.

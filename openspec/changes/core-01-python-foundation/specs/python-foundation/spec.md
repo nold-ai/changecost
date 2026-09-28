@@ -155,6 +155,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the checked-out HEAD differs from that event head or the reviewed checkout wiring is changed
 - **THEN** verification fails before resolving the comparison base; the canonical checkout remains unique, unconditional, first, pinned, with full history and no persisted credentials.
 
+#### Scenario: Sibling workflows retain shared security policy
+
+- **GIVEN** an additional `.yml` or `.yaml` workflow alongside the required quality workflow
+- **WHEN** it declares broader or missing root permissions, a broader job override, or `pull_request_target`
+- **THEN** workflow validation fails even if its syntax is valid
+- **AND** a read-only sibling with inherited or identical job permissions passes shared security validation without requiring the quality workflow's matrix, checkout or comparison resolver.
+
 #### Scenario: Any workflow job overrides repository read-only permissions
 
 - **GIVEN** the workflow declares only `contents: read` at its root
@@ -185,6 +192,12 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **GIVEN** actionlint 1.7.12 installed as a release binary or through its Go module
 - **WHEN** the workflow validator checks the installed version
 - **THEN** it accepts exactly `1.7.12` and `v1.7.12`, rejects missing, malformed or different versions, and still runs workflow syntax validation.
+
+#### Scenario: OpenSpec configuration changes require review
+
+- **GIVEN** a change only to `openspec/config.yaml`
+- **WHEN** review applicability is evaluated
+- **THEN** full required review runs and incomplete review evidence fails; unchanged configuration alone does not trigger review.
 
 #### Scenario: Hygiene policy changes require review
 
