@@ -9,6 +9,10 @@ The repository currently runs documentation hygiene only. A reproducible Python 
 - Introduce the future src-layout package and installable CLI entry point.
 - Make pyproject.toml and uv.lock authoritative for development and builds.
 - Add meaningful installation/CLI smoke tests and formatting, typing, test and SpecFact review gates.
+- Add executable documentation ownership/consistency, generated `llms.txt` integrity,
+  changelog and package-version consistency checks with shared pre-commit/CI entry points.
+- Prove the gates reject stale or malformed artifacts, including docs-only and
+  workflow-only changes; keep repository quality separate from advisory cost checks.
 
 ## Capabilities
 
@@ -23,14 +27,19 @@ None; no main capability specs exist yet.
 ## Impact
 
 Future implementation affects the standalone Python CLI and local evidence workflow.
-Documentation: README.md, CONTRIBUTING.md, docs/agent-rules/50-quality-gates-and-review.md, and CI contributor instructions.
+Documentation: README.md, CONTRIBUTING.md, llms.txt, CHANGELOG.md,
+docs/agent-rules/50-quality-gates-and-review.md, documentation ownership metadata,
+and CI contributor instructions. Implementation will add small repository-local
+validators, fixtures and generated command/skill reference artifacts.
 Verification: the scenarios in [the capability spec](specs/python-foundation/spec.md),
 strict OpenSpec validation, applicable quality gates and truthful review evidence.
 No runtime files or dependencies are introduced by this planning proposal.
 
 ## Non-goals
 
-No successful placeholder quote/settle operations, adapters, economic schemas, release publishing, service, or SpecFact runtime dependency.
+No successful placeholder quote/settle operations, adapters, economic schemas,
+release publishing/deployment, per-PR release bumps, registry/module signing,
+cross-repository documentation checkout, hosted service, or SpecFact runtime dependency.
 
 ## Dependencies
 

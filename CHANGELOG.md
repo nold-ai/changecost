@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Extend the planned Python foundation with docs ownership/consistency, generated
+  agent/command index integrity, changelog/version checks and pre-commit/CI parity;
+  distinguish repository quality gates from later advisory budget summaries.
 - Add agent skills for fresh change preparation, minimal implementation, delegated
   verification and commit/push, and PR review resolution; add a portable agent index.
 - Bootstrap the private ChangeCost repository with community files, Apache-2.0,

@@ -9,6 +9,8 @@ Developers need readable and machine-consumable results from the standalone CLI 
 - Present quote, bind, settle, check and explain consistently in human and JSON formats, including a complete fresh-store registration and outcome workflow.
 - Compare compatible budgets with explicit advisory statuses; incomplete settlement totals remain unknown rather than treating known subtotals as final.
 - Provide a GitHub Actions example that writes a safe job summary using local artifacts.
+- Keep implemented CLI examples, documentation ownership and generated command/agent
+  references current through the foundation's existing quality gates.
 
 ## Capabilities
 
@@ -30,7 +32,10 @@ No runtime files or dependencies are introduced by this planning proposal.
 
 ## Non-goals
 
-No required status enforcement, PR comment bot, hosted service, dashboard, provider account setup or SpecFact runtime integration.
+No required budget-status enforcement, PR comment bot, hosted service, dashboard,
+provider account setup or SpecFact runtime integration. Repository quality gates
+are owned by `core-01-python-foundation` and remain blocking independently of
+advisory budget results.
 
 ## Dependencies
 

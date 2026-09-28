@@ -6,6 +6,8 @@ Run `make check` from the repo root. It invokes the pinned pre-commit hygiene
 checks and `openspec validate --all --strict --no-interactive`.
 GitHub Actions runs the same target on pull requests and pushes to `main`.
 No source tests or product-security checks are claimed by this scaffold.
+Documentation ownership, changelog/version and `llms.txt` consistency are currently
+review responsibilities, not automated gates. Agent instructions do not enforce them.
 
 Check Markdown relative links after documentation edits. Keep the original
 research export immutable; it is excluded from whitespace normalization.
@@ -22,6 +24,20 @@ uv-managed environments, Hatchling builds, pytest, Ruff and BasedPyright. Add ru
 commands and matching CI gates. The foundation proposal defines the smoke tests. Review dependency licenses and security
 advisories. Test numerical units, rounding, missing usage, retries, and deduplication
 when relevant to the approved behavior. Do not add empty tests to claim coverage.
+
+The [foundation design](../../openspec/changes/core-01-python-foundation/design.md#repository-gate-contract)
+also requires executable documentation ownership/source mappings, internal links,
+generated command/skill/`llms.txt` integrity, changelog/version coherence, workflow
+syntax and local/pre-commit/CI parity checks. Each requires negative fixtures that
+fail before correction. Checks cover staged additions and docs-only CI changes;
+missing base history or required validators cannot produce green results.
+These gates remain **planned** until that change is implemented and verified.
+
+Adapt SpecFact's canonical-source and freshness patterns to this standalone project.
+Preserve immutable research with explicit provenance exceptions, avoid per-PR
+release bumps for unreleased work, and exclude module signing, registry, paired
+repository checkout and publication/deployment machinery. The later advisory-CI
+change reuses foundation gates; advisory cost policy never waives repository quality.
 
 ## SpecFact review readiness
 

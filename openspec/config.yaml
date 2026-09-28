@@ -25,6 +25,10 @@ context: |
   Current gate: make check. Add stack-specific format/lint/type/test gates when
   implementation is approved. Keep fresh SpecFact review evidence for behavior
   changes; missing/skipped analyzers are limitations, not passes.
+  core-01-python-foundation plans automated docs ownership/source consistency,
+  llms/command integrity, changelog/version freshness and local/pre-commit/CI parity.
+  They are not implemented by planning or agent instructions. Advisory budget CI
+  does not waive repository quality gates; publishing/deployment remains out of scope.
   Prefer clear names, KISS, YAGNI, DRY, and proportionate SOLID; no speculative layers.
   For the four-stage change workflow, read docs/agent-rules/30-change-workflow.md.
   Refresh main before preparation/implementation; reconcile prepared artifacts by
@@ -53,5 +57,6 @@ rules:
     - Record actual commands, timestamps, and outcomes in TDD_EVIDENCE.md for behavior changes.
     - Include applicable quality gates and fresh SpecFact review; resolve or justify findings.
     - Include documentation updates, strict OpenSpec validation, and a focused PR.
+    - For foundation/workflow changes, include executable docs ownership/consistency, llms integrity and changelog/version checks with negative fixtures and local/CI parity; keep planned versus active gates explicit.
     - Verify documentation and llms.txt against current behavior; versions change only when applicable, not for planning.
     - Keep Epic/Feature/User Story source tracking and native dependencies aligned with CHANGE_ORDER.md; no module signing or release bumps for planning.

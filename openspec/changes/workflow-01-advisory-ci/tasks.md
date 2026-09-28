@@ -12,12 +12,14 @@ All implementation and research tasks below remain unchecked. Planning approval 
 - [ ] 2.1 Write failing empty-store registration/quote/bind/import/outcome integration, JSON/stdout/stderr, incompatible-unit, incomplete-settlement (subtotals below and above budget), complete-total and advisory-exit tests; verify expected failures.
 - [ ] 2.2 Implement consistent result/error presentation and scope-aware completeness checks before compatible budget comparisons; verify all five command families follow documented semantics.
 - [ ] 2.3 Document a runnable fresh-store walkthrough and human/JSON examples, provisional-subtotal unknown results and exit codes in docs/cli.md; verify examples run against synthetic artifacts.
+- [ ] 2.4 Update docs ownership/source mappings and regenerate command references/llms.txt using the foundation tooling; first prove stale flags, JSON/exit examples or inventory fail, then verify current docs/examples and changelog/version decisions pass.
 
 ## 3. Actions example
 
 - [ ] 3.1 Write failing escaping and no-shell-interpolation tests for summary rendering; verify malicious synthetic labels are treated as data.
 - [ ] 3.2 Add an opt-in Actions example with read-only permissions and standalone artifact inputs; verify it runs offline without provider credentials and leaves budget advice nonblocking.
 - [ ] 3.3 Document safe integration and artifact retention in docs/ci.md; verify no example changes branch protection, IDE settings or account configuration.
+- [ ] 3.4 Run foundation workflow/docs/metadata gates against the example; verify valid over-budget advice stays nonblocking while malformed workflows or unrelated repository quality failures still fail their required checks.
 
 ## 4. Integration and handoff
 
