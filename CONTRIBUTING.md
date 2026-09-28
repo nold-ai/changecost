@@ -92,7 +92,9 @@ probe on the host; capsule unit tests verify its failure propagation. Local aggr
 explicit base. Keep the locked development analyzer versions aligned with the
 signed review capsule; see the [gate guide](docs/development/quality-gates.md).
 When editing CI, preserve `contents: read` both at workflow level and in any
-quality-job permission override; the workflow gate rejects broader job permissions.
+job permission override, including added sibling jobs; the workflow gate rejects
+broader permissions regardless of the job name. Keep the canonical initial
+checkout tied to the event head; CI checks actual HEAD before resolving its base.
 
 Inspect and disposition nonblocking native review advisories even when full
 assurance passes. `PASS_WITH_ADVISORY` is a supported successful native verdict,

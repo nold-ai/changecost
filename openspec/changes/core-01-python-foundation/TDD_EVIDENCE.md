@@ -444,3 +444,75 @@ probe, not as new native assurance. Receipts: `promotion/advisory-verdict-red.lo
 `promotion/advisory-native-after.json`. All 200 advisories retain scoped dispositions
 in `promotion/nonblocking-dispositions-0f0f6a8.json`; no analyzer policy changed.
 Fresh corrected-head CI and unresolved review scope questions remain outstanding.
+
+
+## Read-only permissions on sibling jobs
+
+Codex security review 5340246562 of `0f0f6a8` (comment 4123435837) arrived after
+the next adapter batch was already being promoted. The finding still applied:
+only the named quality job's permission override was checked. Three sibling-job
+cases with contents write, write-all and issues write passed incorrectly; the
+same quality-job cases already failed correctly. The six-case parameterized
+regression recorded three failures and three passes before correction. The guard
+now checks all jobs' permission overrides, allowing inherited root read-only
+permissions or exactly contents read. Every case verifies inheritance and a
+repaired explicit read-only map. No job or GitHub permission was changed; only the
+validator's coverage of future workflow edits was corrected. Evidence is in
+`promotion/all-jobs-permissions-red.log` and `promotion/all-jobs-permissions-green.log`.
+
+Contributor and gate guidance now name sibling jobs explicitly. README setup,
+hook/review semantics and the agent quality procedure remain accurate; narrow
+no-prose-change rationales in `quality/exceptions.json` bind those two unchanged
+documents to the exact current mapped source digest. They neither suppress
+analyzers nor exempt future changed source contents from documentation review.
+
+
+Codex code review 5340321134 of `d48b830` (comment 4123495762) identified that the
+checkout could select the PR base rather than the head without failing wiring
+validation. Eight checkout mutations failed their expected-rejection assertions
+before correction: ref, history depth, persisted credentials, conditional/ignored
+execution, action pin, duplication and order. They now fail validation and pass
+after repair. The event-head resolver input is also bound by the existing script
+contract. A real host shell probe with a deliberately wrong EXPECTED_HEAD exited
+zero before correction; it now exits one without exporting BASE_REF. The matching
+head still exits zero and exports the resolved comparison. This probe runs on the
+host because it exercises the GitHub shell contract; capsule pytest retains the
+YAML mutation tests without requiring an extra native shell tool. Receipts:
+`promotion/checkout-red.log`, `promotion/checkout-green.log`,
+`promotion/checkout-runtime-before.json`, `promotion/checkout-runtime-after.json`.
+The runtime assertion is necessary because a wrong checkout can otherwise load the
+base's validator; the source validator additionally checks prospective workflow edits.
+It does not establish hostile-controller attestation.
+
+In parallel, hosted run [36437520340](https://github.com/nold-ai/changecost/actions/runs/36437520340)
+completed successfully on `d48b830` for both Python versions: every leaf passed and
+all ten native analyzers ran with PASS evidence, full assurance, no unknowns, exit
+zero and PASS_WITH_ADVISORY. Its 200 advisory findings received recorded
+individual dispositions. That confirms the preceding adapter correction; these
+additional workflow corrections still require fresh CI on their committed head.
+
+Final local verification of this workflow batch passed 81 tests and four subtests,
+Ruff/format, BasedPyright, actual actionlint, HEAD-based docs/index/metadata, strict
+OpenSpec and hygiene. Source coverage remains at least 87.27%; maximum measured
+complexity across source/tests is 13. Receipts include `promotion/checkout-coverage.json`
+and `promotion/checkout-complexity.json`. Current green-head advisory dispositions
+are refreshed in `promotion/nonblocking-dispositions-d48b830.json`.
+
+
+## Reviewable advisory dispositions
+
+CodeRabbit comment 4123577773 identified that the previously recorded individual
+advisory dispositions were only in ignored local output. The native adapter's
+approved success contract remains unchanged: complete native advisory success
+passes the machine gate, while promotion still requires findings to be fixed or
+explicitly dispositioned before review completion. The missing reviewable record
+is now [ADVISORY_DISPOSITIONS.json](ADVISORY_DISPOSITIONS.json), bound to commit
+`d48b830bf4d4e32e94183b05c831ccb4c7fb2c52`, successful CI run 36437520340, both
+Python matrix report SHA-256 hashes and 200 individual stable finding identities.
+The matrix finding sets are identical. Each entry points to one of 16 scoped
+rationales; build and license-fixture sequence warnings have their own explicit
+reasons. The record contains no private host paths or raw report dumps and cannot
+waive new findings or claim coverage of the next head. Subsequent current-head
+triage must be recorded with its report identity, including through reviewable PR
+evidence, before promotion is complete. No generic runtime waiver or approval
+framework was added, and the two mutable-host scope disputes remain open.

@@ -52,11 +52,13 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Resolve comparison base
         env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
           EVENT: ${{ github.event_name }}
           PR_BASE: ${{ github.event.pull_request.base.sha }}
           PUSH_BASE: ${{ github.event.before }}
           MANUAL_BASE: ${{ inputs.comparison_base }}
         run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
           case "$EVENT" in
             pull_request) base=$(git merge-base HEAD "$PR_BASE") ;;
             push) base=$PUSH_BASE ;;

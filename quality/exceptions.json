@@ -1,1 +1,10 @@
-{}
+{
+  "README.md": {
+    "reason": "Workflow validation now covers sibling-job permission overrides and canonical/event-head checkout correctness. README setup commands, package scope, staged-hook baseline and native advisory-success semantics remain unchanged. Detailed workflow contracts are updated in CONTRIBUTING.md and docs/development/quality-gates.md.",
+    "digest": "ab18c3e7b805c90e17bda380a3a417c3cdc2237745db0296576b82e06108cb00"
+  },
+  "docs/agent-rules/50-quality-gates-and-review.md": {
+    "reason": "The quality procedure already requires applicable workflow gates, exact HEAD snapshot checks and incomplete-evidence reporting. All-job permissions and event-head checkout validation change no agent invocation or assurance procedure; the precise new workflow rules are maintained in CONTRIBUTING.md and docs/development/quality-gates.md.",
+    "digest": "ab18c3e7b805c90e17bda380a3a417c3cdc2237745db0296576b82e06108cb00"
+  }
+}

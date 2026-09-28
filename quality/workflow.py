@@ -9,14 +9,19 @@ import yaml
 
 from quality import external_tools
 
+CHECKOUT_ACTION = "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+HEAD_REF = "${{ github.event.pull_request.head.sha || github.sha }}"
+
 COMPARISON_ENV = {
+    "EXPECTED_HEAD": HEAD_REF,
     "EVENT": "${{ github.event_name }}",
     "PR_BASE": "${{ github.event.pull_request.base.sha }}",
     "PUSH_BASE": "${{ github.event.before }}",
     "MANUAL_BASE": "${{ inputs.comparison_base }}",
 }
 # Deliberately validate the reviewed resolver, not arbitrary shell semantics.
-COMPARISON_SCRIPT = """case "$EVENT" in
+COMPARISON_SCRIPT = """test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+case "$EVENT" in
   pull_request) base=$(git merge-base HEAD "$PR_BASE") ;;
   push) base=$PUSH_BASE ;;
   workflow_dispatch) base=$MANUAL_BASE ;;
@@ -63,8 +68,12 @@ def wiring_errors(config: dict) -> list[str]:
     errors = []
     if "if" in job or job.get("continue-on-error") not in {None, "false"}:
         errors.append("required quality job can be skipped or ignored")
-    if "permissions" in job and job["permissions"] != {"contents": "read"}:
-        errors.append("quality job must retain contents: read permissions")
+    if any(
+        "permissions" in candidate and candidate["permissions"] != {"contents": "read"}
+        for candidate in config.get("jobs", {}).values()
+    ):
+        errors.append("workflow jobs must retain contents: read permissions")
+    errors.extend(checkout_errors(job))
     errors.extend(capsule_setup_errors(job))
     errors.extend(comparison_errors(config))
     matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
@@ -131,4 +140,20 @@ def resolver_errors(step: dict) -> list[str]:
     expected = [line.strip() for line in COMPARISON_SCRIPT.splitlines() if line.strip()]
     if actual != expected:
         errors.append("comparison resolver script differs from the reviewed contract")
+    return errors
+
+
+def checkout_errors(job: dict) -> list[str]:
+    """Validate the one reviewed checkout before any repository commands run."""
+    steps = job.get("steps", [])
+    checkouts = [step for step in steps if step.get("uses", "").startswith("actions/checkout@")]
+    if len(checkouts) != 1 or steps[0] is not checkouts[0]:
+        return ["exactly one checkout must be the first quality step"]
+    checkout = checkouts[0]
+    errors = []
+    expected = {"ref": HEAD_REF, "fetch-depth": "0", "persist-credentials": "false"}
+    if checkout.get("uses") != CHECKOUT_ACTION or checkout.get("with") != expected:
+        errors.append("checkout must retain the reviewed action pin, event head and safe inputs")
+    if "if" in checkout or checkout.get("continue-on-error") not in {None, "false"}:
+        errors.append("required checkout can be skipped or ignored")
     return errors

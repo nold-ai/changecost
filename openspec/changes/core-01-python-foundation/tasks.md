@@ -56,3 +56,8 @@ on both Python versions, with complete assurance and 200 nonblocking advisories.
 CI still failed because the repository wrapper rejected the documented native
 PASS_WITH_ADVISORY verdict. The corrected adapter needs fresh hosted validation;
 review scope questions remain open, so the integration tasks remain incomplete.
+
+Run 36437520340 at `d48b830` then passed the full aggregate on both Python versions,
+including all ten required native analyzers. Additional job-permission and checkout
+correctness findings are being corrected and require fresh current-head checks;
+open review scope questions still prevent marking integration complete.

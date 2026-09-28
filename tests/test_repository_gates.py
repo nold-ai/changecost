@@ -548,6 +548,7 @@ def test_lock_leaf_requires_real_host_probe(monkeypatch, tmp_path, failed_comman
         "step-env",
         "resolver-script",
         "resolver-input",
+        "resolver-head",
         "resolver-condition",
         "resolver-order",
         "later-write",
@@ -572,6 +573,11 @@ def test_workflow_rejects_comparison_base_bypass(mutation):
         "resolver-script": (resolver, "run", 'echo "BASE_REF=HEAD" >> "$GITHUB_ENV"'),
         "resolver-input": (resolver["env"], "PR_BASE", "${{ github.event.pull_request.head.sha }}"),
         "resolver-condition": (resolver, "if", "false"),
+        "resolver-head": (
+            resolver["env"],
+            "EXPECTED_HEAD",
+            "${{ github.event.pull_request.base.sha }}",
+        ),
     }
     if mutation in overrides:
         target, key, value = overrides[mutation]
@@ -589,16 +595,70 @@ def test_workflow_rejects_comparison_base_bypass(mutation):
 
 
 @pytest.mark.parametrize("permissions", [{"contents": "write"}, "write-all", {"issues": "write"}])
-def test_quality_job_cannot_override_read_only_permissions(permissions):
+@pytest.mark.parametrize("job_name", ["quality", "auxiliary"])
+def test_workflow_jobs_cannot_override_read_only_permissions(permissions, job_name):
     import yaml
 
     from quality.workflow import wiring_errors
 
     root = Path(__file__).resolve().parents[1]
     config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    job = config["jobs"].setdefault(
+        job_name, {"runs-on": "ubuntu-24.04", "steps": [{"run": "true"}]}
+    )
     assert wiring_errors(config) == []
-    job = config["jobs"]["quality"]
     job["permissions"] = permissions
-    assert "quality job must retain contents: read permissions" in wiring_errors(config)
+    assert any("contents: read permissions" in error for error in wiring_errors(config))
     job["permissions"] = {"contents": "read"}
+    assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize(
+    ("section", "key", "value"),
+    [
+        ("with", "ref", "${{ github.event.pull_request.base.sha }}"),
+        ("with", "fetch-depth", "1"),
+        ("with", "persist-credentials", "true"),
+        (None, "if", "false"),
+        (None, "continue-on-error", "true"),
+        (None, "uses", "actions/checkout@main"),
+    ],
+)
+def test_workflow_rejects_checkout_drift(section, key, value):
+    import copy
+
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    steps = config["jobs"]["quality"]["steps"]
+    original = copy.deepcopy(steps[0])
+    target = steps[0][section] if section else steps[0]
+    target[key] = value
+    assert any("checkout" in error for error in wiring_errors(config))
+    steps[0] = original
+    assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("mutation", ["duplicate", "late"])
+def test_workflow_requires_one_initial_checkout(mutation):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    steps = config["jobs"]["quality"]["steps"]
+    checkout = steps[0]
+    if mutation == "duplicate":
+        steps.append(checkout)
+    else:
+        steps.remove(checkout)
+        steps.append(checkout)
+    assert any("checkout" in error for error in wiring_errors(config))
+    steps.pop()
+    if mutation == "late":
+        steps.insert(0, checkout)
     assert wiring_errors(config) == []

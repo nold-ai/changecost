@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Apply read-only token permission validation to every workflow job, including
+  added sibling jobs rather than only the required quality job; validate canonical
+  checkout wiring and reject a runtime HEAD that differs from the event head.
+- Publish report-bound individual advisory dispositions and clarify native gate
+  success versus completion of the promotion review.
+
 - Accept SpecFact’s documented advisory-success verdict while retaining complete
   analyzer, assurance, freshness and exit-code requirements.
 

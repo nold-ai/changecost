@@ -84,7 +84,7 @@ analyzers or advisory data explicitly.
 
 - **GIVEN** full native review returns `PASS_WITH_ADVISORY`, assurance PASS, no unknown evidence, exit code zero and all required analyzers ran with PASS evidence
 - **WHEN** the repository validates the content-bound report
-- **THEN** it accepts this native success verdict while retaining the advisories for review; failed, missing, unknown or stale evidence still fails.
+- **THEN** it accepts this native success verdict while retaining the advisories for review; failed, missing, unknown or stale evidence still fails. The promotion review records a scoped disposition for each finding before declaring its review loop complete.
 
 #### Scenario: Dependency advisory service unavailable
 
@@ -149,10 +149,16 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** workflow validation runs
 - **THEN** it rejects the changed comparison wiring instead of allowing empty-diff applicability to hide required gates; the ordinary staged-hook HEAD default remains valid.
 
-#### Scenario: Quality job overrides repository read-only permissions
+#### Scenario: Checkout targets the actual event head
+
+- **GIVEN** a pull request, push or manual workflow event with an expected head commit
+- **WHEN** the checked-out HEAD differs from that event head or the reviewed checkout wiring is changed
+- **THEN** verification fails before resolving the comparison base; the canonical checkout remains unique, unconditional, first, pinned, with full history and no persisted credentials.
+
+#### Scenario: Any workflow job overrides repository read-only permissions
 
 - **GIVEN** the workflow declares only `contents: read` at its root
-- **WHEN** the quality job overrides permissions with write access or another unreviewed permission set
+- **WHEN** any job, including a sibling of the quality job, overrides permissions with write access or another unreviewed permission set
 - **THEN** workflow validation fails
 - **AND** an absent job override or an explicit identical `contents: read` override passes this contract.
 

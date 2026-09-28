@@ -212,9 +212,10 @@ Project-managed uv, Ruff and BasedPyright remain locked project dependencies. Th
 guard prevents accidental project-environment collisions, not hostile-PR forgery.
 
 
-The required quality job may inherit root `contents: read` permissions or repeat
-that exact permission map. Job-level write permissions and other overrides are
-rejected, because GitHub job permissions replace the workflow-level setting.
+Every job in the quality workflow may inherit root `contents: read` permissions
+or repeat that exact permission map. This includes newly added sibling jobs.
+Job-level write permissions and other overrides are rejected regardless of job
+name, because GitHub job permissions replace the workflow-level setting.
 
 
 The host lock fixture uses a project-version change with no dependencies, so the
@@ -231,3 +232,24 @@ accepts either successful verdict only when the content digest matches, assuranc
 is PASS, required evidence is not unknown, all required analyzers ran with PASS
 outcomes, and the native exit code is zero. Required execution still invokes full
 enforcement. Advisory success does not waive those checks or advisory disposition.
+
+
+The quality workflow must begin with exactly one unconditional, pinned checkout
+using the event's pull-request head or event SHA, full history and no persisted
+credentials. Its resolver compares actual Git HEAD to that expected event head
+before exporting any comparison base. Thus accidentally checking out the base
+commit fails at runtime even before the repository validator can run. The
+prospective YAML check also rejects checkout drift; this is a contract for the
+reviewed workflow, not a verifier for arbitrary shell commands or hostile hosts.
+
+
+Native analyzer status and promotion review completion are separate contracts.
+The automated adapter validates the complete native result and preserves its
+findings; it does not manufacture human dispositions or block native advisory
+success while a reviewer works. Before the PR review loop is declared complete,
+every finding must be fixed or have a reviewable, scoped disposition without an
+outstanding dispute. The [record for reviewed commit d48b830](../../openspec/changes/core-01-python-foundation/ADVISORY_DISPOSITIONS.json)
+publishes each advisory's identity, source report hashes and explicit rationale.
+It covers only those reports. Later report-bound dispositions or deltas may be
+recorded in the PR so recording evidence alone does not require another source
+commit. A green native check does not complete this review obligation.
