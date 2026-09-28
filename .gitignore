@@ -9,8 +9,10 @@
 # Private runtime data and generated review evidence
 .changecost/
 .specfact/
+# Local artifact bundles at any directory depth
+artifacts/
 
-# Build/test caches; product language is not selected yet
+# Python build/test caches
 .venv/
 venv/
 __pycache__/

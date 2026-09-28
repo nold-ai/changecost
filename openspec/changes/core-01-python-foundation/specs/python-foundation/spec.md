@@ -2,13 +2,16 @@
 
 ## Purpose
 
-The repository currently runs documentation hygiene only. A reproducible Python package and explicit development gates are needed before adding any economic behavior.
+Provide a reproducible standalone Python package and explicit repository quality gates before adding economic behavior or provider integrations.
 
 ## ADDED Requirements
 
 ### Requirement: Reproducible contributor environment
 
-A contributor SHALL be able to install the declared development environment from a committed lockfile without manual dependency selection.
+A contributor SHALL be able to install the declared development environment from
+a committed lockfile without manual dependency selection. Verification SHALL reject
+missing or stale locks without updating them. Build dependencies SHALL have explicit
+version/hash constraints derived from the same project dependency authority.
 
 #### Scenario: Clean checkout
 
@@ -16,21 +19,48 @@ A contributor SHALL be able to install the declared development environment from
 - **WHEN** the documented locked sync and checks run
 - **THEN** the lockfile remains unchanged and all required tools resolve from project metadata.
 
+#### Scenario: Missing or stale lock
+
+- **GIVEN** an absent lockfile or dependency metadata incompatible with the committed lock
+- **WHEN** a documented verification command runs
+- **THEN** it fails with a lock diagnostic without creating or changing the lock.
+
+#### Scenario: Build dependency drift
+
+- **GIVEN** an isolated build whose resolved build dependency differs from its declared version/hash constraint
+- **WHEN** the build gate runs
+- **THEN** it rejects the mismatch; a build using the constrained dependencies succeeds without modifying dependency authority.
+
 ### Requirement: Installable offline CLI
 
-The built package SHALL expose an offline CLI with help and version information and SHALL NOT require SpecFact at runtime.
+The built package SHALL expose an offline CLI with help and version information
+and SHALL NOT require SpecFact at runtime. Help, version and invalid invocation
+SHALL leave working and user data directories unchanged. Distributions SHALL
+exclude private evidence, credentials and local review/runtime output.
 
 #### Scenario: Isolated wheel
 
-- **GIVEN** a clean environment without SpecFact
-- **WHEN** the built wheel is installed and CLI help/version are invoked
-- **THEN** both succeed without network access.
+- **GIVEN** a wheel built from the sdist and installed with declared runtime dependencies into a clean environment without SpecFact or source-checkout imports
+- **WHEN** its installed CLI is invoked with --help and --version from outside the checkout while network access is blocked
+- **THEN** both exit zero, the version matches installed metadata and no working-directory or user-data files are created; dependency installation is a separate setup step.
 
 #### Scenario: Unimplemented operation
 
 - **GIVEN** a command not yet delivered
 - **WHEN** a user invokes it
 - **THEN** it returns a clear non-success result rather than fabricated output.
+
+#### Scenario: Bare invocation
+
+- **GIVEN** the installed foundation CLI
+- **WHEN** it is invoked without arguments
+- **THEN** it displays usage and exits nonzero without creating configuration, database or evidence files.
+
+#### Scenario: Private files near build inputs
+
+- **GIVEN** synthetic credential and private-evidence sentinels in local-only repository directories
+- **WHEN** wheel and sdist contents are inspected
+- **THEN** neither contains the sentinels, both retain required metadata/license files, and the sdist can build without the original checkout.
 
 ### Requirement: Truthful quality gates
 
@@ -65,11 +95,17 @@ docs-only changes. Missing comparison history or a missing, failed or skipped
 required validator SHALL NOT produce a green aggregate result. CI SHALL NOT
 publish/deploy or execute PR code with privileged repository credentials.
 
-#### Scenario: New document omitted from Git tracking
+#### Scenario: Staged document with an unstaged correction
 
-- **GIVEN** an intended new document and unrelated unstaged changes
-- **WHEN** the local commit gate checks the intended staged snapshot
-- **THEN** it checks the new document and cannot use an unstaged correction to pass content that the commit omits.
+- **GIVEN** a staged new document with a broken reference and a correction only in the working tree
+- **WHEN** the local commit gate checks the complete index snapshot
+- **THEN** it rejects the staged defect without altering the index or working tree; staging the correction allows the repaired snapshot to pass.
+
+#### Scenario: Referenced document not staged
+
+- **GIVEN** a staged reference to a new document present only as an untracked working-tree file
+- **WHEN** the local commit gate runs
+- **THEN** it fails because the target is absent from the commit snapshot; the working-tree preview cannot substitute for this check.
 
 #### Scenario: Documentation-only pull request
 
@@ -82,6 +118,18 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **GIVEN** a required validator that fails or is skipped, or an unresolved required comparison SHA
 - **WHEN** the aggregate check completes
 - **THEN** it reports failure/incomplete evidence and names the missing check or base rather than treating it as no changes.
+
+#### Scenario: Behavior review required by aggregate
+
+- **GIVEN** changed source, tests, dependency/build configuration, validators or CI wiring
+- **WHEN** the complete aggregate runs with missing or stale required review evidence
+- **THEN** it is incomplete/non-success even if a manual review hook was skipped; a docs-only applicability decision remains explicit and still runs the documentation gates.
+
+#### Scenario: Comparison covers the tested contents
+
+- **GIVEN** a PR head or a main push containing multiple commits
+- **WHEN** change-sensitive validators run
+- **THEN** they record the actual tested head and resolved comparison base, cover the complete change interval and reject unavailable history rather than silently comparing only the last commit.
 
 #### Scenario: Invalid workflow definition
 

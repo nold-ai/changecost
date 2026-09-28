@@ -15,7 +15,7 @@ adapters and live collection are still outside this change.
 - Evaluate change-level quotes and settlement for personal Cursor/Copilot IDE/CLI use.
 - Python 3.11+, Typer, Pydantic, standard-library SQLite and Decimal.
 - `pyproject.toml`, uv with a committed lockfile, Hatchling, pytest, Ruff and BasedPyright
-  are the planned foundation; current hygiene setup is temporary.
+  are the implemented local foundation; final review/remote CI remain incomplete.
 - Five command families: `quote`, `bind`, `settle`, `check`, `explain`.
 - Local `changecost/v1` artifacts retain provenance, units, completeness and revisions.
 - Import existing exports locally; no collector, gateway, undocumented scraping,
@@ -59,3 +59,7 @@ until exports are inspected. No paid infrastructure is required for this deliver
 Rollback is a planning-commit revert plus closing the created issues/project while
 preserving their history. Domain ownership is maintainer-reported; trademark clearance
 and a deployed website are not asserted.
+
+Foundation implementation was separately authorized on 2026-09-28. The package
+and repository gates are in development; provider operations and live collection
+remain outside this authorization.

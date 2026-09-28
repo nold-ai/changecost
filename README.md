@@ -6,11 +6,11 @@ ChangeCost is an early NOLD AI project exploring how to quote the cost of an
 agentic software change, reconcile its actual provider-reported cost, and use
 that history to improve future estimates.
 
-**Status: pilot planning / To-Validate.** There is no installable
-ChangeCost package, working CLI, validated estimator, or stable schema yet.
-Nine changes are planned in [the pilot backlog](openspec/CHANGE_ORDER.md).
-Product implementation and live collection require a subsequent request.
-This repository remains private.
+**Status: unreleased CLI foundation / pilot To-Validate.** The local package now
+provides offline `changecost --help` and `changecost --version`. Cost estimation,
+provider imports, binding and settlement remain planned in
+[the pilot backlog](openspec/CHANGE_ORDER.md). Live collection requires a separate
+request. This repository remains private.
 
 The [source-feasibility research](docs/providers/source-feasibility.md) now covers
 Copilot, Cursor, Codex and Claude Code. Local Codex/Claude metadata supplies partial
@@ -47,33 +47,38 @@ implementation. Research examples are proposals, not supported commands.
 
 ## Work on the repository
 
-Bootstrap tooling uses Python 3.11+ for pre-commit and Node.js 20.19+ for OpenSpec.
-The current commands below run planning checks only. The
-[Python foundation change](openspec/changes/core-01-python-foundation/proposal.md)
-will introduce `pyproject.toml`, `uv.lock`, uv-managed environments and Hatchling
-builds, then replace this temporary setup. No Python package exists yet.
+Use Python 3.11+ and uv 0.12.19. The tested interpreter matrix is 3.11.15 and
+3.13.14. Hatchling builds the package; uv owns dependency resolution and the
+committed `uv.lock`. Pydantic is selected for later contracts but is not needed by
+this help/version-only runtime.
 
 ```sh
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements-dev.txt
-npm install --global @fission-ai/openspec@1.13.0
-.venv/bin/pre-commit install
-PATH="$PWD/.venv/bin:$PATH" make check
+uv sync --locked --group build
+uv run --locked changecost --help
+uv run --locked changecost --version
+uv run --locked pre-commit install
+npm install --global @fission-ai/openspec@1.13.2
 ```
 
-OpenSpec is already initialized with shared skills under `.agents/skills/`.
-`make check` runs repository hygiene and validates OpenSpec artifacts. The nine
-change specifications describe future behavior; passing validation does not prove
-that behavior has been implemented.
+Repository checks also need actionlint 1.7.12 and the supported SpecFact review
+runtime. See [contributor setup](CONTRIBUTING.md#local-checks) and
+[quality gate contracts](docs/development/quality-gates.md).
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and
-[AGENTS.md](AGENTS.md) for coding-agent instructions. The
-[quality rules](docs/agent-rules/50-quality-gates-and-review.md) document SpecFact
-review setup and the gates required when implementation starts.
+```sh
+BASE_REF=origin/main make check
+```
 
-The [four-stage agent workflow](CONTRIBUTING.md#agent-workflow) supports interactive
-change selection, plan freshness, implementation, delegated verification and PR
-review resolution. [llms.txt](llms.txt) indexes the current agent entry points.
+Resolve/fetch the intended base before checking. When new files are not staged,
+pass an explicit reviewed newline-delimited path manifest with `MANIFEST=path`.
+An unresolvable base or unavailable required analyzer fails the aggregate. On
+macOS the installed SpecFact 0.50.1 capsules report an unsupported controller;
+use a supported Linux x86-64 review environment before claiming the full gate passes.
+
+The [generated CLI reference](docs/commands.md) and [agent index](llms.txt) describe
+implemented behavior. [OpenSpec artifacts](openspec/CHANGE_ORDER.md) are future
+contracts until their tasks and evidence establish delivery. See
+[AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) for the four-stage
+workflow; implementation does not itself commit, publish, merge or deploy.
 
 ## Community and license
 

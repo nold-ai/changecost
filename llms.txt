@@ -1,9 +1,8 @@
 # ChangeCost
 
-> Private, unreleased pilot planning project. Read the project brief for current
-> scope and the user's request for authorization. Plans do not imply implemented features.
+> Private, unreleased CLI foundation. Provider operations remain planned.
 
-## Project and policy
+## Project and evidence
 
 - [README](README.md): project status and current setup commands.
 - [Project brief](docs/project-brief.md): selected direction, evidence gates and limits.
@@ -14,9 +13,7 @@
 - [OpenSpec configuration](openspec/config.yaml): current context and artifact requirements.
 - [Change order](openspec/CHANGE_ORDER.md): pending changes, issue links and prerequisites.
 - [Changelog](CHANGELOG.md): recorded changes; no release is implied.
-
-## Provider evidence
-
+- [Python foundation plan](openspec/changes/core-01-python-foundation/design.md): foundation contract, implementation decisions and remaining verification.
 - [Source feasibility](docs/providers/source-feasibility.md): capability matrix, current limits and work-side evidence checklist.
 - [Codex and Claude Code metrics](docs/providers/codex-claude-metrics.md): documented interfaces and authorized local metadata observations; no approved adapters.
 - [Cursor local metrics](docs/providers/cursor-local-metrics.md): Basic-account identity/context observations; consumption and billing remain unverified.
@@ -26,22 +23,19 @@
 - [Fixture contract](docs/providers/fixtures.md): allowlists, synthetic cases and relationship-preserving transformations.
 - [Research evidence](openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md): scenario review, checks and unresolved source inspection.
 
-## Change workflow skills
+## Local skills
 
-- [changecost-prepare](.agents/skills/changecost-prepare/SKILL.md): select, review and refresh a plan and linked issue; choose a planning PR or scoped stash.
-- [changecost-implement](.agents/skills/changecost-implement/SKILL.md): reconcile fresh main and prepared artifacts, then implement the selected change with TDD.
-- [changecost-verify](.agents/skills/changecost-verify/SKILL.md): delegate checks and defect review, verify docs and applicable versions, then commit and push.
-- [changecost-promote](.agents/skills/changecost-promote/SKILL.md): open/reuse a PR and delegate its review/check/fix loop.
+- [changecost-implement](.agents/skills/changecost-implement/SKILL.md): Implement a selected ChangeCost OpenSpec change from fresh main, safely reconcile matching prepared artifacts, and deliver minimum sufficient code with TDD, current docs and llms.txt.
+- [changecost-prepare](.agents/skills/changecost-prepare/SKILL.md): Interactively select and review the next pending ChangeCost change against fresh main, code and current external evidence; reconcile its plan and GitHub issue, then offer a planning PR or scoped stash.
+- [changecost-promote](.agents/skills/changecost-promote/SKILL.md): Create or update a ChangeCost PR to main and delegate its review, CI, and verified-fix loop. Use when the user asks to promote a verified branch or handle its PR findings; never merge or deploy.
+- [changecost-verify](.agents/skills/changecost-verify/SKILL.md): Verify a ChangeCost change with scoped quality, defect-review, and documentation subagents, then commit and push the verified feature branch. Use after implementation or preparation, before promotion to a PR.
+- [openspec-apply-change](.agents/skills/openspec-apply-change/SKILL.md): Implement tasks from an OpenSpec change. Use when the user wants to start implementing, continue implementation, or work through tasks.
+- [openspec-archive-change](.agents/skills/openspec-archive-change/SKILL.md): Archive a completed change in the experimental workflow. Use when the user wants to finalize and archive a change after implementation is complete.
+- [openspec-explore](.agents/skills/openspec-explore/SKILL.md): Enter explore mode - a thinking partner for exploring ideas, investigating problems, and clarifying requirements. Use when the user wants to think through something before or during a change.
+- [openspec-propose](.agents/skills/openspec-propose/SKILL.md): Propose a new change with all artifacts generated in one step. Use when the user wants to quickly describe what they want to build and get a complete proposal with design, specs, and tasks ready for implementation.
+- [openspec-sync-specs](.agents/skills/openspec-sync-specs/SKILL.md): Sync delta specs from a change to main specs. Use when the user wants to update main specs with changes from a delta spec, without archiving the change.
+- [openspec-update-change](.agents/skills/openspec-update-change/SKILL.md): Update an OpenSpec change by revising its existing planning artifacts and keeping them coherent with one another. Use when the user wants to revise a change's plan, fold new decisions into it, or reconcile its artifacts after an edit. Never edits code.
 
-## OpenSpec artifact skills
+## Implemented CLI
 
-- [openspec-explore](.agents/skills/openspec-explore/SKILL.md): investigate scope and requirements.
-- [openspec-propose](.agents/skills/openspec-propose/SKILL.md): propose a new change.
-- [openspec-update-change](.agents/skills/openspec-update-change/SKILL.md): revise existing artifacts.
-- [openspec-apply-change](.agents/skills/openspec-apply-change/SKILL.md): schema-aware implementation mechanics.
-- [openspec-sync-specs](.agents/skills/openspec-sync-specs/SKILL.md): synchronize delta specs.
-- [openspec-archive-change](.agents/skills/openspec-archive-change/SKILL.md): archive completed changes.
-
-This index is maintained with the linked sources. Verify skill inventory, links,
-phase and descriptions when they change. Product commands belong here only after
-implementation and verification; there is currently no generated CLI reference.
+- [CLI reference](docs/commands.md): generated from the installed command definition.

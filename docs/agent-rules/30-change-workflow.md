@@ -137,16 +137,18 @@ entry points. Update `CHANGELOG.md` under Unreleased for meaningful changes. No
 version bump, release tag or published package is needed for planning/scaffold
 edits; synchronize real package versions only when an applicable policy requires it.
 
-`llms.txt` is currently a small manual index. Check its skill inventory, links,
-phase and capability descriptions against canonical files; do not label future
-commands as implemented. Link checking alone does not prove semantic freshness.
-When a CLI/command generator is actually introduced, generate from its canonical
-inputs and run its check mode against committed output. Do not copy SpecFact's
-release/signature/registry machinery or make a sibling checkout a prerequisite.
+`llms.txt` and the CLI reference are generated from local skill metadata, the
+curated `quality/index.json` inventory and the actual CLI tree. Run `make generate`
+when these inputs change and `make index BASE_REF=<base>` to check without writing.
+Keep phase/capability descriptions current; future economic commands remain planned.
+The normal test/CI gate checks output independently of pre-commit. Link checking
+alone does not prove semantic freshness. See the [gate guide](../development/quality-gates.md)
+for ownership/source mappings and content-bound documentation rationale records.
 
 Pattern inspected on 2026-09-28 (Europe/Berlin): `specfact-cli-modules` at
 `bdaab8a3fc48c7321d21127e2b0042946cd90bfa`,
 `scripts/generate-command-overview.py` (render/check comparison),
 `tests/unit/docs/test_llms_overview_freshness.py` (freshness guard), and
 `docs/agent-rules/70-release-commit-and-docs.md` (metadata consistency).
-ChangeCost currently has no implemented product command tree to generate from.
+ChangeCost currently generates only its foundation help/version surface; economic
+commands remain unimplemented.

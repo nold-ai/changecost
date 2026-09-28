@@ -1,0 +1,92 @@
+[
+  {
+    "title": "README",
+    "path": "README.md",
+    "description": "project status and current setup commands."
+  },
+  {
+    "title": "Project brief",
+    "path": "docs/project-brief.md",
+    "description": "selected direction, evidence gates and limits."
+  },
+  {
+    "title": "Agent instructions",
+    "path": "AGENTS.md",
+    "description": "entry point and project boundary."
+  },
+  {
+    "title": "Agent rules",
+    "path": "docs/agent-rules/INDEX.md",
+    "description": "load only rules applicable to the task."
+  },
+  {
+    "title": "Contributing",
+    "path": "CONTRIBUTING.md",
+    "description": "workflow and invocation examples."
+  },
+  {
+    "title": "Change workflow",
+    "path": "docs/agent-rules/30-change-workflow.md",
+    "description": "freshness, stash recovery and delegation."
+  },
+  {
+    "title": "OpenSpec configuration",
+    "path": "openspec/config.yaml",
+    "description": "current context and artifact requirements."
+  },
+  {
+    "title": "Change order",
+    "path": "openspec/CHANGE_ORDER.md",
+    "description": "pending changes, issue links and prerequisites."
+  },
+  {
+    "title": "Changelog",
+    "path": "CHANGELOG.md",
+    "description": "recorded changes; no release is implied."
+  },
+  {
+    "title": "Python foundation plan",
+    "path": "openspec/changes/core-01-python-foundation/design.md",
+    "description": "foundation contract, implementation decisions and remaining verification."
+  },
+  {
+    "title": "Source feasibility",
+    "path": "docs/providers/source-feasibility.md",
+    "description": "capability matrix, current limits and work-side evidence checklist."
+  },
+  {
+    "title": "Codex and Claude Code metrics",
+    "path": "docs/providers/codex-claude-metrics.md",
+    "description": "documented interfaces and authorized local metadata observations; no approved adapters."
+  },
+  {
+    "title": "Cursor local metrics",
+    "path": "docs/providers/cursor-local-metrics.md",
+    "description": "Basic-account identity/context observations; consumption and billing remain unverified."
+  },
+  {
+    "title": "VS Code hosted Copilot metrics",
+    "path": "docs/providers/copilot-local-metrics.md",
+    "description": "explicit host/SDK identity, local turn totals and checkpoint boundaries; final settlement unverified."
+  },
+  {
+    "title": "Enterprise schema review",
+    "path": "docs/providers/enterprise-schema-review.md",
+    "description": "received projection integrity, official schema comparison, and reported session-log parsing and custom receiver with OTel disabled."
+  },
+  {
+    "title": "Enterprise v2 review",
+    "path": "docs/providers/enterprise-v2-schema-review.md",
+    "description": "reported message counters, synthetic arithmetic, encoding discrepancies and unchanged hook evidence gaps."
+  },
+  {
+    "title": "Fixture contract",
+    "path": "docs/providers/fixtures.md",
+    "description": "allowlists, synthetic cases and relationship-preserving transformations."
+  },
+  {
+    "title": "Research evidence",
+    "path": "openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md",
+    "description": "scenario review, checks and unresolved source inspection."
+  }
+]

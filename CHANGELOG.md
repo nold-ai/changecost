@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- Correct full-review analyzer activation and isolated test dependencies/imports;
+  verify installed console scripts through the selected environment and keep real
+  workflow syntax validation separate from subprocess unit tests.
+
+- Implement the unreleased Python CLI foundation: locked uv/Hatchling builds,
+  offline help/version, isolated package proof and shared repository validators
+  for docs, generated references, metadata, workflow and truthful review evidence.
+
+- Ignore local `artifacts/` directories at every depth to keep source bundles out of Git.
+
+- Reconcile the Python foundation plan after merged source research: specify locked
+  verification/build constraints, isolated offline CLI and private-file checks,
+  staged snapshot semantics and required review coverage; keep implementation pending.
+
 - Review regenerated Enterprise v2 bundles: add reported VS Code message-counter
   evidence, check synthetic arithmetic and record OTLP enum, normalized-schema and
   duplicate-member limits; preserve received bytes and keep hook mapping unverified.

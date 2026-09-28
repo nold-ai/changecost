@@ -12,6 +12,8 @@ context: |
   Local metadata provides partial evidence. Work OTel is reported globally disabled;
   custom session-log hook output is the next source to inspect, not OTel enablement.
   Product implementation and live telemetry collection require a separate request.
+  Foundation implementation separately authorized on 2026-09-28; other product
+  changes and live collection remain separately gated.
   Selected defaults: Python 3.11+, Typer, Pydantic, SQLite, Decimal; uv/Hatchling,
   pytest, Ruff, BasedPyright. Personal Cursor/Copilot IDE and CLI use is the pilot.
   Plan quote, bind, settle, check, explain and changecost/v1 portable artifacts.
@@ -28,13 +30,13 @@ context: |
   docs/agent-rules/ before changes. No sibling repository is required.
   Behavior changes follow spec -> failing tests -> implementation -> passing tests,
   with actual TDD_EVIDENCE.md. Pure docs/scaffold changes need relevant checks only.
-  Current gate: make check. Add stack-specific format/lint/type/test gates when
-  implementation is approved. Keep fresh SpecFact review evidence for behavior
-  changes; missing/skipped analyzers are limitations, not passes.
-  core-01-python-foundation plans automated docs ownership/source consistency,
-  llms/command integrity, changelog/version freshness and local/pre-commit/CI parity.
-  They are not implemented by planning or agent instructions. Advisory budget CI
-  does not waive repository quality gates; publishing/deployment remains out of scope.
+  Current gate: make check with explicit BASE_REF and an intended-file manifest
+  for untracked inputs. Foundation adds format/lint/type/test, package, docs,
+  generated-index, metadata, workflow and dependency gates. Full review assurance
+  remains incomplete on the current macOS/Docker environment; missing/skipped
+  analyzers are failures, not passes. See TDD_EVIDENCE.md for actual results.
+  Advisory budget CI never waives repository quality gates; publishing/deployment
+  remains out of scope.
   Prefer clear names, KISS, YAGNI, DRY, and proportionate SOLID; no speculative layers.
   For the four-stage change workflow, read docs/agent-rules/30-change-workflow.md.
   Refresh main before preparation/implementation; reconcile prepared artifacts by

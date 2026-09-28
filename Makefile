@@ -1,13 +1,24 @@
-.PHONY: check hygiene spec-check review
+.PHONY: check hygiene lock lint format types test docs index metadata workflow build audit review spec-check generate
 
-check: hygiene spec-check
+BASE_REF ?=
+MANIFEST ?=
+QUALITY = uv run --locked python -m quality
+INPUTS = --base "$(BASE_REF)" $(if $(MANIFEST),--manifest "$(MANIFEST)",)
 
-hygiene:
-	pre-commit run --all-files
+check:
+	$(QUALITY) check $(INPUTS)
+
+hygiene lock lint types docs index metadata workflow build audit review:
+	$(QUALITY) $@ $(INPUTS)
+
+test:
+	uv run --locked python -m pytest
+
+format:
+	uv run --locked ruff format src quality tests
 
 spec-check:
 	OPENSPEC_TELEMETRY=0 openspec validate --all --strict --no-interactive
 
-review:
-	mkdir -p .specfact
-	specfact code review run --scope full --enforcement full --json --out .specfact/code-review.json
+generate:
+	$(QUALITY) index --write

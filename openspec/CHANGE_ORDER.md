@@ -74,7 +74,10 @@ On 2026-09-28, the maintainer extended `pilot-01-source-feasibility` research to
 Codex and Claude Code CLI/IDE/app metrics and authorized inspection of existing
 local artifacts. [The report](../docs/providers/source-feasibility.md) records
 partial Codex/Claude observations and pending Copilot/Cursor export inspection.
-This adds no adapter story, changes no dependency edge and does not complete #9.
+PR [#21](https://github.com/nold-ai/changecost/pull/21) merged on 2026-09-28 and
+GitHub issue #9 is now closed. Tasks 2.1/2.2 still record incomplete source inspection;
+issue closure does not establish provider compatibility or waive those evidence gates.
+This research adds no adapter story or dependency edge.
 New Codex/Claude adapters need their own subsequent scope and implementation request.
 The maintainer also supplied Enterprise Cursor/Copilot schema projections for
 comparison; their partial findings do not establish native OTel/CSV support or
@@ -86,7 +89,14 @@ changelog/version coherence and workflow validation. These are prerequisites for
 the implementation chain, not deferred to product budget reporting. The later
 `workflow-01-advisory-ci` reuses those gates for its CLI examples and job summary;
 only budget policy is advisory. This clarification changes no dependency edges.
-The current bootstrap still runs hygiene and OpenSpec validation only.
+The local foundation branch now includes package and repository validators;
+full analyzer assurance and remote CI remain incomplete.
+Foundation preparation was rechecked after #21 against main `141b9b3` on
+2026-09-28; #10 remains open/Todo with no blocked-by relationship. Its current task
+list and implementation evidence distinguish local completion from pending review. See its [preparation evidence](changes/core-01-python-foundation/design.md#preparation-evidence).
+The maintainer authorized implementation and carrying the prepared files into its
+later final PR. The combined branch remains unpublished; #10 will receive the real
+PR link after the subsequent verification/promotion stages.
 
 Provider-specific mappings remain blocked until feasibility records inspected source
 profiles. Completing feasibility with an unavailable capability does not authorize
