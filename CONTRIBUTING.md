@@ -105,3 +105,14 @@ not permission to ignore failed, unknown, stale or missing analyzer evidence.
 Changes to `openspec/config.yaml` require full review even when no Python source
 changes; this configuration influences the specification workflow and is not a
 docs-only applicability exemption.
+
+CI invokes the aggregate with `MAKEFLAGS`, `GNUMAKEFLAGS` and `MFLAGS` removed
+from its environment so inherited ignore-errors options cannot turn gate failures
+into success. Preserve this canonical command when editing the workflow; local
+contributor commands remain `make check` with the explicit comparison base.
+
+Root-relative input paths beginning with `-` are unsupported: pre-commit and its
+hooks can interpret them as options. Rename these inputs before staging; deleting
+one remains allowed. Nested paths such as `fixtures/--help` and root names such
+as `.--help` are valid. The inventory, staged snapshot and direct hygiene leaf
+reject unsafe current inputs with an explicit filename diagnostic.

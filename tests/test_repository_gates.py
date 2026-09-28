@@ -350,7 +350,9 @@ def test_workflow_cannot_hide_required_check():
     config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
     assert wiring_errors(config) == []
     step = next(
-        step for step in config["jobs"]["quality"]["steps"] if step.get("run") == "make check"
+        step
+        for step in config["jobs"]["quality"]["steps"]
+        if step.get("name") == "Check repository"
     )
     step["if"] = "${{ github.event_name == 'workflow_dispatch' }}"
     assert wiring_errors(config)
@@ -582,7 +584,7 @@ def test_workflow_rejects_comparison_base_bypass(mutation):
     job = config["jobs"]["quality"]
     steps = job["steps"]
     resolver = next(step for step in steps if step.get("name") == "Resolve comparison base")
-    check = next(step for step in steps if step.get("run") == "make check")
+    check = next(step for step in steps if step.get("name") == "Check repository")
     overrides = {
         "workflow-env": (config, "env", {"BASE_REF": "HEAD"}),
         "job-env": (job["env"], "BASE_REF", "HEAD"),
@@ -729,3 +731,61 @@ def test_sibling_workflows_retain_security_policy(monkeypatch, tmp_path, suffix,
     job["permissions"] = {"contents": "read"}
     sibling.write_text(yaml.safe_dump(config))
     assert workflow.validate(tmp_path) == []
+
+
+@pytest.mark.parametrize("remove", ["all", "MAKEFLAGS", "GNUMAKEFLAGS", "MFLAGS"])
+def test_workflow_requires_clean_make_environment(remove):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    job = config["jobs"]["quality"]
+    check = next(step for step in job["steps"] if step.get("name") == "Check repository")
+    required = "env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS make check"
+    assert check["run"] == required
+    for scope in (config, job, check):
+        scope.setdefault("env", {})["MAKEFLAGS"] = "-i"
+    assert wiring_errors(config) == []
+    check["run"] = "make check" if remove == "all" else required.replace(f"-u {remove} ", "")
+    assert any("aggregate" in error for error in wiring_errors(config))
+    check["run"] = required
+    assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("name", ["--help", "-h", "./--help"])
+def test_option_root_filename_cannot_bypass_hygiene(monkeypatch, tmp_path, name):
+    from quality import __main__ as runner
+    from quality.repository import git, inventory, materialize_index
+
+    git(tmp_path, "init", "-q")
+    (tmp_path / name).write_text("harmless fixture\n")
+    git(tmp_path, "add", "--", name)
+    calls = []
+    monkeypatch.setattr(runner, "external", lambda *args: calls.append(args) or [])
+    with pytest.raises(ValueError, match="option-shaped repository path"):
+        inventory(tmp_path)
+    with pytest.raises(ValueError, match="option-shaped repository path"):
+        materialize_index(tmp_path, tmp_path / "snapshot")
+    with pytest.raises(ValueError, match="option-shaped repository path"):
+        runner.leaf("hygiene", tmp_path, {name}, {})
+    assert calls == []
+    git(tmp_path, "rm", "-f", "--", name)
+    assert inventory(tmp_path) == set()
+    assert materialize_index(tmp_path, tmp_path / "repaired") == set()
+    assert runner.leaf("hygiene", tmp_path, set(), {name: b"harmless fixture\n"}) == []
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("name", ["fixtures/--help", ".--help", "help.txt"])
+def test_harmless_hyphen_paths_remain_valid(tmp_path, name):
+    from quality.repository import git, inventory, materialize_index
+
+    git(tmp_path, "init", "-q")
+    path = tmp_path / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("harmless fixture\n")
+    git(tmp_path, "add", "--", name)
+    assert inventory(tmp_path) == {name}
+    assert materialize_index(tmp_path, tmp_path / "snapshot") == {name}

@@ -259,3 +259,18 @@ workflow: explicit root `contents: read`, inherited or identical job permissions
 and no `pull_request_target`. Diagnostics identify the offending workflow.
 Quality-specific matrix, checkout and comparison wiring remain requirements of
 `quality.yml`; unrelated read-only workflows do not need that foundation schema.
+
+The canonical CI aggregate command is
+`env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS make check`. It removes Make flag
+variables inherited from workflow, job, step or earlier runner setup before Make
+starts. Required wiring validation rejects a bare command or partial removal of
+this protection. This preserves failing recipe exit status; it does not attest a
+hostile controller or reinterpret arbitrary workflow shell programs.
+
+Current root-relative paths beginning with `-` are rejected before input acceptance
+or direct hygiene invocation, including a normalized `./--help`. Prefixing alone
+is insufficient: pre-commit normalizes filenames again before passing them to
+individual hooks. The always-run staged repository-contracts hook rejects these
+index entries even if an earlier hygiene hook interprets the name as help.
+Rename or delete the input; deletion is a valid repair. Nested `fixtures/--help`
+and root `.--help` remain ordinary filenames and are allowed.

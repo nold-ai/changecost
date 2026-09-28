@@ -10,6 +10,7 @@ import yaml
 from quality import external_tools
 
 CHECKOUT_ACTION = "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+AGGREGATE_COMMAND = "env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS make check"
 HEAD_REF = "${{ github.event.pull_request.head.sha || github.sha }}"
 
 COMPARISON_ENV = {
@@ -90,7 +91,9 @@ def wiring_errors(config: dict) -> list[str]:
     matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
     if matrix != ["3.11.15", "3.13.14"]:
         errors.append("required Python matrix changed without gate reconciliation")
-    checks = [step for step in job.get("steps", []) if step.get("run", "").strip() == "make check"]
+    checks = [
+        step for step in job.get("steps", []) if step.get("run", "").strip() == AGGREGATE_COMMAND
+    ]
     if (
         len(checks) != 1
         or "if" in checks[0]
@@ -132,7 +135,7 @@ def comparison_errors(config: dict) -> list[str]:
         return [*errors, "required comparison resolver is missing or duplicated"]
     resolver = resolvers[0]
     errors.extend(resolver_errors(resolver))
-    checks = [step for step in steps if step.get("run", "").strip() == "make check"]
+    checks = [step for step in steps if step.get("run", "").strip() == AGGREGATE_COMMAND]
     if checks and steps.index(resolver) > steps.index(checks[0]):
         errors.append("comparison resolver must precede the aggregate")
     if any("BASE_REF=" in step.get("run", "") for step in steps if step is not resolver):

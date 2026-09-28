@@ -1,10 +1,10 @@
 {
   "README.md": {
-    "reason": "OpenSpec configuration-only edits now trigger full review, and sibling workflow files receive the existing read-only token/event policy. README setup commands, package scope, staged-hook baseline and native advisory-success semantics remain unchanged. Detailed applicability and workflow rules are updated in CONTRIBUTING.md and docs/development/quality-gates.md.",
-    "digest": "f0a2407887e73023783d0e067a7cc6a6056243e484a9f9b76ed1dfa6fc8f2684"
+    "reason": "CI clears inherited Make flags and repository input checks reject option-shaped root paths. README setup commands, package scope, staged-hook baseline and native advisory-success semantics remain unchanged. The exact protected CI command and filename restriction/repair procedure are documented in CONTRIBUTING.md and docs/development/quality-gates.md.",
+    "digest": "a6ad644d8be12e1b61ba84db4fffa521b2b018e0c064aa44c24211958c02cecf"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "The agent procedure already requires applicable full review and workflow security validation. Classifying openspec/config.yaml as a review input and applying the established read-only token/event policy to sibling workflows correct scope coverage without changing agent invocation or assurance policy; the precise rules are documented in CONTRIBUTING.md and docs/development/quality-gates.md.",
-    "digest": "f0a2407887e73023783d0e067a7cc6a6056243e484a9f9b76ed1dfa6fc8f2684"
+    "reason": "The agent procedure already requires gate failure propagation and hygiene on accepted repository inputs. Clearing inherited Make flags and rejecting option-shaped current root filenames enforce those requirements without changing agent commands or assurance policy; CONTRIBUTING.md and docs/development/quality-gates.md document the exact CI command and filename repair procedure.",
+    "digest": "a6ad644d8be12e1b61ba84db4fffa521b2b018e0c064aa44c24211958c02cecf"
   }
 }

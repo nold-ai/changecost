@@ -23,6 +23,15 @@ def safe_path(root: Path, name: str) -> Path:
     return path
 
 
+def checked_names(names: set[str]) -> set[str]:
+    """Reject current root-relative filenames that downstream hooks parse as options."""
+    for name in sorted(names):
+        parts = Path(name).parts
+        if parts and parts[0].startswith("-"):
+            raise ValueError(f"option-shaped repository path must be renamed: {name}")
+    return names
+
+
 def inventory(root: Path, manifest: Path | None = None) -> set[str]:
     names = set(git(root, "ls-files", "-z").decode().strip("\0").split("\0")) - {""}
     untracked = git(root, "ls-files", "--others", "--exclude-standard", "-z").decode().strip("\0")
@@ -34,7 +43,7 @@ def inventory(root: Path, manifest: Path | None = None) -> set[str]:
                 if not safe_path(root, name).is_file():
                     raise ValueError(f"manifest entry is not a file: {name}")
                 names.add(name)
-    return {name for name in names if safe_path(root, name).is_file()}
+    return checked_names({name for name in names if safe_path(root, name).is_file()})
 
 
 def baseline(root: Path, ref: str) -> tuple[str, dict[str, bytes]]:
@@ -72,6 +81,7 @@ def materialize_index(root: Path, destination: Path) -> set[str]:
         metadata, raw_name = record.split(b"\t", 1)
         mode, oid, stage = metadata.decode().split()
         name = raw_name.decode()
+        checked_names({name})
         if stage != "0" or mode not in {"100644", "100755"}:
             raise ValueError(f"unmerged or unsupported index entry: {name}")
         path = safe_path(destination, name)

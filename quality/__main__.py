@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 
 from quality import audit, build, docs, external_tools, index, metadata, review, workflow
-from quality.repository import baseline, changed, git, inventory, materialize_index
+from quality.repository import baseline, changed, checked_names, git, inventory, materialize_index
 
 LEAVES = (
     "lock",
@@ -74,7 +74,7 @@ def leaf(name: str, root: Path, files: set[str], before: dict[str, bytes]) -> li
                 "--config",
                 ".pre-commit-hygiene.yaml",
                 "--files",
-                *sorted(files),
+                *sorted(checked_names(files)),
             ],
         )
     if name == "docs":

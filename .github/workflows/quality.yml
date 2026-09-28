@@ -96,7 +96,7 @@ jobs:
           sudo apparmor_parser -r "$profile"
           test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
       - name: Check repository
-        run: make check
+        run: env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS make check
       - name: Preserve native review evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

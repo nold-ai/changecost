@@ -155,6 +155,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the checked-out HEAD differs from that event head or the reviewed checkout wiring is changed
 - **THEN** verification fails before resolving the comparison base; the canonical checkout remains unique, unconditional, first, pinned, with full history and no persisted credentials.
 
+#### Scenario: Inherited Make flags cannot hide aggregate failures
+
+- **GIVEN** Make flag variables are inherited from the workflow, job, step or runner environment
+- **WHEN** CI invokes the required aggregate
+- **THEN** its canonical command clears `MAKEFLAGS`, `GNUMAKEFLAGS` and `MFLAGS` before `make check`, so an ignore-errors option cannot turn a failing recipe into success
+- **AND** workflow validation rejects aggregate commands that remove this protection; ordinary aggregate success still passes.
+
 #### Scenario: Sibling workflows retain shared security policy
 
 - **GIVEN** an additional `.yml` or `.yaml` workflow alongside the required quality workflow
@@ -198,6 +205,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **GIVEN** a change only to `openspec/config.yaml`
 - **WHEN** review applicability is evaluated
 - **THEN** full required review runs and incomplete review evidence fails; unchanged configuration alone does not trigger review.
+
+#### Scenario: Option-shaped root filenames cannot bypass hygiene
+
+- **GIVEN** a current repository input whose root-relative path begins with `-`, including after normalizing a `./` prefix
+- **WHEN** the working inventory, staged snapshot or hygiene leaf accepts its file list
+- **THEN** it fails with a filename diagnostic before invoking hooks; such root filenames must be renamed because pre-commit and individual hooks may parse them as options
+- **AND** deleting the unsupported input is allowed, while nested names such as `fixtures/--help` and root names such as `.--help` remain valid.
 
 #### Scenario: Hygiene policy changes require review
 

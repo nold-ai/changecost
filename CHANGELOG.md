@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Reject option-shaped current root paths before hygiene or staged input acceptance,
+  preserving valid nested filenames and deletion repairs.
+
+- Clear inherited Make flag variables for the required CI aggregate so ignore-errors
+  options cannot hide failing gates; validate the canonical protected invocation.
+
 - Validate read-only token permissions and privileged-event restrictions in every
   workflow file, retaining quality-specific wiring checks on the quality workflow.
 

@@ -558,3 +558,61 @@ This correction enforces the approved read-only CI design across workflow files;
 it does not authenticate a hostile PR controller or change the two open integrity
 scope disputes. Current-head CI remains green at `a70f845`; the uncommitted
 configuration and workflow-policy fixes still require fresh verification and CI.
+
+
+## Inherited Make flags preserve aggregate failure
+
+Codex code review 5340973177 of `b241407` (comment 4124033798) identified that
+`MAKEFLAGS=-i` could suppress gate failures. A real host probe using the workflow's
+original `make check` command and a synthetic recipe exiting 23 reproduced the
+problem at workflow, job and step scope: wiring validation accepted all three,
+and GNU Make returned zero with “Error 23 (ignored)”. Four canonical-command
+regressions also failed before correction. CI now clears MAKEFLAGS, GNUMAKEFLAGS
+and MFLAGS immediately before Make; the validator requires that exact command.
+
+With all three flag variables set to `-i`, the actual corrected workflow command
+now returns two for the failing recipe and zero after repair, at each of the three
+inheritance scopes. No failure was ignored. The host proof uses GNU Make 3.81 on
+macOS; the inherited MAKEFLAGS bypass is directly reproduced there, while clearing
+GNUMAKEFLAGS also protects GNU Make versions supporting that input. Four command
+mutation/repair cases plus existing condition/resolver tests pass (14 targeted
+cases). The external Make proof runs on the host, while capsule pytest exercises
+the workflow contract without adding a native Make dependency. Receipts:
+`promotion/makeflags-runtime-red.json`, `promotion/makeflags-test-red.log`,
+`promotion/makeflags-runtime-green.json` and `promotion/makeflags-test-green.log`.
+
+Hosted run [36443662510](https://github.com/nold-ai/changecost/actions/runs/36443662510)
+passed all gates on both Python versions at `b241407`, including all ten native
+analyzers. Its 220 nonblocking findings received an
+[individual report-bound disposition](https://github.com/nold-ai/changecost/pull/22#issuecomment-5873326997),
+including explicit reassessment of five retained identities with changed source
+context. This inherited-flag correction still needs independent verification and
+fresh hosted CI/reviews; the two mutable-host scope disputes remain open.
+
+
+## Hygiene filename argument boundary
+
+Codex security review 5341086436 of `b241407` (comment 4124121693) identified
+a tracked root `--help` filename being parsed as a pre-commit option. An isolated
+real Git repository with that name and a harmless synthetic private-key header
+marker reproduced success and help output without running hooks. A `./` prefix
+was also tested and was insufficient: installed pre-commit normalizes paths to
+relative names before invoking its hooks; all hooks then reported success despite
+the synthetic marker. This downstream failure is preserved in
+`promotion/hygiene-prefix-probe.json`, not described as a successful fix.
+
+The shared current-input validator now rejects option-shaped root paths during
+working inventory, staged materialization and direct hygiene invocation. Three
+failing-before cases cover `--help`, `-h` and normalized `./--help`, then prove
+removing the input permits inventory/snapshot/hygiene again without rejecting its
+old comparison entry. Three additional cases preserve `fixtures/--help`, `.--help`
+and an ordinary filename. All six targeted cases pass. The guard applies only to
+current inputs; it does not prohibit repairing an existing unsupported filename.
+
+The actual downstream proof now rejects the unsafe root path. After a safe rename,
+detect-private-key fails the harmless synthetic marker as expected; replacing the
+marker with ordinary text makes every hook pass. No real key material is used.
+Receipts: `promotion/hygiene-option-runtime-red.json`,
+`promotion/hygiene-option-test-red.log`, `promotion/hygiene-option-test-green.log`
+and `promotion/hygiene-option-runtime-green.json`. This fix and the inherited
+Make-flag correction remain pending independent verification and fresh hosted CI.
