@@ -22,7 +22,13 @@ A PR checks its head and the merge-base with
 the event base; main pushes use the event's before SHA, including all commits in
 the push. Manual CI requires a comparison SHA distinct from the tested head. Equal-head
 manual bases fail before BASE_REF is exported; PR merge-base, push-before and
-staged-hook HEAD semantics are unchanged. Missing history fails. Local
+staged-hook HEAD semantics are unchanged. The operator-selected manual comparison
+controls changed-input applicability. A valid distinct commit with an identical
+tree, or a docs-only interval, can legitimately report behavior gates as not
+applicable. That result is scoped comparison evidence, not full ten-analyzer
+assurance, and cannot replace the required behavior evidence for a PR/promotion.
+The manual input is not a trusted-main policy; rejecting only identical trees
+would not establish a trusted interval. Missing history fails. Local
 `make check` reads tracked working files plus an explicit `MANIFEST` for intended
 new files; it refuses implicit omission when untracked files exist. Unrelated
 private `artifacts/` directories are ignored at every depth. Every nonempty manifest
@@ -263,11 +269,16 @@ Quality-specific matrix, checkout and comparison wiring remain requirements of
 `quality.yml`; unrelated read-only workflows do not need that foundation schema.
 
 The canonical CI aggregate command is
-`env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS make check`. It removes Make flag
+`/usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check`. It removes Make flag
 variables inherited from workflow, job, step or earlier runner setup before Make
 starts. Required wiring validation rejects a bare command or partial removal of
 this protection. This preserves failing recipe exit status; it does not attest a
-hostile controller or reinterpret arbitrary workflow shell programs.
+hostile controller or reinterpret arbitrary workflow shell programs. On the
+pinned Ubuntu runner, the absolute env/Make paths avoid selecting these launchers
+through PATH. The workflow gate also rejects direct PATH entries at workflow,
+quality-job or any quality-step scope. Normal bootstrap additions through
+GITHUB_PATH remain supported. These are configuration constraints, not an
+integrity guarantee for host binaries, downstream tools or reports.
 
 Current root-relative paths beginning with `-` are rejected before input acceptance
 or direct hygiene invocation, including a normalized `./--help`. Prefixing alone
@@ -283,3 +294,9 @@ absent or identical workflow defaults, and checks every quality run step for
 conflicting shell/directory overrides. Matching aggregate text alone does not
 prove its script will run in the intended context. This is static configuration
 validation and does not authenticate a hostile runner or general shell program.
+
+Python matrix validation also requires the quality job's exact
+`UV_PYTHON: ${{ matrix.python }}` environment binding. Any step-level UV_PYTHON
+entry is rejected, including a redundant identical expression, so interpreter
+selection has one declared owner. The current workflow already used both correct
+versions; this check prevents prospective label/interpreter drift.

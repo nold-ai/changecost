@@ -743,7 +743,7 @@ def test_workflow_requires_clean_make_environment(remove):
     config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
     job = config["jobs"]["quality"]
     check = next(step for step in job["steps"] if step.get("name") == "Check repository")
-    required = "env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS make check"
+    required = "/usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check"
     assert check["run"] == required
     for scope in (config, job, check):
         scope.setdefault("env", {})["MAKEFLAGS"] = "-i"
@@ -876,4 +876,76 @@ def test_manual_dispatch_requires_distinct_comparison():
     step["run"] = original.replace(guard, "")
     assert any("comparison" in error for error in wiring_errors(config))
     step["run"] = original
+    assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("value", [None, "3.11.15", "3.13.14"])
+def test_quality_interpreter_follows_matrix(value):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    env = config["jobs"]["quality"]["env"]
+    if value is None:
+        del env["UV_PYTHON"]
+    else:
+        env["UV_PYTHON"] = value
+    assert any("interpreter" in error for error in wiring_errors(config))
+    env["UV_PYTHON"] = "${{ matrix.python }}"
+    assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("value", ["3.11.15", "${{ matrix.python }}"])
+def test_quality_steps_cannot_override_matrix_interpreter(value):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    for step in config["jobs"]["quality"]["steps"]:
+        env = step.setdefault("env", {})
+        env["UV_PYTHON"] = value
+        assert any("interpreter" in error for error in wiring_errors(config))
+        del env["UV_PYTHON"]
+        assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("scope_name", ["workflow", "job", "steps"])
+def test_quality_rejects_direct_path_overrides(scope_name):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    job = config["jobs"]["quality"]
+    scopes = {"workflow": [config], "job": [job], "steps": job["steps"]}[scope_name]
+    for scope in scopes:
+        env = scope.setdefault("env", {})
+        env["PATH"] = "/unreviewed/tool-directory"
+        assert any("PATH" in error for error in wiring_errors(config))
+        del env["PATH"]
+        assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("command", ["env", "make"])
+def test_quality_requires_absolute_aggregate_launchers(command):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    check = next(
+        step
+        for step in config["jobs"]["quality"]["steps"]
+        if step.get("name") == "Check repository"
+    )
+    required = "/usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check"
+    check["run"] = required.replace(f"/usr/bin/{command}", command)
+    assert any("aggregate" in error for error in wiring_errors(config))
+    check["run"] = required
     assert wiring_errors(config) == []

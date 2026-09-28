@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Pin CI aggregate env/Make launcher paths and reject direct quality PATH overrides;
+  clarify the declared scope of operator-selected manual comparison evidence.
+
+- Bind quality-job interpreter selection to the Python matrix and reject step-level
+  overrides that could make both matrix labels use the same interpreter.
+
 - Reject manual CI comparison references resolving to the tested head while
   preserving PR, push and staged-hook comparison semantics.
 

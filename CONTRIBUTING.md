@@ -124,3 +124,19 @@ and individual run steps may not replace them with a different shell or director
 Manual CI requires a resolved comparison base different from the tested head;
 HEAD or an alias resolving to that head is rejected before export. PR and push
 comparison rules and the ordinary staged-hook HEAD default are unchanged.
+
+Keep the quality job's `UV_PYTHON` set exactly to `${{ matrix.python }}` and do not
+set that variable on individual steps. Matrix labels alone do not prove that uv
+selected each intended interpreter; the workflow gate checks both the version
+matrix and this single job-level binding.
+
+CI uses the pinned Ubuntu runner's `/usr/bin/env` and `/usr/bin/make` for the
+aggregate. Do not set PATH directly in workflow, quality-job or quality-step
+environments; the gate rejects those overrides. Normal bootstrap GITHUB_PATH
+additions remain supported. Absolute launcher selection does not authenticate
+a mutable host or its reports.
+
+A manual comparison is operator-selected and controls changed-input applicability.
+A distinct identical-tree base or docs-only interval may legitimately make behavior
+checks not applicable. Such results are scoped evidence, not full ten-analyzer
+assurance, and cannot replace a PR/promotion's required behavior review.

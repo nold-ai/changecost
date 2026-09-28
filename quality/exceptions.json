@@ -1,10 +1,10 @@
 {
   "README.md": {
-    "reason": "Quality CI now requires canonical Bash/root execution defaults and rejects equal-head manual comparison references. README setup commands, package scope, local staged-hook HEAD behavior and native advisory-success semantics remain unchanged. Exact CI settings and the manual-dispatch restriction are documented in CONTRIBUTING.md and docs/development/quality-gates.md.",
-    "digest": "cc211e69888367a5357b572bf58a84b5602ad0d6f77650bbec79a648d24b6b9d"
+    "reason": "The CI validator now binds the Python matrix, pins Ubuntu env/Make launcher selection and rejects direct PATH overrides. README setup commands, package scope and local staged-hook behavior are unchanged; CONTRIBUTING.md and docs/development/quality-gates.md document these CI constraints and the existing operator-selected manual comparison evidence scope.",
+    "digest": "f75bc95f688c5d482b19bf519e51663669e7941c4f25820fd0e69dc8f2527204"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "The agent procedure already requires actual execution of required gates and explicit comparison evidence. Canonical CI shell/directory checks and the manual-only distinct-head guard enforce those requirements without changing agent commands, local staged-hook defaults or assurance policy; exact settings are maintained in CONTRIBUTING.md and docs/development/quality-gates.md.",
-    "digest": "cc211e69888367a5357b572bf58a84b5602ad0d6f77650bbec79a648d24b6b9d"
+    "reason": "The agent procedure already requires supported-version checks, workflow validation and behavior review for applicable changes. Matrix binding and explicit Ubuntu launcher selection constrain CI wiring without changing agent invocation or assurance policy. CONTRIBUTING.md and docs/development/quality-gates.md document direct PATH rejection and clarify that scoped manual not-applicable results cannot replace required PR/promotion behavior evidence.",
+    "digest": "f75bc95f688c5d482b19bf519e51663669e7941c4f25820fd0e69dc8f2527204"
   }
 }

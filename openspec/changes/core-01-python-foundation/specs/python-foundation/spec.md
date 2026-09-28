@@ -150,6 +150,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **THEN** resolution fails before exporting BASE_REF rather than creating an empty comparison interval
 - **AND** a distinct resolved manual base remains valid; this restriction does not change PR merge-base, push-before or local staged-HEAD semantics.
 
+#### Scenario: Manual comparison evidence retains its declared scope
+
+- **GIVEN** an operator-selected distinct manual comparison base
+- **WHEN** that interval contains no behavior changes, including an identical-tree or docs-only interval
+- **THEN** changed-input applicability may report behavior gates as not applicable; this is scoped comparison evidence, not full ten-analyzer assurance
+- **AND** it cannot replace behavior evidence required by the actual PR/promotion interval; manual selection does not establish a trusted-main baseline.
+
 #### Scenario: CI comparison base override
 
 - **GIVEN** a workflow that replaces the reviewed event-based resolver, changes its inputs/order, or overrides BASE_REF at another workflow/job/step scope
@@ -162,12 +169,26 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the checked-out HEAD differs from that event head or the reviewed checkout wiring is changed
 - **THEN** verification fails before resolving the comparison base; the canonical checkout remains unique, unconditional, first, pinned, with full history and no persisted credentials.
 
+#### Scenario: Python matrix labels select their actual interpreters
+
+- **GIVEN** the required Python matrix entries
+- **WHEN** the quality job's `UV_PYTHON` differs from the canonical matrix binding, is missing, or any step supplies its own `UV_PYTHON`
+- **THEN** workflow validation fails instead of accepting labels that could run the same interpreter
+- **AND** the job's exact `${{ matrix.python }}` binding with no step override passes.
+
 #### Scenario: Quality steps retain their reviewed execution context
 
 - **GIVEN** the quality job declares Bash and the repository root as its run defaults
 - **WHEN** workflow/job defaults or any run-step override changes the shell or working directory
 - **THEN** workflow validation rejects the unreviewed execution context, even if the aggregate command text is unchanged
 - **AND** absent workflow defaults and inherited or identical step settings remain valid; the explicit quality-job defaults are required.
+
+#### Scenario: CI aggregate launcher selection is explicit
+
+- **GIVEN** the pinned Ubuntu quality job
+- **WHEN** a workflow, quality job or quality step directly sets PATH, or the aggregate replaces the canonical `/usr/bin/env` and `/usr/bin/make` paths
+- **THEN** workflow validation rejects the configuration; the canonical aggregate retains Make-flag clearing and normal tool installation through GITHUB_PATH
+- **AND** these checks constrain launcher selection, not the authenticity of a mutable host or its output.
 
 #### Scenario: Inherited Make flags cannot hide aggregate failures
 

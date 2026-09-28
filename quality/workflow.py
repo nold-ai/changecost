@@ -10,7 +10,7 @@ import yaml
 from quality import external_tools
 
 CHECKOUT_ACTION = "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
-AGGREGATE_COMMAND = "env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS make check"
+AGGREGATE_COMMAND = "/usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check"
 HEAD_REF = "${{ github.event.pull_request.head.sha || github.sha }}"
 
 COMPARISON_ENV = {
@@ -62,7 +62,7 @@ def validate(root: Path) -> list[str]:
         ):
             errors.append(f"quality event incomplete: {event}")
     text = (root / ".github/workflows/quality.yml").read_text()
-    if "make check" not in text or "persist-credentials: false" not in text:
+    if AGGREGATE_COMMAND not in text or "persist-credentials: false" not in text:
         errors.append("quality workflow must call the aggregate without persisted credentials")
     errors.extend(wiring_errors(config))
     return errors
@@ -92,9 +92,7 @@ def wiring_errors(config: dict) -> list[str]:
     errors.extend(checkout_errors(job))
     errors.extend(capsule_setup_errors(job))
     errors.extend(comparison_errors(config))
-    matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
-    if matrix != ["3.11.15", "3.13.14"]:
-        errors.append("required Python matrix changed without gate reconciliation")
+    errors.extend(matrix_errors(job))
     checks = [
         step for step in job.get("steps", []) if step.get("run", "").strip() == AGGREGATE_COMMAND
     ]
@@ -107,6 +105,19 @@ def wiring_errors(config: dict) -> list[str]:
     return errors
 
 
+def matrix_errors(job: dict) -> list[str]:
+    """Bind the required matrix labels to uv's actual interpreter selection."""
+    errors = []
+    matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
+    if matrix != ["3.11.15", "3.13.14"]:
+        errors.append("required Python matrix changed without gate reconciliation")
+    if job.get("env", {}).get("UV_PYTHON") != "${{ matrix.python }}":
+        errors.append("quality interpreter must use the canonical Python matrix binding")
+    if any("UV_PYTHON" in step.get("env", {}) for step in job.get("steps", [])):
+        errors.append("quality steps cannot override the matrix interpreter")
+    return errors
+
+
 def execution_errors(config: dict) -> list[str]:
     """Keep all quality run steps on the reviewed shell and repository directory."""
     expected = {"run": {"shell": "bash", "working-directory": "."}}
@@ -116,6 +127,9 @@ def execution_errors(config: dict) -> list[str]:
         errors.append("quality execution defaults must declare Bash and repository root")
     if config.get("defaults") not in (None, expected):
         errors.append("workflow execution defaults differ from the reviewed context")
+    scopes = [config, job, *job.get("steps", [])]
+    if any("PATH" in scope.get("env", {}) for scope in scopes):
+        errors.append("quality PATH cannot be overridden by workflow/job/step environment")
     for step in job.get("steps", []):
         if "run" in step and any(
             step.get(key, value) != value for key, value in expected["run"].items()

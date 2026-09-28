@@ -666,3 +666,60 @@ Receipts: `promotion/manual-base-runtime-red.json`,
 `promotion/manual-base-static-red.log`, `promotion/manual-base-runtime-green.json`
 and `promotion/execution-manual-green.log`. Independent verification and fresh
 hosted CI/reviews remain required for this uncommitted combined correction.
+
+
+## Static matrix interpreter binding
+
+Codex code review 5341591512 of `f43bf23` (comment 4124542155) identified that
+version labels alone did not validate uv's actual interpreter selection. The
+current hosted run did use both intended Python versions; this is a prospective
+workflow validation gap, not a claim that its matrix evidence was duplicated.
+The spec now requires the existing canonical job-level UV_PYTHON matrix binding
+and rejects all per-step overrides.
+
+Five YAML-only regression cases failed before correction and now pass: missing
+job binding, either fixed interpreter value, and fixed or redundant-expression
+step overrides. The latter cases visit every quality step and verify repair each
+time. A small matrix validator retains the exact two-version check and applies
+the binding rules together. No workflow YAML or runtime tooling changed. Actual
+actionlint passes. Receipts: `promotion/matrix-binding-static-red.log` and
+`promotion/matrix-binding-static-green.log`.
+
+Hosted run [36449961738](https://github.com/nold-ai/changecost/actions/runs/36449961738)
+passed every aggregate leaf at `f43bf23` on both Python versions, including 122
+tests plus four subtests and all ten native analyzers. Its 248 nonblocking
+findings have an [individual report-bound disposition](https://github.com/nold-ai/changecost/pull/22#issuecomment-5874170166)
+covering 20 additions, three removals and 228 unchanged-context retained identities.
+This matrix-binding validator correction still requires independent verification
+and fresh hosted CI/reviews; the two mutable-host scope disputes remain open.
+
+
+## Static aggregate launcher selection and manual evidence scope
+
+Security review 5341678338 of `f43bf23` reported direct PATH selection of the
+aggregate launcher (comment 4124618208). Five new YAML-only cases failed before
+correction: workflow/job/step PATH entries and either noncanonical launcher path.
+All 14 focused PATH, existing Make-flag and matrix-binding cases now pass,
+including removal/repair checks at every quality step. The canonical Ubuntu
+command uses `/usr/bin/env` and `/usr/bin/make`; direct PATH entries are rejected.
+Normal GITHUB_PATH bootstrap additions remain intact. Receipts:
+`promotion/path-static-red.log` and `promotion/path-matrix-static-green.log`.
+No alternative shell or fake launcher was executed; this evidence verifies static
+configuration validation and does not authenticate a mutable runner or output.
+
+The same review's comment 4124618186 asks that manually selected bases be trusted.
+The original design specifies an explicit manual base and the approved behavior
+review scenario uses changed-input applicability. A valid distinct identical-tree
+or docs-only interval therefore legitimately has no applicable behavior changes.
+Rejecting identical trees alone would not establish trust in other selected
+intervals. Documentation now explicitly distinguishes scoped manual results from
+full ten-analyzer assurance and required PR/promotion behavior evidence. This is
+a non-finding under the declared comparison contract, not a reviewer withdrawal
+or permission to substitute not-applicable results for required behavior review.
+No additional manual comparison restriction was implemented. The thread remains
+open pending a verified reply and observation of any contest.
+
+The combined matrix/PATH correction still needs independent verification and
+fresh hosted CI/reviews. The current `f43bf23` run and its published 248 advisory
+dispositions remain bound to that earlier head; the two mutable-host scope disputes
+remain open.
