@@ -7,6 +7,31 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Explicit comparison and target-base evidence binding
+
+Initial and adopted base IDs SHALL identify commit objects exactly. Annotated-tag
+object IDs SHALL be rejected without silently replacing caller-supplied identities.
+
+Schema-4 contracts SHALL name an expected PR base ref/SHA independently from the
+immutable comparison commit. Current comparison/base context SHALL be replayed
+separately and exposed in packets. Explicit atomic adoption through advance_head
+SHALL verify local commits and capture provenance without rewriting original scope,
+history or counters. Adoption invalidates prior local and remote completion proof.
+
+#### Scenario: Target base changes with an unchanged head
+- **WHEN** the PR base ref/SHA differs from the approved tuple or changes during collection
+- **THEN** monitoring is incomplete rather than reusing same-head completion
+
+#### Scenario: Adopt a new comparison and target base explicitly
+- **WHEN** an advance_head event supplies both comparison_base and pr_base
+- **THEN** captured local commit facts and an adoption timestamp establish a new input epoch
+- **AND** pure replay preserves the immutable original contract and counters
+
+#### Scenario: Old evidence is not silently rebound
+- **WHEN** local evidence omits or supplies a stale explicit head/input/epoch/comparison/PR-base binding
+- **THEN** recording rejects it even under a new event ID
+- **AND** after adoption required positive remote checks/statuses/reviews must have valid timestamps at or after adoption, while existing objections still block
+
 ### Requirement: Visible local terminal decisions and consistent commit identities
 
 The watcher SHALL emit every terminal local decision even when remote evidence
@@ -26,7 +51,7 @@ one full commit-ID validation rule supporting hexadecimal SHA-1 and SHA-256 IDs.
 
 ### Requirement: Usable initial scope and effective reviewer objections
 
-Schema-3 initialization SHALL require typed, nonblank scope and exact identities,
+Schema-4 initialization SHALL require typed, nonblank scope and exact identities,
 full commit IDs and a safe path-to-SHA256 manifest using `<absent>` for planned
 absent paths. It SHALL verify the initial base and actual manifest, including
 changed/index/untracked paths, and preserve captured facts for filesystem-free

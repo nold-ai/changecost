@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bind review evidence to explicit PR target and comparison bases, preserve their
+  original contract, and require fresh evidence after atomic context adoption.
+
 - Emit local review terminal decisions despite quiet remote polls, recheck budgets
   at watcher deadlines and validate full commit identities consistently on refresh.
 

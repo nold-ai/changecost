@@ -123,7 +123,7 @@ Only a genuinely new session uses
 Existing sessions use `status`, then `packet` when recovery or replanning is
 required. A missing or incompatible receipt must not reset counters, including
 after moving to another worktree. Preserve schema-1 history as recovery evidence;
-do not synthesize prior measurements into a new schema-3 allowance. Schema-1/2
+do not synthesize prior measurements into a new schema-4 allowance. Schema-1/2/3
 receipts remain recovery evidence; new required initial-scope facts are not invented.
 
 The complete JSON contract has this shape (replace example SHAs, file fingerprint,
@@ -138,6 +138,7 @@ requirements, gates and exact REST reviewer identities with inspected values):
   "trust_boundary": "Existing contributor workflow boundary",
   "intended_files": {"quality/review_session.py": "<sha256>"},
   "base": "<full-base-sha>",
+  "pr_base": {"ref": "main", "sha": "<full-target-tip-sha>"},
   "head": "<full-head-sha>",
   "required_reviewers": ["<exact-reviewer-login>"],
   "required_checks": ["<required-check-name>"],
@@ -162,6 +163,12 @@ capture; it never clears or mutates the user's index flags.
 The first `watch <change-id> --repo <owner/repo> --pr <number>` binds the PR.
 That source remains fixed across input refreshes. `advance_head` captures a new
 input epoch and invalidates prior completion evidence while retaining counters.
+The initial comparison `base` and target `pr_base` remain immutable history. To
+adopt changed target context, supply both `comparison_base` and `pr_base` on an
+`advance_head` event; the packet exposes the current binding. Capture that full
+`binding` before each local review/check and supply it explicitly on its evidence
+event. Never copy a fresh binding onto an old result. After adoption, required remote
+positive results need timestamps at or after adoption; old objections still block.
 The final published inputs must be clean. Full local receipts retain canonical
 events and separate generated provenance; cached counters, decisions and monitor
 summaries must agree with replay. The genesis marker detects a lost state file,

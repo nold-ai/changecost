@@ -95,6 +95,9 @@ planned files). Effective reviewer objections remain blocking until approval or
 dismissal of the original rejecting review, rather than disappearing on a comment.
 Watcher completion/replanning output remains visible even without a GitHub change;
 local budget changes take precedence over a no-progress timeout.
+Expected PR target ref/SHA is separate from the comparison commit. Retargeting or
+base advancement requires explicit adoption and fresh local/remote evidence, even
+with unchanged HEAD; schema-4 receipts preserve the original contract and counters.
 
 ## Community and license
 

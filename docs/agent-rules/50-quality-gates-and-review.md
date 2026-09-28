@@ -22,6 +22,12 @@ Resolve findings at every severity or document a narrow justified exception.
 
 ## Bounded review sessions
 
+Schema-4 contracts name the PR target ref/SHA separately from the comparison base.
+Retargeting or target advancement invalidates monitoring. Explicit atomic base
+adoption retains counters but requires a new evidence epoch: local results carry
+their original full binding, and required remote positives postdate adoption.
+Preserve older receipts for recovery; do not invent missing base provenance.
+
 For review/fix work, initialize the ignored local record with
 `python -m quality.review_session init <change-id> --json <contract.json>`. Before
 each correction batch or publication, inspect its `status`. An escape after a
@@ -40,7 +46,7 @@ reviewers must have a latest APPROVED or COMMENTED result.
 Comments, pending submissions and dismissal of another review cannot clear that
 objection. Only a later approval or a fresh snapshot showing the original rejecting
 review dismissed can clear it.
-Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-3
+Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-4
 replay reconciles all cached fields; missing or incompatible history requires
 recovery, never reinitialization. Final published inputs must be clean. Exclude
 non-findings from family escalation while retaining genuine fixed recurrences.

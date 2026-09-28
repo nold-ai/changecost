@@ -21,7 +21,7 @@ from typing import Any
 
 from quality import repository
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 DEFAULT_BATCHES = 3
 DEFAULT_MINUTES = 90
 WAIT_LIMIT_MINUTES = 30
@@ -74,6 +74,9 @@ def initial_state(genesis: dict[str, Any]) -> dict[str, Any]:
         "change_id": genesis["change_id"],
         "contract": copy.deepcopy(contract),
         "reviewed_head": contract["head"],
+        "comparison_base": contract["base"],
+        "pr_base": copy.deepcopy(contract["pr_base"]),
+        "context_since": None,
         "inputs": copy.deepcopy(genesis["inputs"]),
         "budget": {"batches": DEFAULT_BATCHES, "minutes": DEFAULT_MINUTES},
         "batches": 0,
@@ -154,6 +157,10 @@ def validate_provenance(event: dict[str, Any], provenance: Any) -> None:
     if event["kind"] == "advance_head":
         expected.add("inputs")
         validate_inputs(provenance.get("inputs"), event["head"])
+        if validate_adoption(event):
+            expected.add("adoption")
+            if provenance.get("adoption") != adoption_binding(event):
+                raise ValueError("base adoption provenance mismatch")
     if provenance.keys() != expected:
         raise ValueError("unexpected event provenance fields")
 
@@ -176,6 +183,7 @@ def validate_contract(contract: dict[str, Any]) -> None:
         "trust_boundary",
         "intended_files",
         "base",
+        "pr_base",
         "head",
         "required_reviewers",
         "required_checks",
@@ -185,6 +193,7 @@ def validate_contract(contract: dict[str, Any]) -> None:
     if missing:
         raise ValueError(f"contract missing: {', '.join(missing)}")
     validate_scope_contract(contract)
+    validate_pr_base(contract["pr_base"])
     validate_gate_contract(contract)
     if not isinstance(contract["repository"], str) or not re.fullmatch(
         r"[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9][A-Za-z0-9_.-]*", contract["repository"]
@@ -228,6 +237,41 @@ def validate_commit_id(value: Any, label: str) -> None:
         raise ValueError(f"{label} requires a full hexadecimal commit ID")
 
 
+def validate_pr_base(value: Any) -> None:
+    if not isinstance(value, dict) or value.keys() != {"ref", "sha"}:
+        raise ValueError("pr_base requires ref and sha")
+    ref = value["ref"]
+    if not nonblank(ref) or re.search(r"[~^:?*\[\]\\\x00-\x20\x7f]", ref):
+        raise ValueError("pr_base requires a valid branch ref")
+    if any(part in ref for part in ("..", "@{", "//", "/.", ".lock/")):
+        raise ValueError("pr_base requires a valid branch ref")
+    if ref.startswith(("/", ".", "-")) or ref.endswith(("/", ".", ".lock")):
+        raise ValueError("pr_base requires a valid branch ref")
+    validate_commit_id(value["sha"], "pr_base sha")
+
+
+def verified_commit(root: Path, commit: str) -> str:
+    validate_commit_id(commit, "base")
+    resolved = (
+        repository.git(root, "rev-parse", "--verify", f"{commit}^{{commit}}").decode().strip()
+    )
+    if resolved != commit:
+        raise ValueError("base identity must name a commit object, not a peeled tag")
+    return resolved
+
+
+def adoption_binding(event: dict[str, Any]) -> dict[str, Any]:
+    return {"comparison_base": event["comparison_base"], "pr_base": event["pr_base"]}
+
+
+def validate_adoption(event: dict[str, Any]) -> bool:
+    if not {"comparison_base", "pr_base"} & event.keys():
+        return False
+    validate_commit_id(event.get("comparison_base"), "comparison_base")
+    validate_pr_base(event.get("pr_base"))
+    return True
+
+
 def validate_manifest(manifest: Any) -> None:
     if not isinstance(manifest, dict) or not manifest:
         raise ValueError("intended_files requires a nonempty path fingerprint mapping")
@@ -254,17 +298,18 @@ def validate_manifest_path(name: Any) -> None:
 
 
 def capture_initial_scope(root: Path, contract: dict[str, Any]) -> dict[str, Any]:
-    base = (
-        repository.git(root, "rev-parse", "--verify", f"{contract['base']}^{{commit}}")
-        .decode()
-        .strip()
-    )
+    base = verified_commit(root, contract["base"])
     changed = repository.git(root, "diff", "--name-only", "--no-renames", "-z", base)
     staged = repository.git(root, "diff", "--cached", "--name-only", "--no-renames", "-z", base)
     untracked = repository.git(root, "ls-files", "--others", "--exclude-standard", "-z")
     names = set((changed + staged + untracked).decode().split("\0")) - {""}
     actual = {name: file_fingerprint(root, name) for name in contract["intended_files"]}
-    facts = {"base": base, "files": actual, "changed_paths": sorted(names)}
+    facts = {
+        "base": base,
+        "pr_base_sha": verified_commit(root, contract["pr_base"]["sha"]),
+        "files": actual,
+        "changed_paths": sorted(names),
+    }
     validate_initial_scope(contract, facts)
     return facts
 
@@ -279,7 +324,12 @@ def file_fingerprint(root: Path, name: str) -> str:
 
 
 def validate_initial_scope(contract: dict[str, Any], facts: Any) -> None:
-    if not isinstance(facts, dict) or facts.keys() != {"base", "files", "changed_paths"}:
+    if not isinstance(facts, dict) or facts.keys() != {
+        "base",
+        "pr_base_sha",
+        "files",
+        "changed_paths",
+    }:
         raise ValueError("missing or malformed initial scope facts; recovery required")
     string_list(facts["changed_paths"], "initial changed paths", allow_empty=True)
     if facts["changed_paths"] != sorted(set(facts["changed_paths"])):
@@ -288,6 +338,8 @@ def validate_initial_scope(contract: dict[str, Any], facts: Any) -> None:
         validate_manifest_path(name)
     if facts["base"] != contract["base"] or facts["files"] != contract["intended_files"]:
         raise ValueError("initial manifest does not match captured inputs/base")
+    if facts["pr_base_sha"] != contract["pr_base"]["sha"]:
+        raise ValueError("initial PR base facts mismatch")
     if not set(facts["changed_paths"]) <= contract["intended_files"].keys():
         raise ValueError("initial manifest omits changed inputs")
 
@@ -444,8 +496,7 @@ def record(
             "event_id": event_id,
             "recorded_at": datetime.now(UTC).isoformat(),
         }
-        if kind == "advance_head":
-            provenance["inputs"] = capture_inputs(root, event["head"])
+        capture_event_facts(root, event, provenance)
         observation = None if kind in {"advance_head", "bind_pr"} else state["monitor"]["data"]
         state = replay(
             state["genesis"],
@@ -456,6 +507,16 @@ def record(
         )
         write_state(path, state)
         return state
+
+
+def capture_event_facts(root: Path, event: dict[str, Any], provenance: dict[str, Any]) -> None:
+    if event["kind"] != "advance_head":
+        return
+    provenance["inputs"] = capture_inputs(root, event["head"])
+    if validate_adoption(event):
+        verified_commit(root, event["comparison_base"])
+        verified_commit(root, event["pr_base"]["sha"])
+        provenance["adoption"] = copy.deepcopy(adoption_binding(event))
 
 
 def duplicate_event(events: list[dict[str, Any]], event: dict[str, Any]) -> bool:
@@ -474,6 +535,9 @@ def apply_event(state: dict[str, Any], event: dict[str, Any], provenance: dict[s
     if event["kind"] == "advance_head":
         advance_head(state, event)
         state["inputs"] = copy.deepcopy(provenance["inputs"])
+        if "adoption" in provenance:
+            state.update(copy.deepcopy(provenance["adoption"]))
+            state["context_since"] = provenance["recorded_at"]
         return
     handlers = {
         "batch": add_batch,
@@ -563,6 +627,8 @@ def add_evidence(state: dict[str, Any], event: dict[str, Any]) -> None:
     require_field(event, "head", "evidence")
     if event["result"] not in {"pass", "fail", "incomplete"}:
         raise ValueError("unknown evidence result")
+    if event.get("binding") != evidence_binding(state) or event["head"] != state["reviewed_head"]:
+        raise ValueError("evidence binding is missing or stale")
     state["evidence"].append(event)
 
 
@@ -780,6 +846,7 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
         "change_id": change_id,
         "contract": state["contract"],
         "reviewed_head": state["reviewed_head"],
+        "binding": evidence_binding(state),
         "status": status(root, change_id),
         "unresolved_findings": unresolved_findings(state),
         "investigations": state["investigations"],
@@ -795,6 +862,16 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
 def binding_epoch(state: dict[str, Any]) -> str:
     advances = [item["id"] for item in state["events"] if item["kind"] == "advance_head"]
     return advances[-1] if advances else "genesis"
+
+
+def evidence_binding(state: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "head": state["reviewed_head"],
+        "input_digest": state["inputs"]["digest"],
+        "epoch": binding_epoch(state),
+        "comparison_base": state["comparison_base"],
+        "pr_base": copy.deepcopy(state["pr_base"]),
+    }
 
 
 def select_target(root: Path, change_id: str, repository_name: str, pull_request: int) -> None:
@@ -858,6 +935,8 @@ def classify_observation(observation: Any, state: dict[str, Any]) -> dict[str, A
         **state["contract"],
         "head": state["reviewed_head"],
         "pull_request": state["pull_request"],
+        "pr_base": state["pr_base"],
+        "context_since": state["context_since"],
     }
     errors = monitor_errors(observation, contract)
     if observation.get("_input_epoch") != binding_epoch(state):
@@ -879,7 +958,9 @@ def selected_fields(value: dict[str, Any], names: tuple[str, ...]) -> dict[str, 
 
 
 def semantic_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
-    result = selected_fields(snapshot, ("repository", "pull_request", "head", "_input_epoch"))
+    result = selected_fields(
+        snapshot, ("repository", "pull_request", "head", "pr_base", "_input_epoch")
+    )
     result["checks"] = [
         selected_fields(
             item, ("id", "name", "head_sha", "status", "conclusion", "started_at", "completed_at")
@@ -887,7 +968,7 @@ def semantic_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
         for item in page_items(snapshot["checks"], "check_runs")
     ]
     result["statuses"] = [
-        selected_fields(item, ("id", "context", "state", "description", "updated_at"))
+        selected_fields(item, ("id", "context", "state", "description", "created_at", "updated_at"))
         for item in page_items(snapshot["statuses"], "statuses")
     ]
     result["reviews"] = [semantic_review(item) for page in snapshot["reviews"] for item in page]
@@ -927,14 +1008,22 @@ def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
         "repository": repository,
         "pull_request": pull_request,
         "head": head,
+        "pr_base": pull_base(pull),
         "requested_reviewers": pull["requested_reviewers"],
     }
     for name, endpoint in endpoints.items():
         result[name] = gh_json(endpoint.format(head=head), paginate=True)
     result["threads"] = gh_review_threads(repository, pull_request)
-    if gh_json(f"repos/{repository}/pulls/{pull_request}")["head"]["sha"] != head:
-        raise ValueError("PR head changed during collection")
+    final = gh_json(f"repos/{repository}/pulls/{pull_request}")
+    if final["head"]["sha"] != head or pull_base(final) != result["pr_base"]:
+        raise ValueError("PR head or base changed during collection")
     return result
+
+
+def pull_base(pull: dict[str, Any]) -> dict[str, str]:
+    value = {"ref": pull["base"]["ref"], "sha": pull["base"]["sha"]}
+    validate_pr_base(value)
+    return value
 
 
 def gh_review_threads(repository: str, pull_request: int) -> list[dict[str, Any]]:
@@ -1059,7 +1148,8 @@ def monitor_errors(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[s
 
 def validate_snapshot_source(snapshot: dict[str, Any], contract: dict[str, Any]) -> None:
     integer(snapshot.get("pull_request"), "snapshot pull request")
-    for key in ("repository", "pull_request", "head"):
+    validate_pr_base(snapshot.get("pr_base"))
+    for key in ("repository", "pull_request", "head", "pr_base"):
         if snapshot.get(key) != contract.get(key):
             raise ValueError(f"monitor evidence is for a different {key}")
     if not contract.get("pull_request"):
@@ -1154,6 +1244,7 @@ def monitor_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[
     if monitor_errors(snapshot, contract):
         return []
     pending = reviewer_pending(snapshot, contract)
+    pending.extend(freshness_pending(snapshot, contract))
     pending.extend(missing_gates(snapshot, contract))
     pending.extend(
         f"current-head check is pending: {run.get('name', 'unnamed check')}"
@@ -1185,6 +1276,55 @@ def missing_gates(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[st
         if name not in statuses
     )
     return pending
+
+
+def timestamp_after(value: Any, since: str) -> bool:
+    try:
+        validate_timestamp(value)
+        return datetime.fromisoformat(value) >= datetime.fromisoformat(since)
+    except (ValueError, TypeError):
+        return False
+
+
+def freshness_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
+    since = contract.get("context_since")
+    if since is None:
+        return []
+    groups = (
+        (page_items(snapshot["checks"], "check_runs"), "name", "started_at", "required_checks"),
+        (
+            page_items(snapshot["statuses"], "statuses"),
+            "context",
+            "created_at",
+            "required_statuses",
+        ),
+    )
+    pending = []
+    for items, identity, timestamp, required in groups:
+        fresh = {item[identity] for item in items if timestamp_after(item.get(timestamp), since)}
+        pending.extend(
+            f"fresh evidence required after base adoption: {name}"
+            for name in contract[required]
+            if name not in fresh
+        )
+    fresh_reviewers = fresh_reviewer_names(snapshot, since)
+    pending.extend(
+        f"fresh reviewer evidence required after base adoption: {name}"
+        for name in contract["required_reviewers"]
+        if name not in fresh_reviewers
+    )
+    return pending
+
+
+def fresh_reviewer_names(snapshot: dict[str, Any], since: str) -> set[str]:
+    return {
+        item["user"]["login"]
+        for page in snapshot["reviews"]
+        for item in page
+        if item["commit_id"] == snapshot["head"]
+        and item["state"] in {"APPROVED", "COMMENTED"}
+        and timestamp_after(item.get("submitted_at"), since)
+    }
 
 
 def reviewer_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:

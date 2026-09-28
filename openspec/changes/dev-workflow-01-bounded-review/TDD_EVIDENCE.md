@@ -229,3 +229,35 @@ complexity remains 10 with no native KISS findings. Logs are
 `.changecost/batch8-full.txt`. Fresh supported-Linux and current-head provider
 results remain required after publication; historical receipt recovery and
 calibration limitations remain unchanged.
+
+## Explicit comparison and PR target context
+
+On 2026-09-29 (Europe/Berlin), the collected base/evidence repair began with
+seven failing spec-first cases (`.changecost/batch9-red.txt`). Schema 4 separates
+the immutable initial comparison and target-base facts from explicitly adopted
+current context. Atomic adoption verifies local commits, retains counters, and
+invalidates the prior evidence epoch even with unchanged HEAD. Local results
+must supply their original full binding; cloning an old pass under a new event ID
+does not make it current.
+
+The matrix covers target ref/SHA drift between collection reads, malformed initial
+targets, partial adoption, independent comparison versus target-tip commits, pure
+replay and original-init retries, and missing/malformed/old remote timestamps in
+all three positive evidence lanes. Existing current-head objections still block.
+These timestamps bound freshness after adoption; they do not authenticate remote
+execution against the new context or replace SpecFact's separate content proof.
+
+Independent review then identified adopted annotated-tag object IDs being peeled
+without retaining their exact identity. Four real-Git cases produced two failures
+and two passes (`.changecost/batch9-tag-red.txt`). Shared base verification now
+rejects tag object IDs for both initial and adopted contexts, while real SHA-1/
+SHA-256 commit refresh and filesystem-free replay continue passing.
+
+Final local runs pass 258 focused tests and 426 full tests (plus four subtests).
+Coverage measures 827/882 helper statements (94% rounded). Ruff, BasedPyright,
+docs against HEAD/main and strict OpenSpec pass; maximum complexity is 10 and
+native KISS findings are empty. Logs are `.changecost/batch9-final-focused.txt`,
+`.changecost/batch9-final-full.txt`, `.changecost/batch9-coverage.txt` and
+`.changecost/batch9-types.txt`. Fresh supported-Linux and provider results remain
+pending publication. Historical receipt recovery and calibration remain incomplete;
+no reset or token/time savings is inferred from this repair.

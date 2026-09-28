@@ -54,6 +54,7 @@ def contract() -> dict[str, object]:
         "trust_boundary": "configuration validation only",
         "intended_files": fixture_manifest(),
         "base": TEST_HEAD,
+        "pr_base": {"ref": "main", "sha": TEST_HEAD},
         "head": TEST_HEAD,
         "required_reviewers": ["reviewer-a"],
         "required_checks": ["ci"],
@@ -89,6 +90,7 @@ def complete_snapshot() -> dict[str, Any]:
         "repository": "nold-ai/changecost",
         "pull_request": 24,
         "head": TEST_HEAD,
+        "pr_base": {"ref": "main", "sha": TEST_HEAD},
         "checks": [
             {"check_runs": [{"name": "ci", "status": "completed", "conclusion": "success"}]}
         ],
@@ -113,6 +115,7 @@ def complete_session(tmp_path: Path, *, timing: bool = True) -> None:
                 "evidence_type": category,
                 "result": "pass",
                 "head": TEST_HEAD,
+                "binding": review_session.evidence_binding(review_session.load(tmp_path, "change")),
             },
         )
     review_session.record(tmp_path, "change", {"id": "done", "kind": "phase", "phase": "complete"})
@@ -488,7 +491,11 @@ def test_snapshot_reads_each_paginated_review_source(monkeypatch: pytest.MonkeyP
     def fake_gh(endpoint: str, *, paginate: bool = False) -> object:
         calls.append((endpoint, paginate))
         return (
-            {"head": {"sha": "head"}, "requested_reviewers": []}
+            {
+                "head": {"sha": TEST_HEAD},
+                "base": {"ref": "main", "sha": TEST_HEAD},
+                "requested_reviewers": [],
+            }
             if not paginate
             else [{"page": endpoint}]
         )
@@ -500,7 +507,7 @@ def test_snapshot_reads_each_paginated_review_source(monkeypatch: pytest.MonkeyP
         lambda repository, pull_request: [{"id": "thread-1", "isResolved": False}],
     )
     snapshot = review_session.gh_snapshot("nold-ai/changecost", 22)
-    assert snapshot["head"] == "head"
+    assert snapshot["head"] == TEST_HEAD
     assert len([call for call in calls if call[1]]) == 4
     assert snapshot["threads"] == [{"id": "thread-1", "isResolved": False}]
 
@@ -789,6 +796,7 @@ def test_completion_requires_explicit_current_timing(tmp_path: Path) -> None:
             "change",
             {
                 "id": "new-" + category,
+                "binding": review_session.evidence_binding(review_session.load(tmp_path, "change")),
                 "kind": "evidence",
                 "evidence_type": category,
                 "head": TEST_HEAD,
@@ -982,6 +990,7 @@ def test_every_derived_cache_reconciles_with_history(
         {"id": "investigation", "kind": "investigation", "family": "f"},
         {
             "id": "evidence",
+            "binding": review_session.evidence_binding(review_session.load(tmp_path, "change")),
             "kind": "evidence",
             "evidence_type": "gate",
             "head": TEST_HEAD,
@@ -1576,6 +1585,7 @@ def test_full_commit_format_survives_real_refresh(tmp_path: Path, object_format:
         **contract(),
         "head": first,
         "base": first,
+        "pr_base": {"ref": "main", "sha": first},
         "intended_files": {
             ".gitignore": hashlib.sha256((root / ".gitignore").read_bytes()).hexdigest()
         },
@@ -1641,3 +1651,242 @@ def test_watch_timeout_preserves_incomplete_exit(
     )
     assert review_session.watch_timeout(tmp_path, "change") == 1
     assert json.loads(capsys.readouterr().out)["action"] == "incomplete"
+
+
+@pytest.mark.parametrize(
+    "base", [None, {}, {"ref": "main", "sha": "short"}, {"ref": [], "sha": "a" * 40}]
+)
+def test_target_base_contract_rejects_malformed(tmp_path: Path, base: Any) -> None:
+    policy = contract()
+    policy["pr_base"] = base
+    with pytest.raises(ValueError):
+        review_session.initialize(tmp_path, "change", policy)
+
+
+@pytest.mark.parametrize("field,value", [("ref", "release"), ("sha", "a" * 40)])
+def test_same_head_target_base_drift_is_incomplete(tmp_path: Path, field: str, value: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["pr_base"][field] = value
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_base_adoption_retains_history_and_rejects_stale_local_payload(tmp_path: Path) -> None:
+    original = contract()
+    review_session.initialize(tmp_path, "change", original)
+    complete_session(tmp_path)
+    before = review_session.load(tmp_path, "change")
+    old = dict(before["evidence"][0], id="cloned-old-pass")
+    review_session.record(tmp_path, "change", {"id": "batch", "kind": "batch"})
+    state = review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "adopt",
+            "kind": "advance_head",
+            "head": TEST_HEAD,
+            "comparison_base": TEST_HEAD,
+            "pr_base": {"ref": "release", "sha": TEST_HEAD},
+        },
+    )
+    assert state["contract"] == original
+    assert state["batches"] == 1
+    assert state["pr_base"]["ref"] == "release"
+    assert state["context_since"]
+    with pytest.raises(ValueError, match="binding"):
+        review_session.record(tmp_path, "change", old)
+    packet = review_session.packet(tmp_path, "change")
+    assert packet["binding"]["pr_base"] == state["pr_base"]
+    snapshot = complete_snapshot()
+    snapshot["pr_base"] = state["pr_base"]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.load(tmp_path, "change")["monitor"]["pending"]
+    snapshot["checks"][0]["check_runs"][0]["started_at"] = "2099-01-01T00:00:00Z"
+    snapshot["reviews"][0][0]["submitted_at"] = "2099-01-01T00:00:00Z"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert not review_session.load(tmp_path, "change")["monitor"]["pending"]
+
+
+@pytest.mark.parametrize("field", ["ref", "sha"])
+def test_collection_rechecks_target_base(monkeypatch: pytest.MonkeyPatch, field: str) -> None:
+    reads = 0
+
+    def api(endpoint: str, *, paginate: bool = False) -> Any:
+        nonlocal reads
+        if paginate:
+            return []
+        reads += 1
+        base = {"ref": "main", "sha": TEST_HEAD}
+        if reads == 2:
+            base[field] = "release" if field == "ref" else "a" * 40
+        return {"head": {"sha": TEST_HEAD}, "base": base, "requested_reviewers": []}
+
+    monkeypatch.setattr(review_session, "gh_json", api)
+    monkeypatch.setattr(review_session, "gh_review_threads", lambda *args: [])
+    with pytest.raises(ValueError, match="base changed"):
+        review_session.gh_snapshot("nold-ai/changecost", 24)
+
+
+@pytest.mark.parametrize("field", ["comparison_base", "pr_base"])
+def test_atomic_base_adoption_rejects_partial_or_unavailable(tmp_path: Path, field: str) -> None:
+    before = review_session.initialize(tmp_path, "change", contract())
+    event: dict[str, Any] = {
+        "id": "adopt",
+        "kind": "advance_head",
+        "head": TEST_HEAD,
+        "comparison_base": TEST_HEAD,
+        "pr_base": {"ref": "main", "sha": TEST_HEAD},
+    }
+    del event[field]
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", event)
+    assert review_session.load(tmp_path, "change") == before
+
+
+@pytest.mark.parametrize(
+    "value", [None, "not-time", "2026-09-29T00:00:00", "2000-01-01T00:00:00Z", 1]
+)
+@pytest.mark.parametrize("lane", ["checks", "statuses", "reviews"])
+def test_base_adoption_requires_fresh_positive_remote_evidence(
+    tmp_path: Path, lane: str, value: Any
+) -> None:
+    policy = contract()
+    policy["required_statuses"] = ["security"]
+    review_session.initialize(tmp_path, "change", policy)
+    state = review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "adopt",
+            "kind": "advance_head",
+            "head": TEST_HEAD,
+            "comparison_base": TEST_HEAD,
+            "pr_base": {"ref": "release", "sha": TEST_HEAD},
+        },
+    )
+    snapshot = complete_snapshot()
+    snapshot["pr_base"] = state["pr_base"]
+    snapshot["checks"][0]["check_runs"][0]["started_at"] = state["context_since"]
+    snapshot["reviews"][0][0]["submitted_at"] = state["context_since"]
+    snapshot["statuses"] = [
+        {
+            "statuses": [
+                {"context": "security", "state": "success", "created_at": state["context_since"]}
+            ]
+        }
+    ]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert not review_session.load(tmp_path, "change")["monitor"]["pending"]
+    items = {
+        "checks": (snapshot["checks"][0]["check_runs"][0], "started_at"),
+        "statuses": (snapshot["statuses"][0]["statuses"][0], "created_at"),
+        "reviews": (snapshot["reviews"][0][0], "submitted_at"),
+    }
+    item, key = items[lane]
+    item[key] = value
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.load(tmp_path, "change")["monitor"]["pending"]
+    snapshot["reviews"][0].append(
+        {
+            "commit_id": TEST_HEAD,
+            "state": "CHANGES_REQUESTED",
+            "user": {"login": "other"},
+            "submitted_at": "2000-01-01T00:00:00Z",
+        }
+    )
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.load(tmp_path, "change")["monitor"]["errors"]
+
+
+def test_base_adoption_replay_does_not_read_git(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    policy = contract()
+    review_session.initialize(tmp_path, "change", policy)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(tmp_path),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "--allow-empty",
+            "-qm",
+            "base tip",
+        ],
+        check=True,
+    )
+    tip = subprocess.check_output(
+        ["git", "-C", str(tmp_path), "rev-parse", "HEAD"], text=True
+    ).strip()
+    state = review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "adopt",
+            "kind": "advance_head",
+            "head": tip,
+            "comparison_base": TEST_HEAD,
+            "pr_base": {"ref": "main", "sha": tip},
+        },
+    )
+
+    def no_git(*args: Any) -> Any:
+        raise AssertionError("replay must not read Git")
+
+    monkeypatch.setattr(review_session.repository, "git", no_git)
+    assert review_session.load(tmp_path, "change") == state
+    assert review_session.initialize(tmp_path, "change", policy) == state
+
+
+@pytest.mark.parametrize("phase", ["initial", "adopt"])
+@pytest.mark.parametrize("field", ["comparison", "target"])
+def test_bases_require_commit_objects_not_annotated_tag_ids(
+    tmp_path: Path, phase: str, field: str
+) -> None:
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(tmp_path),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "tag",
+            "-a",
+            "base-tag",
+            "-m",
+            "annotated",
+        ],
+        check=True,
+    )
+    tag = subprocess.check_output(
+        ["git", "-C", str(tmp_path), "rev-parse", "refs/tags/base-tag"], text=True
+    ).strip()
+    assert tag != TEST_HEAD
+    policy = contract()
+    if phase == "initial":
+        if field == "comparison":
+            policy["base"] = tag
+        else:
+            policy["pr_base"] = {"ref": "main", "sha": tag}
+        with pytest.raises(ValueError):
+            review_session.initialize(tmp_path, "change", policy)
+        return
+    before = review_session.initialize(tmp_path, "change", policy)
+    event = {
+        "id": "adopt-tag",
+        "kind": "advance_head",
+        "head": TEST_HEAD,
+        "comparison_base": tag if field == "comparison" else TEST_HEAD,
+        "pr_base": {"ref": "main", "sha": tag if field == "target" else TEST_HEAD},
+    }
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", event)
+    assert review_session.load(tmp_path, "change") == before

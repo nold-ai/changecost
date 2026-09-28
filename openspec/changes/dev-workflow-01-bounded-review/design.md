@@ -16,7 +16,7 @@ mutation, or hostile-runner integrity guarantee.
 
 ## Decisions
 
-1. Store schema-3 state plus a durable genesis marker under
+1. Store schema-4 state plus a durable genesis marker under
    `.changecost/workflow/<change-id>/`. Pure replay of original event payloads and
    separately captured time/input facts reconciles every derived field. Atomic
    replacement preserves recoverability; a missing state file with a marker
@@ -52,13 +52,21 @@ mutation, or hostile-runner integrity guarantee.
    completion requires an explicit measurement after the latest input refresh.
    Timestamps document receipt provenance and do not infer active time from wall
    time. Duplicate ingestion retains the original timestamp and counter.
-8. Bind the exact repository, selected PR, head and input epoch. Preserve exact
+8. Bind the exact repository, selected PR, head, expected target ref/SHA and input epoch. Preserve exact
    REST reviewer identities. Normalize meaningful observation content and replay
    cached monitor classifications from the raw receipt; transport or shape failures
    replace prior green evidence. Requests and sleeps consume the remaining wait
    deadline. Dirty local inputs may be reviewed but cannot complete publication.
    Clean provider summaries without REST submissions remain a documented helper
    limitation, requiring separately verified coordinator evidence.
+9. Preserve immutable initial comparison/base facts separately from the current
+   comparison commit and PR target. Explicit atomic `advance_head` adoption checks
+   both commits locally, captures its UTC timestamp, and starts a new evidence epoch
+   without resetting history. Local evidence supplies the complete reviewed binding;
+   collection rereads target ref/SHA at both ends. After adoption, required positive
+   remote checks/statuses/reviews need timestamps at or after adoption, while all
+   current-head objections continue to block. This is timestamp-bound freshness,
+   not authentication of remote execution or reinterpretation of SpecFact digests.
 
 ## Risks / Trade-offs
 

@@ -46,7 +46,7 @@ For implementation/review work, initialize the bounded local review receipt with
 `python -m quality.review_session init <change-id> --json <contract.json>`. It
 keeps the complete scope, finding families and counters across chats and commits.
 Use initialization only for a genuinely new session; recover lost or incompatible
-receipts. Schema 3 replays original events with separately captured timestamps and
+receipts. Schema 4 replays original events with separately captured timestamps and
 Git inputs, checking all cached decisions against that history. A durable genesis
 marker detects a missing state file; preserve the entire ignored directory because
 this local recovery guard is not a backup or a tamper-proof store.
@@ -56,7 +56,11 @@ It also names the exact repository; the first PR selection is retained. Reviewer
 logins match REST identities exactly, including `[bot]`. See the complete
 [contract example](docs/agent-rules/30-change-workflow.md#bounded-review-contract).
 An `advance_head` event refreshes the Git HEAD, working-content and staged-index
-binding while preserving counters; passing evidence from before that refresh
+binding. Supply both `comparison_base` and `pr_base` to explicitly adopt a changed
+PR target. Schema-4 evidence events include the full binding captured before the
+check; remote positive results must postdate base adoption. This retains history
+and does not establish hostile-runner authenticity. The refresh preserves counters;
+passing evidence from before that refresh
 remains historical and cannot establish completion of the new inputs.
 Record measured `active_minutes` explicitly after each input refresh, including an
 actual measured zero when appropriate. The helper retains UTC receipt timestamps

@@ -128,7 +128,7 @@ the required GitHub reviewer logins, nonempty `required_checks` names and explic
 declared review policy; do not infer protected-branch settings from them. Missing
 declared checks or statuses leave the session pending even when API pages are empty.
 Name the exact repository and REST reviewer logins, including `[bot]`. The first
-PR selection becomes immutable. Schema-3 canonical replay reconciles all derived
+PR selection becomes immutable. Schema-4 canonical replay reconciles all derived
 fields with original events and separately captured time/input facts. Preserve the
 genesis marker and state together; lost or incompatible history requires recovery,
 not another allowance. The marker detects state-file loss, not full-directory
@@ -139,7 +139,7 @@ path-to-SHA256 fingerprints against actual inputs. `<absent>` explicitly permits
 future planned files. Cover all changed, staged and untracked paths while allowing
 unchanged intended files. Captured initial scope facts remain immutable through
 head refreshes and are validated without filesystem access during replay. Existing
-schema-1/2 receipts require recovery rather than synthesized migration.
+schema-1/2/3 receipts require recovery rather than synthesized migration.
 Contract and refresh paths use one full hexadecimal commit-ID rule for 40-character
 SHA-1 and 64-character SHA-256 repositories. Shape validation does not replace
 checking the actual Git head; pure replay retains the same identity rule.
@@ -163,7 +163,27 @@ the previous monitor and completion phase. Prior passing evidence remains in his
 but is invalidated, including on a same-head input refresh. Missing input bindings
 or gate-identity configuration require recovery.
 Evidence events use `kind: "evidence"` with a separate `evidence_type` of `gate` or
-`reviewer`, their `head` and `result`. The latest result for each category applies.
+`reviewer`, their `head`, `result` and explicit `binding` copied from the reviewed
+packet: head, input digest, epoch, comparison base and PR base. Capture that binding
+before running the check, not when ingesting its result. A stale payload with a new
+event ID is rejected. The latest result for each category applies.
+The contract's `base` is the immutable initial comparison commit; required
+`pr_base: {"ref": "main", "sha": "<full target-tip SHA>"}` independently records
+the expected PR target. Snapshots check the target ref and SHA before and after
+collection. Retargeting or target advancement leaves evidence incomplete.
+Explicitly adopt a reviewed context through `advance_head` with both
+`comparison_base` and `pr_base`; both referenced commits must exist locally. The
+Base IDs must name commit objects exactly; annotated-tag object IDs are rejected
+rather than silently peeled into different identities. The atomic update preserves
+the original contract and counters, while creating a new
+input epoch and invalidating local evidence, timing and monitor completion even
+when HEAD is unchanged. Packets expose both original and current context.
+After adoption, required checks' `started_at`, statuses' `created_at` and positive
+reviews' `submitted_at` must be at or after the separately captured adoption time.
+Missing, invalid or older timestamps leave completion pending; existing current-head
+objections still block it. Timestamp freshness is a workflow bound, not proof that a
+remote runner actually evaluated the new merge context. SpecFact's content digest
+remains separate evidence and does not authenticate that context.
 A scope resolution names the pending event's identity in `supersedes`.
 Completion requires a complete current-head monitor snapshot as well as passing
 local evidence. Pending checks, commit statuses, reviewers and unresolved threads
@@ -202,7 +222,7 @@ status before reporting wait; a budget exhausted during sleep returns replan.
 Incomplete retains exit status 1; other documented terminal/wait results retain 0.
 Requests and pagination share the remaining deadline; sleep is capped accordingly.
 Zero timeout means one collection with a 60-second cap. Progress hashes exclude
-incidental avatar metadata. A snapshot binds repository, PR, head and input epoch;
+incidental avatar metadata. A snapshot binds repository, PR, head, target base and input epoch;
 collection errors invalidate previous green evidence. Refreshed inputs
 cannot inherit a collection that started before their input refresh. Nested thread
 and comment fields are validated before completion; malformed optional event
