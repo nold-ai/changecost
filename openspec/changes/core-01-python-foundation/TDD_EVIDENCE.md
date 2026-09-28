@@ -312,3 +312,66 @@ metadata for other versions, and separately rejects an installed version outside
 all locked alternatives. The same fixture verifies both distinct evidence rows and
 the out-of-lock failure. All focused license tests pass after correction; the new
 fixture is part of the final 49-test suite. No package/audit scope was narrowed.
+
+
+## Supported external-tool boundary and CI comparison base
+
+Hosted run [36429886815](https://github.com/nold-ai/changecost/actions/runs/36429886815)
+at `ba7221d506281c9d74fac342ecef10ada17b984d` passed every non-review leaf and nine
+review analyzers on both Python versions. Complexity, coverage and type-checker
+compatibility were repaired. The sole blocking native finding retained stderr:
+uv invokes the selected Python with `-I`; the signed project-runtime wrapper
+rejects this as `project_python_option_unsupported:-I` because it disables required
+runtime attachment. This is genuine hosted failing evidence, not a locally inferred
+failure. Native reports contain 179 findings, one blocking and 178 nonblocking;
+updated individual dispositions are in ignored
+`promotion/nonblocking-dispositions-ba7221d.json` (local test-double names and
+ASCII-only fixture encodings are scoped exceptions, not new suppression rules).
+
+The real offline missing/stale/repaired lock fixture now lives in the standalone
+`tests/tool_probes.py` and runs unconditionally from the required host lock leaf
+alongside `uv lock --check`. It uses host uv/Python, asserts failures and immutable
+lock bytes, and verifies the repaired configuration. Therefore local aggregates,
+CI and staged hooks still execute the actual external-tool proof. Capsule pytest
+checks that failures from either command propagate; no skip/xfail, runtime override,
+analyzer omission or relaxed assertion was introduced. The host command passed:
+`uv run --locked python -m quality lock --base HEAD --manifest .changecost/intended-files.txt`
+(`promotion/host-lock-proof.log`). The manifest lists the intended new probe and external-tool resolver files.
+
+Codex comment 4122823910 identified an accepted workflow BASE_REF override that
+could hide change-sensitive gates. The validator now checks the current reviewed
+resolver script and event inputs, its required order/unconditional execution, and
+rejects workflow/job/step BASE_REF overrides and other explicit exports. It does
+not attempt arbitrary shell static analysis; staged-hook HEAD defaults are unchanged.
+New OpenSpec scenarios and ten regression cases preceded implementation. All ten
+failed before correction and pass afterward, covering both required lock commands
+and eight comparison-wiring mutations (`promotion/host-lock-base-red.log`,
+`promotion/host-lock-base-green.log`). Real actionlint and BasedPyright passed;
+Radon reports maximum complexity 13 in the affected workflow validator (threshold15).
+
+The new controller-PATH finding notes a genuine limitation of same-head quality
+checks: malicious PR code could replace validators or reports. This workflow also
+executes the PR's own checker, digest binding and workflow code on a sudo-capable
+host, so absolute paths alone cannot establish tamper-proof attestation. The gate
+guide states the actual trust boundary and does not claim malicious-PR attestation.
+No out-of-band verification framework or signed module modifications were introduced.
+Fresh hosted full assurance and bot reviews remain required for the corrected head.
+
+
+The narrow mitigation for Codex security comment 4122885936 rejects external
+validator paths inside the repository or active project environment after symlink
+resolution and invokes the accepted absolute path. Three real fake-PASS console
+scripts (repository, custom environment and symlink) were accepted before the fix
+and rejected afterward (`promotion/validator-shadow-red.log` and
+`promotion/validator-shadow-green.log`). Tests also exercise missing validators,
+explicit repair without silent PATH fallback, allowed external symlinks and the
+OpenSpec caller. Controller unit tests inject external resolution so native tools
+are not recursively required inside capsule pytest. This is collision prevention,
+not an authentication or malicious-PR attestation claim.
+
+On 2026-09-28 the final local controller suite passed 65 tests and four subtests;
+measured source-file line coverage ranged from 87.3% to 100%, with 100% for the new
+resolver. Ruff, format, BasedPyright, actual actionlint/OpenSpec, the real host lock
+proof and docs/index/metadata checks passed. Coverage and complexity receipts are
+`promotion/controller-coverage.json` and `promotion/controller-complexity.json`.
+These local results do not replace the pending corrected-head hosted capsule run.

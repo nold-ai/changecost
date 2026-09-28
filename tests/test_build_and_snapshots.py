@@ -1,9 +1,5 @@
 """Actual Git index isolation and locked build failure probes."""
 
-import os
-import subprocess
-import sys
-
 import pytest
 
 from quality.repository import baseline, git, materialize_index
@@ -41,30 +37,3 @@ def test_build_gate_exists():
     import importlib.util
 
     assert importlib.util.find_spec("quality.build") is not None, "isolated build gate is missing"
-
-
-def test_locked_sync_rejects_missing_and_stale_lock(tmp_path):
-    project = (
-        '[project]\nname="lock-probe"\nversion="0.1.0"\nrequires-python=">=3.11"\ndependencies=[]\n'
-    )
-    (tmp_path / "pyproject.toml").write_text(project)
-    args = ["uv", "lock", "--offline", "--no-python-downloads"]
-    env = dict(os.environ, UV_PYTHON=sys.executable)
-    missing = subprocess.run(
-        [*args, "--check"], cwd=tmp_path, env=env, capture_output=True, check=False
-    )
-    assert missing.returncode != 0
-    assert not (tmp_path / "uv.lock").exists()
-    created = subprocess.run(
-        args, cwd=tmp_path, env=env, check=False, capture_output=True, text=True
-    )
-    assert created.returncode == 0, created.stderr
-    lock = (tmp_path / "uv.lock").read_bytes()
-    (tmp_path / "pyproject.toml").write_text(
-        project.replace("dependencies=[]", 'dependencies=["does-not-exist-probe==999"]')
-    )
-    stale = subprocess.run(
-        [*args, "--check"], cwd=tmp_path, env=env, capture_output=True, check=False
-    )
-    assert stale.returncode != 0
-    assert (tmp_path / "uv.lock").read_bytes() == lock

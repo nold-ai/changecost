@@ -50,3 +50,9 @@ Keep full aggregate/CI comparison bases explicit. Hosted capsule setup has now r
 read native current-head analyzer results rather than inferring complete assurance
 from successful capsule launch. The [gate guide](../development/quality-gates.md)
 records the disposable hosted-runner trust model and pinned analyzer compatibility.
+
+
+Keep external-tool host proofs in the required gate path when a signed capsule
+cannot perform the tool's own interpreter probe. The uv missing/stale/repaired
+fixture runs through the lock leaf for local, hook and CI invocations; its move
+out of pytest collection does not waive the proof or allow analyzer failures.

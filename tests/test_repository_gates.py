@@ -265,6 +265,9 @@ def test_workflow_syntax_failure_is_propagated(monkeypatch, tmp_path):
             args, 0 if "--version" in args else syntax_exit, stdout="1.7.12\n"
         )
 
+    monkeypatch.setattr(
+        workflow.external_tools, "executable", lambda root, name: "/external/" + name
+    )
     monkeypatch.setattr(workflow.subprocess, "run", actionlint)
     assert workflow.validate(tmp_path) == []
     syntax_exit = 1
@@ -294,6 +297,7 @@ def test_stale_native_report_is_not_reused(monkeypatch, tmp_path):
     (tmp_path / ".specfact").mkdir()
     old = tmp_path / ".specfact/code-review.json"
     old.write_text(json.dumps({"assurance_status": "PASS"}))
+    monkeypatch.setattr(review.external_tools, "executable", lambda root, name: "/external/" + name)
     monkeypatch.setattr(review.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 1))
     assert review.run(tmp_path, set()) == ["SpecFact produced no review report"]
 
@@ -386,6 +390,7 @@ def test_review_activates_every_required_member(monkeypatch, tmp_path):
         Path(args[args.index("--out") + 1]).write_text(json.dumps(report), encoding="utf-8")
         return subprocess.CompletedProcess(args, 0)
 
+    monkeypatch.setattr(review.external_tools, "executable", lambda root, name: "/external/" + name)
     monkeypatch.setattr(review.subprocess, "run", native_run)
     assert review.run(tmp_path, set()) == []
 
@@ -463,6 +468,9 @@ def test_workflow_validator_accepts_only_pinned_version(monkeypatch, tmp_path, v
         calls.append(args)
         return subprocess.CompletedProcess(args, 0, stdout=version + "\n" if version else "")
 
+    monkeypatch.setattr(
+        workflow.external_tools, "executable", lambda root, name: "/external/" + name
+    )
     monkeypatch.setattr(workflow.subprocess, "run", actionlint)
     errors = workflow.validate(tmp_path)
     if version in {"1.7.12", "v1.7.12"}:
@@ -496,3 +504,66 @@ def test_staged_hook_defaults_to_head_without_overriding_explicit_base(monkeypat
     assert runner.staged(argparse.Namespace(base="")) == 7
     assert runner.staged(argparse.Namespace(base="explicit-base")) == 7
     assert seen == ["HEAD", "explicit-base"]
+
+
+@pytest.mark.parametrize("failed_command", ["uv", "probe"])
+def test_lock_leaf_requires_real_host_probe(monkeypatch, tmp_path, failed_command):
+    from quality import __main__ as runner
+
+    calls = []
+
+    def external(root, args):
+        command = "uv" if args[0] == "uv" else "probe"
+        calls.append(command)
+        if command == "probe":
+            assert args[-1] == "tests/tool_probes.py"
+        return [command + " failed"] if command == failed_command else []
+
+    monkeypatch.setattr(runner, "external", external)
+    assert runner.leaf("lock", tmp_path, set(), {}) == [failed_command + " failed"]
+    assert calls == ["uv", "probe"]
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "workflow-env",
+        "job-env",
+        "step-env",
+        "resolver-script",
+        "resolver-input",
+        "resolver-condition",
+        "resolver-order",
+        "later-write",
+    ],
+)
+def test_workflow_rejects_comparison_base_bypass(mutation):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    assert wiring_errors(config) == []
+    job = config["jobs"]["quality"]
+    steps = job["steps"]
+    resolver = next(step for step in steps if step.get("name") == "Resolve comparison base")
+    check = next(step for step in steps if step.get("run") == "make check")
+    if mutation == "workflow-env":
+        config["env"] = {"BASE_REF": "HEAD"}
+    elif mutation == "job-env":
+        job["env"]["BASE_REF"] = "HEAD"
+    elif mutation == "step-env":
+        check["env"] = {"BASE_REF": "HEAD"}
+    elif mutation == "resolver-script":
+        resolver["run"] = 'echo "BASE_REF=HEAD" >> "$GITHUB_ENV"'
+    elif mutation == "resolver-input":
+        resolver["env"]["PR_BASE"] = "${{ github.event.pull_request.head.sha }}"
+    elif mutation == "resolver-condition":
+        resolver["if"] = "false"
+    elif mutation == "resolver-order":
+        steps.remove(resolver)
+        steps.append(resolver)
+    else:
+        steps.insert(steps.index(check), {"run": 'echo "BASE_REF=HEAD" >> "$GITHUB_ENV"'})
+    assert any("comparison" in error for error in wiring_errors(config))

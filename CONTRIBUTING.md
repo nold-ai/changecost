@@ -87,6 +87,7 @@ real billing exports, or identifiable session data. Report vulnerabilities throu
 
 
 The staged commit hook compares to HEAD when BASE_REF is unset; explicitly supplied
-comparison bases remain authoritative. Local aggregate checks still require an
+comparison bases remain authoritative. The lock leaf includes the real external uv
+probe on the host; capsule unit tests verify its failure propagation. Local aggregate checks still require an
 explicit base. Keep the locked development analyzer versions aligned with the
 signed review capsule; see the [gate guide](docs/development/quality-gates.md).

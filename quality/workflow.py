@@ -7,18 +7,36 @@ from pathlib import Path
 
 import yaml
 
+from quality import external_tools
+
+COMPARISON_ENV = {
+    "EVENT": "${{ github.event_name }}",
+    "PR_BASE": "${{ github.event.pull_request.base.sha }}",
+    "PUSH_BASE": "${{ github.event.before }}",
+    "MANUAL_BASE": "${{ inputs.comparison_base }}",
+}
+# Deliberately validate the reviewed resolver, not arbitrary shell semantics.
+COMPARISON_SCRIPT = """case "$EVENT" in
+  pull_request) base=$(git merge-base HEAD "$PR_BASE") ;;
+  push) base=$PUSH_BASE ;;
+  workflow_dispatch) base=$MANUAL_BASE ;;
+  *) exit 1 ;;
+esac
+resolved=$(git rev-parse --verify --end-of-options "$base^{commit}")
+echo "BASE_REF=$resolved" >> "$GITHUB_ENV"
+"""
+
 
 def validate(root: Path) -> list[str]:
-    version = subprocess.run(
-        ["actionlint", "--version"], capture_output=True, text=True, check=True
-    )
+    actionlint = external_tools.executable(root, "actionlint")
+    version = subprocess.run([actionlint, "--version"], capture_output=True, text=True, check=True)
     reported = version.stdout.splitlines()
     if not reported or reported[0] not in {"1.7.12", "v1.7.12"}:
         return ["actionlint 1.7.12 is required"]
     paths = sorted((root / ".github/workflows").glob("*.yml"))
     paths += sorted((root / ".github/workflows").glob("*.yaml"))
     result = subprocess.run(
-        ["actionlint", "-shellcheck=", "-pyflakes=", *map(str, paths)], cwd=root, check=False
+        [actionlint, "-shellcheck=", "-pyflakes=", *map(str, paths)], cwd=root, check=False
     )
     errors = [] if result.returncode == 0 else ["workflow syntax validation failed"]
     config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
@@ -46,6 +64,7 @@ def wiring_errors(config: dict) -> list[str]:
     if "if" in job or job.get("continue-on-error") not in {None, "false"}:
         errors.append("required quality job can be skipped or ignored")
     errors.extend(capsule_setup_errors(job))
+    errors.extend(comparison_errors(config))
     matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
     if matrix != ["3.11.15", "3.13.14"]:
         errors.append("required Python matrix changed without gate reconciliation")
@@ -75,4 +94,39 @@ def capsule_setup_errors(job: dict) -> list[str]:
         "${{ runner.temp }}/changecost-capsules"
     ):
         errors.append("capsule cache must match the job-local AppArmor attachment")
+    return errors
+
+
+def comparison_errors(config: dict) -> list[str]:
+    """Reject alternate bases that could silently empty the required CI diff."""
+    job = config.get("jobs", {}).get("quality", {})
+    steps = job.get("steps", [])
+    errors = []
+    scopes = [config, job, *steps]
+    if any("BASE_REF" in scope.get("env", {}) for scope in scopes):
+        errors.append("comparison base cannot be overridden by workflow/job/step environment")
+    resolvers = [step for step in steps if step.get("name") == "Resolve comparison base"]
+    if len(resolvers) != 1:
+        return [*errors, "required comparison resolver is missing or duplicated"]
+    resolver = resolvers[0]
+    errors.extend(resolver_errors(resolver))
+    checks = [step for step in steps if step.get("run", "").strip() == "make check"]
+    if checks and steps.index(resolver) > steps.index(checks[0]):
+        errors.append("comparison resolver must precede the aggregate")
+    if any("BASE_REF=" in step.get("run", "") for step in steps if step is not resolver):
+        errors.append("comparison base must be exported only by the reviewed resolver")
+    return errors
+
+
+def resolver_errors(step: dict) -> list[str]:
+    """Keep exact event inputs and the small reviewed shell resolver in sync."""
+    errors = []
+    if "if" in step or step.get("continue-on-error") not in {None, "false"}:
+        errors.append("required comparison resolver can be skipped or ignored")
+    if step.get("env") != COMPARISON_ENV:
+        errors.append("comparison resolver event inputs differ from the reviewed contract")
+    actual = [line.strip() for line in step.get("run", "").splitlines() if line.strip()]
+    expected = [line.strip() for line in COMPARISON_SCRIPT.splitlines() if line.strip()]
+    if actual != expected:
+        errors.append("comparison resolver script differs from the reviewed contract")
     return errors

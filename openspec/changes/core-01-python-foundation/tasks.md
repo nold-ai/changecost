@@ -45,5 +45,8 @@ is open with the combined preparation and implementation. Its first remote CI ru
 failed both capsule setup and the Go-built actionlint version check. The next run
 executed capsules and passed workflow validation, but full review found complexity,
 coverage, an isolated uv fixture failure and an analyzer dependency mismatch.
-Corrections remain subject to fresh hosted validation; task 4.3 remains incomplete
+Run 36429886815 then passed nine analyzers, with only uv's isolated interpreter
+probe incompatible with the capsule wrapper. The required host-side lock proof
+CI comparison wiring and external-validator collision corrections remain subject
+to fresh hosted validation; task 4.3 remains incomplete
 until final review and tracking verification. No required gate was waived.

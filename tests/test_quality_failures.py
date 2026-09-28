@@ -265,3 +265,81 @@ resolution-markers=["python_version >= '3.12'"]
         ("2", "license-2"),
     ]
     assert queried == ["https://pypi.org/pypi/demo/1/json", "https://pypi.org/pypi/demo/2/json"]
+
+
+@pytest.mark.parametrize("location", ["repository", "environment", "symlink"])
+def test_review_rejects_project_validator_shadow(monkeypatch, tmp_path, location):
+    from quality import review
+
+    root = tmp_path / "repo"
+    root.mkdir()
+    environment = tmp_path / "custom-environment"
+    environment.mkdir()
+    monkeypatch.setattr(sys, "prefix", str(environment))
+    monkeypatch.setattr(sys, "base_prefix", str(tmp_path / "base-python"))
+    target = (environment if location == "environment" else root) / "specfact"
+    report = {
+        "assurance_status": "PASS",
+        "overall_verdict": "PASS",
+        "ci_exit_code": 0,
+        "has_unknown_required_evidence": False,
+        "analyzer_evidence": [
+            {"id": name, "execution_state": "ran", "evidence_outcome": "PASS"}
+            for name in review.REQUIRED
+        ],
+    }
+    target.write_text(
+        f"#!{sys.executable}\nimport pathlib,sys\n"
+        f"pathlib.Path(sys.argv[sys.argv.index('--out')+1]).write_text({json.dumps(report)!r})\n"
+    )
+    target.chmod(0o755)
+    search = target.parent
+    if location == "symlink":
+        search = tmp_path / "external-path"
+        search.mkdir()
+        (search / "specfact").symlink_to(target)
+    monkeypatch.setenv("PATH", str(search))
+    with pytest.raises(ValueError, match="project environment shadows external validator"):
+        review.run(root, set())
+
+
+@pytest.mark.parametrize("name", ["specfact", "actionlint", "openspec"])
+def test_external_validator_resolution_and_repair(monkeypatch, tmp_path, name):
+    from quality import external_tools
+
+    root = tmp_path / "repo"
+    root.mkdir()
+    external = tmp_path / "external"
+    external.mkdir()
+    target = external / name
+    target.write_text("#!/bin/sh\nexit 0\n")
+    target.chmod(0o755)
+    collision = root / name
+    collision.symlink_to(target)
+    monkeypatch.setenv("PATH", str(root))
+    # A symlink outside the project resolves to the same absolute authority.
+    assert external_tools.executable(root, name) == str(target)
+    collision.unlink()
+    collision.write_text("#!/bin/sh\nexit 0\n")
+    collision.chmod(0o755)
+    monkeypatch.setenv("PATH", str(root) + ":" + str(external))
+    with pytest.raises(ValueError, match="project environment shadows"):
+        external_tools.executable(root, name)
+    # Repair removes the collision; there is no silent fallback while it exists.
+    collision.unlink()
+    assert external_tools.executable(root, name) == str(target)
+    target.unlink()
+    with pytest.raises(ValueError, match="external validator is unavailable"):
+        external_tools.executable(root, name)
+
+
+def test_spec_leaf_invokes_resolved_external_validator(monkeypatch, tmp_path):
+    calls = []
+    monkeypatch.setattr(runner.external_tools, "executable", lambda root, name: "/external/" + name)
+    monkeypatch.setattr(
+        runner.subprocess,
+        "run",
+        lambda args, **kwargs: calls.append(args) or subprocess.CompletedProcess(args, 0),
+    )
+    assert runner.leaf("spec", tmp_path, set(), {}) == []
+    assert calls == [["/external/openspec", "validate", "--all", "--strict", "--no-interactive"]]

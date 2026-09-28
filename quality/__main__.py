@@ -10,7 +10,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from quality import audit, build, docs, index, metadata, review, workflow
+from quality import audit, build, docs, external_tools, index, metadata, review, workflow
 from quality.repository import baseline, changed, git, inventory, materialize_index
 
 LEAVES = (
@@ -40,6 +40,8 @@ CONFIG = {
 
 
 def external(root: Path, args: list[str]) -> list[str]:
+    if args[0] in {"specfact", "actionlint", "openspec"}:
+        args = [external_tools.executable(root, args[0]), *args[1:]]
     result = subprocess.run(args, cwd=root, check=False)
     return [] if result.returncode == 0 else [f"{args[0]} failed ({result.returncode})"]
 
@@ -55,8 +57,12 @@ def leaf(name: str, root: Path, files: set[str], before: dict[str, bytes]) -> li
     }
     if name in commands:
         errors = external(root, commands[name])
-        if name == "lint":
-            errors.extend(external(root, ["ruff", "format", "--check", "src", "quality", "tests"]))
+        additional = {
+            "lock": [sys.executable, "tests/tool_probes.py"],
+            "lint": ["ruff", "format", "--check", "src", "quality", "tests"],
+        }
+        if name in additional:
+            errors.extend(external(root, additional[name]))
         return errors
     if name == "hygiene":
         return external(

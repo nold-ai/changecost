@@ -125,6 +125,24 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the complete aggregate runs with missing or stale required review evidence
 - **THEN** it is incomplete/non-success even if a manual review hook was skipped; a docs-only applicability decision remains explicit and still runs the documentation gates.
 
+#### Scenario: Host-side external lock proof remains required
+
+- **GIVEN** a review capsule whose attached interpreter cannot accept the isolation flag used by uv's interpreter probe
+- **WHEN** local, staged-hook or CI lock validation runs
+- **THEN** the ordinary host executes both the project lock check and the real offline missing/stale/repaired fixture, and either failure fails the gate; capsule unit tests check failure propagation without weakening runtime protection or skipping the proof.
+
+#### Scenario: Project environment shadows an external validator
+
+- **GIVEN** PATH resolves SpecFact, actionlint or OpenSpec to the repository or active project environment, including through a symlink
+- **WHEN** the gate invokes that external validator
+- **THEN** it rejects the collision explicitly instead of executing it or silently falling through to another executable; a resolved external installation is invoked by absolute path. This prevents accidental tool-role collisions and is not malicious-PR attestation.
+
+#### Scenario: CI comparison base override
+
+- **GIVEN** a workflow that replaces the reviewed event-based resolver, changes its inputs/order, or overrides BASE_REF at another workflow/job/step scope
+- **WHEN** workflow validation runs
+- **THEN** it rejects the changed comparison wiring instead of allowing empty-diff applicability to hide required gates; the ordinary staged-hook HEAD default remains valid.
+
 #### Scenario: Ordinary commit without a comparison override
 
 - **GIVEN** a repository with a valid HEAD and a staged change, with BASE_REF unset

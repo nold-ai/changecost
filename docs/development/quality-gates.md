@@ -31,8 +31,10 @@ The commit hook materializes Git index blobs into a temporary directory and runs
 the staged validator code there. It checks staged additions, removals, renames and
 links without stashing or modifying user files. It cannot read an unstaged fix or
 untracked link target as part of the commit. Fast hooks run lock, lint, typing,
-docs, generated-index, metadata and workflow checks. Complete CI runs tests,
-build proof, dependency checks and applicable review too. Hygiene hooks have a
+docs, generated-index, metadata and workflow checks. The required lock leaf runs both `uv lock --check` and the real offline
+missing/stale/repaired lock proof in `tests/tool_probes.py`. That host-side proof
+also runs inside staged snapshots. Complete CI runs tests, build proof, dependency
+checks and applicable review too. Hygiene hooks have a
 separate shared configuration to prevent aggregate recursion.
 
 ## Documentation ownership
@@ -100,7 +102,11 @@ dependencies; metadata reporting is not legal advice or a compatibility guarante
 The workflow unit tests isolate the actionlint process boundary and exercise
 syntax-failure propagation and conditional-gate rejection. The required workflow
 leaf still runs real actionlint; verification also executes a malformed-and-repaired
-workflow against that binary. Capsule tests do not depend on a host Go binary.
+workflow against that binary. Capsule tests do not depend on a host Go binary. The same boundary applies to uv
+interpreter probing: the attached capsule interpreter rejects uv's `-I` probe,
+so the real external lock proof runs unconditionally in the host lock leaf. Pytest
+checks propagation of both lock-command and probe failures. No test is marked
+skipped/xfail and no capsule runtime protection is changed.
 
 ## Review and limitations
 
@@ -179,3 +185,28 @@ outcomes to exercise diagnostic branches offline. They complement the real build
 audit, actionlint and installed-CLI gates; their coverage percentages do not prove
 network service availability or real capsule execution. In-process CLI tests also
 cover help/version/errors and the module entrypoint; isolated subprocess proof remains.
+
+
+CI comparison wiring is checked against the small reviewed event-based resolver
+and its exact event inputs. Workflow/job/step BASE_REF overrides, another explicit
+BASE_REF export, a conditional or moved resolver, or replacing its script are
+rejected. This is a conservative contract for the current workflow, not a general
+shell-program verifier. Ordinary staged hooks still accept their HEAD default.
+
+Same-head CI is contributor quality evidence, not a tamper-proof attestation
+against malicious pull-request code. The pull request supplies the workflow,
+validators, project dependencies and report-binding code on the same host. A
+malicious host process could replace PATH tools or forge reports regardless of
+using an absolute launcher path. Signed capsule verification protects genuine
+SpecFact execution; it does not authenticate an arbitrarily replaced controller.
+The current workflow has no protected out-of-band verifier or malicious-PR
+attestation claim; repository review remains necessary.
+
+
+External SpecFact, actionlint and OpenSpec executables are resolved once per gate
+invocation to their absolute symlink-resolved paths. A target inside the repository
+or active project Python environment (`sys.prefix`, including a custom environment
+outside the checkout) fails explicitly; a later PATH entry is not silently used.
+Install these external validators outside that environment to repair a collision.
+Project-managed uv, Ruff and BasedPyright remain locked project dependencies. This
+guard prevents accidental project-environment collisions, not hostile-PR forgery.

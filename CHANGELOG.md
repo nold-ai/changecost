@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Keep real offline uv lock probes in the required host gate when capsule runtime
+  attachment rejects uv's isolated interpreter probe; reject CI comparison-base
+  overrides and drift from the reviewed event resolver, and reject project-environment
+  collisions with external SpecFact, actionlint and OpenSpec executables.
+
 - Default ordinary staged hooks to HEAD, split complex gate routines and exercise
   their offline failure paths; align development type-checker versions with the
   signed review capsule and clarify the disposable CI runner trust boundary.

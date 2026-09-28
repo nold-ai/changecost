@@ -9,6 +9,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from quality import external_tools
 from quality.repository import digest
 
 REQUIRED = {
@@ -51,7 +52,7 @@ def run(root: Path, files: set[str]) -> list[str]:
     before = digest(root, files)
     result = subprocess.run(
         [
-            "specfact",
+            external_tools.executable(root, "specfact"),
             "code",
             "review",
             "run",
