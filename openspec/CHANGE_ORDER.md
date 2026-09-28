@@ -69,6 +69,14 @@ quotes and advisory workflow; its report must expose unavailable capabilities.
 
 ## Evidence and lifecycle rules
 
+`core-01-python-foundation` also owns executable local/pre-commit/CI parity,
+documentation ownership/source consistency, generated llms/command integrity,
+changelog/version coherence and workflow validation. These are prerequisites for
+the implementation chain, not deferred to product budget reporting. The later
+`workflow-01-advisory-ci` reuses those gates for its CLI examples and job summary;
+only budget policy is advisory. This clarification changes no dependency edges.
+The current bootstrap still runs hygiene and OpenSpec validation only.
+
 Provider-specific mappings remain blocked until feasibility records inspected source
 profiles. Completing feasibility with an unavailable capability does not authorize
 inventing support; wholly unavailable sources require an explicit scope revision.

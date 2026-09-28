@@ -10,7 +10,9 @@ package or runtime. This design describes later implementation, not delivered be
 
 **Goals:** Make the specified capability local, reproducible and explicit about missing evidence.
 
-**Non-Goals:** No required status enforcement, PR comment bot, hosted service, dashboard, provider account setup or SpecFact runtime integration.
+**Non-Goals:** No required budget-status enforcement, PR comment bot, hosted service,
+dashboard, provider account setup or SpecFact runtime integration. This does not
+exempt the repository from the foundation's development quality gates.
 
 ## Decisions
 
@@ -41,6 +43,15 @@ package or runtime. This design describes later implementation, not delivered be
 
 5. CI example must remain opt-in and advisory; do not add a required budget check or automatic mutation of branch protection. Document integration with whatever developer workflow already exports local evidence.
 
+6. Reuse the foundation's docs ownership, generated command/llms integrity,
+   changelog/version and workflow validators. Update owner/source mappings for
+   `docs/cli.md` and `docs/ci.md`, regenerate references from implemented command
+   metadata, and test the fresh-store examples with named synthetic fixtures.
+   Stale flags, contradictory JSON/exit examples or missing references must fail
+   the corresponding checks; updating a review date is insufficient. Validate the
+   example's workflow syntax. Successful advisory budget evaluation cannot turn
+   failed tests, docs validation or other repository quality checks green.
+
 ## Fresh-store walkthrough
 
 The documented standalone workflow starts with `bind --register-change`, supplying
@@ -65,6 +76,8 @@ implementation remains separate; these command modes are planned interfaces.
 Shared boundaries and current provider evidence are recorded in the
 [source assessment](../../../docs/research/pilot-source-assessment.md).
 No provider-specific mapping becomes supported merely by appearing in this plan.
+Foundation quality gates are inherited through quote → reconciliation → contracts
+→ foundation; this extension changes no direct implementation prerequisites.
 
 ## Risks / Trade-offs
 

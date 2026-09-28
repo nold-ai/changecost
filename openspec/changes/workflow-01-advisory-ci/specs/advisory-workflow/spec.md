@@ -83,3 +83,24 @@ The CI example SHALL use local artifacts without provider credentials and SHALL 
 - **GIVEN** an over-budget valid artifact
 - **WHEN** the example workflow runs
 - **THEN** the job records advice without imposing a required budget gate.
+
+### Requirement: Current documented workflow and independent repository gates
+
+Implemented CLI/CI examples SHALL have ownership/source mappings and agree with
+the actual command, JSON and exit contracts. Generated command references and
+llms.txt SHALL pass the foundation's integrity checks. Advisory budget status
+SHALL NOT suppress failures in tests, documentation, metadata or workflow quality
+gates. This change SHALL reuse the foundation validators rather than introduce a
+second competing quality pipeline.
+
+#### Scenario: Stale documented command
+
+- **GIVEN** a documented workflow using a removed CLI option or an outdated JSON/exit expectation
+- **WHEN** the documented synthetic example and foundation consistency checks run
+- **THEN** they fail with the mismatched command/contract until the documentation and generated references match the implemented behavior.
+
+#### Scenario: Budget advice alongside quality failure
+
+- **GIVEN** a valid over-budget artifact and a failing repository documentation or test gate
+- **WHEN** the advisory example and repository checks run
+- **THEN** budget advice remains nonblocking but the repository quality result remains failed.
