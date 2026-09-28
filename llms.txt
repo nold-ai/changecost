@@ -1,0 +1,36 @@
+# ChangeCost
+
+> Private, unreleased pilot planning project. Read the project brief for current
+> scope and the user's request for authorization. Plans do not imply implemented features.
+
+## Project and policy
+
+- [README](README.md): project status and current setup commands.
+- [Project brief](docs/project-brief.md): selected direction, evidence gates and limits.
+- [Agent instructions](AGENTS.md): entry point and project boundary.
+- [Agent rules](docs/agent-rules/INDEX.md): load only rules applicable to the task.
+- [Contributing](CONTRIBUTING.md): workflow and invocation examples.
+- [Change workflow](docs/agent-rules/30-change-workflow.md): freshness, stash recovery and delegation.
+- [OpenSpec configuration](openspec/config.yaml): current context and artifact requirements.
+- [Change order](openspec/CHANGE_ORDER.md): pending changes, issue links and prerequisites.
+- [Changelog](CHANGELOG.md): recorded changes; no release is implied.
+
+## Change workflow skills
+
+- [changecost-prepare](.agents/skills/changecost-prepare/SKILL.md): select, review and refresh a plan and linked issue; choose a planning PR or scoped stash.
+- [changecost-implement](.agents/skills/changecost-implement/SKILL.md): reconcile fresh main and prepared artifacts, then implement the selected change with TDD.
+- [changecost-verify](.agents/skills/changecost-verify/SKILL.md): delegate checks and defect review, verify docs and applicable versions, then commit and push.
+- [changecost-promote](.agents/skills/changecost-promote/SKILL.md): open/reuse a PR and delegate its review/check/fix loop.
+
+## OpenSpec artifact skills
+
+- [openspec-explore](.agents/skills/openspec-explore/SKILL.md): investigate scope and requirements.
+- [openspec-propose](.agents/skills/openspec-propose/SKILL.md): propose a new change.
+- [openspec-update-change](.agents/skills/openspec-update-change/SKILL.md): revise existing artifacts.
+- [openspec-apply-change](.agents/skills/openspec-apply-change/SKILL.md): schema-aware implementation mechanics.
+- [openspec-sync-specs](.agents/skills/openspec-sync-specs/SKILL.md): synchronize delta specs.
+- [openspec-archive-change](.agents/skills/openspec-archive-change/SKILL.md): archive completed changes.
+
+This index is maintained with the linked sources. Verify skill inventory, links,
+phase and descriptions when they change. Product commands belong here only after
+implementation and verification; there is currently no generated CLI reference.

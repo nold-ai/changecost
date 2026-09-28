@@ -7,6 +7,7 @@ Always read [05-non-negotiable-checklist.md](05-non-negotiable-checklist.md).
 | Product behavior or OpenSpec work | [40-openspec-and-tdd.md](40-openspec-and-tdd.md) |
 | Issues, projects, dependencies or planning PRs | [60-github-change-governance.md](60-github-change-governance.md) |
 | Any edit, verification, or finalization | [50-quality-gates-and-review.md](50-quality-gates-and-review.md) |
+| Prepare, implement, verify or promote a change | [30-change-workflow.md](30-change-workflow.md) |
 
 These compact rules adapt the SpecFact repositories' bootstrap, scope discipline,
 spec/test order, review evidence, and clean-code principles. Source checkouts were
