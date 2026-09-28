@@ -106,7 +106,8 @@ cache, release infrastructure or runtime framework is introduced.
 ## Delivery checks and rollback
 
 Required planning checks: strict validation of all nine changes, complete artifacts,
-Given/When/Then scenario coverage, unchecked tasks, valid relative links, acyclic graph,
+Given/When/Then scenario coverage, accurate task status with unfinished tasks unchecked,
+valid relative links, acyclic graph,
 and GitHub readback of all 14 native types, parents, dependencies, labels, private project
 membership and Todo status. Preserve repository description, privacy and topics,
 including `token-economics`. Runtime tests and product review are not planning evidence.

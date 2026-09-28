@@ -121,7 +121,7 @@ Executed on 2026-09-28 (Europe/Berlin), using pre-commit 4.6.2 and OpenSpec 1.13
 | Fixture privacy review | All values authored synthetically; inspected key set and relationships, no copied content/credentials/identifiers. Automated key/private-key checks supplement this manual review. |
 
 Fixture SHA-256:
-`66897c380da1b70f74c877e219f70bf6f693fead623e80217a5bc8d9cbd1f7dd`.
+`cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e`.
 The local check script and schema artifacts are ignored workflow evidence, not new
 runtime tools or repository quality gates. No behavior tests, SpecFact analyzers,
 dependency audits or release/version bump were applicable to this docs/fixture diff.
@@ -173,12 +173,29 @@ Two authored research cases raise the total to 18. Received artifacts are exclud
 from auto-fix and staging manifests; local audit/check scripts are review aids,
 not implemented adapters, sanitizers, native decoders or permanent quality gates.
 
+## PR review follow-up — 2026-09-28
+
+Research was verified, committed and pushed in
+[PR #21](https://github.com/nold-ai/changecost/pull/21); the earlier local/unpublished
+entries above describe their recorded stage. Issue #9 now links that PR and the
+published branch, with its open/Todo state and native relationships preserved.
+The received source bundles remain local-only and excluded from Git.
+
+Codex review identified two evidence-contract inconsistencies. The Enterprise
+message-counter case now uses `hand-authored-synthetic`: its paths were reported
+by the producer, and the original logs were not inspected. Its existing
+`field_type_evidence` retains that reported provenance. The change-order gate now
+requires accurate task status with unfinished work unchecked, allowing verified
+research tasks to remain checked. These are documentation/fixture corrections,
+not new runtime behavior; final checks and independent review are retained in
+the verification handoff and PR.
+
 ## Remaining work and rollback
 
 Tasks 2.1/2.2 retain exact account acquisition, Copilot/Cursor usage exports and
-unresolved profile semantics. Task 4.3 remains a later PR action. The existing
-issue tracks the same change; locally authored work is unpublished until a real
-branch/PR is pushed. No adapter is declared ready and the change is not archived.
+unresolved profile semantics. Task 4.3 remains pending through PR review/acceptance.
+The existing issue tracks the same change and remains open; no adapter is declared
+ready and the change is not archived.
 
 Confidence: high in the narrow documented/local findings, low in complete
 reconciliation. Failures to guard against are stale version assumptions,

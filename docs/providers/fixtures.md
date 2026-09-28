@@ -17,8 +17,10 @@ personal CSV headers have not been inspected. Correction fields are hypothetical
 The bundle has synthetic values throughout. Four cases use field names and repetition
 patterns from authorized local metadata inspection; they are minimized projections,
 not redacted whole transcripts. All identifiers, dates and quantities were authored here.
-The v2 follow-up adds a fifth local-shape case using producer-reported message
-counters, plus a hand-authored encoding distinction. These examples demonstrate
+The v2 follow-up adds a hand-authored case using producer-reported message
+counter paths, plus a hand-authored encoding distinction. The original Enterprise
+logs were not inspected, so the message-counter case does not claim observed-shape
+provenance. These examples demonstrate
 the evidence gate and future test inputs, not passing adapter tests or successful
 live reconciliation.
 

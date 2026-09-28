@@ -574,7 +574,7 @@
     {
       "id": "enterprise-message-counter-boundary",
       "source": "vscode-workspace-metadata-projection",
-      "provenance": "synthetic-values-from-observed-local-shape",
+      "provenance": "hand-authored-synthetic",
       "records": [
         {
           "v": {
