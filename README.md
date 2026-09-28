@@ -86,6 +86,10 @@ evidence to Git HEAD, working files and staged blobs/modes. Refreshing that bind
 requires fresh passing evidence before completion.
 Completion also requires explicit measured active time; a missing measurement is
 unknown. Latest changes-requested reviews block readiness even without inline threads.
+Canonical event replay checks saved decisions against their history. Exact repository,
+PR and reviewer identities prevent unrelated evidence from satisfying the session.
+Initialize only genuinely new sessions; recover existing missing receipts without
+resetting counters. Published completion requires clean inputs.
 
 ## Community and license
 

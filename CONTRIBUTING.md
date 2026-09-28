@@ -45,8 +45,16 @@ reviews or required checks as incomplete, not as a green review.
 For implementation/review work, initialize the bounded local review receipt with
 `python -m quality.review_session init <change-id> --json <contract.json>`. It
 keeps the complete scope, finding families and counters across chats and commits.
+Use initialization only for a genuinely new session; recover lost or incompatible
+receipts. Schema 2 replays original events with separately captured timestamps and
+Git inputs, checking all cached decisions against that history. A durable genesis
+marker detects a missing state file; preserve the entire ignored directory because
+this local recovery guard is not a backup or a tamper-proof store.
 The contract must name `required_checks` (nonempty), `required_statuses` (explicit,
 possibly empty), and required reviewers. Missing declared results block completion.
+It also names the exact repository; the first PR selection is retained. Reviewer
+logins match REST identities exactly, including `[bot]`. See the complete
+[contract example](docs/agent-rules/30-change-workflow.md#bounded-review-contract).
 An `advance_head` event refreshes the Git HEAD, working-content and staged-index
 binding while preserving counters; passing evidence from before that refresh
 remains historical and cannot establish completion of the new inputs.
@@ -54,6 +62,10 @@ Record measured `active_minutes` explicitly after each input refresh, including 
 actual measured zero when appropriate. The helper retains UTC receipt timestamps
 without estimating activity from elapsed wall time. Latest current-head reviewer
 rejections block completion; pending/dismissed results cannot reuse old approvals.
+Dirty inputs may be reviewed locally but cannot establish published completion.
+Non-findings do not seed family escalation; genuine fixed recurrences remain in
+history. Investigate the first escape after correction and replan after a further
+escape following that investigation.
 At three correction batches, 90 active minutes, or an escaping investigated family,
 create a packet and replan rather than continue a narrow fix loop.
 

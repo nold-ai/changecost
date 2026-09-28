@@ -32,7 +32,7 @@
   {
     "title": "Change workflow",
     "path": "docs/agent-rules/30-change-workflow.md",
-    "description": "freshness, stash recovery and delegation."
+    "description": "freshness, canonical review receipts, recovery and delegation."
   },
   {
     "title": "OpenSpec configuration",

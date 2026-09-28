@@ -16,12 +16,15 @@ mutation, or hostile-runner integrity guarantee.
 
 ## Decisions
 
-1. Store one JSON state document under `.changecost/workflow/<change-id>/`. It is
-   ignored local evidence, validated on read, and atomically replaced so an
-   interrupted update remains recoverable.
+1. Store schema-2 state plus a durable genesis marker under
+   `.changecost/workflow/<change-id>/`. Pure replay of original event payloads and
+   separately captured time/input facts reconciles every derived field. Atomic
+   replacement preserves recoverability; a missing state file with a marker
+   requires recovery. This is local accidental-loss detection, not tamper-proof
+   storage or protection against deletion of the entire ignored directory.
 2. Use standard-library JSON, `gh api --paginate --slurp` for REST collections and
    `gh api graphql` cursor pagination for review threads and their comments. The
-   parse the complete returned JSON document, including pretty-printed pages. The
+   helper parses the complete returned JSON document, including pretty-printed pages. The
    helper receives explicit JSON records for updates; it does not parse model
    transcripts.
 3. Compute a status enum from counters, elapsed active time, finding family
@@ -43,6 +46,13 @@ mutation, or hostile-runner integrity guarantee.
    completion requires an explicit measurement after the latest input refresh.
    Timestamps document receipt provenance and do not infer active time from wall
    time. Duplicate ingestion retains the original timestamp and counter.
+8. Bind the exact repository, selected PR, head and input epoch. Preserve exact
+   REST reviewer identities. Normalize meaningful observation content and replay
+   cached monitor classifications from the raw receipt; transport or shape failures
+   replace prior green evidence. Requests and sleeps consume the remaining wait
+   deadline. Dirty local inputs may be reviewed but cannot complete publication.
+   Clean provider summaries without REST submissions remain a documented helper
+   limitation, requiring separately verified coordinator evidence.
 
 ## Risks / Trade-offs
 
@@ -55,7 +65,8 @@ mutation, or hostile-runner integrity guarantee.
 
 ## Migration Plan
 
-New sessions opt in through the revised skills. Existing PRs have no synthetic
-history; initialize a record with the current head and pending findings. Revert
+New sessions opt in through the revised skills. Existing or incompatible receipts
+require explicit recovery retaining original history and unknown measurements;
+they do not authorize a fresh allowance. Revert
 the change to remove the helper and skill requirements while keeping ignored local
 receipts and the lessons document.

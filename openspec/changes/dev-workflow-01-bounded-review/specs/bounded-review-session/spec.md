@@ -7,6 +7,68 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Validate collection and event transaction boundaries
+The helper SHALL bind observations to the input epoch captured before collection,
+validate all consumed comment/thread fields and optional event references before
+persisting them, and accept an identical successful retry even when its original
+optimistic revision is now stale.
+
+#### Scenario: Concurrent same-head input refresh
+- **WHEN** an input refresh occurs during a monitor collection
+- **THEN** that collection cannot be relabelled as evidence for the new epoch
+
+#### Scenario: Malformed optional references or nested evidence
+- **WHEN** a scope reference is not a nonempty identity or comment/thread evidence lacks required typed fields
+- **THEN** event recording rejects the invalid update or monitoring persists incomplete evidence
+- **AND** malformed values cannot poison subsequent status evaluation
+
+#### Scenario: Unknown reviewer state cannot erase a rejection
+- **WHEN** a required or other reviewer returns a state outside GitHub's documented review-state enum
+- **THEN** the observation is incomplete, including after a prior changes-requested result
+- **AND** documented PENDING states retain their existing pending behavior
+
+#### Scenario: Retry after successful optimistic write
+- **WHEN** the same event payload is retried with its original expected revision
+- **THEN** the recorded result is returned without a second update
+- **AND** new events or conflicting payloads still fail optimistic concurrency checks
+
+### Requirement: Canonical review history and exact external identity
+
+The helper SHALL replay validated events from durable genesis with separately captured
+input/time facts, reconcile every derived persisted field, and bind observations to
+the selected repository, pull request, head and exact reviewer login.
+
+#### Scenario: Corrupted cached state
+- **WHEN** any derived counter, scope decision, finding, phase, evidence, usage, timing or monitor summary contradicts its retained history
+- **THEN** status requires recovery and does not accept cached completion
+
+#### Scenario: State file lost after initialization
+- **WHEN** a genesis marker remains but the state file is missing
+- **THEN** initialization refuses a fresh allowance and requests recovery
+
+#### Scenario: Dirty preflight cannot complete
+- **WHEN** frozen local inputs contain unpublished staged, unstaged or untracked changes
+- **THEN** review may proceed but completion requires clean inputs bound to the published head
+
+#### Scenario: Exact monitor identity
+- **WHEN** another repository or pull request shares the reviewed commit, or a bot login resembles a human login
+- **THEN** its evidence cannot substitute for the selected source or exact required reviewer
+
+#### Scenario: Genuine family chronology
+- **WHEN** a report is explicitly dispositioned as a non-finding
+- **THEN** it contributes neither a correction nor an escape
+- **AND** a genuine fixed or accepted escape remains in history, with investigation escalation armed only after a genuine recurrence
+
+#### Scenario: Bounded meaningful observation
+- **WHEN** metadata-only responses vary or API pagination consumes the remaining wait budget
+- **THEN** incidental metadata does not reset progress and requests/backoff respect the deadline
+- **AND** malformed nested evidence or transport errors persist an incomplete observation rather than retaining prior green state
+
+#### Scenario: Fresh session versus recovery
+- **WHEN** a contributor starts a genuinely new session
+- **THEN** the documented init operation creates its contract before status checks
+- **AND** a missing historical receipt or a different worktree requires recovery without resetting history
+
 ### Requirement: Durable review session contract
 
 The contributor workflow SHALL persist a versioned session contract containing

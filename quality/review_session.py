@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import fcntl
 import hashlib
 import json
@@ -12,16 +13,18 @@ import subprocess
 import tempfile
 import time
 from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from quality import repository
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 DEFAULT_BATCHES = 3
 DEFAULT_MINUTES = 90
 WAIT_LIMIT_MINUTES = 30
+REQUEST_DEADLINE: ContextVar[float | None] = ContextVar("request_deadline", default=None)
 
 
 class ConflictError(ValueError):
@@ -43,28 +46,117 @@ def initialize(root: Path, change_id: str, contract: dict[str, Any]) -> dict[str
             if existing["contract"] != contract:
                 raise ConflictError("session already exists with a different contract")
             return existing
-        state: dict[str, Any] = {
+        marker = path.with_name("genesis.json")
+        if marker.exists():
+            raise ValueError("session state lost; recover preserved genesis and history")
+        genesis = {
             "schema_version": SCHEMA_VERSION,
-            "revision": 0,
             "change_id": change_id,
-            "contract": contract,
-            "reviewed_head": contract["head"],
+            "contract": copy.deepcopy(contract),
             "inputs": capture_inputs(root, contract["head"]),
-            "budget": {"batches": DEFAULT_BATCHES, "minutes": DEFAULT_MINUTES},
-            "batches": 0,
-            "active_minutes": 0,
-            "timing_measurements": [],
-            "events": [],
-            "findings": [],
-            "investigations": [],
-            "scope_decisions": [],
-            "evidence": [],
-            "usage": {"cached_input": None, "uncached_input": None, "output": None, "cost": None},
-            "monitor": {"snapshot": None, "data": None, "errors": [], "pending": []},
-            "phase": "active",
+            "created_at": datetime.now(UTC).isoformat(),
         }
+        state = replay(genesis, [], [], None, 0)
+        write_state(marker, genesis)
         write_state(path, state)
         return state
+
+
+def initial_state(genesis: dict[str, Any]) -> dict[str, Any]:
+    contract = genesis["contract"]
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "genesis": copy.deepcopy(genesis),
+        "change_id": genesis["change_id"],
+        "contract": copy.deepcopy(contract),
+        "reviewed_head": contract["head"],
+        "inputs": copy.deepcopy(genesis["inputs"]),
+        "budget": {"batches": DEFAULT_BATCHES, "minutes": DEFAULT_MINUTES},
+        "batches": 0,
+        "active_minutes": 0,
+        "timing_measurements": [],
+        "events": [],
+        "provenance": [],
+        "findings": [],
+        "investigations": [],
+        "scope_decisions": [],
+        "evidence": [],
+        "phase": "active",
+        "pull_request": None,
+        "usage": {"cached_input": None, "uncached_input": None, "output": None, "cost": None},
+        "monitor": empty_monitor(),
+        "observation_revision": 0,
+        "revision": 0,
+    }
+
+
+def empty_monitor() -> dict[str, Any]:
+    return {"snapshot": None, "data": None, "errors": [], "pending": []}
+
+
+def validate_timestamp(value: Any) -> None:
+    if not isinstance(value, str) or datetime.fromisoformat(value).tzinfo is None:
+        raise ValueError("timestamp requires an explicit timezone")
+
+
+def validate_inputs(inputs: Any, head: str) -> None:
+    if not isinstance(inputs, dict) or inputs.get("head") != head:
+        raise ValueError("captured inputs do not match reviewed head")
+    if not isinstance(inputs.get("digest"), str) or len(inputs["digest"]) != 64:
+        raise ValueError("malformed captured input digest")
+    if not isinstance(inputs.get("clean"), bool):
+        raise ValueError("captured inputs require clean publication status")
+
+
+def replay(
+    genesis: dict[str, Any],
+    events: list[Any],
+    facts: list[Any],
+    observation: Any,
+    observation_revision: int,
+) -> dict[str, Any]:
+    validate_entries(events, ("id", "kind"))
+    validate_entries(facts, ("event_id", "recorded_at"))
+    validate_contract(genesis["contract"])
+    validate_timestamp(genesis["created_at"])
+    validate_inputs(genesis["inputs"], genesis["contract"]["head"])
+    if integer(genesis.get("schema_version"), "schema version") != SCHEMA_VERSION or len(
+        events
+    ) != len(facts):
+        raise ValueError("malformed genesis or event provenance cardinality")
+    integer(observation_revision, "observation revision")
+    state = initial_state(genesis)
+    for event, provenance in zip(events, facts, strict=True):
+        validate_event(event)
+        if duplicate_event(state["events"], event):
+            raise ValueError("duplicate persisted event identity")
+        validate_provenance(event, provenance)
+        apply_event(state, event, provenance)
+        state["events"].append(copy.deepcopy(event))
+        state["provenance"].append(copy.deepcopy(provenance))
+    state["observation_revision"] = observation_revision
+    state["revision"] = len(events) + observation_revision
+    state["monitor"] = classify_observation(observation, state)
+    return state
+
+
+def validate_provenance(event: dict[str, Any], provenance: Any) -> None:
+    if not isinstance(provenance, dict) or provenance.get("event_id") != event["id"]:
+        raise ValueError("event provenance identity mismatch")
+    validate_timestamp(provenance.get("recorded_at"))
+    expected = {"event_id", "recorded_at"}
+    if event["kind"] == "advance_head":
+        expected.add("inputs")
+        validate_inputs(provenance.get("inputs"), event["head"])
+    if provenance.keys() != expected:
+        raise ValueError("unexpected event provenance fields")
+
+
+def integer(value: Any, label: str) -> int:
+    validate_nonnegative(value, label)
+    if not isinstance(value, int) or isinstance(value, bool):
+        raise ValueError(f"{label} must be an integer")
+    return value
 
 
 def validate_contract(contract: dict[str, Any]) -> None:
@@ -72,6 +164,7 @@ def validate_contract(contract: dict[str, Any]) -> None:
         raise ValueError("contract must be an object")
     required = {
         "requirements",
+        "repository",
         "acceptance_criteria",
         "non_goals",
         "trust_boundary",
@@ -90,6 +183,8 @@ def validate_contract(contract: dict[str, Any]) -> None:
     ):
         raise ValueError("required_reviewers must be a list of non-empty GitHub logins")
     validate_gate_contract(contract)
+    if not isinstance(contract["repository"], str) or len(contract["repository"].split("/")) != 2:
+        raise ValueError("repository requires owner/name")
 
 
 def validate_gate_contract(contract: dict[str, Any]) -> None:
@@ -101,7 +196,7 @@ def validate_gate_contract(contract: dict[str, Any]) -> None:
         raise ValueError("required_checks must name at least one expected CI check")
 
 
-def capture_inputs(root: Path, expected_head: str) -> dict[str, str]:
+def capture_inputs(root: Path, expected_head: str) -> dict[str, Any]:
     head = repository.git(root, "rev-parse", "HEAD").decode().strip()
     if head != expected_head:
         raise ValueError("reviewed head differs from local HEAD")
@@ -109,51 +204,38 @@ def capture_inputs(root: Path, expected_head: str) -> dict[str, str]:
     files = set(names.decode().split("\0")) - {""}
     index = repository.git(root, "ls-files", "--stage", "-z")
     fingerprint = repository.digest(root, files).encode() + b"\0" + index
-    return {"head": head, "digest": hashlib.sha256(fingerprint).hexdigest()}
+    clean = not repository.git(root, "status", "--porcelain", "--untracked-files=all")
+    return {"head": head, "digest": hashlib.sha256(fingerprint).hexdigest(), "clean": clean}
 
 
 def load(root: Path, change_id: str) -> dict[str, Any]:
     path = state_path(root, change_id)
     try:
         value = json.loads(path.read_text())
+        marker = json.loads(path.with_name("genesis.json").read_text())
     except (OSError, json.JSONDecodeError) as error:
         raise ValueError(f"unreadable session state: {error}") from error
     if not isinstance(value, dict) or value.get("schema_version") != SCHEMA_VERSION:
         raise ValueError("unsupported or malformed session state")
-    if value.get("change_id") != change_id or not isinstance(value.get("events"), list):
-        raise ValueError("malformed session identity or events")
-    if not isinstance(value.get("contract"), dict):
-        raise ValueError("malformed session contract")
-    validate_contract(value["contract"])
-    validate_state_fields(value)
-    validate_nested_state(value)
+    try:
+        validate_canonical_state(value, marker, change_id)
+    except (KeyError, TypeError) as error:
+        raise ValueError("malformed session history; recovery required") from error
     return value
 
 
-def validate_state_fields(value: dict[str, Any]) -> None:
-    required = {
-        "revision": int,
-        "reviewed_head": str,
-        "budget": dict,
-        "batches": (int, float),
-        "active_minutes": (int, float),
-        "findings": list,
-        "investigations": list,
-        "scope_decisions": list,
-        "evidence": list,
-        "usage": dict,
-        "monitor": dict,
-        "phase": str,
-    }
-    if any(not isinstance(value.get(key), expected) for key, expected in required.items()):
-        raise ValueError("malformed session state fields")
-    if value["phase"] not in {"active", "paused", "complete"}:
-        raise ValueError("malformed session phase")
-    if (
-        not {"batches", "minutes"} <= value["budget"].keys()
-        or not {"snapshot", "data", "errors", "pending"} <= value["monitor"].keys()
-    ):
-        raise ValueError("malformed session budget or monitor")
+def validate_canonical_state(state: dict[str, Any], marker: Any, change_id: str) -> None:
+    if state.get("genesis") != marker or marker["change_id"] != change_id:
+        raise ValueError("session genesis mismatch; recovery required")
+    expected = replay(
+        marker,
+        state["events"],
+        state["provenance"],
+        state["monitor"]["data"],
+        state["observation_revision"],
+    )
+    if json.dumps(state, sort_keys=True) != json.dumps(expected, sort_keys=True):
+        raise ValueError("persisted state contradicts canonical history; recovery required")
 
 
 def validate_nonnegative(value: Any, label: str) -> None:
@@ -173,52 +255,6 @@ def validate_entries(entries: Any, fields: tuple[str, ...]) -> None:
             raise ValueError("malformed persisted entry")
 
 
-def validate_nested_state(state: dict[str, Any]) -> None:
-    for key in ("revision", "batches", "active_minutes"):
-        validate_nonnegative(state[key], key)
-    for key in ("batches", "minutes"):
-        validate_nonnegative(state["budget"][key], key)
-    collections = {
-        "events": ("id", "kind"),
-        "findings": ("id", "family", "disposition"),
-        "investigations": ("id", "family"),
-        "scope_decisions": ("id", "decision"),
-        "evidence": ("id", "evidence_type", "result", "head"),
-    }
-    for key, fields in collections.items():
-        validate_entries(state[key], fields)
-    for event in state["events"]:
-        validate_event(event)
-    validate_event_references(state["events"])
-    validate_disposition_history(state)
-    validate_timing_measurements(state)
-    validate_monitor_state(state["monitor"])
-    validate_inputs_usage(state)
-
-
-def validate_inputs_usage(state: dict[str, Any]) -> None:
-    inputs = state.get("inputs")
-    if not isinstance(inputs, dict) or not all(
-        isinstance(inputs.get(key), str) for key in ("head", "digest")
-    ):
-        raise ValueError("missing or malformed reviewed inputs; recovery required")
-    for key in ("cached_input", "uncached_input", "output", "cost"):
-        if key not in state["usage"]:
-            raise ValueError("malformed usage")
-        if state["usage"][key] is not None:
-            validate_nonnegative(state["usage"][key], key)
-
-
-def validate_monitor_state(monitor: dict[str, Any]) -> None:
-    for key in ("errors", "pending"):
-        if not isinstance(monitor[key], list) or not all(
-            isinstance(item, str) for item in monitor[key]
-        ):
-            raise ValueError("malformed monitor messages")
-    if monitor["data"] is not None and not isinstance(monitor["data"], dict):
-        raise ValueError("malformed monitor data")
-
-
 def validate_event(event: dict[str, Any]) -> None:
     fields = {
         "batch": (),
@@ -232,6 +268,7 @@ def validate_event(event: dict[str, Any]) -> None:
         "usage": (),
         "phase": ("phase",),
         "advance_head": ("head",),
+        "bind_pr": ("repository",),
     }
     validate_entries([event], ("id", "kind"))
     if event["kind"] not in fields:
@@ -245,47 +282,6 @@ def validate_event(event: dict[str, Any]) -> None:
     for key in numeric_fields.get(event["kind"], ()):
         default = None if event["kind"] == "active_minutes" else 0
         validate_nonnegative(event.get(key, default), key)
-
-
-def validate_timing_measurements(state: dict[str, Any]) -> None:
-    validate_entries(state.get("timing_measurements"), ("event_id", "recorded_at"))
-    measurements = state["timing_measurements"]
-    events = {item["id"]: item for item in state["events"] if item["kind"] == "active_minutes"}
-    if {item["event_id"] for item in measurements} != set(events):
-        raise ValueError("timing measurements do not match recorded activity")
-    if math.fsum(item["minutes"] for item in events.values()) != state["active_minutes"]:
-        raise ValueError("elapsed counter contradicts recorded measurements")
-    for item in measurements:
-        timestamp = datetime.fromisoformat(item["recorded_at"])
-        if timestamp.tzinfo is None or item.get("minutes") != events[item["event_id"]]["minutes"]:
-            raise ValueError("malformed timing measurement provenance")
-
-
-def validate_event_references(events: list[dict[str, Any]]) -> None:
-    findings: set[str] = set()
-    identities: set[str] = set()
-    for event in events:
-        if event["id"] in identities:
-            raise ValueError("duplicate persisted event identity")
-        identities.add(event["id"])
-        if event["kind"] == "finding":
-            findings.add(event["id"])
-        if event["kind"] == "disposition" and event["finding_id"] not in findings:
-            raise ValueError("persisted disposition names an unknown finding")
-
-
-def validate_disposition_history(state: dict[str, Any]) -> None:
-    expected: dict[str, str] = {}
-    for event in state["events"]:
-        if event["kind"] == "finding":
-            expected[event["id"]] = "unresolved"
-        if event["kind"] == "disposition":
-            if event["disposition"] not in {"fixed", "non_finding", "accepted_exception"}:
-                raise ValueError("malformed persisted disposition")
-            expected[event["finding_id"]] = event["disposition"]
-    actual = {item["id"]: item["disposition"] for item in state["findings"]}
-    if actual != expected:
-        raise ValueError("finding dispositions contradict recorded events; recovery required")
 
 
 def write_state(path: Path, state: dict[str, Any]) -> None:
@@ -321,35 +317,53 @@ def record(
     with state_lock(path):
         state = load(root, change_id)
         validate_event(event)
+        if expected_revision is not None:
+            integer(expected_revision, "expected revision")
+        if duplicate_event(state["events"], event):
+            return state
         if expected_revision is not None and state["revision"] != expected_revision:
             raise ConflictError(f"expected revision {expected_revision}, found {state['revision']}")
         event_id = event.get("id")
         kind = event.get("kind")
         if not isinstance(event_id, str) or not event_id or not isinstance(kind, str):
             raise ValueError("event requires non-empty id and kind")
-        if duplicate_event(state["events"], event):
-            return state
-        apply_event(state, event)
+        provenance: dict[str, Any] = {
+            "event_id": event_id,
+            "recorded_at": datetime.now(UTC).isoformat(),
+        }
         if kind == "advance_head":
-            state["inputs"] = capture_inputs(root, state["reviewed_head"])
-        state["events"].append(event)
-        state["revision"] += 1
-        validate_nested_state(state)
+            provenance["inputs"] = capture_inputs(root, event["head"])
+        observation = None if kind in {"advance_head", "bind_pr"} else state["monitor"]["data"]
+        state = replay(
+            state["genesis"],
+            [*state["events"], event],
+            [*state["provenance"], provenance],
+            observation,
+            state["observation_revision"],
+        )
         write_state(path, state)
         return state
 
 
 def duplicate_event(events: list[dict[str, Any]], event: dict[str, Any]) -> bool:
     existing = next((item for item in events if item["id"] == event["id"]), None)
-    if existing is not None and existing != event:
+    if existing is not None and json.dumps(existing, sort_keys=True) != json.dumps(
+        event, sort_keys=True
+    ):
         raise ConflictError("event identity already has a different payload")
     return existing is not None
 
 
-def apply_event(state: dict[str, Any], event: dict[str, Any]) -> None:
+def apply_event(state: dict[str, Any], event: dict[str, Any], provenance: dict[str, Any]) -> None:
+    if event["kind"] == "active_minutes":
+        add_active_minutes(state, event, provenance)
+        return
+    if event["kind"] == "advance_head":
+        advance_head(state, event)
+        state["inputs"] = copy.deepcopy(provenance["inputs"])
+        return
     handlers = {
         "batch": add_batch,
-        "active_minutes": add_active_minutes,
         "extension": add_extension,
         "finding": add_finding,
         "disposition": add_disposition,
@@ -358,7 +372,7 @@ def apply_event(state: dict[str, Any], event: dict[str, Any]) -> None:
         "evidence": add_evidence,
         "usage": add_usage,
         "phase": set_phase,
-        "advance_head": advance_head,
+        "bind_pr": bind_pr,
     }
     try:
         handlers[event["kind"]](state, event)
@@ -371,12 +385,14 @@ def add_batch(state: dict[str, Any], event: dict[str, Any]) -> None:
     state["batches"] += 1
 
 
-def add_active_minutes(state: dict[str, Any], event: dict[str, Any]) -> None:
+def add_active_minutes(
+    state: dict[str, Any], event: dict[str, Any], provenance: dict[str, Any]
+) -> None:
     minutes = number(event, "minutes")
     if minutes < 0:
         raise ValueError("active minutes cannot be negative")
     state["timing_measurements"].append(
-        {"event_id": event["id"], "minutes": minutes, "recorded_at": datetime.now(UTC).isoformat()}
+        {"event_id": event["id"], "minutes": minutes, "recorded_at": provenance["recorded_at"]}
     )
     state["active_minutes"] = math.fsum(item["minutes"] for item in state["timing_measurements"])
 
@@ -384,7 +400,7 @@ def add_active_minutes(state: dict[str, Any], event: dict[str, Any]) -> None:
 def add_extension(state: dict[str, Any], event: dict[str, Any]) -> None:
     if not event.get("approved_by"):
         raise ValueError("budget extension requires approved_by")
-    state["budget"]["batches"] += int(number(event, "batches", 0))
+    state["budget"]["batches"] += integer(event.get("batches", 0), "extension batches")
     state["budget"]["minutes"] += number(event, "minutes", 0)
 
 
@@ -414,7 +430,11 @@ def add_investigation(state: dict[str, Any], event: dict[str, Any]) -> None:
 
 def add_scope_decision(state: dict[str, Any], event: dict[str, Any]) -> None:
     require_field(event, "decision", "scope decision")
+    if event["decision"] not in {"pending", "approved", "rejected", "deferred"}:
+        raise ValueError("unknown scope decision")
     supersedes = event.get("supersedes")
+    if "supersedes" in event and (not isinstance(supersedes, str) or not supersedes):
+        raise ValueError("scope supersedes must be a nonempty event identity")
     if supersedes and not any(
         item["id"] == supersedes and item["decision"] == "pending"
         for item in state["scope_decisions"]
@@ -428,6 +448,8 @@ def add_evidence(state: dict[str, Any], event: dict[str, Any]) -> None:
     if event.get("evidence_type") not in {"gate", "reviewer"}:
         raise ValueError("evidence requires evidence_type gate or reviewer")
     require_field(event, "head", "evidence")
+    if event["result"] not in {"pass", "fail", "incomplete"}:
+        raise ValueError("unknown evidence result")
     state["evidence"].append(event)
 
 
@@ -452,6 +474,15 @@ def advance_head(state: dict[str, Any], event: dict[str, Any]) -> None:
     state["reviewed_head"] = head
     state["phase"] = "active"
     state["monitor"] = {"snapshot": None, "data": None, "errors": [], "pending": []}
+
+
+def bind_pr(state: dict[str, Any], event: dict[str, Any]) -> None:
+    number = integer(event.get("pull_request"), "pull request")
+    if number == 0 or event.get("repository") != state["contract"]["repository"]:
+        raise ValueError("selected pull-request source mismatches contract")
+    if state["pull_request"] is not None and state["pull_request"] != number:
+        raise ValueError("pull request already bound; cannot switch source")
+    state["pull_request"] = number
 
 
 def require_field(event: dict[str, Any], field: str, name: str) -> None:
@@ -526,6 +557,8 @@ def scope_pending(state: dict[str, Any]) -> bool:
 
 
 def completed_decision(state: dict[str, Any]) -> tuple[str, str]:
+    if not state["inputs"]["clean"]:
+        return "incomplete", "published completion requires clean committed inputs"
     if unresolved_findings(state):
         return "incomplete", "completed session has unresolved findings"
     if not completion_evidence(state) or state["monitor"].get("head") != state["reviewed_head"]:
@@ -570,14 +603,15 @@ def family_history(state: dict[str, Any]) -> tuple[set[str], set[str], set[str],
     families: dict[str, str] = {}
     escaped: set[str] = set()
     post_investigation: set[str] = set()
+    genuine = genuine_finding_ids(state)
     for event in state["events"]:
         family = event.get("family", "")
         kind = event["kind"]
-        if kind == "investigation":
+        if kind == "investigation" and family in escaped:
             investigated.add(family)
-        if kind == "disposition" and event["disposition"] == "fixed":
+        if genuine_correction(event, genuine):
             corrected.add(families[event["finding_id"]])
-        if kind != "finding":
+        if kind != "finding" or event["id"] not in genuine:
             continue
         families[event["id"]] = family
         if family not in corrected:
@@ -586,6 +620,18 @@ def family_history(state: dict[str, Any]) -> tuple[set[str], set[str], set[str],
             post_investigation.add(family)
         escaped.add(family)
     return corrected, investigated, escaped, post_investigation
+
+
+def genuine_correction(event: dict[str, Any], genuine: set[str]) -> bool:
+    return (
+        event["kind"] == "disposition"
+        and event["disposition"] == "fixed"
+        and event["finding_id"] in genuine
+    )
+
+
+def genuine_finding_ids(state: dict[str, Any]) -> set[str]:
+    return {item["id"] for item in state["findings"] if item["disposition"] != "non_finding"}
 
 
 def unresolved_findings(state: dict[str, Any]) -> list[dict[str, Any]]:
@@ -629,29 +675,131 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
         "scope_decisions": state["scope_decisions"],
         "usage": state["usage"],
         "timing_measurements": state["timing_measurements"],
+        "pull_request": state["pull_request"],
         "monitor": state["monitor"],
     }
+
+
+def binding_epoch(state: dict[str, Any]) -> str:
+    advances = [item["id"] for item in state["events"] if item["kind"] == "advance_head"]
+    return advances[-1] if advances else "genesis"
+
+
+def select_target(root: Path, change_id: str, repository_name: str, pull_request: int) -> None:
+    state = load(root, change_id)
+    if repository_name != state["contract"]["repository"]:
+        raise ValueError("selected repository differs from session contract")
+    if state["pull_request"] is not None:
+        if state["pull_request"] != pull_request:
+            raise ValueError("selected pull request differs from bound target")
+        return
+    record(
+        root,
+        change_id,
+        {
+            "id": "bind-pr",
+            "kind": "bind_pr",
+            "repository": repository_name,
+            "pull_request": pull_request,
+        },
+    )
 
 
 def record_monitor_snapshot(
     root: Path, change_id: str, snapshot: dict[str, Any]
 ) -> dict[str, bool]:
+    state = load(root, change_id)
+    if (
+        state["pull_request"] is None
+        and snapshot.get("repository") == state["contract"]["repository"]
+        and type(snapshot.get("pull_request")) is int
+        and snapshot["pull_request"] > 0
+    ):
+        select_target(root, change_id, snapshot["repository"], snapshot["pull_request"])
     path = state_path(root, change_id)
     with state_lock(path):
         state = load(root, change_id)
-        canonical = json.dumps(snapshot, sort_keys=True, separators=(",", ":"))
-        digest = hashlib.sha256(canonical.encode()).hexdigest()
-        if state["monitor"]["snapshot"] == digest:
+        observation = {
+            **snapshot,
+            "_input_epoch": snapshot.get("_input_epoch", binding_epoch(state)),
+        }
+        monitor = classify_observation(observation, state)
+        if state["monitor"]["snapshot"] == monitor["snapshot"]:
             return {"changed": False}
-        state["monitor"]["snapshot"] = digest
-        state["monitor"]["data"] = snapshot
-        contract = {**state["contract"], "head": state["reviewed_head"]}
-        state["monitor"]["errors"] = monitor_errors(snapshot, contract)
-        state["monitor"]["pending"] = monitor_pending(snapshot, contract)
-        state["monitor"]["head"] = snapshot.get("head")
-        state["revision"] += 1
-        write_state(path, state)
+        updated = replay(
+            state["genesis"],
+            state["events"],
+            state["provenance"],
+            observation,
+            state["observation_revision"] + 1,
+        )
+        write_state(path, updated)
         return {"changed": True}
+
+
+def classify_observation(observation: Any, state: dict[str, Any]) -> dict[str, Any]:
+    if observation is None:
+        return empty_monitor()
+    if not isinstance(observation, dict):
+        raise ValueError("malformed observation receipt")
+    contract = {
+        **state["contract"],
+        "head": state["reviewed_head"],
+        "pull_request": state["pull_request"],
+    }
+    errors = monitor_errors(observation, contract)
+    if observation.get("_input_epoch") != binding_epoch(state):
+        errors.append("monitor evidence is for another input binding")
+    pending = [] if errors else monitor_pending(observation, contract)
+    meaningful = observation if errors else semantic_snapshot(observation)
+    digest = hashlib.sha256(json.dumps(meaningful, sort_keys=True).encode()).hexdigest()
+    return {
+        "snapshot": digest,
+        "data": copy.deepcopy(observation),
+        "errors": errors,
+        "pending": pending,
+        "head": observation.get("head"),
+    }
+
+
+def selected_fields(value: dict[str, Any], names: tuple[str, ...]) -> dict[str, Any]:
+    return {key: value[key] for key in names if key in value}
+
+
+def semantic_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
+    result = selected_fields(snapshot, ("repository", "pull_request", "head", "_input_epoch"))
+    result["checks"] = [
+        selected_fields(
+            item, ("id", "name", "head_sha", "status", "conclusion", "started_at", "completed_at")
+        )
+        for item in page_items(snapshot["checks"], "check_runs")
+    ]
+    result["statuses"] = [
+        selected_fields(item, ("id", "context", "state", "description", "updated_at"))
+        for item in page_items(snapshot["statuses"], "statuses")
+    ]
+    result["reviews"] = [semantic_review(item) for page in snapshot["reviews"] for item in page]
+    result["comments"] = [semantic_comment(item) for page in snapshot["comments"] for item in page]
+    result["threads"] = [semantic_thread(item) for item in snapshot["threads"]]
+    return result
+
+
+def semantic_review(item: dict[str, Any]) -> dict[str, Any]:
+    return {
+        **selected_fields(item, ("id", "commit_id", "state", "body", "submitted_at")),
+        "login": item["user"]["login"],
+    }
+
+
+def semantic_comment(item: dict[str, Any]) -> dict[str, Any]:
+    return selected_fields(item, ("id", "body", "created_at", "updated_at", "path", "line"))
+
+
+def semantic_thread(item: dict[str, Any]) -> dict[str, Any]:
+    return {
+        **selected_fields(item, ("id", "isResolved", "isOutdated", "path", "line")),
+        "comments": [semantic_comment(comment) for comment in item.get("comments", [])],
+    }
 
 
 def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
@@ -663,7 +811,12 @@ def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
     }
     pull = gh_json(f"repos/{repository}/pulls/{pull_request}")
     head = pull["head"]["sha"]
-    result: dict[str, Any] = {"head": head, "requested_reviewers": pull["requested_reviewers"]}
+    result: dict[str, Any] = {
+        "repository": repository,
+        "pull_request": pull_request,
+        "head": head,
+        "requested_reviewers": pull["requested_reviewers"],
+    }
     for name, endpoint in endpoints.items():
         result[name] = gh_json(endpoint.format(head=head), paginate=True)
     result["threads"] = gh_review_threads(repository, pull_request)
@@ -686,6 +839,7 @@ def gh_review_threads(repository: str, pull_request: int) -> list[dict[str, Any]
     while True:
         result = gh_graphql(query, owner=owner, name=name, number=pull_request, cursor=cursor)
         page = result["data"]["repository"]["pullRequest"]["reviewThreads"]
+        validate_connection(page)
         for thread in page["nodes"]:
             thread["comments"] = complete_thread_comments(thread)
             threads.append(thread)
@@ -696,6 +850,7 @@ def gh_review_threads(repository: str, pull_request: int) -> list[dict[str, Any]
 
 def complete_thread_comments(thread: dict[str, Any]) -> list[dict[str, Any]]:
     comments = thread["comments"]
+    validate_connection(comments)
     nodes = comments["nodes"]
     page_info = comments["pageInfo"]
     seen: set[str] = set()
@@ -707,9 +862,19 @@ def complete_thread_comments(thread: dict[str, Any]) -> list[dict[str, Any]]:
     while page_info["hasNextPage"]:
         result = gh_graphql(query, id=thread["id"], cursor=next_cursor(page_info, seen))
         comments = result["data"]["node"]["comments"]
+        validate_connection(comments)
         nodes.extend(comments["nodes"])
         page_info = comments["pageInfo"]
     return nodes
+
+
+def validate_connection(connection: Any) -> None:
+    if not isinstance(connection, dict):
+        raise ValueError("missing GraphQL connection")
+    validate_entries(connection.get("nodes"), ())
+    info = connection.get("pageInfo")
+    if not isinstance(info, dict) or not isinstance(info.get("hasNextPage"), bool):
+        raise ValueError("malformed GraphQL pagination")
 
 
 def next_cursor(page_info: dict[str, Any], seen: set[str]) -> str:
@@ -728,12 +893,17 @@ def gh_graphql(query: str, **variables: Any) -> dict[str, Any]:
         if value is not None
         for value in ("-F", f"{key}={value}")
     )
-    result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=60)
+    result = subprocess.run(
+        command, capture_output=True, text=True, check=False, timeout=request_timeout()
+    )
     if result.returncode:
         raise RuntimeError(result.stderr.strip() or "gh graphql failed")
     payload = json.loads(result.stdout)
+    if not isinstance(payload, dict):
+        raise ValueError("malformed GraphQL response")
     if payload.get("errors"):
-        messages = (error.get("message", "GraphQL error") for error in payload["errors"])
+        validate_entries(payload["errors"], ("message",))
+        messages = (error["message"] for error in payload["errors"])
         raise RuntimeError("; ".join(messages))
     return payload
 
@@ -742,7 +912,9 @@ def gh_json(endpoint: str, *, paginate: bool = False) -> Any:
     command = ["gh", "api", endpoint]
     if paginate:
         command.extend(("--paginate", "--slurp"))
-    result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=60)
+    result = subprocess.run(
+        command, capture_output=True, text=True, check=False, timeout=request_timeout()
+    )
     if result.returncode:
         raise RuntimeError(result.stderr.strip() or "gh api failed")
     value = json.loads(result.stdout)
@@ -751,18 +923,35 @@ def gh_json(endpoint: str, *, paginate: bool = False) -> Any:
     return value
 
 
+def request_timeout() -> float:
+    deadline = REQUEST_DEADLINE.get()
+    remaining = 60.0 if deadline is None else deadline - time.monotonic()
+    if remaining <= 0:
+        raise ValueError("watch collection deadline exhausted")
+    return min(60.0, remaining)
+
+
 def monitor_errors(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
-    errors = list(snapshot.get("errors", []))
-    if errors:
-        return errors
-    head = snapshot.get("head")
-    if head != contract["head"]:
-        return ["monitor evidence is for a different head"]
     try:
+        errors = snapshot.get("errors", [])
+        if not isinstance(errors, list) or not all(isinstance(item, str) for item in errors):
+            raise ValueError("malformed monitor errors")
+        if errors:
+            return list(errors)
+        validate_snapshot_source(snapshot, contract)
         validate_snapshot(snapshot)
-    except ValueError as error:
+        return failed_external_checks(snapshot) + rejected_reviews(snapshot)
+    except (ValueError, KeyError, TypeError) as error:
         return [str(error)]
-    return failed_external_checks(snapshot) + rejected_reviews(snapshot)
+
+
+def validate_snapshot_source(snapshot: dict[str, Any], contract: dict[str, Any]) -> None:
+    integer(snapshot.get("pull_request"), "snapshot pull request")
+    for key in ("repository", "pull_request", "head"):
+        if snapshot.get(key) != contract.get(key):
+            raise ValueError(f"monitor evidence is for a different {key}")
+    if not contract.get("pull_request"):
+        raise ValueError("monitor source has no bound pull request")
 
 
 def validate_snapshot(snapshot: dict[str, Any]) -> None:
@@ -773,15 +962,65 @@ def validate_snapshot(snapshot: dict[str, Any]) -> None:
     ]
     if missing:
         raise ValueError(f"monitor evidence is missing or malformed: {', '.join(missing)}")
-    page_items(snapshot["checks"], "check_runs")
-    page_items(snapshot["statuses"], "statuses")
+    validate_check_results(snapshot)
     for key in ("reviews", "comments"):
         for page in snapshot[key]:
             validate_entries(page, ())
+    for review in [item for page in snapshot["reviews"] for item in page]:
+        validate_review(review)
+    for page in snapshot["comments"]:
+        validate_comments(page, graphql=False)
     validate_entries(snapshot["threads"], ("id",))
-    for thread in snapshot["threads"]:
-        if not isinstance(thread.get("isResolved"), bool):
+    validate_threads(snapshot["threads"])
+
+
+def validate_threads(threads: list[dict[str, Any]]) -> None:
+    for thread in threads:
+        if not isinstance(thread.get("isResolved"), bool) or not isinstance(
+            thread.get("isOutdated"), bool
+        ):
             raise ValueError("malformed thread resolution")
+        validate_comments(thread.get("comments"), graphql=True)
+
+
+def validate_comments(comments: Any, *, graphql: bool) -> None:
+    validate_entries(comments, ())
+    for comment in comments:
+        identity = comment.get("id")
+        valid_identity = (
+            isinstance(identity, str) and bool(identity)
+            if graphql
+            else type(identity) is int and identity > 0
+        )
+        if not valid_identity or not isinstance(comment.get("body"), str):
+            raise ValueError("comment requires a typed identity and body")
+
+
+def validate_check_results(snapshot: dict[str, Any]) -> None:
+    checks = page_items(snapshot["checks"], "check_runs")
+    statuses = page_items(snapshot["statuses"], "statuses")
+    validate_entries(checks, ("name", "status"))
+    validate_entries(statuses, ("context", "state"))
+    for check in checks:
+        if check.get("head_sha", snapshot["head"]) != snapshot["head"]:
+            raise ValueError("check result is for another head")
+        if check.get("conclusion") is not None and not isinstance(check["conclusion"], str):
+            raise ValueError("malformed check conclusion")
+
+
+def validate_review(review: dict[str, Any]) -> None:
+    validate_entries([review], ("commit_id", "state"))
+    if review["state"] not in {
+        "APPROVED",
+        "CHANGES_REQUESTED",
+        "COMMENTED",
+        "DISMISSED",
+        "PENDING",
+    }:
+        raise ValueError("unknown GitHub review state")
+    if not isinstance(review.get("user"), dict):
+        raise ValueError("review requires an exact author identity")
+    validate_entries([review["user"]], ("login",))
 
 
 def failed_external_checks(snapshot: dict[str, Any]) -> list[str]:
@@ -841,7 +1080,7 @@ def reviewer_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list
     return [
         f"required reviewer has no current-head result: {reviewer}"
         for reviewer in contract["required_reviewers"]
-        if latest.get(reviewer.removesuffix("[bot]")) not in {"APPROVED", "COMMENTED"}
+        if latest.get(reviewer) not in {"APPROVED", "COMMENTED"}
     ]
 
 
@@ -850,7 +1089,7 @@ def latest_review_states(snapshot: dict[str, Any]) -> dict[str, str]:
     reviews = [review for page in snapshot["reviews"] for review in page]
     for review in reviews:
         if review.get("commit_id") == snapshot["head"]:
-            login = str(review.get("user", {}).get("login", "")).removesuffix("[bot]")
+            login = review["user"]["login"]
             latest[login] = str(review.get("state", ""))
     return latest
 
@@ -882,12 +1121,17 @@ def watch(
     intervals = (15, 30, 60)
     index = 0
     while True:
-        try:
-            snapshot = gh_snapshot(repository, pull_request)
-            outcome = record_monitor_snapshot(root, change_id, snapshot)
-        except (RuntimeError, KeyError, ValueError, subprocess.TimeoutExpired) as error:
-            snapshot = {"errors": [str(error)]}
-            outcome = record_monitor_snapshot(root, change_id, snapshot)
+        if index and time.monotonic() >= deadline:
+            print(json.dumps({"action": "wait", "reason": "watch timeout"}))
+            return 0
+        snapshot = collect_snapshot(
+            root,
+            change_id,
+            repository,
+            pull_request,
+            deadline if timeout_minutes else time.monotonic() + 60,
+        )
+        outcome = record_monitor_snapshot(root, change_id, snapshot)
         current = status(root, change_id)
         if outcome["changed"]:
             deadline = time.monotonic() + timeout_minutes * 60
@@ -898,11 +1142,31 @@ def watch(
             return 1
         if current["action"] in {"complete", "investigate", "replan"}:
             return 0
-        if time.monotonic() >= deadline:
-            print(json.dumps({"action": "wait", "reason": "watch timeout"}))
-            return 0
-        time.sleep(intervals[min(index, len(intervals) - 1)])
+        time.sleep(
+            min(intervals[min(index, len(intervals) - 1)], max(0, deadline - time.monotonic()))
+        )
         index += 1
+
+
+def collect_snapshot(
+    root: Path, change_id: str, repository_name: str, pull_request: int, deadline: float
+) -> dict[str, Any]:
+    token = REQUEST_DEADLINE.set(deadline)
+    try:
+        select_target(root, change_id, repository_name, pull_request)
+        epoch = binding_epoch(load(root, change_id))
+        return {**gh_snapshot(repository_name, pull_request), "_input_epoch": epoch}
+    except (
+        RuntimeError,
+        OSError,
+        KeyError,
+        TypeError,
+        ValueError,
+        subprocess.TimeoutExpired,
+    ) as error:
+        return {"errors": [str(error)]}
+    finally:
+        REQUEST_DEADLINE.reset(token)
 
 
 def argument_parser() -> argparse.ArgumentParser:

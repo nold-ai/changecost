@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Reconcile review receipts from canonical event history, bind exact PR/reviewer
+  identities, preserve genuine family chronology and bound watcher collection
+  deadlines; distinguish new-session initialization from recovery.
+
 - Require explicit active-time measurements for review completion, honor latest
   reviewer rejections, and parse complete slurped GitHub pagination responses.
 

@@ -45,11 +45,15 @@ collection, unrelated backlog items, releases or deployment.
 
 ## Apply OpenSpec with small, testable steps
 
-Before a behavior review/fix session, initialize or read its bounded review
-contract using `python -m quality.review_session status <change-id>`. Record the
+For a genuinely new review session, follow the complete contract example in
+[the shared workflow](../../../docs/agent-rules/30-change-workflow.md) and run
+`python -m quality.review_session init <change-id> --json <contract.json>`.
+For an existing session run `python -m quality.review_session status <change-id>`;
+missing or incompatible receipts require recovery, never a fresh allowance.
+Record the
 frozen intended result and collect independent lanes before a correction batch.
 Classify each finding with concrete evidence, affected requirement and a family.
-On a second escape in a family, investigate its invariant, variants, callers and
+On the first genuine escape after a correction, investigate its invariant, variants, callers and
 missing tests before another patch; an escape after that investigation requires
 replanning. Do not reset counters by restarting a chat or pushing a commit.
 

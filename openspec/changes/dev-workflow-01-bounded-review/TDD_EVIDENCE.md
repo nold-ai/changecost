@@ -102,3 +102,62 @@ A further regression failed before the final correction
 stored and validated totals over all recorded measurements; 900 measurements of
 0.1 minute retain exactly 90 minutes across restart and reach the budget boundary.
 This remained within the same unpublished, authorized correction batch.
+
+## Family-wide state, identity and workflow reconciliation
+
+The maintainer subsequently authorized continued collected review/fix work until
+green, preserving prior counters and unknown historical timing. This batch repairs
+the common event/state and monitor-identity invariants rather than only the five
+reported symptoms. No new allowance or token saving is inferred from that request.
+
+Spec-first family regressions produced 11 failures and 94 passes before the
+implementation (`.changecost/family-red.txt`). Final verification on the unpublished
+repair tree: 119 focused tests and all 287 repository tests pass; helper coverage
+is 655/713 statements (92% rounded), maximum Radon complexity is 10, and native
+KISS metrics report no findings. Ruff and BasedPyright pass. Documentation checks
+pass against both the prior head and main; strict OpenSpec, generated index and
+hygiene checks pass. Hygiene required normal filesystem access to skill files;
+the initial sandbox permission failure was rerun successfully, not waived.
+
+The matrix covers all derived-cache reconciliation, strict discrete types,
+genesis recovery, dirty published inputs, same-SHA source/input epochs, exact
+human/bot identities, final non-findings versus genuine corrected recurrences,
+premature investigations, retry provenance, malformed pagination and collection
+errors, metadata noise, and remaining request/sleep deadlines. Logs remain under
+ignored `.changecost/family-*.txt`; earlier historical measurements are unchanged.
+
+Schema 2 requires explicit recovery of incompatible prior receipts, retaining
+their original history and unknown measurements. Its local genesis marker is not
+a backup or hostile-tamper guarantee. REST-only monitoring remains pending if a
+provider emits a clean summary without a current-head REST review; coordinator
+evidence must disclose that limitation. Fresh supported-Linux and remote review
+evidence remain required for the next published head. Calibration remains pending.
+
+Independent review of that unpublished tree identified four transaction-boundary
+variants in the same families. Fourteen parameterized tests failed before repair
+(`.changecost/family-boundary-red.txt`): concurrent input refresh during collection,
+missing typed nested comment/thread fields, malformed optional scope references,
+and optimistic retry after a successful write. The corrected tree passes 133
+focused tests and all 301 repository tests; coverage is 670/727 statements (92%
+rounded), maximum complexity 10, and native KISS findings remain empty. Ruff,
+types, documentation against both bases and strict OpenSpec checks pass.
+
+An initial full-test invocation omitted the virtual environment's console-script
+PATH and failed the existing entrypoint-discovery test (300 passed). Repeating
+with the configured PATH passed all 301; no source repair or test weakening was
+needed. Final logs are `.changecost/family-boundary-coverage.txt` and
+`.changecost/family-boundary-full-configured.txt`. The historical live receipt still
+requires recovery because it predates genesis; the maintainer's continuous-review
+authorization permits this work without fabricating a passing helper receipt.
+
+The next independent pass found an adjacent malformed-review-state variant in the
+same unpublished batch. The 21-case matrix covers required and other reviewers,
+unknown/case/type values, and all five documented GitHub review states. It produced
+six failures before repair (`.changecost/family-review-enum-red.txt`), then all 21
+passed. The full suite now passes 322 tests. Unknown review states persist
+incomplete evidence instead of erasing a preceding rejection; documented pending
+and dismissed behavior is unchanged. Ruff, types, docs against both bases,
+OpenSpec and hygiene pass; maximum complexity remains 10 with no KISS findings.
+Final instrumented focused verification passes 154 tests and measures 672/729
+helper statements (92% rounded). Exact final logs are
+`.changecost/family-enum-full.txt` and `.changecost/family-enum-coverage.txt`.

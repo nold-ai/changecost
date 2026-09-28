@@ -116,6 +116,56 @@ For restoration:
 
 ## Verification and compact delegation
 
+## Bounded review contract
+
+Only a genuinely new session uses
+`python -m quality.review_session init <change-id> --json <contract.json>`.
+Existing sessions use `status`, then `packet` when recovery or replanning is
+required. A missing or incompatible receipt must not reset counters, including
+after moving to another worktree. Preserve schema-1 history as recovery evidence;
+do not synthesize prior measurements into a new schema-2 allowance.
+
+The complete JSON contract has this shape (replace example SHAs, file fingerprint,
+requirements, gates and exact REST reviewer identities with inspected values):
+
+```json
+{
+  "repository": "nold-ai/changecost",
+  "requirements": ["Preserve bounded review history"],
+  "acceptance_criteria": ["Applicable checks and reviewers complete"],
+  "non_goals": ["Hostile-runner integrity"],
+  "trust_boundary": "Existing contributor workflow boundary",
+  "intended_files": {"quality/review_session.py": "<sha256>"},
+  "base": "<full-base-sha>",
+  "head": "<full-head-sha>",
+  "required_reviewers": ["<exact-reviewer-login>"],
+  "required_checks": ["<required-check-name>"],
+  "required_statuses": []
+}
+```
+
+The first `watch <change-id> --repo <owner/repo> --pr <number>` binds the PR.
+That source remains fixed across input refreshes. `advance_head` captures a new
+input epoch and invalidates prior completion evidence while retaining counters.
+The final published inputs must be clean. Full local receipts retain canonical
+events and separate generated provenance; cached counters, decisions and monitor
+summaries must agree with replay. The genesis marker detects a lost state file,
+not deletion of the entire ignored directory or hostile tampering.
+
+Investigate the first genuine family escape after correction. A further escape
+after that investigation requires replanning. Final non-findings are excluded;
+fixing a genuine escape does not erase its chronology. Independent scope work may
+continue, but dependent work awaits an explicitly identified scope resolution.
+
+Polling ignores incidental metadata changes and caps requests, pagination and
+sleep by the remaining no-progress deadline. `--timeout-minutes 0` collects one
+snapshot with a 60-second collection cap. Missing REST reviewer submissions stay
+pending even if a provider emits only a clean summary. The coordinator may retain
+separately verified current-head provider output, but must disclose that the helper
+cannot validate that completion; silence and reactions are not proof.
+
+### Delegation evidence
+
 The parent owns the selected objective and scope. Workers receive only the needed
 paths, immutable baseline/head, task, rules and output contract. One named writer
 owns edits and Git/PR mutations; readers/checkers run on a stable tree. Reuse workers

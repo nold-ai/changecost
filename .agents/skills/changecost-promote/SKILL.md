@@ -77,6 +77,12 @@ At three batches, 90 active minutes, a pending scope decision, incomplete monito
 evidence, or a post-investigation family escape, preserve the packet and hand off
 for replanning rather than continuing a narrow fix loop. An extension requires an
 explicit maintainer record and retains previous counters.
+Continue the existing receipt across branches/worktrees; do not use `init` to
+replace missing history. Bind the exact repository and PR once, and preserve exact
+REST reviewer logins, including `[bot]`. The helper cannot infer provider completion
+from quiet polls or reactions: a clean provider summary without a REST review stays
+pending. Retain separately verified current-head provider output for the coordinator
+and disclose that helper limitation; do not label the helper check passing.
 
 1. Monitor the current PR head. Fetch every page of check runs, commit statuses,
    reviews, review threads and their comments, and general PR comments; do not

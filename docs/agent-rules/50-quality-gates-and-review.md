@@ -37,6 +37,10 @@ Missing active-time measurements block completion: record explicit measured minu
 after the latest input refresh. A latest current-head changes-requested review is
 blocking, including top-level review bodies without inline threads. Required
 reviewers must have a latest APPROVED or COMMENTED result.
+Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-2
+replay reconciles all cached fields; missing or incompatible history requires
+recovery, never reinitialization. Final published inputs must be clean. Exclude
+non-findings from family escalation while retaining genuine fixed recurrences.
 
 `packet` retains scope, unresolved findings and evidence across context windows.
 `watch` is read-only and uses REST pagination with `--slurp` for checks/statuses/reviews/comments
@@ -47,6 +51,9 @@ returns `wait` after 30 minutes without progress without resetting budget counte
 It reports only meaningful GitHub changes or errors and does not make incomplete
 external evidence look complete. This workflow control does not enlarge the
 documented CI trust boundary or authenticate PR-controlled code.
+Requests, pagination and sleep consume the same remaining no-progress deadline.
+The helper stays pending when a provider emits only a clean summary without a REST
+review; retain separately verified coordinator evidence and disclose this limit.
 
 ## CodeRabbit review policy
 

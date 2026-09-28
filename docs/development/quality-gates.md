@@ -127,6 +127,13 @@ the required GitHub reviewer logins, nonempty `required_checks` names and explic
 `required_statuses` contexts (which may be an empty list). These identities are
 declared review policy; do not infer protected-branch settings from them. Missing
 declared checks or statuses leave the session pending even when API pages are empty.
+Name the exact repository and REST reviewer logins, including `[bot]`. The first
+PR selection becomes immutable. Schema-2 canonical replay reconciles all derived
+fields with original events and separately captured time/input facts. Preserve the
+genesis marker and state together; lost or incompatible history requires recovery,
+not another allowance. The marker detects state-file loss, not full-directory
+deletion or hostile tampering. See the
+[complete contract example](../agent-rules/30-change-workflow.md#bounded-review-contract).
 
 The helper reports `continue`, `wait`, `investigate`, `replan`, `incomplete` or
 `complete`. The defaults are three collected correction batches and 90 active
@@ -157,6 +164,8 @@ and idempotent ingestion, without inferring active time from wall-clock duration
 For each reviewer, the latest current-head state applies: CHANGES_REQUESTED blocks
 even without inline comments; a required reviewer with PENDING or DISMISSED cannot
 reuse an older approval. APPROVED and COMMENTED satisfy reviewer completion only.
+Unknown or malformed review states make the observation incomplete rather than
+overwriting a prior rejection, for required and other reviewers alike.
 
 The optional watcher uses paginated read-only `gh api --paginate --slurp` requests for current checks,
 statuses, reviews and issue comments, plus GraphQL `reviewThreads` and their
@@ -168,6 +177,20 @@ hostile runner or prevent arbitrary model calls outside this workflow.
 It polls changed nonterminal state with 15/30/60-second backoff and returns a
 `wait` handoff after at most 30 minutes without progress; that wait never resets
 the correction-batch or active-time budgets.
+Requests and pagination share the remaining deadline; sleep is capped accordingly.
+Zero timeout means one collection with a 60-second cap. Progress hashes exclude
+incidental avatar metadata. A snapshot binds repository, PR, head and input epoch;
+collection errors invalidate previous green evidence. Refreshed inputs
+cannot inherit a collection that started before their input refresh. Nested thread
+and comment fields are validated before completion; malformed optional event
+references are rejected before persistence. An exact successful event retry retains
+its result even with the original expected revision; new writes still conflict.
+Dirty local review inputs
+cannot complete publication. Final non-findings do not seed family escalation,
+but fixing a genuine recurrence preserves its escape history.
+Some providers publish a clean summary without a REST review: the helper remains
+pending. Coordinators may separately verify provider output against the current
+head, but must disclose the helper's missing evidence rather than infer approval.
 
 ### Cross-family reviewer calibration
 

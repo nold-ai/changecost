@@ -8,7 +8,7 @@
     "digest": "89750c2e6027366ba075a23bb791c9e6e500c70eaa609ee22da2ced5c0da2ae0"
   },
   "docs/commands.md": {
-    "reason": "The bounded review-session instructions change skill bodies only; generated command output derives from skill frontmatter and the public CLI tree, which are unchanged.",
-    "digest": "361896c6085ee5e9c9072fe0abc26bd0ea3d11b6e4c3b84cccc0fb410978035a"
+    "reason": "Canonical contributor review receipts change development tooling and skill bodies, not the public changecost help/version command tree or skill frontmatter. Regeneration confirms docs/commands.md remains exact; the updated shared workflow and development quality guide document the helper contract and recovery behavior.",
+    "digest": "b3bbf385d4530f9ce8506f0d577f8d5033aa444a75cc0b6f17b9903e04d64120"
   }
 }
