@@ -20,6 +20,25 @@ Keep original research hashes unchanged. Do not fabricate product TDD for docs-o
 work; record real negative and repaired fixtures for behavior and gate changes.
 Resolve findings at every severity or document a narrow justified exception.
 
+## Bounded review sessions
+
+For review/fix work, initialize the ignored local record with
+`python -m quality.review_session init <change-id> --json <contract.json>`. Before
+each correction batch or publication, inspect its `status`. A second escape in one
+finding family requires a family-wide investigation; an escape after that, three
+batches, 90 active minutes, a pending scope decision, or incomplete monitor evidence
+requires replanning. A maintainer-recorded extension retains existing counters.
+
+`packet` retains scope, unresolved findings and evidence across context windows.
+`watch` is read-only and uses REST pagination for checks/statuses/reviews/comments
+and GraphQL `reviewThreads` pagination for thread resolution/outdated state and
+comments. It requires a current-head non-pending result from each contract-named
+GitHub reviewer, polls changed nonterminal state with 15/30/60-second backoff, and
+returns `wait` after 30 minutes without progress without resetting budget counters.
+It reports only meaningful GitHub changes or errors and does not make incomplete
+external evidence look complete. This workflow control does not enlarge the
+documented CI trust boundary or authenticate PR-controlled code.
+
 ## CodeRabbit review policy
 
 [.coderabbit.yaml](../../.coderabbit.yaml) adapts the SpecFact review configuration

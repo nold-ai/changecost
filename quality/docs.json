@@ -657,6 +657,54 @@
         "openspec/changes/workflow-01-advisory-ci/tasks.md"
       ],
       "kind": "manual"
+    },
+    {
+      "path": "docs/lessons-learned/token-economics-first-foundation.md",
+      "owner": "review-workflow",
+      "sources": [
+        "docs/lessons-learned/token-economics-first-foundation.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-01-bounded-review/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-01-bounded-review/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-01-bounded-review/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-01-bounded-review/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-01-bounded-review/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-01-bounded-review/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-01-bounded-review/specs/bounded-review-session/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-01-bounded-review/specs/bounded-review-session/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-01-bounded-review/TDD_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-01-bounded-review/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
     }
   ],
   "immutable": {

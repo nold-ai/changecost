@@ -45,6 +45,14 @@ collection, unrelated backlog items, releases or deployment.
 
 ## Apply OpenSpec with small, testable steps
 
+Before a behavior review/fix session, initialize or read its bounded review
+contract using `python -m quality.review_session status <change-id>`. Record the
+frozen intended result and collect independent lanes before a correction batch.
+Classify each finding with concrete evidence, affected requirement and a family.
+On a second escape in a family, investigate its invariant, variants, callers and
+missing tests before another patch; an escape after that investigation requires
+replanning. Do not reset counters by restarting a chat or pushing a commit.
+
 Use the schema-aware mechanics of
 [openspec-apply-change](../openspec-apply-change/SKILL.md):
 `openspec status --change <id> --json`, then

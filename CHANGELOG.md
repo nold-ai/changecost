@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Add durable, bounded review-session decisions and read-only changed-state PR
+  monitoring so recurring finding families, incomplete evidence and exhausted
+  review budgets trigger investigation or replanning instead of endless fixes.
+- Preserve first-foundation token-economics lessons and document a measured,
+  advisory-only cross-family reviewer calibration pilot.
+
 - Route `make test` through the same required tests leaf as the aggregate, with
   real host failure/repair proof and preserved explicit input validation.
 - Select canonical pyproject pytest configuration for required tests and require

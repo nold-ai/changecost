@@ -42,6 +42,12 @@ state between sessions. A stash is local, not a backup on GitHub. A planning PR
 does not close an implementation issue. The promotion stage reports missing bot
 reviews or required checks as incomplete, not as a green review.
 
+For implementation/review work, initialize the bounded local review receipt with
+`python -m quality.review_session init <change-id> --json <contract.json>`. It
+keeps the complete scope, finding families and counters across chats and commits.
+At three correction batches, 90 active minutes, or an escaping investigated family,
+create a packet and replan rather than continue a narrow fix loop.
+
 ## Local checks
 
 Follow [README setup](README.md#work-on-the-repository). Install actionlint 1.7.12

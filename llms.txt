@@ -4,6 +4,7 @@
 
 ## Project and evidence
 
+- [First-foundation token economics lessons](docs/lessons-learned/token-economics-first-foundation.md): Measured review-loop observations and proposed workflow experiment.
 - [README](README.md): project status and current setup commands.
 - [Project brief](docs/project-brief.md): selected direction, evidence gates and limits.
 - [Agent instructions](AGENTS.md): entry point and project boundary.

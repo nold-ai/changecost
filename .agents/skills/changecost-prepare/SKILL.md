@@ -11,6 +11,16 @@ Read `AGENTS.md`, `openspec/config.yaml`, the project brief and
 [GitHub governance](../../../docs/agent-rules/60-github-change-governance.md).
 This stage changes planning/docs and the selected issue, not product behavior.
 
+## Bounded review-session contract
+
+For a change expected to reach implementation, prepare a compact review contract
+under `.changecost/workflow/<change-id>/` with `python -m quality.review_session
+init`. It names the requirements, acceptance criteria, non-goals, trust boundary,
+complete intended input fingerprint, base, head and required GitHub reviewer
+logins. Default allowance is three
+correction batches or 90 active minutes; an explicit maintainer extension retains
+prior counters. This is local recovery evidence, not authorization to expand scope.
+
 ## Refresh and select interactively
 
 1. Refresh main by the shared protocol before judging what is pending. Preserve

@@ -116,7 +116,43 @@ so the real external lock proof runs unconditionally in the host lock leaf. Pyte
 checks propagation of both lock-command and probe failures. No test is marked
 skipped/xfail and no capsule runtime protection is changed.
 
-## Review and limitations
+## Bounded review sessions
+
+`python -m quality.review_session` is local contributor tooling. It stores a
+versioned, atomic session record under `.changecost/workflow/<change-id>/`; that
+directory is ignored and is not a substitute for committed specifications or test
+evidence. Initialize it with a JSON contract that records requirements, acceptance
+criteria, non-goals, trust boundary, complete input fingerprints, base, head and
+the required GitHub reviewer logins.
+
+The helper reports `continue`, `wait`, `investigate`, `replan`, `incomplete` or
+`complete`. The defaults are three collected correction batches and 90 active
+minutes. A second finding in a family requires investigation; a subsequent escape
+requires replanning. Budget extensions require an explicit maintainer identity and
+do not reset counters. The packet command preserves only compact scope, unresolved
+findings, evidence, investigations and separated cached-input, uncached-input,
+output and cost measurements. Missing measurements remain unknown.
+
+The optional watcher uses paginated read-only `gh api` requests for current checks,
+statuses, reviews and issue comments, plus GraphQL `reviewThreads` and their
+comments to retain resolved/outdated thread state. It never pushes, replies,
+resolves a thread or requests a review. Unchanged snapshots are suppressed; API
+or GraphQL failures make the session incomplete. The helper cannot authenticate a
+hostile runner or prevent arbitrary model calls outside this workflow.
+It polls changed nonterminal state with 15/30/60-second backoff and returns a
+`wait` handoff after at most 30 minutes without progress; that wait never resets
+the correction-batch or active-time budgets.
+
+### Cross-family reviewer calibration
+
+`qwen3.8:27b-mlx` is a local candidate, not a validated review lane. Before an
+advisory pre-PR use, give it three concealed historical defect cases and repaired
+controls in fresh contexts. Record defect detection, actionable false positives,
+timeouts, latency and available usage units. Allow 90 seconds per case and ten
+minutes total. Adopt it only when it detects at least two defects, produces no
+actionable false positives on the repaired controls, and completes within budget.
+Failure or unavailable access leaves cross-family review unvalidated; it does not
+block promotion or trigger a provider installation campaign.
 
 Full review enables `--bug-hunt`, including the required semgrep-bugs member.
 `[tool.specfact.code-review]` declares native Git for index tests; pytest’s

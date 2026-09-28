@@ -69,6 +69,15 @@ delegated workflow with a parent-only review.
 
 ## Observe, verify, fix, repeat
 
+Use `python -m quality.review_session watch <change-id> --repo <owner/repo>
+--pr <number>` for active PR observation when available. It is read-only and
+emits only changed state or explicit errors; do not retain unchanged polling in
+model context. Before every correction batch or publication, consult `status`.
+At three batches, 90 active minutes, a pending scope decision, incomplete monitor
+evidence, or a post-investigation family escape, preserve the packet and hand off
+for replanning rather than continuing a narrow fix loop. An extension requires an
+explicit maintainer record and retains previous counters.
+
 1. Monitor the current PR head. Fetch every page of check runs, commit statuses,
    reviews, review threads and their comments, and general PR comments; do not
    trust a default first page or check summary alone. Include human findings and

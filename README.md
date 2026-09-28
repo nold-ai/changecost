@@ -79,6 +79,8 @@ implemented behavior. [OpenSpec artifacts](openspec/CHANGE_ORDER.md) are future
 contracts until their tasks and evidence establish delivery. See
 [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) for the four-stage
 workflow; implementation does not itself commit, publish, merge or deploy.
+For changes with review/fix work, retain an ignored bounded session receipt so
+repeated findings and exhausted review budgets trigger investigation or replanning.
 
 ## Community and license
 
