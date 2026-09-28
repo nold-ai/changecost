@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Route `make test` through the same required tests leaf as the aggregate, with
+  real host failure/repair proof and preserved explicit input validation.
 - Select canonical pyproject pytest configuration for required tests and require
   full review for changed root collection hooks.
 - Clear inherited PYTEST_ADDOPTS only for the required pytest subprocess so

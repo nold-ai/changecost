@@ -12,7 +12,7 @@ hygiene lock lint types docs index metadata workflow build audit review:
 	$(QUALITY) $@ $(INPUTS)
 
 test:
-	uv run --locked python -m pytest
+	$(QUALITY) tests --base "$(or $(BASE_REF),HEAD)" $(if $(MANIFEST),--manifest "$(MANIFEST)",)
 
 format:
 	uv run --locked ruff format src quality tests

@@ -131,6 +131,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the complete aggregate runs with missing or stale required review evidence
 - **THEN** it is incomplete/non-success even if a manual review hook was skipped; a docs-only applicability decision remains explicit and still runs the documentation gates.
 
+#### Scenario: Make test uses the shared required test gate
+
+- **GIVEN** inherited pytest selection options or an alternate root configuration that would hide a failing test
+- **WHEN** `make test` runs
+- **THEN** it invokes the same canonical tests leaf as the aggregate, fails for that required test and passes after repair
+- **AND** this non-diff target defaults its inventory baseline to HEAD while honoring explicit BASE_REF and MANIFEST; aggregate comparison requirements and direct developer pytest filtering remain unchanged.
+
 #### Scenario: The required suite uses canonical pytest configuration
 
 - **GIVEN** an alternate root pytest configuration that selects only a passing subset

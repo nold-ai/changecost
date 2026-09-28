@@ -348,3 +348,20 @@ can change collection through a documented
 Changes to that root hook therefore require full review, like changes under
 `tests/`; unchanged content does not. No additional config parser, filename ban or
 plugin-authentication guarantee is introduced.
+
+
+The public `make test` target routes to the same `quality tests` leaf used by
+`make check`, without duplicating config or environment handling. It defaults
+only this non-diff target's inventory base to HEAD and preserves explicit
+BASE_REF/MANIFEST validation. Aggregate comparison semantics are unchanged.
+Direct developer `uv run --locked pytest ...` remains available for filtered runs.
+
+The mandatory host probe invoked by the lock leaf also runs the actual copied
+Makefile in a disposable Git fixture with two tiny tests. Both inherited filters
+and an alternate pytest config must expose the failing required test; repairing
+it passes, and invalid explicit base/manifest inputs fail. It uses `UV_NO_SYNC=1`
+only inside that fixture to reuse the already synchronized host environment
+without modifying dependencies; the required locked-sync gate still runs. This
+external uv/Make proof stays outside capsule pytest because the capsule runtime
+does not support uv's isolated interpreter probe. It remains mandatory in local
+lock/aggregate checks, staged hooks and CI, with failures propagated normally.

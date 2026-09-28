@@ -154,3 +154,10 @@ invocations may still use their usual filters. The required invocation explicitl
 selects `pyproject.toml` with `-c`, so alternate root pytest configuration cannot
 replace the canonical settings. Root `conftest.py` is still a supported Python
 collection hook, and its changed content requires full review.
+
+
+`make test` invokes the shared required tests leaf, including canonical
+`pyproject.toml` selection and inherited `PYTEST_ADDOPTS` removal. This non-diff
+leaf defaults its inventory baseline to HEAD; explicit `BASE_REF` and `MANIFEST`
+are honored and validated. The aggregate still requires its explicit comparison
+base. Use direct `uv run --locked pytest ...` for optional developer filtering.

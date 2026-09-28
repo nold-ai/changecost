@@ -829,3 +829,32 @@ unchanged. The child environment still removes only PYTEST_ADDOPTS. Receipts:
 previous head passed all ten analyzers and 165 tests per Python version; it does
 not certify this correction, which still requires independent review and fresh
 hosted CI. The separate loader and two host-integrity findings remain open.
+
+
+## Public Make test parity with the shared tests leaf
+
+Codex review 5342576964 at `af6be62` (comment 4125316647) found that documented
+`make test` parity was stale: the target still ran bare pytest. A real Make/uv
+fixture reproduced success with one passing test and one deselected failing test
+under inherited PYTEST_ADDOPTS. The failing pre-fix assertion is captured in
+`promotion/make-test-red.log`. The Make target now invokes the existing `quality
+tests` leaf, defaulting this non-diff target's inventory base to HEAD while
+preserving explicit BASE_REF/MANIFEST. No sanitizer/config implementation is
+copied and aggregate base semantics remain unchanged.
+
+`promotion/make-test-green.log` records actual host proof: inherited filter and
+alternate-config cases both expose the failing required test, repair passes both
+tests, and invalid explicit base/manifest inputs fail. Fixture setup was corrected
+to track its intended alternate config and use the repository ignore rules;
+intermediate inventory failures were not accepted as test-failure evidence. The
+proof uses the real Makefile, current locked project and already synchronized
+host environment with UV_NO_SYNC=1 solely to prevent fixture dependency changes.
+It invokes only the two tiny fixture tests, not the repository suite recursively.
+The existing lock leaf runs this host proof unconditionally and propagates failure;
+the same boundary already hosts uv's unsupported-in-capsule interpreter probe.
+No tests are skipped and the ordinary lock check remains required.
+
+Previous-head CI 36460181540 passed all ten native analyzers and 168 tests on both
+Python versions, with 284 individually dispositioned advisory findings. That
+run does not certify this Make correction; independent verification and fresh
+hosted CI remain required. The three genuine host/loader findings stay open.
