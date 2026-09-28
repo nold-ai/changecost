@@ -145,3 +145,9 @@ A manual comparison is operator-selected and controls changed-input applicabilit
 A distinct identical-tree base or docs-only interval may legitimately make behavior
 checks not applicable. Such results are scoped evidence, not full ten-analyzer
 assurance, and cannot replace a PR/promotion's required behavior review.
+
+The required tests leaf ignores inherited `PYTEST_ADDOPTS` so local or CI selection
+flags cannot narrow the repository suite. It removes only that variable from a
+copy of the pytest child environment. Repository pytest configuration, other
+variables and the caller's environment remain intact; direct developer pytest
+invocations may still use their usual filters.

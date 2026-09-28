@@ -323,3 +323,15 @@ places earlier GITHUB_ENV values in that global environment. Explicit step bindi
 therefore restore the matrix value without parsing earlier commands. Static tests
 check removal, substitution and repair. Fresh CI must prove normal matrix execution;
 these constraints do not authenticate arbitrary host code or child tools.
+
+
+The required `tests` leaf starts pytest with a copied environment excluding only
+`PYTEST_ADDOPTS`. The [pytest environment reference](https://docs.pytest.org/en/stable/reference/reference.html#envvar-PYTEST_ADDOPTS)
+(accessed 2026-09-28; locked pytest 9.1.1) documents that this variable prepends
+command-line options, which can select files or filter tests. Clearing it at the
+subprocess boundary handles local, workflow, job and earlier GITHUB_ENV inheritance
+without a YAML blacklist. Repository configuration and all other environment
+values remain available; the parent environment and non-test gate subprocesses
+are unchanged. This preserves the requested full-suite invocation, not a claim
+that arbitrary plugins or host code are authenticated. Direct developer pytest
+commands can continue to use selection options.

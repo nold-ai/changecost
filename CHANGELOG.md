@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Clear inherited PYTEST_ADDOPTS only for the required pytest subprocess so
+  environment selection filters cannot silently narrow the repository suite.
+
 - Preserve exact Python matrix expansion and bind every quality run step's uv
   interpreter explicitly, overriding earlier inherited environment values.
 

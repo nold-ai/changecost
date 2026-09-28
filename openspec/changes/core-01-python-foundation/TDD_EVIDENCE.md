@@ -777,3 +777,29 @@ No fake runner, interpreter or environment-writing script was executed. Receipts
 `promotion/matrix-expansion-static-red.log` and
 `promotion/bash-matrix-static-green.log`. Fresh hosted execution remains required;
 the earlier current-head CI success does not certify these uncommitted fixes.
+
+
+## Required pytest suite ignores inherited selection options
+
+Codex review 5342104277 at `a656d8d` (comment 4124948135) identified that the
+required tests leaf inherited PYTEST_ADDOPTS. The official pytest reference,
+accessed 2026-09-28 and linked in the gate guide, confirms these values prepend
+command-line options. A real two-file fixture demonstrated both filename and
+`-k` filters hiding a failing second test: the previous leaf returned success.
+Those two regressions plus a child-environment preservation check failed before
+correction and pass after it. The repaired leaf exposes the failing test, then
+passes when that test is repaired. The caller retains its original selection
+variable; unrelated values and other gate environments remain unchanged.
+
+The implementation removes only PYTEST_ADDOPTS from a copied environment at the
+actual required pytest subprocess boundary. It adds no YAML blacklist, plugin
+policy or host-authentication claim. Repository pytest configuration and direct
+developer pytest usage are preserved. Receipts:
+`promotion/pytest-environment-red.log` and
+`promotion/pytest-environment-green.log` (three genuine red/green cases).
+
+The previous [run 36455078346](https://github.com/nold-ai/changecost/actions/runs/36455078346)
+passed both actual Python versions with 162 tests plus four subtests, the canonical
+Bash template and all ten native analyzers. Its [278 report-bound advisory dispositions](https://github.com/nold-ai/changecost/pull/22#issuecomment-5874840798)
+were independently verified. That evidence remains bound to `a656d8d`; this new
+correction still requires independent verification and fresh hosted CI/reviews.

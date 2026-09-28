@@ -40,11 +40,20 @@ CONFIG = {
 }
 
 
-def external(root: Path, args: list[str]) -> list[str]:
+def external(root: Path, args: list[str], *, env: dict[str, str] | None = None) -> list[str]:
     if args[0] in {"specfact", "actionlint", "openspec"}:
         args = [external_tools.executable(root, args[0]), *args[1:]]
-    result = subprocess.run(args, cwd=root, check=False)
+    result = subprocess.run(args, cwd=root, check=False, env=env)
     return [] if result.returncode == 0 else [f"{args[0]} failed ({result.returncode})"]
+
+
+def command_errors(root: Path, name: str, args: list[str]) -> list[str]:
+    """Keep inherited selection options out of the required pytest subprocess."""
+    if name == "tests":
+        env = os.environ.copy()
+        env.pop("PYTEST_ADDOPTS", None)
+        return external(root, args, env=env)
+    return external(root, args)
 
 
 def leaf(name: str, root: Path, files: set[str], before: dict[str, bytes]) -> list[str]:
@@ -57,7 +66,7 @@ def leaf(name: str, root: Path, files: set[str], before: dict[str, bytes]) -> li
         "spec": ["openspec", "validate", "--all", "--strict", "--no-interactive"],
     }
     if name in commands:
-        errors = external(root, commands[name])
+        errors = command_errors(root, name, commands[name])
         additional = {
             "lock": [sys.executable, "tests/tool_probes.py"],
             "lint": ["ruff", "format", "--check", "src", "quality", "tests"],

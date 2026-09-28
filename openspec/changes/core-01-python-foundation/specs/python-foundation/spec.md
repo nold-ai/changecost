@@ -131,6 +131,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the complete aggregate runs with missing or stale required review evidence
 - **THEN** it is incomplete/non-success even if a manual review hook was skipped; a docs-only applicability decision remains explicit and still runs the documentation gates.
 
+#### Scenario: Inherited pytest options cannot narrow the required suite
+
+- **GIVEN** the required tests leaf inherits PYTEST_ADDOPTS from a local or CI environment
+- **WHEN** it starts the repository's pytest subprocess
+- **THEN** it removes that variable from a copy of the child environment so inherited filename or selection options cannot omit required tests
+- **AND** unrelated environment values, repository pytest configuration, other gate subprocesses and the caller's environment remain unchanged; ordinary failing tests still fail the gate and repaired tests pass.
+
 #### Scenario: Host-side external lock proof remains required
 
 - **GIVEN** a review capsule whose attached interpreter cannot accept the isolation flag used by uv's interpreter probe

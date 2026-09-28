@@ -343,3 +343,38 @@ def test_spec_leaf_invokes_resolved_external_validator(monkeypatch, tmp_path):
     )
     assert runner.leaf("spec", tmp_path, set(), {}) == []
     assert calls == [["/external/openspec", "validate", "--all", "--strict", "--no-interactive"]]
+
+
+@pytest.mark.parametrize("options", ["test_safe.py", "-k test_safe"])
+def test_required_suite_ignores_inherited_pytest_selection(monkeypatch, tmp_path, options):
+    import os
+
+    (tmp_path / "test_safe.py").write_text("def test_safe():\n    assert True\n")
+    required = tmp_path / "test_required.py"
+    required.write_text("def test_required():\n    assert False\n")
+    monkeypatch.setenv("PYTEST_ADDOPTS", options)
+    assert runner.leaf("tests", tmp_path, set(), {})
+    required.write_text("def test_required():\n    assert True\n")
+    assert runner.leaf("tests", tmp_path, set(), {}) == []
+    assert os.environ["PYTEST_ADDOPTS"] == options
+
+
+def test_tests_leaf_only_removes_addopts_from_child_environment(monkeypatch, tmp_path):
+    import os
+
+    monkeypatch.setenv("PYTEST_ADDOPTS", "-k selected")
+    monkeypatch.setenv("CHANGECOST_TEST_ENV", "preserved")
+    calls = []
+
+    def capture(args, **kwargs):
+        calls.append((args, kwargs.get("env")))
+        return subprocess.CompletedProcess(args, 0)
+
+    monkeypatch.setattr(runner.subprocess, "run", capture)
+    assert runner.leaf("tests", tmp_path, set(), {}) == []
+    assert calls[0][0] == [sys.executable, "-m", "pytest"]
+    child = calls[0][1]
+    assert child == {key: value for key, value in os.environ.items() if key != "PYTEST_ADDOPTS"}
+    assert os.environ["PYTEST_ADDOPTS"] == "-k selected"
+    assert runner.leaf("types", tmp_path, set(), {}) == []
+    assert calls[1][1] is None
