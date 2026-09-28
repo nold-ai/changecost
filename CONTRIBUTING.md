@@ -46,7 +46,7 @@ For implementation/review work, initialize the bounded local review receipt with
 `python -m quality.review_session init <change-id> --json <contract.json>`. It
 keeps the complete scope, finding families and counters across chats and commits.
 Use initialization only for a genuinely new session; recover lost or incompatible
-receipts. Schema 4 replays original events with separately captured timestamps and
+receipts. Schema 5 replays original events with separately captured timestamps and
 Git inputs, checking all cached decisions against that history. A durable genesis
 marker detects a missing state file; preserve the entire ignored directory because
 this local recovery guard is not a backup or a tamper-proof store.
@@ -57,7 +57,7 @@ logins match REST identities exactly, including `[bot]`. See the complete
 [contract example](docs/agent-rules/30-change-workflow.md#bounded-review-contract).
 An `advance_head` event refreshes the Git HEAD, working-content and staged-index
 binding. Supply both `comparison_base` and `pr_base` to explicitly adopt a changed
-PR target. Schema-4 evidence events include the full binding captured before the
+PR target. Schema-5 evidence events include the full binding captured before the
 check; remote positive results must postdate base adoption. This retains history
 and does not establish hostile-runner authenticity. The refresh preserves counters;
 passing evidence from before that refresh
@@ -72,6 +72,9 @@ original rejection is recognized from the complete fresh snapshot.
 An outstanding request to a required reviewer keeps completion pending despite a
 prior approval. Request metadata is validated at both collection reads; cancellation
 does not replace approval or other current-context evidence.
+Epochs derive from the count of recorded refreshes, not caller IDs. Automatic PR
+binding selects an unused identity under the session lock. Preserve original IDs;
+incompatible prior receipts require recovery without restarting the allowance.
 Initialization verifies typed scope, full commit IDs and a path/SHA256 manifest
 against actual initial inputs; `<absent>` represents an intended future file.
 Changed, staged and untracked paths must be included. Captured initial facts remain

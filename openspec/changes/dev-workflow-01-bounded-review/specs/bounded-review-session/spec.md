@@ -7,6 +7,23 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Helper identities cannot collide with caller events
+
+Input epochs SHALL be generation-tagged values derived from the count of recorded
+head-advance events, independently of caller IDs. Ordinary events, monitor revisions
+and exact retries SHALL NOT advance the generation. Original event, finding and
+scope identities SHALL remain unchanged. Incompatible persisted epochs require
+explicit recovery rather than another allowance.
+
+#### Scenario: Caller uses an internal-looking event identity
+- **WHEN** caller events use genesis, bind-pr or generation-like IDs
+- **THEN** refreshes still invalidate all prior input epochs and retain original IDs.
+
+#### Scenario: Automatic PR binding encounters occupied IDs or concurrent writers
+- **WHEN** candidate bind IDs are occupied or another writer binds the target
+- **THEN** atomic selection uses a deterministic unused identity
+- **AND** matching targets are idempotent while conflicting targets are rejected.
+
 ### Requirement: Outstanding reviewer requests invalidate completion
 
 Every monitor snapshot SHALL include a validated array of requested users with exact
@@ -31,7 +48,7 @@ semantic changes. Nonrequired requests are informational; no team expansion is i
 Initial and adopted base IDs SHALL identify commit objects exactly. Annotated-tag
 object IDs SHALL be rejected without silently replacing caller-supplied identities.
 
-Schema-4 contracts SHALL name an expected PR base ref/SHA independently from the
+Schema-5 contracts SHALL name an expected PR base ref/SHA independently from the
 immutable comparison commit. Current comparison/base context SHALL be replayed
 separately and exposed in packets. Explicit atomic adoption through advance_head
 SHALL verify local commits and capture provenance without rewriting original scope,
@@ -70,7 +87,7 @@ one full commit-ID validation rule supporting hexadecimal SHA-1 and SHA-256 IDs.
 
 ### Requirement: Usable initial scope and effective reviewer objections
 
-Schema-4 initialization SHALL require typed, nonblank scope and exact identities,
+Schema-5 initialization SHALL require typed, nonblank scope and exact identities,
 full commit IDs and a safe path-to-SHA256 manifest using `<absent>` for planned
 absent paths. It SHALL verify the initial base and actual manifest, including
 changed/index/untracked paths, and preserve captured facts for filesystem-free

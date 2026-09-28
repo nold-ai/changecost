@@ -16,7 +16,7 @@ mutation, or hostile-runner integrity guarantee.
 
 ## Decisions
 
-1. Store schema-4 state plus a durable genesis marker under
+1. Store schema-5 state plus a durable genesis marker under
    `.changecost/workflow/<change-id>/`. Pure replay of original event payloads and
    separately captured time/input facts reconciles every derived field. Atomic
    replacement preserves recoverability; a missing state file with a marker
@@ -71,8 +71,12 @@ mutation, or hostile-runner integrity guarantee.
     semantic hashing, required-reviewer pending decisions and both metadata reads.
     Request changes invalidate collection; ordering/duplicates/avatar changes do not.
     Cancellation restores only still-qualifying evidence. Nonrequired users are
-    informational; team expansion is outside this contract. Schema 4 retains raw
+    informational; team expansion is outside this contract. Schema 5 retains raw
     observations; older missing request data becomes incomplete without resetting history.
+11. Derive generation-tagged epoch strings from recorded refresh counts, independently
+    of caller event identities. Allocate deterministic unused automatic bind IDs under
+    the same session lock as persistence. Keep original caller/finding/scope references;
+    incompatible persisted epochs require recovery with no synthesized allowance.
 
 ## Risks / Trade-offs
 

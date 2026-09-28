@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Separate input generations from caller event IDs and atomically allocate unused
+  automatic PR-binding identities without rewriting history or resetting budgets.
+
 - Keep required reviewer re-requests pending and validate normalized requested-user
   identities throughout snapshot collection, classification and change detection.
 

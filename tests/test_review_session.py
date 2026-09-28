@@ -5,7 +5,9 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Barrier
 from types import SimpleNamespace
 from typing import Any
 
@@ -2015,3 +2017,140 @@ def test_request_order_during_collection_is_not_drift(monkeypatch: pytest.Monkey
     monkeypatch.setattr(review_session, "gh_json", api)
     monkeypatch.setattr(review_session, "gh_review_threads", lambda *args: [])
     assert review_session.gh_snapshot("nold-ai/changecost", 24)["head"] == TEST_HEAD
+
+
+@pytest.mark.parametrize("identity", ["genesis", "bind-pr", "0", "input-generation:0"])
+def test_refresh_epoch_is_independent_of_caller_identity(tmp_path: Path, identity: str) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    initial_epoch = review_session.binding_epoch(state)
+    snapshot = {**complete_snapshot(), "_input_epoch": initial_epoch}
+    event = {"id": identity, "kind": "advance_head", "head": TEST_HEAD}
+    refreshed = review_session.record(tmp_path, "change", event)
+    assert review_session.binding_epoch(refreshed) == "input-generation:1"
+    assert review_session.binding_epoch(refreshed) != initial_epoch
+    assert review_session.record(tmp_path, "change", event) == refreshed
+    with pytest.raises(ValueError, match="binding"):
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "stale-proof",
+                "kind": "evidence",
+                "evidence_type": "gate",
+                "head": TEST_HEAD,
+                "result": "pass",
+                "binding": review_session.evidence_binding(state),
+            },
+        )
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.load(tmp_path, "change")["monitor"]["errors"]
+    second = review_session.record(
+        tmp_path, "change", {"id": "next", "kind": "advance_head", "head": TEST_HEAD}
+    )
+    assert review_session.binding_epoch(second) == "input-generation:2"
+    assert second["events"][0]["id"] == identity
+
+
+def test_auto_bind_selects_unused_identity_and_retains_scope_ids(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for identity in ("bind-pr", "bind-pr:1", "bind-pr:2"):
+        review_session.record(
+            tmp_path, "change", {"id": identity, "kind": "scope_decision", "decision": "pending"}
+        )
+    review_session.select_target(tmp_path, "change", "nold-ai/changecost", 24)
+    state = review_session.load(tmp_path, "change")
+    assert state["events"][-1]["id"] == "bind-pr:3"
+    assert [item["id"] for item in state["scope_decisions"]] == [
+        "bind-pr",
+        "bind-pr:1",
+        "bind-pr:2",
+    ]
+    review_session.select_target(tmp_path, "change", "nold-ai/changecost", 24)
+    assert review_session.load(tmp_path, "change") == state
+    with pytest.raises(ValueError):
+        review_session.select_target(tmp_path, "change", "nold-ai/changecost", 25)
+
+
+@pytest.mark.parametrize("targets", [(24, 24), (24, 25)])
+def test_concurrent_auto_bind_targets_are_atomic(tmp_path: Path, targets: tuple[int, int]) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    barrier = Barrier(2)
+
+    def bind(target: int) -> str:
+        barrier.wait(timeout=5)
+        try:
+            review_session.select_target(tmp_path, "change", "nold-ai/changecost", target)
+        except ValueError:
+            return "conflict"
+        return "bound"
+
+    with ThreadPoolExecutor(max_workers=2) as workers:
+        outcomes = list(workers.map(bind, targets))
+    state = review_session.load(tmp_path, "change")
+    assert len(state["events"]) == 1
+    assert outcomes.count("bound") == (2 if targets[0] == targets[1] else 1)
+    assert state["pull_request"] in targets
+
+
+def test_concurrent_caller_and_generated_bind_identity_do_not_overwrite(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    barrier = Barrier(2)
+
+    def write(kind: str) -> str:
+        barrier.wait(timeout=5)
+        if kind == "auto":
+            review_session.select_target(tmp_path, "change", "nold-ai/changecost", 24)
+            return "bound"
+        try:
+            review_session.record(
+                tmp_path,
+                "change",
+                {"id": "bind-pr", "kind": "scope_decision", "decision": "pending"},
+            )
+        except review_session.ConflictError:
+            return "conflict"
+        return "recorded"
+
+    with ThreadPoolExecutor(max_workers=2) as workers:
+        outcomes = list(workers.map(write, ("auto", "caller")))
+    state = review_session.load(tmp_path, "change")
+    assert state["pull_request"] == 24
+    assert outcomes[0] == "bound"
+    assert len({event["id"] for event in state["events"]}) == len(state["events"])
+    assert bool(state["scope_decisions"]) == (outcomes[1] == "recorded")
+
+
+@pytest.mark.parametrize("epoch", [0, 0.0, False, "genesis", "0"])
+def test_epoch_aliases_cannot_reuse_monitor_or_local_results(tmp_path: Path, epoch: Any) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    review_session.record_monitor_snapshot(
+        tmp_path, "change", {**complete_snapshot(), "_input_epoch": epoch}
+    )
+    assert review_session.load(tmp_path, "change")["monitor"]["errors"]
+    binding = review_session.evidence_binding(state)
+    binding["epoch"] = epoch
+    with pytest.raises(ValueError, match="binding"):
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "proof",
+                "kind": "evidence",
+                "evidence_type": "gate",
+                "head": TEST_HEAD,
+                "result": "pass",
+                "binding": binding,
+            },
+        )
+
+
+def test_ordinary_events_and_monitor_updates_do_not_advance_epoch(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    state = review_session.load(tmp_path, "change")
+    assert review_session.binding_epoch(state) == "input-generation:0"
+    event = {"id": "input-generation:99", "kind": "batch"}
+    review_session.record(tmp_path, "change", event)
+    state = review_session.record(tmp_path, "change", event)
+    assert state["batches"] == 1
+    assert review_session.binding_epoch(state) == "input-generation:0"

@@ -286,3 +286,27 @@ is 10 with no native KISS findings. Exact-source logs are
 `.changecost/batch10-coverage.txt` and `.changecost/batch10-types.txt`.
 Fresh Linux and provider reviews remain required after publication; retained
 history, calibration and trust-boundary limitations remain unchanged.
+
+## Caller-independent epochs and atomic automatic binding
+
+On 2026-09-29 (Europe/Berlin), five spec-first cases failed before repairing the
+two helper/caller identity collisions (`.changecost/batch11-red.txt`). Schema 5
+derives `input-generation:N` from the recorded refresh count rather than caller
+event IDs. Automatic PR binding selects a deterministic unused ID under the same
+session lock as event persistence. Original caller, finding and scope identities
+remain intact; prior incompatible epoch histories require recovery without reset.
+
+The matrix exercises genesis/bind-pr/numeric/generation-like caller IDs, repeated
+same-head refresh, stale local and monitor evidence, exact retries, ordinary events,
+numeric aliases, multiple occupied bind candidates, and real threaded candidate
+and same/conflicting-target races. Same-target retries are idempotent; conflicting
+payloads or targets do not overwrite existing records.
+
+Final local verification passes 290 focused tests and 458 full tests plus four
+subtests. Coverage measures 857/909 statements (94% rounded); maximum complexity
+is 10 with no native KISS findings. Ruff/formatting, BasedPyright, docs against
+HEAD/main, index, metadata and strict OpenSpec pass. Logs are
+`.changecost/batch11-full.txt`, `.changecost/batch11-coverage-test.txt`,
+`.changecost/batch11-coverage.txt` and `.changecost/batch11-types.txt`.
+Fresh Linux and provider evidence remain pending publication; no new allowance,
+inferred historical timing or review-efficiency claim is introduced.

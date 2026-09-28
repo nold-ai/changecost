@@ -128,7 +128,7 @@ the required GitHub reviewer logins, nonempty `required_checks` names and explic
 declared review policy; do not infer protected-branch settings from them. Missing
 declared checks or statuses leave the session pending even when API pages are empty.
 Name the exact repository and REST reviewer logins, including `[bot]`. The first
-PR selection becomes immutable. Schema-4 canonical replay reconciles all derived
+PR selection becomes immutable. Schema-5 canonical replay reconciles all derived
 fields with original events and separately captured time/input facts. Preserve the
 genesis marker and state together; lost or incompatible history requires recovery,
 not another allowance. The marker detects state-file loss, not full-directory
@@ -139,7 +139,7 @@ path-to-SHA256 fingerprints against actual inputs. `<absent>` explicitly permits
 future planned files. Cover all changed, staged and untracked paths while allowing
 unchanged intended files. Captured initial scope facts remain immutable through
 head refreshes and are validated without filesystem access during replay. Existing
-schema-1/2/3 receipts require recovery rather than synthesized migration.
+schema-1/2/3/4 receipts require recovery rather than synthesized migration.
 Contract and refresh paths use one full hexadecimal commit-ID rule for 40-character
 SHA-1 and 64-character SHA-256 repositories. Shape validation does not replace
 checking the actual Git head; pure replay retains the same identity rule.
@@ -209,7 +209,14 @@ the observation. Order, duplicates and avatar changes are semantically quiet.
 Nonrequired requests remain informational; team membership is not expanded.
 Cancellation only restores still-qualifying evidence and cannot override rejection,
 head/base freshness or budget limits. Older snapshots missing request data become
-incomplete under schema 4; no new session allowance is created.
+incomplete under schema 5; no new session allowance is created.
+Input epochs use `input-generation:N`, starting at zero and advancing only for
+recorded `advance_head` events. Caller IDs, ordinary events, monitor revisions and
+exact retries cannot change or collide with that generation. Automatic PR binding
+selects the first unused `bind-pr`/`bind-pr:N` event ID while holding the same session
+lock through persistence. Caller IDs are not reserved or rewritten; same-target
+binding is idempotent and conflicting targets are rejected. Preserve incompatible
+old epoch histories for recovery rather than synthesizing a new allowance.
 
 The optional watcher uses paginated read-only `gh api --paginate --slurp` requests for current checks,
 statuses, reviews and issue comments, plus GraphQL `reviewThreads` and their

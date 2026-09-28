@@ -123,7 +123,7 @@ Only a genuinely new session uses
 Existing sessions use `status`, then `packet` when recovery or replanning is
 required. A missing or incompatible receipt must not reset counters, including
 after moving to another worktree. Preserve schema-1 history as recovery evidence;
-do not synthesize prior measurements into a new schema-4 allowance. Schema-1/2/3
+do not synthesize prior measurements into a new schema-5 allowance. Schema-1/2/3/4
 receipts remain recovery evidence; new required initial-scope facts are not invented.
 
 The complete JSON contract has this shape (replace example SHAs, file fingerprint,
@@ -163,6 +163,9 @@ capture; it never clears or mutates the user's index flags.
 The first `watch <change-id> --repo <owner/repo> --pr <number>` binds the PR.
 That source remains fixed across input refreshes. `advance_head` captures a new
 input epoch and invalidates prior completion evidence while retaining counters.
+Epoch strings derive from refresh generations independently of caller event IDs.
+Automatic binding chooses a deterministic unused ID under the session lock;
+existing finding and scope identities remain unchanged.
 The initial comparison `base` and target `pr_base` remain immutable history. To
 adopt changed target context, supply both `comparison_base` and `pr_base` on an
 `advance_head` event; the packet exposes the current binding. Capture that full

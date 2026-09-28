@@ -22,7 +22,11 @@ Resolve findings at every severity or document a narrow justified exception.
 
 ## Bounded review sessions
 
-Schema-4 contracts name the PR target ref/SHA separately from the comparison base.
+Input generations depend only on recorded refresh counts, not caller IDs. Automatic
+binding atomically selects an unused event identity; retries preserve existing IDs
+and counters. Older incompatible epoch receipts require recovery.
+
+Schema-5 contracts name the PR target ref/SHA separately from the comparison base.
 Retargeting or target advancement invalidates monitoring. Explicit atomic base
 adoption retains counters but requires a new evidence epoch: local results carry
 their original full binding, and required remote positives postdate adoption.
@@ -49,7 +53,7 @@ reviewers must have a latest APPROVED or COMMENTED result.
 Comments, pending submissions and dismissal of another review cannot clear that
 objection. Only a later approval or a fresh snapshot showing the original rejecting
 review dismissed can clear it.
-Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-4
+Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-5
 replay reconciles all cached fields; missing or incompatible history requires
 recovery, never reinitialization. Final published inputs must be clean. Exclude
 non-findings from family escalation while retaining genuine fixed recurrences.

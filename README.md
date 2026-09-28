@@ -97,7 +97,9 @@ Watcher completion/replanning output remains visible even without a GitHub chang
 local budget changes take precedence over a no-progress timeout.
 Expected PR target ref/SHA is separate from the comparison commit. Retargeting or
 base advancement requires explicit adoption and fresh local/remote evidence, even
-with unchanged HEAD; schema-4 receipts preserve the original contract and counters.
+with unchanged HEAD; schema-5 receipts preserve the original contract and counters.
+Input generations are independent of caller event IDs; automatic PR binding chooses
+an unused identity atomically, retaining existing finding/scope references.
 Renewed requests to required reviewers block completion even with a prior approval;
 missing or changing request metadata cannot retain a green result.
 

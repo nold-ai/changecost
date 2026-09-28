@@ -21,7 +21,7 @@ from typing import Any
 
 from quality import repository
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 DEFAULT_BATCHES = 3
 DEFAULT_MINUTES = 90
 WAIT_LIMIT_MINUTES = 30
@@ -488,25 +488,28 @@ def record(
             return state
         if expected_revision is not None and state["revision"] != expected_revision:
             raise ConflictError(f"expected revision {expected_revision}, found {state['revision']}")
-        event_id = event.get("id")
-        kind = event.get("kind")
-        if not isinstance(event_id, str) or not event_id or not isinstance(kind, str):
-            raise ValueError("event requires non-empty id and kind")
-        provenance: dict[str, Any] = {
-            "event_id": event_id,
-            "recorded_at": datetime.now(UTC).isoformat(),
-        }
-        capture_event_facts(root, event, provenance)
-        observation = None if kind in {"advance_head", "bind_pr"} else state["monitor"]["data"]
-        state = replay(
-            state["genesis"],
-            [*state["events"], event],
-            [*state["provenance"], provenance],
-            observation,
-            state["observation_revision"],
-        )
-        write_state(path, state)
-        return state
+        return persist_event(root, change_id, state, event)
+
+
+def persist_event(
+    root: Path, change_id: str, state: dict[str, Any], event: dict[str, Any]
+) -> dict[str, Any]:
+    """Persist a validated event while the caller holds the session lock."""
+    provenance: dict[str, Any] = {
+        "event_id": event["id"],
+        "recorded_at": datetime.now(UTC).isoformat(),
+    }
+    capture_event_facts(root, event, provenance)
+    observation = None if event["kind"] in {"advance_head", "bind_pr"} else state["monitor"]["data"]
+    updated = replay(
+        state["genesis"],
+        [*state["events"], event],
+        [*state["provenance"], provenance],
+        observation,
+        state["observation_revision"],
+    )
+    write_state(state_path(root, change_id), updated)
+    return updated
 
 
 def capture_event_facts(root: Path, event: dict[str, Any], provenance: dict[str, Any]) -> None:
@@ -860,8 +863,8 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
 
 
 def binding_epoch(state: dict[str, Any]) -> str:
-    advances = [item["id"] for item in state["events"] if item["kind"] == "advance_head"]
-    return advances[-1] if advances else "genesis"
+    generation = sum(item["kind"] == "advance_head" for item in state["events"])
+    return f"input-generation:{generation}"
 
 
 def evidence_binding(state: dict[str, Any]) -> dict[str, Any]:
@@ -875,23 +878,41 @@ def evidence_binding(state: dict[str, Any]) -> dict[str, Any]:
 
 
 def select_target(root: Path, change_id: str, repository_name: str, pull_request: int) -> None:
-    state = load(root, change_id)
+    with state_lock(state_path(root, change_id)):
+        state = load(root, change_id)
+        bind_target_locked(root, change_id, state, repository_name, pull_request)
+
+
+def bind_target_locked(
+    root: Path, change_id: str, state: dict[str, Any], repository_name: str, pull_request: int
+) -> None:
     if repository_name != state["contract"]["repository"]:
         raise ValueError("selected repository differs from session contract")
     if state["pull_request"] is not None:
         if state["pull_request"] != pull_request:
             raise ValueError("selected pull request differs from bound target")
         return
-    record(
+    persist_event(
         root,
         change_id,
+        state,
         {
-            "id": "bind-pr",
+            "id": unused_bind_identity(state),
             "kind": "bind_pr",
             "repository": repository_name,
             "pull_request": pull_request,
         },
     )
+
+
+def unused_bind_identity(state: dict[str, Any]) -> str:
+    occupied = {event["id"] for event in state["events"]}
+    candidate = "bind-pr"
+    suffix = 0
+    while candidate in occupied:
+        suffix += 1
+        candidate = f"bind-pr:{suffix}"
+    return candidate
 
 
 def record_monitor_snapshot(
