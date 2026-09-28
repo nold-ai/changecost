@@ -67,6 +67,12 @@ mutation, or hostile-runner integrity guarantee.
    remote checks/statuses/reviews need timestamps at or after adoption, while all
    current-head objections continue to block. This is timestamp-bound freshness,
    not authentication of remote execution or reinterpretation of SpecFact digests.
+10. Validate and normalize requested users through one exact-login extractor for
+    semantic hashing, required-reviewer pending decisions and both metadata reads.
+    Request changes invalidate collection; ordering/duplicates/avatar changes do not.
+    Cancellation restores only still-qualifying evidence. Nonrequired users are
+    informational; team expansion is outside this contract. Schema 4 retains raw
+    observations; older missing request data becomes incomplete without resetting history.
 
 ## Risks / Trade-offs
 

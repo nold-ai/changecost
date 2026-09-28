@@ -201,6 +201,15 @@ different review. A later APPROVED row clears it; a complete fresh snapshot can
 also show the original rejecting review itself changed to DISMISSED.
 Unknown or malformed review states make the observation incomplete rather than
 overwriting a prior rejection, for required and other reviewers alike.
+Outstanding requests to required reviewers also leave completion pending, even
+after a prior same-head approval or comment. Every snapshot requires a validated
+requested-user array with exact logins, including bot suffixes. Collection compares
+normalized requested identities at both metadata reads; additions/removals invalidate
+the observation. Order, duplicates and avatar changes are semantically quiet.
+Nonrequired requests remain informational; team membership is not expanded.
+Cancellation only restores still-qualifying evidence and cannot override rejection,
+head/base freshness or budget limits. Older snapshots missing request data become
+incomplete under schema 4; no new session allowance is created.
 
 The optional watcher uses paginated read-only `gh api --paginate --slurp` requests for current checks,
 statuses, reviews and issue comments, plus GraphQL `reviewThreads` and their

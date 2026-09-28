@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Keep required reviewer re-requests pending and validate normalized requested-user
+  identities throughout snapshot collection, classification and change detection.
+
 - Bind review evidence to explicit PR target and comparison bases, preserve their
   original contract, and require fresh evidence after atomic context adoption.
 

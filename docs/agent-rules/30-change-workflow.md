@@ -169,7 +169,9 @@ adopt changed target context, supply both `comparison_base` and `pr_base` on an
 `binding` before each local review/check and supply it explicitly on its evidence
 event. Never copy a fresh binding onto an old result. After adoption, required remote
 positive results need timestamps at or after adoption; old objections still block.
-The final published inputs must be clean. Full local receipts retain canonical
+The final published inputs must be clean. Snapshots retain validated requested-user
+metadata. A renewed request to a required exact login blocks completion until absent;
+cancellation cannot create approval or override other gates. Full receipts retain canonical
 events and separate generated provenance; cached counters, decisions and monitor
 summaries must agree with replay. The genesis marker detects a lost state file,
 not deletion of the entire ignored directory or hostile tampering.

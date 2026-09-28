@@ -69,6 +69,9 @@ rejections block completion; pending/dismissed results cannot reuse old approval
 An effective changes-requested objection survives later comments, pending reviews
 and dismissal of a different review. A later approval clears it; dismissal of the
 original rejection is recognized from the complete fresh snapshot.
+An outstanding request to a required reviewer keeps completion pending despite a
+prior approval. Request metadata is validated at both collection reads; cancellation
+does not replace approval or other current-context evidence.
 Initialization verifies typed scope, full commit IDs and a path/SHA256 manifest
 against actual initial inputs; `<absent>` represents an intended future file.
 Changed, staged and untracked paths must be included. Captured initial facts remain

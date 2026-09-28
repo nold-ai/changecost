@@ -27,6 +27,9 @@ Retargeting or target advancement invalidates monitoring. Explicit atomic base
 adoption retains counters but requires a new evidence epoch: local results carry
 their original full binding, and required remote positives postdate adoption.
 Preserve older receipts for recovery; do not invent missing base provenance.
+Required reviewer requests remain pending even after earlier same-head results.
+Missing/malformed requested-user metadata or changes during collection are incomplete;
+removing a request restores only evidence that still satisfies the other gates.
 
 For review/fix work, initialize the ignored local record with
 `python -m quality.review_session init <change-id> --json <contract.json>`. Before

@@ -87,6 +87,7 @@ def fixture_manifest() -> dict[str, str]:
 
 def complete_snapshot() -> dict[str, Any]:
     return {
+        "requested_reviewers": [],
         "repository": "nold-ai/changecost",
         "pull_request": 24,
         "head": TEST_HEAD,
@@ -1890,3 +1891,127 @@ def test_bases_require_commit_objects_not_annotated_tag_ids(
     with pytest.raises(ValueError):
         review_session.record(tmp_path, "change", event)
     assert review_session.load(tmp_path, "change") == before
+
+
+@pytest.mark.parametrize("result", ["APPROVED", "COMMENTED"])
+def test_required_rerequest_waits_and_cancellation_reuses_only_valid_evidence(
+    tmp_path: Path, result: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["reviews"][0][0]["state"] = result
+    snapshot["requested_reviewers"] = [{"login": "reviewer-a"}]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+    snapshot["requested_reviewers"] = []
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    snapshot["reviews"] = [[]]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+@pytest.mark.parametrize(
+    "value",
+    [None, {}, "reviewer-a", [None], [{}], [{"login": 7}], [{"login": ""}], [{"login": "a b"}]],
+)
+def test_malformed_requested_users_invalidate_green(tmp_path: Path, value: Any) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["requested_reviewers"] = value
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_missing_requested_users_invalidate_green(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    del snapshot["requested_reviewers"]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("first,last", [([], ["reviewer-a"]), (["reviewer-a"], [])])
+def test_request_changes_during_collection_fail_closed(
+    monkeypatch: pytest.MonkeyPatch, first: list[str], last: list[str]
+) -> None:
+    users = iter((first, last))
+
+    def api(endpoint: str, *, paginate: bool = False) -> Any:
+        if paginate:
+            return []
+        return {
+            "head": {"sha": TEST_HEAD},
+            "base": {"ref": "main", "sha": TEST_HEAD},
+            "requested_reviewers": [{"login": login} for login in next(users)],
+        }
+
+    monkeypatch.setattr(review_session, "gh_json", api)
+    monkeypatch.setattr(review_session, "gh_review_threads", lambda *args: [])
+    with pytest.raises(ValueError, match="request"):
+        review_session.gh_snapshot("nold-ai/changecost", 24)
+
+
+def test_request_identity_normalization_is_semantic_and_bot_exact(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["requested_reviewers"] = [{"login": "reviewer-a[bot]"}, {"login": "other"}]
+    assert review_session.record_monitor_snapshot(tmp_path, "change", snapshot)["changed"]
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    snapshot["requested_reviewers"] = [
+        {"login": "other", "avatar_url": "changed"},
+        {"login": "reviewer-a[bot]"},
+        {"login": "other"},
+    ]
+    assert not review_session.record_monitor_snapshot(tmp_path, "change", snapshot)["changed"]
+    snapshot["requested_reviewers"].append({"login": "reviewer-a"})
+    assert review_session.record_monitor_snapshot(tmp_path, "change", snapshot)["changed"]
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+@pytest.mark.parametrize("blocking", ["rejection", "old-head", "exhausted"])
+def test_request_cancellation_cannot_override_existing_blocks(
+    tmp_path: Path, blocking: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    if blocking == "rejection":
+        snapshot["reviews"][0][0]["state"] = "CHANGES_REQUESTED"
+    elif blocking == "old-head":
+        snapshot["reviews"][0][0]["commit_id"] = "a" * 40
+    else:
+        review_session.record(
+            tmp_path, "change", {"id": "over", "kind": "active_minutes", "minutes": 91}
+        )
+    snapshot["requested_reviewers"] = [{"login": "reviewer-a"}]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    snapshot["requested_reviewers"] = []
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] != "complete"
+
+
+def test_request_order_during_collection_is_not_drift(monkeypatch: pytest.MonkeyPatch) -> None:
+    users = iter(
+        (
+            [{"login": "a"}, {"login": "b"}],
+            [{"login": "b", "avatar_url": "changed"}, {"login": "a"}],
+        )
+    )
+
+    def api(endpoint: str, *, paginate: bool = False) -> Any:
+        if paginate:
+            return []
+        return {
+            "head": {"sha": TEST_HEAD},
+            "base": {"ref": "main", "sha": TEST_HEAD},
+            "requested_reviewers": next(users),
+        }
+
+    monkeypatch.setattr(review_session, "gh_json", api)
+    monkeypatch.setattr(review_session, "gh_review_threads", lambda *args: [])
+    assert review_session.gh_snapshot("nold-ai/changecost", 24)["head"] == TEST_HEAD

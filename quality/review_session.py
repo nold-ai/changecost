@@ -961,6 +961,7 @@ def semantic_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
     result = selected_fields(
         snapshot, ("repository", "pull_request", "head", "pr_base", "_input_epoch")
     )
+    result["requested_reviewers"] = requested_user_names(snapshot)
     result["checks"] = [
         selected_fields(
             item, ("id", "name", "head_sha", "status", "conclusion", "started_at", "completed_at")
@@ -1003,6 +1004,7 @@ def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
         "comments": f"repos/{repository}/issues/{pull_request}/comments?per_page=100",
     }
     pull = gh_json(f"repos/{repository}/pulls/{pull_request}")
+    requested = requested_user_names(pull)
     head = pull["head"]["sha"]
     result: dict[str, Any] = {
         "repository": repository,
@@ -1017,6 +1019,8 @@ def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
     final = gh_json(f"repos/{repository}/pulls/{pull_request}")
     if final["head"]["sha"] != head or pull_base(final) != result["pr_base"]:
         raise ValueError("PR head or base changed during collection")
+    if requested != requested_user_names(final):
+        raise ValueError("PR requested reviewers changed during collection")
     return result
 
 
@@ -1157,6 +1161,7 @@ def validate_snapshot_source(snapshot: dict[str, Any], contract: dict[str, Any])
 
 
 def validate_snapshot(snapshot: dict[str, Any]) -> None:
+    requested_user_names(snapshot)
     missing = [
         key
         for key in ("checks", "statuses", "reviews", "threads", "comments")
@@ -1329,11 +1334,26 @@ def fresh_reviewer_names(snapshot: dict[str, Any], since: str) -> set[str]:
 
 def reviewer_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
     latest = latest_review_states(snapshot)
+    requested = requested_user_names(snapshot)
     return [
         f"required reviewer has no current-head result: {reviewer}"
         for reviewer in contract["required_reviewers"]
-        if latest.get(reviewer) not in {"APPROVED", "COMMENTED"}
+        if reviewer in requested or latest.get(reviewer) not in {"APPROVED", "COMMENTED"}
     ]
+
+
+def requested_user_names(snapshot: dict[str, Any]) -> list[str]:
+    users = snapshot.get("requested_reviewers")
+    if not isinstance(users, list):
+        raise ValueError("requested_reviewers requires an array")
+    validate_entries(users, ("login",))
+    names = []
+    for user in users:
+        login = user["login"]
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]*(?:\[bot\])?", login):
+            raise ValueError("requested reviewer requires an exact GitHub login")
+        names.append(login)
+    return sorted(set(names))
 
 
 def latest_review_states(snapshot: dict[str, Any]) -> dict[str, str]:

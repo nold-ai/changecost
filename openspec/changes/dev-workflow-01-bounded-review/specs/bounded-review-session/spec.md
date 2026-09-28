@@ -7,6 +7,25 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Outstanding reviewer requests invalidate completion
+
+Every monitor snapshot SHALL include a validated array of requested users with exact
+GitHub logins, retaining bot suffixes. Required reviewers who are requested again
+SHALL remain pending despite earlier same-head results. The collector SHALL compare
+normalized requested identities before and after collection; changes invalidate the
+observation. Sorting, duplicate entries and incidental user metadata SHALL NOT create
+semantic changes. Nonrequired requests are informational; no team expansion is implied.
+
+#### Scenario: A reviewer is requested again after approval
+- **GIVEN** a required reviewer's qualifying current-head result
+- **WHEN** that exact user is requested again
+- **THEN** completion remains pending until the request is absent
+- **AND** cancellation restores only existing evidence that still satisfies all gates.
+
+#### Scenario: Request metadata is incomplete or changes during collection
+- **WHEN** requested users are missing, malformed, added or removed during collection
+- **THEN** the observation is incomplete instead of retaining earlier green evidence.
+
 ### Requirement: Explicit comparison and target-base evidence binding
 
 Initial and adopted base IDs SHALL identify commit objects exactly. Annotated-tag

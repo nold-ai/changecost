@@ -261,3 +261,28 @@ native KISS findings are empty. Logs are `.changecost/batch9-final-focused.txt`,
 `.changecost/batch9-types.txt`. Fresh supported-Linux and provider results remain
 pending publication. Historical receipt recovery and calibration remain incomplete;
 no reset or token/time savings is inferred from this repair.
+
+## Outstanding requested-reviewer evidence
+
+On 2026-09-29 (Europe/Berlin), fourteen spec-first cases failed before repairing
+renewed reviewer requests (`.changecost/batch10-red.txt`). One validated exact-login
+extractor now supplies semantic hashing, required-reviewer pending decisions and
+both metadata reads. Missing or malformed request arrays invalidate previous green
+evidence. Requests added or removed during collection are incomplete; ordering,
+duplicate entries and avatar changes remain quiet. Bot suffixes remain distinct.
+
+Regression cases cover previous approval/comment, cancellation with absent or
+old-head evidence, preserved objections and exhausted budgets, required versus
+nonrequired users, malformed fields and collection races. No team membership is
+expanded. Schema 4 remains unchanged; old observations lacking the required source
+data become incomplete without a fresh allowance. An explicit list guard also
+provides runtime/type narrowing; it does not suppress validation.
+
+Final local verification passes 276 focused tests and 444 full tests plus four
+subtests. Coverage measures 846/900 statements (94%). Ruff/formatting, BasedPyright,
+docs against HEAD/main, index, metadata and strict OpenSpec pass. Maximum complexity
+is 10 with no native KISS findings. Exact-source logs are
+`.changecost/batch10-coverage-test.txt`, `.changecost/batch10-full.txt`,
+`.changecost/batch10-coverage.txt` and `.changecost/batch10-types.txt`.
+Fresh Linux and provider reviews remain required after publication; retained
+history, calibration and trust-boundary limitations remain unchanged.
