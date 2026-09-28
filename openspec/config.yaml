@@ -5,6 +5,12 @@ context: |
   cost estimates and settlement for AI-assisted software changes.
   Phase: pilot planning / To-Validate; private; Apache-2.0; no releases.
   Authorized delivery: nine OpenSpec changes and linked GitHub backlog only.
+  Subsequent authorization on 2026-09-28: implement source-feasibility research,
+  extend it to Codex/Claude Code metrics, and inspect existing local artifacts.
+  Enterprise Cursor/Copilot projections are also authorized comparison evidence.
+  V2 adds reported message counters and synthetic examples, not verified native imports.
+  Local metadata provides partial evidence. Work OTel is reported globally disabled;
+  custom session-log hook output is the next source to inspect, not OTel enablement.
   Product implementation and live telemetry collection require a separate request.
   Selected defaults: Python 3.11+, Typer, Pydantic, SQLite, Decimal; uv/Hatchling,
   pytest, Ruff, BasedPyright. Personal Cursor/Copilot IDE and CLI use is the pilot.

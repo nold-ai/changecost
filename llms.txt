@@ -15,6 +15,17 @@
 - [Change order](openspec/CHANGE_ORDER.md): pending changes, issue links and prerequisites.
 - [Changelog](CHANGELOG.md): recorded changes; no release is implied.
 
+## Provider evidence
+
+- [Source feasibility](docs/providers/source-feasibility.md): capability matrix, current limits and work-side evidence checklist.
+- [Codex and Claude Code metrics](docs/providers/codex-claude-metrics.md): documented interfaces and authorized local metadata observations; no approved adapters.
+- [Cursor local metrics](docs/providers/cursor-local-metrics.md): Basic-account identity/context observations; consumption and billing remain unverified.
+- [VS Code hosted Copilot metrics](docs/providers/copilot-local-metrics.md): explicit host/SDK identity, local turn totals and checkpoint boundaries; final settlement unverified.
+- [Enterprise schema review](docs/providers/enterprise-schema-review.md): received projection integrity, official schema comparison, and reported session-log parsing and custom receiver with OTel disabled.
+- [Enterprise v2 review](docs/providers/enterprise-v2-schema-review.md): reported message counters, synthetic arithmetic, encoding discrepancies and unchanged hook evidence gaps.
+- [Fixture contract](docs/providers/fixtures.md): allowlists, synthetic cases and relationship-preserving transformations.
+- [Research evidence](openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md): scenario review, checks and unresolved source inspection.
+
 ## Change workflow skills
 
 - [changecost-prepare](.agents/skills/changecost-prepare/SKILL.md): select, review and refresh a plan and linked issue; choose a planning PR or scoped stash.

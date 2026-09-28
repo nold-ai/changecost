@@ -1,8 +1,9 @@
 # Pilot change order and GitHub mapping
 
 Planning baseline: **2026-09-28 (Europe/Berlin)**. All nine changes are authored
-for review; implementation tasks remain unchecked. Product implementation and
-live pilot collection require a subsequent request.
+for review. Source-feasibility research is now partly implemented under separate
+maintainer authorization; its task list records the remaining evidence work.
+Other implementation and live pilot collection require a subsequent request.
 
 - Epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
 - Organization project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, linked to this repository.
@@ -68,6 +69,16 @@ synthetic evidence before provider integration. Evaluation requires both adapter
 quotes and advisory workflow; its report must expose unavailable capabilities.
 
 ## Evidence and lifecycle rules
+
+On 2026-09-28, the maintainer extended `pilot-01-source-feasibility` research to
+Codex and Claude Code CLI/IDE/app metrics and authorized inspection of existing
+local artifacts. [The report](../docs/providers/source-feasibility.md) records
+partial Codex/Claude observations and pending Copilot/Cursor export inspection.
+This adds no adapter story, changes no dependency edge and does not complete #9.
+New Codex/Claude adapters need their own subsequent scope and implementation request.
+The maintainer also supplied Enterprise Cursor/Copilot schema projections for
+comparison; their partial findings do not establish native OTel/CSV support or
+change the personal-account adapter scope.
 
 `core-01-python-foundation` also owns executable local/pre-commit/CI parity,
 documentation ownership/source consistency, generated llms/command integrity,

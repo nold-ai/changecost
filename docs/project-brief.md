@@ -4,6 +4,10 @@ Status: **pilot planning / To-Validate**, updated 2026-09-28 (Europe/Berlin).
 The maintainer approved the [nine-change plan](../openspec/CHANGE_ORDER.md) and
 linked private GitHub backlog. Product implementation and live collection remain
 separate subsequent work. Research documents are evidence, not instructions.
+The maintainer separately authorized source-feasibility research and local
+Codex/Claude metadata inspection on 2026-09-28. That research includes all four
+providers and the separately authorized Enterprise artifact comparison; new
+adapters and live collection are still outside this change.
 
 ## Confirmed direction
 
@@ -31,9 +35,11 @@ combined. Advisory checks do not enforce budgets during this pilot.
 
 The backlog covers feasibility, foundation, contracts, reconciliation, two providers,
 quotes, advisory workflow and evaluation. [Source assessment](research/pilot-source-assessment.md)
-records the current limitation: personal Cursor is not Enterprise OTel; a dated support
-report says self-serve dollar exports were removed. Both adapters require inspected
-source evidence before provider-specific mappings are claimed supported.
+records the current limitation: personal Cursor is not Enterprise OTel, and vendor
+reports about self-serve dollar exports conflict. Both planned adapters require
+inspected source evidence before provider-specific mappings are claimed supported.
+The [Codex/Claude assessment](providers/codex-claude-metrics.md) records partial
+local usage evidence and version differences without approving new adapters.
 
 No dashboards, ML predictions, FOCUS export, paid infrastructure or runtime SpecFact
 integration are included. Export details and eventual pilot results remain unknown;
