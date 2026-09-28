@@ -62,3 +62,9 @@ explicit aggregate comparison. A passing main-branch comparison does not prove
 that incremental documentation freshness passes against the hook's HEAD baseline.
 For negative tool fixtures, show the same input succeeds when the guarded check
 is removed or repaired; an unrelated resolution failure is not lock-check proof.
+
+Interpret native review verdicts using the installed report contract: both PASS
+and PASS_WITH_ADVISORY can accompany complete passing assurance. Keep the digest,
+required-member execution/outcome, unknown-evidence and exit-code checks intact;
+record dispositions for advisories instead of treating their presence as failure
+or silently discarding them.

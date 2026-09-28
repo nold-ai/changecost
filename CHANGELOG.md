@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Accept SpecFact’s documented advisory-success verdict while retaining complete
+  analyzer, assurance, freshness and exit-code requirements.
+
 - Reject quality-job token permission overrides and flatten workflow regression
   setup to satisfy native nesting checks without dropping mutation cases; use
   offline-resolvable metadata drift to prove stale-lock enforcement.

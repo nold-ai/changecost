@@ -162,13 +162,15 @@ def test_generator_detects_changed_skill_and_duplicates(tmp_path):
         render(tmp_path)
 
 
-def test_review_accepts_complete_native_profile():
+@pytest.mark.parametrize("verdict", ["PASS", "PASS_WITH_ADVISORY"])
+def test_review_accepts_complete_native_profile(verdict):
     from quality.review import REQUIRED, evidence_errors
 
     report = {
         "digest": "abc",
         "assurance_status": "PASS",
-        "overall_verdict": "PASS",
+        "overall_verdict": verdict,
+        "enforcement_mode": "full",
         "ci_exit_code": 0,
         "has_unknown_required_evidence": False,
         "analyzer_evidence": [
@@ -176,8 +178,22 @@ def test_review_accepts_complete_native_profile():
         ],
     }
     assert evidence_errors(report, "abc") == []
-    report["analyzer_evidence"][0]["execution_state"] = "error"
+    adverse = {
+        "digest": "old",
+        "assurance_status": "UNKNOWN",
+        "overall_verdict": "FAIL",
+        "ci_exit_code": 1,
+        "has_unknown_required_evidence": True,
+        "analyzer_evidence": [],
+    }
+    for field, value in adverse.items():
+        assert evidence_errors({**report, field: value}, "abc")
+    report["analyzer_evidence"][0]["evidence_outcome"] = "UNKNOWN"
     assert evidence_errors(report, "abc")
+    report["analyzer_evidence"][0]["evidence_outcome"] = "PASS"
+    for state in ("error", "skipped"):
+        report["analyzer_evidence"][0]["execution_state"] = state
+        assert evidence_errors(report, "abc")
 
 
 def test_explicit_manifest_includes_new_behavior(tmp_path):

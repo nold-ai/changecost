@@ -97,5 +97,6 @@ stale fixture uses resolvable version drift, distinguishing lock freshness from
 dependency resolution failure.
 The complete local/CI gates additionally verify the installed CLI, distribution
 privacy, dependency evidence and all required review analyzers; incomplete capsule
-results remain failures. See the [gate guide](docs/development/quality-gates.md)
+results remain failures. A native advisory-success verdict is accepted only with
+complete passing analyzer evidence and a zero exit code. See the [gate guide](docs/development/quality-gates.md)
 for the pinned analyzer composition and hosted-runner trust boundary.

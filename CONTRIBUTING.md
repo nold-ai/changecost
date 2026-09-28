@@ -93,3 +93,7 @@ explicit base. Keep the locked development analyzer versions aligned with the
 signed review capsule; see the [gate guide](docs/development/quality-gates.md).
 When editing CI, preserve `contents: read` both at workflow level and in any
 quality-job permission override; the workflow gate rejects broader job permissions.
+
+Inspect and disposition nonblocking native review advisories even when full
+assurance passes. `PASS_WITH_ADVISORY` is a supported successful native verdict,
+not permission to ignore failed, unknown, stale or missing analyzer evidence.

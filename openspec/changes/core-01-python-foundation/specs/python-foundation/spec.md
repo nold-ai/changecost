@@ -80,6 +80,12 @@ analyzers or advisory data explicitly.
 - **WHEN** review is requested
 - **THEN** the result is incomplete and cannot be presented as a passing review.
 
+#### Scenario: Complete native review with nonblocking advisories
+
+- **GIVEN** full native review returns `PASS_WITH_ADVISORY`, assurance PASS, no unknown evidence, exit code zero and all required analyzers ran with PASS evidence
+- **WHEN** the repository validates the content-bound report
+- **THEN** it accepts this native success verdict while retaining the advisories for review; failed, missing, unknown or stale evidence still fails.
+
 #### Scenario: Dependency advisory service unavailable
 
 - **GIVEN** a dependency change whose required advisory audit cannot obtain its data

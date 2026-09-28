@@ -50,3 +50,9 @@ probe incompatible with the capsule wrapper. The required host-side lock proof
 CI comparison wiring and external-validator collision corrections remain subject
 to fresh hosted validation; task 4.3 remains incomplete
 until final review and tracking verification. No required gate was waived.
+
+Run 36435919187 at `0f0f6a8` subsequently reported all ten native analyzers PASS
+on both Python versions, with complete assurance and 200 nonblocking advisories.
+CI still failed because the repository wrapper rejected the documented native
+PASS_WITH_ADVISORY verdict. The corrected adapter needs fresh hosted validation;
+review scope questions remain open, so the integration tasks remain incomplete.

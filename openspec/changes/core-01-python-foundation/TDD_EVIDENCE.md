@@ -419,3 +419,28 @@ removal mutant now exits one at the stale-check assertion, while the required ho
 lock leaf passes unchanged. Receipts: `promotion/stale-check-bypass-before.log`,
 `promotion/stale-check-bypass-after.log`, `promotion/stale-lock-host-green.log`.
 No test skip or weaker resolution assertion is involved.
+
+
+## Native advisory-success verdict
+
+Hosted run [36435919187](https://github.com/nold-ai/changecost/actions/runs/36435919187)
+at `0f0f6a866959fb2110a9f1829eacac5b0644d81a` reports all ten required analyzers ran
+with PASS evidence on both Python versions: assurance PASS, unknown evidence false,
+full enforcement, exit code zero, 200 nonblocking findings and no blocking findings.
+The aggregate still failed because this repository accepted only the literal PASS
+verdict. Installed signed module 0.50.1 `run/findings.py:553` declares the three
+verdict literals; lines 645–670 derive PASS_WITH_ADVISORY from passing assurance
+when findings remain. This is a supported native success form, not a waived check.
+
+The parameterized complete-report regression passed for PASS and failed for
+PASS_WITH_ADVISORY before the correction; both pass afterward. For each form it
+also rejects stale digests, UNKNOWN assurance/evidence, nonzero exit, FAIL verdict,
+missing analyzers, unknown analyzer outcome and failed execution. The wrapper now
+accepts exactly the two successful verdicts while retaining every existing check.
+The actual native JSON reproduces the wrapper-only error before and no adapter
+error afterward using a synthetic matching digest strictly for this function-level
+probe, not as new native assurance. Receipts: `promotion/advisory-verdict-red.log`,
+`promotion/advisory-verdict-green.log`, `promotion/advisory-native-before.json` and
+`promotion/advisory-native-after.json`. All 200 advisories retain scoped dispositions
+in `promotion/nonblocking-dispositions-0f0f6a8.json`; no analyzer policy changed.
+Fresh corrected-head CI and unresolved review scope questions remain outstanding.

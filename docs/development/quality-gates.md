@@ -222,3 +222,12 @@ stale metadata remains resolvable offline. It verifies that `uv lock --check`
 fails without changing lock bytes, restoring metadata passes unchanged, and
 ordinary `uv lock` can update that same drift before a subsequent check passes.
 This distinguishes lock freshness enforcement from dependency resolution failure.
+
+
+SpecFact module 0.50.1 declares PASS, PASS_WITH_ADVISORY and FAIL native verdicts.
+Its authoritative report projection maps passing assurance with findings to
+PASS_WITH_ADVISORY and exit code zero; findings remain in the report. The wrapper
+accepts either successful verdict only when the content digest matches, assurance
+is PASS, required evidence is not unknown, all required analyzers ran with PASS
+outcomes, and the native exit code is zero. Required execution still invokes full
+enforcement. Advisory success does not waive those checks or advisory disposition.

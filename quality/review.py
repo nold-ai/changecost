@@ -41,7 +41,10 @@ def evidence_errors(report: dict[str, Any], expected: str) -> list[str]:
             errors.append(
                 f"required analyzer incomplete: {name}: {entry.get('diagnostic', 'missing')}"
             )
-    if report.get("ci_exit_code") != 0 or report.get("overall_verdict") != "PASS":
+    if report.get("ci_exit_code") != 0 or report.get("overall_verdict") not in {
+        "PASS",
+        "PASS_WITH_ADVISORY",
+    }:
         errors.append("review did not pass full enforcement")
     return errors
 
