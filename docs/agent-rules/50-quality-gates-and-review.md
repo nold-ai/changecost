@@ -43,3 +43,10 @@ settings or subscription changes are implied. A completed review of the current
 head plus green applicable checks is required before reporting the loop complete;
 absence of a bot response is not a passing review. Revert the configuration commit
 to roll back this policy.
+
+
+The staged commit hook uses HEAD only when no explicit comparison base is supplied.
+Keep full aggregate/CI comparison bases explicit. Hosted capsule setup has now run;
+read native current-head analyzer results rather than inferring complete assurance
+from successful capsule launch. The [gate guide](../development/quality-gates.md)
+records the disposable hosted-runner trust model and pinned analyzer compatibility.

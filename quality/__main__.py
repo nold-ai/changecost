@@ -125,7 +125,7 @@ def staged(args: argparse.Namespace) -> int:
                 "quality",
                 "commit",
                 "--base",
-                args.base,
+                args.base or "HEAD",
                 "--git-root",
                 str(root),
                 "--manifest",

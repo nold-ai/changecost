@@ -84,3 +84,9 @@ expresses. No contributor agreement or sign-off requirement is added here.
 Use synthetic examples. Do not commit credentials, prompts, source transcripts,
 real billing exports, or identifiable session data. Report vulnerabilities through
 [SECURITY.md](SECURITY.md), not issues or pull requests.
+
+
+The staged commit hook compares to HEAD when BASE_REF is unset; explicitly supplied
+comparison bases remain authoritative. Local aggregate checks still require an
+explicit base. Keep the locked development analyzer versions aligned with the
+signed review capsule; see the [gate guide](docs/development/quality-gates.md).

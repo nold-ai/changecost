@@ -54,6 +54,7 @@ class CliContract(unittest.TestCase):
                         cwd=work,
                         env=env,
                         capture_output=True,
+                        check=False,
                         text=True,
                     )
                     self.assertEqual(result.returncode, expected, result.stdout + result.stderr)

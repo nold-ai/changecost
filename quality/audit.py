@@ -13,52 +13,67 @@ from pathlib import Path
 from packaging.utils import canonicalize_name
 
 
+def license_name(expression: str | None, legacy: str | None, classifiers: list[str]) -> str:
+    """Prefer SPDX metadata and retain legacy/classifier evidence as fallbacks."""
+    return expression or legacy or "; ".join(c for c in classifiers if c.startswith("License ::"))
+
+
+def license_record(package: dict, installed: dict) -> tuple[dict, list[str]]:
+    """Read one exact locked package's installed or registry license evidence."""
+    name, version = package["name"], package["version"]
+    dist = installed.get(name)
+    errors = []
+    row = {"name": name, "version": version}
+    if dist is None or dist.version != version:
+        url = f"https://pypi.org/pypi/{name}/{version}/json"
+        with urllib.request.urlopen(url, timeout=30) as response:
+            info = json.load(response)["info"]
+        value = license_name(
+            info.get("license_expression"), info.get("license"), info["classifiers"]
+        )
+        row["source"] = url
+    else:
+        metadata = dist.metadata
+        value = license_name(
+            metadata["License-Expression"], metadata["License"], metadata.get_all("Classifier", [])
+        )
+        row["version"] = dist.version
+    row["license"] = value
+    if not value or value.strip().upper() == "UNKNOWN":
+        errors.append(f"license evidence unavailable: {name}")
+    return row, errors
+
+
+def installed_version_errors(locked: list[dict], installed: dict) -> list[str]:
+    """Reject installed versions outside every locked registry alternative."""
+    allowed: dict[str, set[str]] = {}
+    for package in locked:
+        if "registry" in package["source"]:
+            allowed.setdefault(package["name"], set()).add(package["version"])
+    return [
+        f"installed license version differs from lock: {name}"
+        for name, versions in allowed.items()
+        if name in installed and installed[name].version not in versions
+    ]
+
+
 def licenses(root: Path) -> list[str]:
+    """Persist every locked registry package's license evidence, failing on gaps."""
     locked = tomllib.loads((root / "uv.lock").read_text())["package"]
-    names = {p["name"] for p in locked if "registry" in p["source"]}
     installed = {
         canonicalize_name(d.metadata["Name"]): d for d in importlib.metadata.distributions()
     }
-    errors: list[str] = []
+    errors = installed_version_errors(locked, installed)
     rows = []
-    for name in sorted(names):
-        dist = installed.get(name)
-        if dist is None:
-            package = next(p for p in locked if p["name"] == name)
-            url = f"https://pypi.org/pypi/{name}/{package['version']}/json"
-            try:
-                with urllib.request.urlopen(url, timeout=30) as response:
-                    info = json.load(response)["info"]
-                license_name = info.get("license_expression") or info.get("license")
-                if not license_name:
-                    license_name = "; ".join(
-                        c for c in info["classifiers"] if c.startswith("License ::")
-                    )
-                if not license_name or license_name.upper() == "UNKNOWN":
-                    errors.append(f"license evidence unavailable: {name}")
-                rows.append(
-                    {
-                        "name": name,
-                        "version": package["version"],
-                        "license": license_name,
-                        "source": url,
-                    }
-                )
-            except (OSError, ValueError, KeyError) as exc:
-                errors.append(f"license metadata unavailable: {name}: {exc}")
+    for package in sorted(locked, key=lambda item: (item["name"], item["version"])):
+        if "registry" not in package["source"]:
             continue
-        locked_versions = {p["version"] for p in locked if p["name"] == name}
-        if dist.version not in locked_versions:
-            errors.append(f"installed license version differs from lock: {name}")
-        metadata = dist.metadata
-        license_name = metadata["License-Expression"] or metadata["License"]
-        if not license_name:
-            license_name = "; ".join(
-                v for v in metadata.get_all("Classifier", []) if v.startswith("License ::")
-            )
-        if not license_name or license_name.strip().upper() == "UNKNOWN":
-            errors.append(f"license evidence unavailable: {name}")
-        rows.append({"name": name, "version": dist.version, "license": license_name})
+        try:
+            row, missing = license_record(package, installed)
+            rows.append(row)
+            errors.extend(missing)
+        except (OSError, ValueError, KeyError) as exc:
+            errors.append(f"license metadata unavailable: {package['name']}: {exc}")
     output = root / ".changecost/dependency-licenses.json"
     output.parent.mkdir(exist_ok=True)
     output.write_text(json.dumps(rows, indent=2) + "\n")

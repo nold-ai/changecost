@@ -69,7 +69,7 @@ jobs:
         run: uv sync --locked --group build
       - name: Install pinned review module
         run: specfact module install nold-ai/specfact-code-review --version 0.50.1
-      - name: Allow namespaces for this job's signed capsule launcher
+      - name: Allow namespaces for this job's capsule launcher paths
         id: capsule-userns
         env:
           SPECFACT_CODE_REVIEW_CAPSULE_CACHE: ${{ runner.temp }}/changecost-capsules
@@ -89,6 +89,7 @@ jobs:
             userns,
           }
           EOF
+          # Cache paths are not an authentication boundary on this disposable sudo-capable VM.
           # Only policy installation is administrative; analysis stays unprivileged.
           sudo apparmor_parser -r "$profile"
           test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1

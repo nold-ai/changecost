@@ -125,6 +125,24 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the complete aggregate runs with missing or stale required review evidence
 - **THEN** it is incomplete/non-success even if a manual review hook was skipped; a docs-only applicability decision remains explicit and still runs the documentation gates.
 
+#### Scenario: Ordinary commit without a comparison override
+
+- **GIVEN** a repository with a valid HEAD and a staged change, with BASE_REF unset
+- **WHEN** the installed commit hook validates its index snapshot
+- **THEN** it compares that snapshot to HEAD and propagates validator failures; an explicit comparison override remains authoritative and ordinary CI commands still require their declared base.
+
+#### Scenario: Marker-split license evidence
+
+- **GIVEN** a lock containing multiple versions of the same registry package for different environments
+- **WHEN** license evidence is collected
+- **THEN** installed metadata is used only for its exact locked version, other locked versions use exact-release metadata, and an installed version absent from all locked alternatives remains an error.
+
+#### Scenario: Reviewable gate failure paths
+
+- **GIVEN** missing license metadata, contradictory package metadata, failed external checks or invalid contributor arguments
+- **WHEN** their repository validators run
+- **THEN** they return explicit failing diagnostics, with offline unit evidence for their failure paths and full coverage review remaining enforced.
+
 #### Scenario: Pinned workflow validator distribution
 
 - **GIVEN** actionlint 1.7.12 installed as a release binary or through its Go module

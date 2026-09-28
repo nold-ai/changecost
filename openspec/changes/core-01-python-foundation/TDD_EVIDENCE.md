@@ -228,3 +228,87 @@ failed the supported `v1.7.12` case before correction and passed afterward. Only
 `1.7.12` and `v1.7.12` are accepted; empty output, malformed/unknown and different
 versions are rejected before syntax execution. Accepted versions still invoke the
 syntax validator. Logs: `promotion/actionlint-red.log` and `promotion/actionlint-green.log`.
+
+
+## Native capsule findings at 086e8fd
+
+On 2026-09-28, hosted run [36427023807](https://github.com/nold-ai/changecost/actions/runs/36427023807)
+confirmed the AppArmor prerequisite and actionlint spelling fix: both Python jobs
+passed workflow validation and executed the capsules. Full review still failed.
+Seven analyzers passed; BasedPyright was UNKNOWN because project versions
+1.40.1/Node wheel 24.19.0 differed from sealed 1.39.10/24.16.0. Radon reported
+three blocking functions (licenses CC24, build run CC16, workflow wiring CC16).
+Pytest reported one capsule-only uv lock-fixture failure and five files below the
+required 80% coverage. The native report contains 169 findings: nine blocking and
+160 nonblocking. Native JSON artifacts remain in ignored local evidence.
+
+The corrected development lock now uses BasedPyright 1.39.10 and a Node wheel
+24.16.0 constraint to match the signed module 0.50.1 composition. Runtime package
+dependencies and required analyzers are unchanged. `uv sync --locked --group build`,
+BasedPyright, the actual locked dependency audit and license metadata check passed;
+all 53 third-party lock entries were audited with no reported advisories.
+
+The three complex routines were split by existing responsibility (license record,
+source/archive/install proof, capsule setup wiring) without removing validators.
+Radon 6.0.1 now reports no function above the blocking complexity threshold of 15.
+Offline tests exercise license fallbacks/outages/mismatch, archive privacy/version/
+runtime dependency errors, build failure propagation, aggregate diagnostic paths
+and actual in-process help/version/error/module invocation. Subprocess doubles
+exercise error branches without a network dependency; the unchanged real build,
+audit, actionlint and isolated installed-wheel proofs remain required and passed
+locally. These unit tests are not a substitute for real tool execution.
+
+A local coverage run before correction reproduced the low files (main 65.4%, audit
+36.1%, build 26.5%, module entrypoint 0%, CLI 53.3%; this run also contained the new
+failing hook regression). After correction, `uv run --locked --with pytest-cov==7.1.0 pytest -q --cov=quality --cov=changecost --cov-report=json:...`
+passed 48 tests plus four subtests. Every measured source/validator file exceeded
+80%: main 86.9%, audit/build 98.7%, CLI and module entrypoint 100%. No coverage
+threshold, source scope or analyzer policy was weakened. Capsule attribution must
+still be confirmed by hosted review. Logs/reports: `promotion/coverage-before.*`,
+`promotion/coverage-after.*`, `promotion/complexity-after.json`,
+`promotion/capsule-pin-audit.log`, `promotion/refactor-build.log`.
+
+Codex comment 4122587726 correctly identified that ordinary hooks forwarded an
+empty comparison base. A new scenario and regression failed before the fix;
+only the staged hook now defaults an unset base to HEAD, preserving an explicit
+override. The actual configured `pre-commit run repository-contracts --all-files`
+also passed with BASE_REF absent in an isolated clone containing the full staged
+fixes (`promotion/ordinary-hook.log`); the working index was not touched.
+Aggregate/CI base requirements remain explicit.
+
+The 160 nonblocking findings have per-finding dispositions in the ignored
+`promotion/nonblocking-dispositions.json`: descriptive test/helper docstrings,
+pytest fixture-name injection and local imports, exact empty-list assertions,
+required callback/test-double parameters, intentional validator CLI output, and
+bounded dispatch/validation complexity retain documented narrow exceptions.
+Build/audit structure and explicit subprocess/UTF-8 fixture handling were repaired.
+These are scoped review dispositions, not suppressions or changes to analyzer rules.
+
+Codex 4122587708 and CodeRabbit 4122599241 correctly note that the AppArmor cache
+attachment is path-based, not bound to a binary signature. The gate guide now
+states this limitation. The proposed new host-privilege gain is not established
+on this disposable hosted VM: GitHub documents passwordless sudo for its runner
+user, and repository-controlled uv/build/tests already execute host-side. SpecFact's
+signed digest/same-descriptor checks protect its own launcher invocation, not
+arbitrary host executions; candidate capsules do not mount the host cache writable.
+Module 0.50.1 has no supported immutable external launcher setting; changing signed
+module internals or copying a different bwrap is not an authorized compatibility fix.
+The current disposition is a documented host trust boundary, pending reviewer reply.
+
+The capsule-only uv fixture failure remains unresolved: its native traceback only
+contained CalledProcessError, without stderr. Local offline execution passes. The
+fixture now asserts its return code with captured stderr so the next hosted report
+can identify the exact cause. No fixture was skipped or made permissive. Hosted
+full assurance and current-head reviews remain required; this batch does not claim
+the required CI gate has passed.
+
+
+Independent review of that local batch found a marker-split license regression
+introduced by the helper extraction: two locked versions of one package incorrectly
+reused the single installed version's metadata. A synthetic two-version lock test
+failed before correction (`promotion/license-split-red.log`). The collector now
+uses installed metadata only for its exact locked version, fetches exact-release
+metadata for other versions, and separately rejects an installed version outside
+all locked alternatives. The same fixture verifies both distinct evidence rows and
+the out-of-lock failure. All focused license tests pass after correction; the new
+fixture is part of the final 49-test suite. No package/audit scope was narrowed.

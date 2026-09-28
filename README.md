@@ -89,3 +89,10 @@ workflow; implementation does not itself commit, publish, merge or deploy.
 
 Project domains reserved by the maintainer: `changecost.dev` and `changecost.io`.
 No deployed site is claimed by this bootstrap.
+
+
+The foundation's commit hook checks the staged snapshot against HEAD by default.
+The complete local/CI gates additionally verify the installed CLI, distribution
+privacy, dependency evidence and all required review analyzers; incomplete capsule
+results remain failures. See the [gate guide](docs/development/quality-gates.md)
+for the pinned analyzer composition and hosted-runner trust boundary.

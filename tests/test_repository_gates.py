@@ -383,7 +383,7 @@ def test_review_activates_every_required_member(monkeypatch, tmp_path):
             "has_unknown_required_evidence": False,
             "analyzer_evidence": entries,
         }
-        Path(args[args.index("--out") + 1]).write_text(json.dumps(report))
+        Path(args[args.index("--out") + 1]).write_text(json.dumps(report), encoding="utf-8")
         return subprocess.CompletedProcess(args, 0)
 
     monkeypatch.setattr(review.subprocess, "run", native_run)
@@ -471,3 +471,28 @@ def test_workflow_validator_accepts_only_pinned_version(monkeypatch, tmp_path, v
     else:
         assert errors == ["actionlint 1.7.12 is required"]
         assert len(calls) == 1
+
+
+def test_staged_hook_defaults_to_head_without_overriding_explicit_base(monkeypatch, tmp_path):
+    import argparse
+    import subprocess
+
+    from quality import __main__ as runner
+
+    monkeypatch.chdir(tmp_path)
+    seen = []
+
+    def snapshot(root, destination):
+        (destination / "quality").mkdir()
+        (destination / "quality/__main__.py").write_text("# staged runner\n")
+        return {"quality/__main__.py"}
+
+    def run(args, **kwargs):
+        seen.append(args[args.index("--base") + 1])
+        return subprocess.CompletedProcess(args, 7)
+
+    monkeypatch.setattr(runner, "materialize_index", snapshot)
+    monkeypatch.setattr(runner.subprocess, "run", run)
+    assert runner.staged(argparse.Namespace(base="")) == 7
+    assert runner.staged(argparse.Namespace(base="explicit-base")) == 7
+    assert seen == ["HEAD", "explicit-base"]

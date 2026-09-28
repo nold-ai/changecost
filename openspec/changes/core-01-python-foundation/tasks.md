@@ -42,6 +42,8 @@ commit/push handoff after the passing local checks and independent reviews.
 Both Python matrix aggregates ran all other checks successfully. Task 3.2 has
 local matrix and executable wiring evidence. [PR #22](https://github.com/nold-ai/changecost/pull/22)
 is open with the combined preparation and implementation. Its first remote CI run
-failed both capsule setup and the Go-built actionlint version check. Scoped fixes
-and regression evidence await fresh hosted validation; task 4.3 remains incomplete
+failed both capsule setup and the Go-built actionlint version check. The next run
+executed capsules and passed workflow validation, but full review found complexity,
+coverage, an isolated uv fixture failure and an analyzer dependency mismatch.
+Corrections remain subject to fresh hosted validation; task 4.3 remains incomplete
 until final review and tracking verification. No required gate was waived.

@@ -50,14 +50,21 @@ def test_locked_sync_rejects_missing_and_stale_lock(tmp_path):
     (tmp_path / "pyproject.toml").write_text(project)
     args = ["uv", "lock", "--offline", "--no-python-downloads"]
     env = dict(os.environ, UV_PYTHON=sys.executable)
-    missing = subprocess.run([*args, "--check"], cwd=tmp_path, env=env, capture_output=True)
+    missing = subprocess.run(
+        [*args, "--check"], cwd=tmp_path, env=env, capture_output=True, check=False
+    )
     assert missing.returncode != 0
     assert not (tmp_path / "uv.lock").exists()
-    subprocess.run(args, cwd=tmp_path, env=env, check=True, capture_output=True)
+    created = subprocess.run(
+        args, cwd=tmp_path, env=env, check=False, capture_output=True, text=True
+    )
+    assert created.returncode == 0, created.stderr
     lock = (tmp_path / "uv.lock").read_bytes()
     (tmp_path / "pyproject.toml").write_text(
         project.replace("dependencies=[]", 'dependencies=["does-not-exist-probe==999"]')
     )
-    stale = subprocess.run([*args, "--check"], cwd=tmp_path, env=env, capture_output=True)
+    stale = subprocess.run(
+        [*args, "--check"], cwd=tmp_path, env=env, capture_output=True, check=False
+    )
     assert stale.returncode != 0
     assert (tmp_path / "uv.lock").read_bytes() == lock

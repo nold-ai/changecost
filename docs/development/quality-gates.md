@@ -6,14 +6,19 @@ returns nonzero if any required child fails or cannot run. Python 3.11.15 and
 3.13.14 use the same targets; OpenSpec 1.13.2, uv 0.12.19 and actionlint 1.7.12
 are bootstrap pins. The actionlint version check accepts the release/Homebrew
 `1.7.12` and Go-module `v1.7.12` spellings only. The lock resolves Python runtime, dev and build dependencies.
-The dev group also pins uv so isolated repository tests can invoke it. Pytest
+The dev group also pins uv so isolated repository tests can invoke it. BasedPyright
+1.39.10 and its Node wheel 24.16.0 are constrained to the signed SpecFact 0.50.1
+composition: newer project versions caused required analyzer evidence to be UNKNOWN.
+These are development dependencies; analyzer coverage and type-checking rules remain intact. Pytest
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package. CLI tests resolve the active environment’s console script
 from PATH, and the wheel proof puts its clean installation first.
 
 ## Inputs and comparison
 
-Always supply `BASE_REF` explicitly. A PR checks its head and the merge-base with
+Supply `BASE_REF` explicitly for local aggregate/manual review and CI. The staged
+commit hook alone defaults an unset base to HEAD and preserves explicit overrides.
+A PR checks its head and the merge-base with
 the event base; main pushes use the event's before SHA, including all commits in
 the push. Manual CI requires a comparison SHA. Missing history fails. Local
 `make check` reads tracked working files plus an explicit `MANIFEST` for intended
@@ -86,7 +91,10 @@ The advisory gate audits exported locked runtime/dev/build requirements using
 pip-audit and records `.changecost/dependency-audit.json`; missing data fails.
 Installed locked license metadata (release-specific PyPI metadata for dependencies
 absent on this platform) is recorded in `.changecost/dependency-licenses.json`
-and missing evidence fails. Review the actual license report before accepting new
+and missing evidence fails. Marker-split locks retain one evidence row per package
+version: installed metadata is reused only for an exact version match, with other
+versions fetched from their exact release metadata. An installed version outside
+all locked alternatives still fails. Review the actual license report before accepting new
 dependencies; metadata reporting is not legal advice or a compatibility guarantee.
 
 The workflow unit tests isolate the actionlint process boundary and exercise
@@ -128,7 +136,7 @@ turn an unavailable analyzer into a pass or disable the CI gate.
 ## Hosted capsule prerequisite
 
 CI pins Ubuntu 24.04 and assigns a fresh job-local capsule cache under RUNNER_TEMP.
-Before review, it loads an AppArmor profile granting `userns` only to that cache's
+Before review, it loads an AppArmor profile granting `userns` to that cache's
 `**/opt/specfact/bin/bwrap-static` launcher. Installation and all analyzers remain
 ordinary-user processes; only loading/removing this profile uses administrator
 privilege. The global AppArmor user-namespace restriction is checked to remain
@@ -142,11 +150,32 @@ can permit namespace creation while denying later capabilities, so a loopback
 checked 2026-09-28: [Ubuntu 24.04 release notes](https://documentation.ubuntu.com/release-notes/24.04/#unprivileged-user-namespace-restrictions)
 and [SpecFact customer workflow at b3ca3014](https://github.com/nold-ai/specfact-cli-modules/blob/b3ca3014c8d0e064b860856d4b560a2591999532/.github/workflows/capsule-customer-execution.yml).
 
-The first ChangeCost CI run failed during offline capsule installation on both
-Python versions; its workflow leaf also rejected the Go-build version spelling.
-The spelling fix and scoped prerequisite are locally syntax-checked; successful
-capsule execution remains unverified until the next CI run. If namespace setup
+The first ChangeCost CI run failed during offline capsule installation and rejected
+the Go-build actionlint spelling. Run 36427023807 at `086e8fd` passed workflow
+validation and executed capsules on both Python versions, exposing complexity,
+coverage, a capsule-only uv fixture failure and an analyzer dependency mismatch.
+Full review remains incomplete until those findings pass current-head CI. If namespace setup
 still fails, preserve the native report and investigate the runner denial rather
 than disabling global restrictions, using root analyzers or skipping review.
 Rollback removes the prerequisite step/profile and restores a failing incomplete
 review gate; no host policy on the contributor's machine is modified.
+
+
+The cache attachment is path-based and is not an authentication boundary: another
+host process could replace a matching file. This job uses a fresh GitHub-hosted
+VM where repository-controlled uv/build/tests already run as a user with
+[passwordless sudo](https://docs.github.com/en/actions/reference/runners/github-hosted-runners#administrative-privileges)
+(checked 2026-09-28). SpecFact verifies the signed launcher digest and executes the
+same open descriptor for its own invocations; that does not authenticate arbitrary
+host invocations. Capsule candidates receive read-only source/runtime mounts and
+writable output/tmp, not the host cache. The profile therefore supplies the required
+namespace prerequisite within this existing disposable-host trust model; it is not
+a new isolation boundary against a hostile host process. Do not reuse this setup
+on a shared or privileged persistent runner. An immutable external launcher would
+require upstream supported configuration absent from module 0.50.1.
+
+Failure-path unit tests use synthetic metadata, archives and injected subprocess
+outcomes to exercise diagnostic branches offline. They complement the real build,
+audit, actionlint and installed-CLI gates; their coverage percentages do not prove
+network service availability or real capsule execution. In-process CLI tests also
+cover help/version/errors and the module entrypoint; isolated subprocess proof remains.

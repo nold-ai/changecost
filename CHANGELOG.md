@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Default ordinary staged hooks to HEAD, split complex gate routines and exercise
+  their offline failure paths; align development type-checker versions with the
+  signed review capsule and clarify the disposable CI runner trust boundary.
+
 - Accept both exact release and Go-module spellings of pinned actionlint 1.7.12.
 
 - Reject invalid intended-file entries and require review for hygiene-policy edits.

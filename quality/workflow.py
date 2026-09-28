@@ -45,6 +45,23 @@ def wiring_errors(config: dict) -> list[str]:
     errors = []
     if "if" in job or job.get("continue-on-error") not in {None, "false"}:
         errors.append("required quality job can be skipped or ignored")
+    errors.extend(capsule_setup_errors(job))
+    matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
+    if matrix != ["3.11.15", "3.13.14"]:
+        errors.append("required Python matrix changed without gate reconciliation")
+    checks = [step for step in job.get("steps", []) if step.get("run", "").strip() == "make check"]
+    if (
+        len(checks) != 1
+        or "if" in checks[0]
+        or checks[0].get("continue-on-error") not in {None, "false"}
+    ):
+        errors.append("required aggregate must run unconditionally and propagate failure")
+    return errors
+
+
+def capsule_setup_errors(job: dict) -> list[str]:
+    """Check the reviewed capsule host and required namespace prerequisite wiring."""
+    errors = []
     if job.get("runs-on") != "ubuntu-24.04":
         errors.append("capsule prerequisite requires the reviewed Ubuntu 24.04 runner")
     setup = [step for step in job.get("steps", []) if step.get("id") == "capsule-userns"]
@@ -58,14 +75,4 @@ def wiring_errors(config: dict) -> list[str]:
         "${{ runner.temp }}/changecost-capsules"
     ):
         errors.append("capsule cache must match the job-local AppArmor attachment")
-    matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
-    if matrix != ["3.11.15", "3.13.14"]:
-        errors.append("required Python matrix changed without gate reconciliation")
-    checks = [step for step in job.get("steps", []) if step.get("run", "").strip() == "make check"]
-    if (
-        len(checks) != 1
-        or "if" in checks[0]
-        or checks[0].get("continue-on-error") not in {None, "false"}
-    ):
-        errors.append("required aggregate must run unconditionally and propagate failure")
     return errors
