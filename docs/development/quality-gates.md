@@ -150,10 +150,18 @@ Completion requires a complete current-head monitor snapshot as well as passing
 local evidence. Pending checks, commit statuses, reviewers and unresolved threads
 (including outdated threads) block completion. Exhausted budgets take precedence
 over waiting; a fully verified final allowed batch may complete.
+Completion also requires an `active_minutes` event with explicit finite nonnegative
+`minutes` after the latest binding refresh. Missing timing remains unknown; measured
+zero is allowed. Separate UTC recording timestamps preserve measurement provenance
+and idempotent ingestion, without inferring active time from wall-clock duration.
+For each reviewer, the latest current-head state applies: CHANGES_REQUESTED blocks
+even without inline comments; a required reviewer with PENDING or DISMISSED cannot
+reuse an older approval. APPROVED and COMMENTED satisfy reviewer completion only.
 
-The optional watcher uses paginated read-only `gh api` requests for current checks,
+The optional watcher uses paginated read-only `gh api --paginate --slurp` requests for current checks,
 statuses, reviews and issue comments, plus GraphQL `reviewThreads` and their
-comments to retain resolved/outdated thread state. It never pushes, replies,
+comments to retain resolved/outdated thread state. The slurped REST result is parsed
+as one complete JSON document, not physical lines. It never pushes, replies,
 resolves a thread or requests a review. Unchanged snapshots are suppressed; API
 or GraphQL failures make the session incomplete. The helper cannot authenticate a
 hostile runner or prevent arbitrary model calls outside this workflow.

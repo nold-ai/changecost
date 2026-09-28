@@ -74,3 +74,31 @@ and native KISS metrics returned no findings. Ruff passed and BasedPyright repor
 zero errors/warnings. The complete repository suite passed all 238 tests, and the
 strict OpenSpec change validation passed. Fresh supported-Linux capsule evidence
 remains required; no macOS limitation was treated as a pass.
+
+## Explicitly authorized three-finding extension
+
+The maintainer authorized one further collected batch with 30 active minutes on
+2026-09-28 (Europe/Berlin), retaining prior counters and unknown historical timing.
+Scope is missing elapsed measurement, latest reviewer rejection, and complete
+paginated REST JSON parsing. The ignored extension receipt records authorization;
+it does not replace or reset the historical session.
+
+New spec-first regressions produced eight failures and 71 passes before repair
+(`.changecost/extension-red.txt`). The repaired source passes 85 focused tests and
+all 253 repository tests. Measured helper coverage is 563/608 statements (93%
+rounded), maximum Radon complexity 10, and native KISS metrics report no findings.
+Ruff and BasedPyright pass; strict OpenSpec validation passes.
+
+Tests cover explicit zero versus missing minutes, UTC measurement provenance,
+restart/idempotent replay, head-refresh invalidation, current-head reviewer state
+supersession across pages, top-level human rejections, complete pretty-printed
+REST documents, API errors and CLI incomplete handoffs. Recording timestamps do
+not infer active time from wall time. This extension still requires fresh remote
+Linux and bot review evidence after publication.
+
+Independent review found fractional accumulation drift within this timing repair.
+A further regression failed before the final correction
+(`.changecost/extension-fractional-red.txt`). Canonical `math.fsum` now computes both
+stored and validated totals over all recorded measurements; 900 measurements of
+0.1 minute retain exactly 90 minutes across restart and reach the budget boundary.
+This remained within the same unpublished, authorized correction batch.

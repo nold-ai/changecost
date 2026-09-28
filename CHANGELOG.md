@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Require explicit active-time measurements for review completion, honor latest
+  reviewer rejections, and parse complete slurped GitHub pagination responses.
+
 - Repair review-session lifecycle decisions for real GitHub status values, retained
   escape history, current Git input binding, explicit evidence categories and
   recoverable scope decisions; reject malformed state and incomplete monitoring.

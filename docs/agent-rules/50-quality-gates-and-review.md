@@ -33,9 +33,13 @@ Declare nonempty `required_checks` names and explicit `required_statuses` contex
 Review inputs include Git HEAD, working contents and staged blob identities/modes.
 An explicit `advance_head` refresh invalidates earlier passing evidence even if
 HEAD is unchanged; keep the historical receipt and obtain fresh evidence.
+Missing active-time measurements block completion: record explicit measured minutes
+after the latest input refresh. A latest current-head changes-requested review is
+blocking, including top-level review bodies without inline threads. Required
+reviewers must have a latest APPROVED or COMMENTED result.
 
 `packet` retains scope, unresolved findings and evidence across context windows.
-`watch` is read-only and uses REST pagination for checks/statuses/reviews/comments
+`watch` is read-only and uses REST pagination with `--slurp` for checks/statuses/reviews/comments
 and GraphQL `reviewThreads` pagination for thread resolution/outdated state and
 comments. It requires a current-head non-pending result from each contract-named
 GitHub reviewer, polls changed nonterminal state with 15/30/60-second backoff, and

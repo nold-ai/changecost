@@ -12,6 +12,7 @@ import subprocess
 import tempfile
 import time
 from contextlib import contextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -52,6 +53,7 @@ def initialize(root: Path, change_id: str, contract: dict[str, Any]) -> dict[str
             "budget": {"batches": DEFAULT_BATCHES, "minutes": DEFAULT_MINUTES},
             "batches": 0,
             "active_minutes": 0,
+            "timing_measurements": [],
             "events": [],
             "findings": [],
             "investigations": [],
@@ -189,6 +191,7 @@ def validate_nested_state(state: dict[str, Any]) -> None:
         validate_event(event)
     validate_event_references(state["events"])
     validate_disposition_history(state)
+    validate_timing_measurements(state)
     validate_monitor_state(state["monitor"])
     validate_inputs_usage(state)
 
@@ -240,7 +243,22 @@ def validate_event(event: dict[str, Any]) -> None:
         "usage": ("cached_input", "uncached_input", "output", "cost"),
     }
     for key in numeric_fields.get(event["kind"], ()):
-        validate_nonnegative(event.get(key, 0), key)
+        default = None if event["kind"] == "active_minutes" else 0
+        validate_nonnegative(event.get(key, default), key)
+
+
+def validate_timing_measurements(state: dict[str, Any]) -> None:
+    validate_entries(state.get("timing_measurements"), ("event_id", "recorded_at"))
+    measurements = state["timing_measurements"]
+    events = {item["id"]: item for item in state["events"] if item["kind"] == "active_minutes"}
+    if {item["event_id"] for item in measurements} != set(events):
+        raise ValueError("timing measurements do not match recorded activity")
+    if math.fsum(item["minutes"] for item in events.values()) != state["active_minutes"]:
+        raise ValueError("elapsed counter contradicts recorded measurements")
+    for item in measurements:
+        timestamp = datetime.fromisoformat(item["recorded_at"])
+        if timestamp.tzinfo is None or item.get("minutes") != events[item["event_id"]]["minutes"]:
+            raise ValueError("malformed timing measurement provenance")
 
 
 def validate_event_references(events: list[dict[str, Any]]) -> None:
@@ -357,7 +375,10 @@ def add_active_minutes(state: dict[str, Any], event: dict[str, Any]) -> None:
     minutes = number(event, "minutes")
     if minutes < 0:
         raise ValueError("active minutes cannot be negative")
-    state["active_minutes"] += minutes
+    state["timing_measurements"].append(
+        {"event_id": event["id"], "minutes": minutes, "recorded_at": datetime.now(UTC).isoformat()}
+    )
+    state["active_minutes"] = math.fsum(item["minutes"] for item in state["timing_measurements"])
 
 
 def add_extension(state: dict[str, Any], event: dict[str, Any]) -> None:
@@ -509,6 +530,8 @@ def completed_decision(state: dict[str, Any]) -> tuple[str, str]:
         return "incomplete", "completed session has unresolved findings"
     if not completion_evidence(state) or state["monitor"].get("head") != state["reviewed_head"]:
         return "incomplete", "completion lacks current gate and reviewer evidence"
+    if not any(event["kind"] == "active_minutes" for event in current_binding_events(state)):
+        return "incomplete", "completion lacks explicit current-input elapsed-time measurement"
     if (
         state["batches"] > state["budget"]["batches"]
         or state["active_minutes"] > state["budget"]["minutes"]
@@ -581,13 +604,16 @@ def completion_evidence(state: dict[str, Any]) -> bool:
 
 
 def current_evidence(state: dict[str, Any]) -> list[dict[str, Any]]:
-    evidence: list[dict[str, Any]] = []
+    return [event for event in current_binding_events(state) if event["kind"] == "evidence"]
+
+
+def current_binding_events(state: dict[str, Any]) -> list[dict[str, Any]]:
+    events: list[dict[str, Any]] = []
     for event in state["events"]:
         if event["kind"] == "advance_head":
-            evidence.clear()
-        if event["kind"] == "evidence":
-            evidence.append(event)
-    return evidence
+            events.clear()
+        events.append(event)
+    return events
 
 
 def packet(root: Path, change_id: str) -> dict[str, Any]:
@@ -602,6 +628,7 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
         "evidence": state["evidence"],
         "scope_decisions": state["scope_decisions"],
         "usage": state["usage"],
+        "timing_measurements": state["timing_measurements"],
         "monitor": state["monitor"],
     }
 
@@ -714,12 +741,14 @@ def gh_graphql(query: str, **variables: Any) -> dict[str, Any]:
 def gh_json(endpoint: str, *, paginate: bool = False) -> Any:
     command = ["gh", "api", endpoint]
     if paginate:
-        command.append("--paginate")
+        command.extend(("--paginate", "--slurp"))
     result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=60)
     if result.returncode:
         raise RuntimeError(result.stderr.strip() or "gh api failed")
-    values = [json.loads(line) for line in result.stdout.splitlines() if line]
-    return values if paginate else values[0]
+    value = json.loads(result.stdout)
+    if paginate and not isinstance(value, list):
+        raise ValueError("paginated API response must be a slurped page array")
+    return value
 
 
 def monitor_errors(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
@@ -733,7 +762,7 @@ def monitor_errors(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[s
         validate_snapshot(snapshot)
     except ValueError as error:
         return [str(error)]
-    return failed_external_checks(snapshot)
+    return failed_external_checks(snapshot) + rejected_reviews(snapshot)
 
 
 def validate_snapshot(snapshot: dict[str, Any]) -> None:
@@ -808,17 +837,29 @@ def missing_gates(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[st
 
 
 def reviewer_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
-    reviews = [review for page in snapshot.get("reviews", []) for review in page]
-    current_logins = {
-        str(review.get("user", {}).get("login", "")).removesuffix("[bot]")
-        for review in reviews
-        if review.get("commit_id") == snapshot["head"]
-        and review.get("state") in {"APPROVED", "COMMENTED", "CHANGES_REQUESTED"}
-    }
+    latest = latest_review_states(snapshot)
     return [
         f"required reviewer has no current-head result: {reviewer}"
         for reviewer in contract["required_reviewers"]
-        if reviewer.removesuffix("[bot]") not in current_logins
+        if latest.get(reviewer.removesuffix("[bot]")) not in {"APPROVED", "COMMENTED"}
+    ]
+
+
+def latest_review_states(snapshot: dict[str, Any]) -> dict[str, str]:
+    latest: dict[str, str] = {}
+    reviews = [review for page in snapshot["reviews"] for review in page]
+    for review in reviews:
+        if review.get("commit_id") == snapshot["head"]:
+            login = str(review.get("user", {}).get("login", "")).removesuffix("[bot]")
+            latest[login] = str(review.get("state", ""))
+    return latest
+
+
+def rejected_reviews(snapshot: dict[str, Any]) -> list[str]:
+    return [
+        f"current-head reviewer requested changes: {login}"
+        for login, state in latest_review_states(snapshot).items()
+        if state == "CHANGES_REQUESTED"
     ]
 
 

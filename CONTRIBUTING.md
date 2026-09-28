@@ -50,6 +50,10 @@ possibly empty), and required reviewers. Missing declared results block completi
 An `advance_head` event refreshes the Git HEAD, working-content and staged-index
 binding while preserving counters; passing evidence from before that refresh
 remains historical and cannot establish completion of the new inputs.
+Record measured `active_minutes` explicitly after each input refresh, including an
+actual measured zero when appropriate. The helper retains UTC receipt timestamps
+without estimating activity from elapsed wall time. Latest current-head reviewer
+rejections block completion; pending/dismissed results cannot reuse old approvals.
 At three correction batches, 90 active minutes, or an escaping investigated family,
 create a packet and replan rather than continue a narrow fix loop.
 

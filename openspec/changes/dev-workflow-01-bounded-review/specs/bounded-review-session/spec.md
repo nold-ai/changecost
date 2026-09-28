@@ -89,6 +89,21 @@ and budget state, and SHALL report only meaningful external review changes.
 The helper SHALL distinguish evidence categories from event kinds, reject conflicting event
 identities and malformed nested state, and retain correction and investigation chronology.
 
+#### Scenario: Distinguish missing timing from measured zero
+- **WHEN** completion is requested without an explicit active-minutes measurement after the latest input refresh
+- **THEN** completion is incomplete even when stored counters are zero
+- **AND** a finite measured zero is accepted, while an event omitting minutes is rejected
+
+#### Scenario: Respect the latest current-head reviewer state
+- **WHEN** the latest review from any reviewer requests changes on the current head
+- **THEN** completion is blocked even when no inline thread exists
+- **AND** an older approval cannot satisfy a required reviewer whose latest state is pending or dismissed
+
+#### Scenario: Parse complete paginated API documents
+- **WHEN** the GitHub CLI returns pretty-printed paginated REST results
+- **THEN** the helper requests a slurped page array and parses the complete JSON document
+- **AND** failed API calls remain incomplete evidence
+
 #### Scenario: Rebind changed review inputs
 - **WHEN** an explicit head advancement refreshes input fingerprints, including staged blobs and modes
 - **THEN** earlier passing evidence is invalidated even if the commit SHA is unchanged

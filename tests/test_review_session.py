@@ -70,7 +70,7 @@ def complete_snapshot() -> dict[str, object]:
     }
 
 
-def complete_session(tmp_path: Path) -> None:
+def complete_session(tmp_path: Path, *, timing: bool = True) -> None:
     review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
     for category in ("gate", "reviewer"):
         review_session.record(
@@ -85,6 +85,10 @@ def complete_session(tmp_path: Path) -> None:
             },
         )
     review_session.record(tmp_path, "change", {"id": "done", "kind": "phase", "phase": "complete"})
+    if timing:
+        review_session.record(
+            tmp_path, "change", {"id": "completed-time", "kind": "active_minutes", "minutes": 0}
+        )
 
 
 def test_final_batch_completion_and_pending_precedence(tmp_path: Path) -> None:
@@ -732,3 +736,184 @@ def test_gate_contract_requires_explicit_valid_identities(
 ) -> None:
     with pytest.raises(ValueError):
         review_session.initialize(tmp_path, "change", {**contract(), field: value})
+
+
+def test_completion_requires_explicit_current_timing(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path, timing=False)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    review_session.record(
+        tmp_path, "change", {"id": "measured", "kind": "active_minutes", "minutes": 0}
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    assert review_session.load(tmp_path, "change")["active_minutes"] == 0
+    review_session.record(
+        tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+    )
+    for category in ("gate", "reviewer"):
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "new-" + category,
+                "kind": "evidence",
+                "evidence_type": category,
+                "head": TEST_HEAD,
+                "result": "pass",
+            },
+        )
+    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    review_session.record(
+        tmp_path, "change", {"id": "new-done", "kind": "phase", "phase": "complete"}
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_missing_minutes_in_persisted_event_requires_recovery(tmp_path: Path) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    state["events"].append({"id": "missing", "kind": "active_minutes"})
+    review_session.write_state(review_session.state_path(tmp_path, "change"), state)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize(
+    "login,states,expected",
+    [
+        ("reviewer-a", ["APPROVED", "CHANGES_REQUESTED"], "incomplete"),
+        ("reviewer-a", ["CHANGES_REQUESTED", "APPROVED"], "complete"),
+        ("reviewer-a", ["APPROVED", "PENDING"], "wait"),
+        ("reviewer-a", ["APPROVED", "DISMISSED"], "wait"),
+        ("human", ["CHANGES_REQUESTED"], "incomplete"),
+    ],
+)
+def test_latest_reviewer_state_controls_completion(
+    tmp_path: Path, login: str, states: list[str], expected: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    review_session.record(
+        tmp_path, "change", {"id": "time", "kind": "active_minutes", "minutes": 0}
+    )
+    snapshot = complete_snapshot()
+    snapshot["reviews"] = [
+        [
+            {"id": index + 1, "commit_id": TEST_HEAD, "user": {"login": login}, "state": state}
+            for index, state in enumerate(states)
+        ]
+    ]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == expected
+
+
+@pytest.mark.parametrize(
+    "paginate,payload", [(False, {"head": {"sha": "x"}}), (True, [[{"id": 1}], [{"id": 2}]])]
+)
+def test_rest_parser_reads_complete_pretty_json(
+    monkeypatch: pytest.MonkeyPatch, paginate: bool, payload: object
+) -> None:
+    commands = []
+
+    def run(command: list[str], **kwargs: object) -> SimpleNamespace:
+        commands.append(command)
+        return SimpleNamespace(returncode=0, stdout=json.dumps(payload, indent=2), stderr="")
+
+    monkeypatch.setattr(review_session.subprocess, "run", run)
+    assert review_session.gh_json("endpoint", paginate=paginate) == payload
+    assert ("--slurp" in commands[0]) == paginate
+
+
+def test_timing_timestamp_preserves_idempotence_and_restart(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    event = {"id": "time", "kind": "active_minutes", "minutes": 2}
+    first = review_session.record(tmp_path, "change", event)
+    second = review_session.record(tmp_path, "change", event)
+    assert second == first
+    assert review_session.load(tmp_path, "change")["active_minutes"] == 2
+    assert len(second["timing_measurements"]) == 1
+    assert second["timing_measurements"][0]["recorded_at"].endswith("+00:00")
+    assert second["events"][0] == event
+
+
+def test_missing_minutes_ingestion_does_not_create_measurement(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", {"id": "time", "kind": "active_minutes"})
+    assert review_session.load(tmp_path, "change")["timing_measurements"] == []
+
+
+def test_rest_parser_preserves_api_errors(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        review_session.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=1, stdout="", stderr="rate limited"),
+    )
+    with pytest.raises(RuntimeError, match="rate limited"):
+        review_session.gh_json("endpoint", paginate=True)
+
+
+def test_cli_watch_reports_malformed_paginated_response(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+
+    def snapshot(*args: object) -> dict[str, object]:
+        raise ValueError("paginated API response must be a slurped page array")
+
+    monkeypatch.setattr(review_session, "gh_snapshot", snapshot)
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "review-session",
+            "watch",
+            "change",
+            "--root",
+            str(tmp_path),
+            "--repo",
+            "nold-ai/changecost",
+            "--pr",
+            "24",
+            "--timeout-minutes",
+            "0",
+        ],
+    )
+    assert review_session.main() == 1
+    assert '"action": "incomplete"' in capsys.readouterr().out
+
+
+def test_review_supersession_spans_pages_and_ignores_old_head(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["reviews"] = [
+        [
+            {
+                "commit_id": TEST_HEAD,
+                "user": {"login": "reviewer-a[bot]"},
+                "state": "CHANGES_REQUESTED",
+            }
+        ],
+        [
+            {"commit_id": TEST_HEAD, "user": {"login": "reviewer-a[bot]"}, "state": "APPROVED"},
+            {
+                "commit_id": "old",
+                "user": {"login": "reviewer-a[bot]"},
+                "state": "CHANGES_REQUESTED",
+            },
+        ],
+    ]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+def test_fractional_minutes_sum_canonically_across_restart_and_budget(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for index in range(900):
+        review_session.record(
+            tmp_path, "change", {"id": f"time-{index}", "kind": "active_minutes", "minutes": 0.1}
+        )
+    assert review_session.load(tmp_path, "change")["active_minutes"] == 90
+    assert review_session.status(tmp_path, "change")["action"] == "replan"
+    complete_session(tmp_path)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    review_session.record(tmp_path, "change", {"id": "resume", "kind": "phase", "phase": "active"})
+    assert review_session.status(tmp_path, "change")["action"] == "replan"

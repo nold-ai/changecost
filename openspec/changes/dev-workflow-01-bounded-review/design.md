@@ -19,8 +19,9 @@ mutation, or hostile-runner integrity guarantee.
 1. Store one JSON state document under `.changecost/workflow/<change-id>/`. It is
    ignored local evidence, validated on read, and atomically replaced so an
    interrupted update remains recoverable.
-2. Use standard-library JSON, `gh api --paginate` for REST collections and
+2. Use standard-library JSON, `gh api --paginate --slurp` for REST collections and
    `gh api graphql` cursor pagination for review threads and their comments. The
+   parse the complete returned JSON document, including pretty-printed pages. The
    helper receives explicit JSON records for updates; it does not parse model
    transcripts.
 3. Compute a status enum from counters, elapsed active time, finding family
@@ -33,8 +34,15 @@ mutation, or hostile-runner integrity guarantee.
    the normalized result and emits only a changed snapshot or explicit error. It
    has no GitHub mutation command.
 6. The contract names the required GitHub reviewer logins. The watcher fails
-   closed until each has a non-pending review bound to the frozen head; it polls
+   closed until each latest current-head review is APPROVED or COMMENTED. The
+   latest CHANGES_REQUESTED from any reviewer blocks completion; required pending
+   or dismissed reviews cannot reuse an earlier approval. It polls
    changed nonterminal state through the separate 30-minute no-progress limit.
+7. Record manually measured active minutes with separate UTC recording timestamps
+   linked to immutable event IDs. Missing measurements differ from measured zero;
+   completion requires an explicit measurement after the latest input refresh.
+   Timestamps document receipt provenance and do not infer active time from wall
+   time. Duplicate ingestion retains the original timestamp and counter.
 
 ## Risks / Trade-offs
 
