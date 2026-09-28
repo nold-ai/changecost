@@ -29,7 +29,14 @@ LEAVES = (
     "spec",
 )
 BEHAVIOR = ("src/", "quality/", "tests/", ".github/workflows/")
-CONFIG = {"pyproject.toml", "uv.lock", "Makefile", ".pre-commit-config.yaml", ".python-version"}
+CONFIG = {
+    "pyproject.toml",
+    "uv.lock",
+    "Makefile",
+    ".pre-commit-config.yaml",
+    ".pre-commit-hygiene.yaml",
+    ".python-version",
+}
 
 
 def external(root: Path, args: list[str]) -> list[str]:

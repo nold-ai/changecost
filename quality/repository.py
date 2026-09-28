@@ -31,7 +31,8 @@ def inventory(root: Path, manifest: Path | None = None) -> set[str]:
     if manifest:
         for name in manifest.read_text().splitlines():
             if name:
-                safe_path(root, name)
+                if not safe_path(root, name).is_file():
+                    raise ValueError(f"manifest entry is not a file: {name}")
                 names.add(name)
     return {name for name in names if safe_path(root, name).is_file()}
 

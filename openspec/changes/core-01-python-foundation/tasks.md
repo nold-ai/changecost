@@ -40,5 +40,8 @@ policy. On 2026-09-28 the maintainer accepted this known local limitation and
 assigned capsule execution to GitHub CI; it no longer blocks this change’s
 commit/push handoff after the passing local checks and independent reviews.
 Both Python matrix aggregates ran all other checks successfully. Task 3.2 has
-local matrix and executable wiring evidence, but remote CI has not run for this
-unpublished branch. Task 4.3 belongs to the later final PR. No scope was waived.
+local matrix and executable wiring evidence. [PR #22](https://github.com/nold-ai/changecost/pull/22)
+is open with the combined preparation and implementation. Its first remote CI run
+failed both capsule setup and the Go-built actionlint version check. Scoped fixes
+and regression evidence await fresh hosted validation; task 4.3 remains incomplete
+until final review and tracking verification. No required gate was waived.

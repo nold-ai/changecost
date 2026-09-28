@@ -12,7 +12,8 @@ def validate(root: Path) -> list[str]:
     version = subprocess.run(
         ["actionlint", "--version"], capture_output=True, text=True, check=True
     )
-    if version.stdout.splitlines()[0] != "1.7.12":
+    reported = version.stdout.splitlines()
+    if not reported or reported[0] not in {"1.7.12", "v1.7.12"}:
         return ["actionlint 1.7.12 is required"]
     paths = sorted((root / ".github/workflows").glob("*.yml"))
     paths += sorted((root / ".github/workflows").glob("*.yaml"))
@@ -44,6 +45,19 @@ def wiring_errors(config: dict) -> list[str]:
     errors = []
     if "if" in job or job.get("continue-on-error") not in {None, "false"}:
         errors.append("required quality job can be skipped or ignored")
+    if job.get("runs-on") != "ubuntu-24.04":
+        errors.append("capsule prerequisite requires the reviewed Ubuntu 24.04 runner")
+    setup = [step for step in job.get("steps", []) if step.get("id") == "capsule-userns"]
+    if (
+        len(setup) != 1
+        or "if" in setup[0]
+        or setup[0].get("continue-on-error") not in {None, "false"}
+    ):
+        errors.append("capsule namespace setup is missing or can be skipped")
+    elif setup[0].get("env", {}).get("SPECFACT_CODE_REVIEW_CAPSULE_CACHE") != (
+        "${{ runner.temp }}/changecost-capsules"
+    ):
+        errors.append("capsule cache must match the job-local AppArmor attachment")
     matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
     if matrix != ["3.11.15", "3.13.14"]:
         errors.append("required Python matrix changed without gate reconciliation")

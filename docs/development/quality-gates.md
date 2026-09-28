@@ -4,7 +4,8 @@ The foundation implements shared local, staged and CI validators in `quality/`.
 They are development tooling and are excluded from distributions. `make check`
 returns nonzero if any required child fails or cannot run. Python 3.11.15 and
 3.13.14 use the same targets; OpenSpec 1.13.2, uv 0.12.19 and actionlint 1.7.12
-are bootstrap pins. The lock resolves Python runtime, dev and build dependencies.
+are bootstrap pins. The actionlint version check accepts the release/Homebrew
+`1.7.12` and Go-module `v1.7.12` spellings only. The lock resolves Python runtime, dev and build dependencies.
 The dev group also pins uv so isolated repository tests can invoke it. Pytest
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package. CLI tests resolve the active environment’s console script
@@ -17,7 +18,9 @@ the event base; main pushes use the event's before SHA, including all commits in
 the push. Manual CI requires a comparison SHA. Missing history fails. Local
 `make check` reads tracked working files plus an explicit `MANIFEST` for intended
 new files; it refuses implicit omission when untracked files exist. Unrelated
-private `artifacts/` directories are ignored at every depth.
+private `artifacts/` directories are ignored at every depth. Every nonempty manifest
+entry must name an existing regular file; missing paths and directories are rejected
+by name. Valid manifests may intentionally exclude unrelated untracked files.
 
 The commit hook materializes Git index blobs into a temporary directory and runs
 the staged validator code there. It checks staged additions, removals, renames and
@@ -102,7 +105,8 @@ SpecFact CLI 0.55.4 and review module 0.50.1 produce the native ignored
 `.specfact/code-review.json`. The runner binds its scope to a digest of the complete
 input set in a sidecar and checks actual required analyzer states and assurance.
 Behavior-affecting source, tests, dependencies, validator or CI edits require review;
-docs-only work states non-applicability and still runs its gates. Missing/skipped
+changes to either pre-commit configuration, including the shared hygiene policy,
+also require review. Docs-only work states non-applicability and still runs its gates. Missing/skipped
 analyzers fail. The manual hook alone is not review completion.
 
 Review capsules currently need a Linux x86-64 controller. Local macOS results
@@ -119,3 +123,30 @@ reports remain incomplete evidence. Passing local checks and independent reviews
 permit this change’s commit/push handoff; the enabled full CI review must still
 execute successfully before claiming merge readiness. This decision does not
 turn an unavailable analyzer into a pass or disable the CI gate.
+
+
+## Hosted capsule prerequisite
+
+CI pins Ubuntu 24.04 and assigns a fresh job-local capsule cache under RUNNER_TEMP.
+Before review, it loads an AppArmor profile granting `userns` only to that cache's
+`**/opt/specfact/bin/bwrap-static` launcher. Installation and all analyzers remain
+ordinary-user processes; only loading/removing this profile uses administrator
+privilege. The global AppArmor user-namespace restriction is checked to remain
+enabled. The job removes its profile after checking and retains only native
+review JSON plus the content-binding sidecar as a seven-day CI artifact.
+
+This adapts the public SpecFact customer workflow's prerequisite, not its corpus
+wrappers or privileged legacy smoke jobs. Ubuntu explains that the default profile
+can permit namespace creation while denying later capabilities, so a loopback
+`RTM_NEWADDR` permission failure is consistent with this restriction. Sources
+checked 2026-09-28: [Ubuntu 24.04 release notes](https://documentation.ubuntu.com/release-notes/24.04/#unprivileged-user-namespace-restrictions)
+and [SpecFact customer workflow at b3ca3014](https://github.com/nold-ai/specfact-cli-modules/blob/b3ca3014c8d0e064b860856d4b560a2591999532/.github/workflows/capsule-customer-execution.yml).
+
+The first ChangeCost CI run failed during offline capsule installation on both
+Python versions; its workflow leaf also rejected the Go-build version spelling.
+The spelling fix and scoped prerequisite are locally syntax-checked; successful
+capsule execution remains unverified until the next CI run. If namespace setup
+still fails, preserve the native report and investigate the runner denial rather
+than disabling global restrictions, using root analyzers or skipping review.
+Rollback removes the prerequisite step/profile and restores a failing incomplete
+review gate; no host policy on the contributor's machine is modified.

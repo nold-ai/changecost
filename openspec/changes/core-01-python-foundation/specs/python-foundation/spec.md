@@ -125,6 +125,30 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the complete aggregate runs with missing or stale required review evidence
 - **THEN** it is incomplete/non-success even if a manual review hook was skipped; a docs-only applicability decision remains explicit and still runs the documentation gates.
 
+#### Scenario: Pinned workflow validator distribution
+
+- **GIVEN** actionlint 1.7.12 installed as a release binary or through its Go module
+- **WHEN** the workflow validator checks the installed version
+- **THEN** it accepts exactly `1.7.12` and `v1.7.12`, rejects missing, malformed or different versions, and still runs workflow syntax validation.
+
+#### Scenario: Hygiene policy changes require review
+
+- **GIVEN** a change only to the shared pre-commit hygiene configuration
+- **WHEN** review applicability is evaluated
+- **THEN** full required review runs even when the changed hygiene policy itself passes.
+
+#### Scenario: Invalid intended-file manifest
+
+- **GIVEN** an intended-file manifest naming a missing file or a directory
+- **WHEN** working-tree inputs are inventoried
+- **THEN** the gate rejects the invalid entry by name rather than silently omitting it; unrelated untracked files may remain intentionally excluded by a valid manifest.
+
+#### Scenario: Restricted Linux capsule host
+
+- **GIVEN** an Ubuntu 24.04 runner with AppArmor user-namespace restrictions
+- **WHEN** CI prepares its signed review capsule
+- **THEN** only the job-local cached launcher receives the required AppArmor userns permission, global restrictions remain enabled, and installation and full review execute as the ordinary runner user; setup failures remain failures.
+
 #### Scenario: Comparison covers the tested contents
 
 - **GIVEN** a PR head or a main push containing multiple commits

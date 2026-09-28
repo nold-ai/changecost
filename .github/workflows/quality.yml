@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   quality:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -69,5 +69,47 @@ jobs:
         run: uv sync --locked --group build
       - name: Install pinned review module
         run: specfact module install nold-ai/specfact-code-review --version 0.50.1
+      - name: Allow namespaces for this job's signed capsule launcher
+        id: capsule-userns
+        env:
+          SPECFACT_CODE_REVIEW_CAPSULE_CACHE: ${{ runner.temp }}/changecost-capsules
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(id -u)" -ne 0
+          test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
+          test "$SPECFACT_CODE_REVIEW_CAPSULE_CACHE" = "$RUNNER_TEMP/changecost-capsules"
+          echo "SPECFACT_CODE_REVIEW_CAPSULE_CACHE=$SPECFACT_CODE_REVIEW_CAPSULE_CACHE" >> "$GITHUB_ENV"
+          mkdir -p "$SPECFACT_CODE_REVIEW_CAPSULE_CACHE"
+          profile="$RUNNER_TEMP/changecost-capsule.apparmor"
+          cat > "$profile" <<EOF
+          abi <abi/4.0>,
+          include <tunables/global>
+          profile changecost-capsule "$SPECFACT_CODE_REVIEW_CAPSULE_CACHE/**/opt/specfact/bin/bwrap-static" flags=(unconfined) {
+            userns,
+          }
+          EOF
+          # Only policy installation is administrative; analysis stays unprivileged.
+          sudo apparmor_parser -r "$profile"
+          test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
       - name: Check repository
         run: make check
+      - name: Preserve native review evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: review-evidence-${{ matrix.python }}
+          path: |
+            .specfact/code-review*.json
+            .specfact/review-binding.json
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Remove job-local capsule profile
+        if: always()
+        shell: bash
+        run: |
+          profile="$RUNNER_TEMP/changecost-capsule.apparmor"
+          if test -f "$profile"; then
+            sudo apparmor_parser -R "$profile"
+          fi

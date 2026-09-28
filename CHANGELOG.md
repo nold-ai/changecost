@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Accept both exact release and Go-module spellings of pinned actionlint 1.7.12.
+
+- Reject invalid intended-file entries and require review for hygiene-policy edits.
+  Prepare a job-local AppArmor permission for signed review capsules on Ubuntu
+  24.04, retaining global restrictions and native CI evidence.
+
 - Correct full-review analyzer activation and isolated test dependencies/imports;
   verify installed console scripts through the selected environment and keep real
   workflow syntax validation separate from subprocess unit tests.

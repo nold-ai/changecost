@@ -171,3 +171,60 @@ any resulting findings must be checked during PR promotion before merge readines
 can be claimed. Hosted execution is expected to provide the supported environment,
 but has not yet been observed for this change. Prepared artifacts, implementation
 and the artifacts-ignore rule belong to the same eventual PR.
+
+
+## PR 22 review and hosted-runner corrections
+
+On 2026-09-28, CI run [36424984547](https://github.com/nold-ai/changecost/actions/runs/36424984547)
+at head `50761043cfebd1894ca8617e971930884054de7d` failed on both Python matrix
+jobs. All ten required review analyzers were UNKNOWN because signed capsule
+materialization failed at offline-install with `bwrap: loopback: Failed RTM_NEWADDR:
+Operation not permitted`; `make check` exited 2. The workflow leaf also failed:
+the Go-installed validator reported `v1.7.12`, which the exact-version check rejected.
+A full log audit identified these two failing leaves; other leaves reported no
+errors. This supersedes the earlier statement that remote CI had not run.
+
+Comparison with `specfact-cli-modules` public main `b3ca3014c8d0e064b860856d4b560a2591999532`
+found a missing prerequisite: its customer workflow pins Ubuntu 24.04, sets a
+job-local `SPECFACT_CODE_REVIEW_CAPSULE_CACHE`, and loads a narrowly attached
+AppArmor `userns` profile before ordinary-user capsule execution. Upstream run
+[35158056310](https://github.com/nold-ai/specfact-cli-modules/actions/runs/35158056310)
+shows PASS for clean cold/warm/alternate/targeted fixtures after that setup. The
+upstream run overall failed separate composition-identity checks; it is not
+reported as a fully passing reference run. The adapted ChangeCost setup preserves
+global restrictions, signed capsule validation, all required analyzers and ordinary
+user execution. The next hosted run must establish whether it resolves this failure.
+
+Codex review comments 4122414070 and 4122414083 identified two reproducible gate
+omissions. New OpenSpec scenarios preceded changes. The focused command
+`uv run --locked pytest -q tests/test_repository_gates.py -k 'hygiene_policy_change or manifest_rejects or workflow_requires_scoped'`
+initially failed all four cases: hygiene-only edits skipped review, missing file
+and directory manifest entries were silently omitted, and missing capsule setup
+was accepted. After the minimum corrections the same command passed all four.
+Ignored logs: `promotion/fixes-red.log` and `promotion/fixes-green.log` under the
+change's `.changecost/workflow/` receipt directory.
+
+Real actionlint 1.7.12 caught an invalid runner context in job-level environment
+configuration while preparing the fix. Moving that value to the setup step's
+environment and exporting it for subsequent steps repaired the syntax;
+`uv run --locked python -m quality workflow --base 141b9b3` then passed. This
+checks configuration and regressions, not actual AppArmor or capsule execution.
+The full Linux review and fresh current-head bot reviews remain required after push.
+
+
+CodeRabbit comment 4122475797 identified the additional actionlint version defect.
+Both hosted job logs contain `actionlint 1.7.12 is required` (lines 41 and 223 of
+the saved combined failed-step log). The pinned upstream
+[command.go](https://github.com/rhysd/actionlint/blob/v1.7.12/command.go#L64)
+returns the Go module version when no release ldflag sets the version, explaining
+`v1.7.12` versus the local Homebrew binary's `1.7.12` (checked 2026-09-28).
+An initial claim that all non-review CI leaves passed was incorrect; the complete
+stage/error audit is saved in `promotion/ci-error-audit.txt` and the narrative above
+is corrected. No actual Go installation ran locally because Go is unavailable.
+
+The new version scenario and parameterized regression preceded the validator fix.
+`uv run --locked pytest -q tests/test_repository_gates.py -k workflow_validator_accepts`
+failed the supported `v1.7.12` case before correction and passed afterward. Only
+`1.7.12` and `v1.7.12` are accepted; empty output, malformed/unknown and different
+versions are rejected before syntax execution. Accepted versions still invoke the
+syntax validator. Logs: `promotion/actionlint-red.log` and `promotion/actionlint-green.log`.

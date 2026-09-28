@@ -388,3 +388,86 @@ def test_review_activates_every_required_member(monkeypatch, tmp_path):
 
     monkeypatch.setattr(review.subprocess, "run", native_run)
     assert review.run(tmp_path, set()) == []
+
+
+def test_hygiene_policy_change_requires_review(monkeypatch, tmp_path):
+    from quality import __main__ as runner
+
+    policy = tmp_path / ".pre-commit-hygiene.yaml"
+    policy.write_text("repos: []\n")
+    before = {policy.name: b"repos:\n- hooks:\n  - id: detect-private-key\n"}
+    calls = []
+    monkeypatch.setattr(runner.review, "run", lambda *args: calls.append(args) or ["UNKNOWN"])
+    assert runner.leaf("review", tmp_path, {policy.name}, before) == ["UNKNOWN"]
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("invalid", ["new-typo.py", "directory"])
+def test_manifest_rejects_missing_files_and_directories(tmp_path, invalid):
+    from quality.repository import git, inventory
+
+    git(tmp_path, "init", "-q")
+    (tmp_path / "new.py").write_text("invalid syntax!\n")
+    (tmp_path / "directory").mkdir()
+    manifest = tmp_path / "manifest.txt"
+    manifest.write_text(invalid + "\n")
+    with pytest.raises(ValueError, match="manifest entry is not a file"):
+        inventory(tmp_path, manifest)
+    manifest.write_text("new.py\n")
+    assert inventory(tmp_path, manifest) == {"new.py"}
+
+
+def test_workflow_requires_scoped_capsule_prerequisite():
+    import copy
+
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    assert wiring_errors(config) == []
+    missing = copy.deepcopy(config)
+    job = missing["jobs"]["quality"]
+    job["steps"] = [step for step in job["steps"] if step.get("id") != "capsule-userns"]
+    assert "capsule namespace setup is missing or can be skipped" in wiring_errors(missing)
+    wrong_runner = copy.deepcopy(config)
+    wrong_runner["jobs"]["quality"]["runs-on"] = "ubuntu-latest"
+    assert "capsule prerequisite requires the reviewed Ubuntu 24.04 runner" in wiring_errors(
+        wrong_runner
+    )
+    wrong_cache = copy.deepcopy(config)
+    setup = next(
+        step
+        for step in wrong_cache["jobs"]["quality"]["steps"]
+        if step.get("id") == "capsule-userns"
+    )
+    setup["env"]["SPECFACT_CODE_REVIEW_CAPSULE_CACHE"] = "/tmp/unrelated"
+    assert "capsule cache must match the job-local AppArmor attachment" in wiring_errors(
+        wrong_cache
+    )
+
+
+@pytest.mark.parametrize("version", ["1.7.12", "v1.7.12", "1.7.11", "v1.7.120", "", "unknown"])
+def test_workflow_validator_accepts_only_pinned_version(monkeypatch, tmp_path, version):
+    import shutil
+    import subprocess
+
+    from quality import workflow
+
+    root = Path(__file__).resolve().parents[1]
+    shutil.copytree(root / ".github", tmp_path / ".github")
+    calls = []
+
+    def actionlint(args, **kwargs):
+        calls.append(args)
+        return subprocess.CompletedProcess(args, 0, stdout=version + "\n" if version else "")
+
+    monkeypatch.setattr(workflow.subprocess, "run", actionlint)
+    errors = workflow.validate(tmp_path)
+    if version in {"1.7.12", "v1.7.12"}:
+        assert errors == []
+        assert len(calls) == 2
+    else:
+        assert errors == ["actionlint 1.7.12 is required"]
+        assert len(calls) == 1
