@@ -3,12 +3,41 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 from quality import review_session
+
+TEST_HEAD = ""
+
+
+@pytest.fixture(autouse=True)
+def git_fixture(tmp_path: Path) -> None:
+    global TEST_HEAD
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    (tmp_path / ".gitignore").write_text(".changecost/\n")
+    subprocess.run(["git", "-C", str(tmp_path), "add", ".gitignore"], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(tmp_path),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "-qm",
+            "initial",
+        ],
+        check=True,
+    )
+    TEST_HEAD = subprocess.check_output(
+        ["git", "-C", str(tmp_path), "rev-parse", "HEAD"], text=True
+    ).strip()
 
 
 def contract() -> dict[str, object]:
@@ -19,9 +48,137 @@ def contract() -> dict[str, object]:
         "trust_boundary": "configuration validation only",
         "intended_files": {"quality/example.py": "abc"},
         "base": "a" * 40,
-        "head": "b" * 40,
+        "head": TEST_HEAD,
         "required_reviewers": ["reviewer-a"],
+        "required_checks": ["ci"],
+        "required_statuses": [],
     }
+
+
+def complete_snapshot() -> dict[str, object]:
+    return {
+        "head": TEST_HEAD,
+        "checks": [
+            {"check_runs": [{"name": "ci", "status": "completed", "conclusion": "success"}]}
+        ],
+        "statuses": [{"statuses": []}],
+        "comments": [[]],
+        "threads": [],
+        "reviews": [
+            [{"commit_id": TEST_HEAD, "state": "APPROVED", "user": {"login": "reviewer-a"}}]
+        ],
+    }
+
+
+def complete_session(tmp_path: Path) -> None:
+    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    for category in ("gate", "reviewer"):
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": category,
+                "kind": "evidence",
+                "evidence_type": category,
+                "result": "pass",
+                "head": TEST_HEAD,
+            },
+        )
+    review_session.record(tmp_path, "change", {"id": "done", "kind": "phase", "phase": "complete"})
+
+
+def test_final_batch_completion_and_pending_precedence(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for index in range(3):
+        review_session.record(tmp_path, "change", {"id": str(index), "kind": "batch"})
+    complete_session(tmp_path)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    snapshot = complete_snapshot()
+    snapshot["checks"] = [{"check_runs": [{"name": "test", "status": "in_progress"}]}]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "replan"
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("budget", {"minutes": "90", "batches": 3}),
+        ("findings", [{}]),
+        ("events", [None]),
+        ("active_minutes", float("nan")),
+        ("batches", -1),
+        ("monitor", {"snapshot": None, "data": None, "errors": 1, "pending": []}),
+    ],
+)
+def test_nested_corruption_fails_closed(tmp_path: Path, field: str, value: object) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    state[field] = value
+    review_session.write_state(review_session.state_path(tmp_path, "change"), state)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_conflicting_duplicate_event_rejected(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    review_session.record(tmp_path, "change", {"id": "x", "kind": "batch"})
+    with pytest.raises(review_session.ConflictError):
+        review_session.record(tmp_path, "change", {"id": "x", "kind": "phase", "phase": "paused"})
+
+
+@pytest.mark.parametrize(
+    "source,item,action",
+    [
+        ("checks", {"name": "ci", "status": "completed", "conclusion": "success"}, "continue"),
+        ("checks", {"name": "ci", "status": "completed", "conclusion": "failure"}, "incomplete"),
+        ("checks", {"name": "ci", "status": "completed", "conclusion": "skipped"}, "incomplete"),
+        ("statuses", {"context": "ci", "state": "failure"}, "incomplete"),
+        ("statuses", {"context": "ci", "state": "pending"}, "wait"),
+    ],
+)
+def test_real_rest_states(tmp_path: Path, source: str, item: dict[str, str], action: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    snapshot = complete_snapshot()
+    snapshot[source] = [{"check_runs" if source == "checks" else "statuses": [item]}]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == action
+
+
+def test_scope_resolution_names_pending_identity(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    review_session.record(
+        tmp_path, "change", {"id": "scope", "kind": "scope_decision", "decision": "pending"}
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        {"id": "resolve", "kind": "scope_decision", "decision": "approved", "supersedes": "scope"},
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "continue"
+
+
+def test_fixed_escape_retains_escalation(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for identity in ("one", "two"):
+        review_session.record(
+            tmp_path, "change", {"id": identity, "kind": "finding", "family": "f"}
+        )
+    review_session.record(
+        tmp_path,
+        "change",
+        {"id": "fix-one", "kind": "disposition", "finding_id": "one", "disposition": "fixed"},
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "continue"
+    review_session.record(tmp_path, "change", {"id": "three", "kind": "finding", "family": "f"})
+    review_session.record(
+        tmp_path,
+        "change",
+        {"id": "fix-three", "kind": "disposition", "finding_id": "three", "disposition": "fixed"},
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "investigate"
+    review_session.record(
+        tmp_path, "change", {"id": "investigate", "kind": "investigation", "family": "f"}
+    )
+    review_session.record(tmp_path, "change", {"id": "four", "kind": "finding", "family": "f"})
+    assert review_session.status(tmp_path, "change")["action"] == "replan"
 
 
 def test_missing_or_malformed_state_is_incomplete(tmp_path: Path) -> None:
@@ -85,11 +242,30 @@ def test_final_allowed_batch_requires_replanning_even_after_fixes(tmp_path: Path
 def test_head_advance_preserves_budget_and_history(tmp_path: Path) -> None:
     state = review_session.initialize(tmp_path, "change", contract())
     review_session.record(tmp_path, "change", {"id": "batch", "kind": "batch"})
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(tmp_path),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "--allow-empty",
+            "-qm",
+            "next",
+        ],
+        check=True,
+    )
+    new_head = subprocess.check_output(
+        ["git", "-C", str(tmp_path), "rev-parse", "HEAD"], text=True
+    ).strip()
     review_session.record(
-        tmp_path, "change", {"id": "advance", "kind": "advance_head", "head": "c" * 40}
+        tmp_path, "change", {"id": "advance", "kind": "advance_head", "head": new_head}
     )
     updated = review_session.load(tmp_path, "change")
-    assert updated["reviewed_head"] == "c" * 40
+    assert updated["reviewed_head"] == new_head
     assert updated["batches"] == 1
     assert updated["contract"] == state["contract"]
 
@@ -198,6 +374,7 @@ def test_monitor_waits_for_current_head_results_from_named_reviewers(tmp_path: P
         tmp_path,
         "change",
         {
+            **complete_snapshot(),
             "head": contract()["head"],
             "reviews": [
                 [
@@ -232,6 +409,7 @@ def test_watcher_polls_after_a_changed_continue_snapshot(
 ) -> None:
     review_session.initialize(tmp_path, "change", contract())
     snapshot = {
+        **complete_snapshot(),
         "head": contract()["head"],
         "reviews": [
             [
@@ -362,3 +540,195 @@ def test_graphql_errors_are_incomplete_evidence(monkeypatch: pytest.MonkeyPatch)
     )
     with pytest.raises(RuntimeError, match="forbidden"):
         review_session.gh_graphql("query { viewer { login } }")
+
+
+@pytest.mark.parametrize("mutation", ["untracked", "tracked", "deleted"])
+def test_reviewed_input_changes_fail_closed(tmp_path: Path, mutation: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    if mutation == "untracked":
+        (tmp_path / "new.py").write_text("change")
+    elif mutation == "tracked":
+        (tmp_path / ".gitignore").write_text(".changecost/\n# changed\n")
+    else:
+        (tmp_path / ".gitignore").unlink()
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("source", ["checks", "statuses", "reviews", "threads", "comments"])
+def test_missing_source_cannot_complete(tmp_path: Path, source: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    del snapshot[source]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_outdated_unresolved_thread_blocks_completion(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["threads"] = [{"id": "t", "isOutdated": True, "isResolved": False}]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+def test_cli_initialization_record_and_packet(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    payload = tmp_path / ".changecost" / "input.json"
+    payload.parent.mkdir()
+    for operation, data in (
+        ("init", contract()),
+        ("record", {"id": "pause", "kind": "phase", "phase": "paused"}),
+        ("packet", {}),
+        ("status", {}),
+    ):
+        payload.write_text(json.dumps(data))
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "review-session",
+                operation,
+                "change",
+                "--root",
+                str(tmp_path),
+                "--json",
+                str(payload),
+            ],
+        )
+        assert review_session.main() == 0
+        assert json.loads(capsys.readouterr().out)
+
+
+@pytest.mark.parametrize("operation", ["init", "record", "watch", "packet", "status"])
+def test_cli_missing_input_is_incomplete(
+    tmp_path: Path,
+    operation: str,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.setattr(
+        "sys.argv", ["review-session", operation, "missing", "--root", str(tmp_path)]
+    )
+    assert review_session.main() == 1
+    assert json.loads(capsys.readouterr().out)["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("cursor", [None, "", "repeat"])
+def test_invalid_cursor_fails_closed(cursor: str | None) -> None:
+    with pytest.raises(ValueError, match="pagination"):
+        review_session.next_cursor({"endCursor": cursor}, {"repeat"})
+
+
+def test_subprocess_requests_are_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
+    timeouts = []
+
+    def run(*args: object, **kwargs: object) -> SimpleNamespace:
+        timeouts.append(kwargs.get("timeout"))
+        return SimpleNamespace(returncode=0, stdout='{"data": {}}', stderr="")
+
+    monkeypatch.setattr(review_session.subprocess, "run", run)
+    assert review_session.gh_graphql("query") == {"data": {}}
+    assert review_session.gh_json("repos/example/repo") == {"data": {}}
+    assert timeouts == [60, 60]
+
+
+def test_watcher_api_timeout_is_incomplete(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+
+    def fail(*args: object) -> dict[str, object]:
+        raise subprocess.TimeoutExpired("gh", 60)
+
+    monkeypatch.setattr(review_session, "gh_snapshot", fail)
+    assert review_session.watch(tmp_path, "change", "repo", 24, 0) == 1
+
+
+@pytest.mark.parametrize(
+    "kind,payload",
+    [
+        ("phase", {"phase": "invalid"}),
+        ("disposition", {"finding_id": "absent", "disposition": "fixed"}),
+        ("evidence", {"evidence_type": "bad", "result": "pass", "head": "x"}),
+        ("active_minutes", {"minutes": -1}),
+        ("extension", {"approved_by": "owner", "minutes": float("inf")}),
+        ("advance_head", {"head": "short"}),
+    ],
+)
+def test_invalid_events_do_not_mutate_state(
+    tmp_path: Path, kind: str, payload: dict[str, object]
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    before = review_session.load(tmp_path, "change")
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", {"id": "bad", "kind": kind, **payload})
+    assert review_session.load(tmp_path, "change") == before
+
+
+def test_same_head_rebind_invalidates_passing_evidence(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    (tmp_path / "added.py").write_text("new input")
+    review_session.record(
+        tmp_path, "change", {"id": "rebind", "kind": "advance_head", "head": TEST_HEAD}
+    )
+    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    review_session.record(
+        tmp_path, "change", {"id": "done-again", "kind": "phase", "phase": "complete"}
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_staged_blob_change_invalidates_inputs_with_unchanged_worktree(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    path = tmp_path / ".gitignore"
+    original = path.read_text()
+    path.write_text(original + "# staged\n")
+    subprocess.run(["git", "-C", str(tmp_path), "add", ".gitignore"], check=True)
+    path.write_text(original)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_declared_missing_ci_check_blocks_completion(tmp_path: Path) -> None:
+    policy = {**contract(), "required_checks": ["missing-ci"], "required_statuses": []}
+    review_session.initialize(tmp_path, "change", policy)
+    complete_session(tmp_path)
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+@pytest.mark.parametrize("disposition", ["invalid", "fixed"])
+def test_corrupt_disposition_cannot_hide_unresolved_finding(
+    tmp_path: Path, disposition: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    review_session.record(tmp_path, "change", {"id": "one", "kind": "finding", "family": "f"})
+    state = review_session.load(tmp_path, "change")
+    state["findings"][0]["disposition"] = disposition
+    review_session.write_state(review_session.state_path(tmp_path, "change"), state)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_staged_mode_change_invalidates_reviewed_inputs(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    subprocess.run(
+        ["git", "-C", str(tmp_path), "update-index", "--chmod=+x", ".gitignore"], check=True
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_missing_declared_status_blocks_completion(tmp_path: Path) -> None:
+    review_session.initialize(
+        tmp_path, "change", {**contract(), "required_statuses": ["review-status"]}
+    )
+    complete_session(tmp_path)
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+@pytest.mark.parametrize(
+    "field,value", [("required_checks", []), ("required_checks", "ci"), ("required_statuses", None)]
+)
+def test_gate_contract_requires_explicit_valid_identities(
+    tmp_path: Path, field: str, value: object
+) -> None:
+    with pytest.raises(ValueError):
+        review_session.initialize(tmp_path, "change", {**contract(), field: value})

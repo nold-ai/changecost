@@ -45,6 +45,11 @@ reviews or required checks as incomplete, not as a green review.
 For implementation/review work, initialize the bounded local review receipt with
 `python -m quality.review_session init <change-id> --json <contract.json>`. It
 keeps the complete scope, finding families and counters across chats and commits.
+The contract must name `required_checks` (nonempty), `required_statuses` (explicit,
+possibly empty), and required reviewers. Missing declared results block completion.
+An `advance_head` event refreshes the Git HEAD, working-content and staged-index
+binding while preserving counters; passing evidence from before that refresh
+remains historical and cannot establish completion of the new inputs.
 At three correction batches, 90 active minutes, or an escaping investigated family,
 create a packet and replan rather than continue a narrow fix loop.
 

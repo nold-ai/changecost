@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Repair review-session lifecycle decisions for real GitHub status values, retained
+  escape history, current Git input binding, explicit evidence categories and
+  recoverable scope decisions; reject malformed state and incomplete monitoring.
+
 - Add durable, bounded review-session decisions and read-only changed-state PR
   monitoring so recurring finding families, incomplete evidence and exhausted
   review budgets trigger investigation or replanning instead of endless fixes.

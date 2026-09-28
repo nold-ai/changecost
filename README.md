@@ -81,6 +81,9 @@ contracts until their tasks and evidence establish delivery. See
 workflow; implementation does not itself commit, publish, merge or deploy.
 For changes with review/fix work, retain an ignored bounded session receipt so
 repeated findings and exhausted review budgets trigger investigation or replanning.
+The session names expected CI checks and commit statuses explicitly and binds
+evidence to Git HEAD, working files and staged blobs/modes. Refreshing that binding
+requires fresh passing evidence before completion.
 
 ## Community and license
 

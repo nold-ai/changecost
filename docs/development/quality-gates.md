@@ -123,15 +123,33 @@ versioned, atomic session record under `.changecost/workflow/<change-id>/`; that
 directory is ignored and is not a substitute for committed specifications or test
 evidence. Initialize it with a JSON contract that records requirements, acceptance
 criteria, non-goals, trust boundary, complete input fingerprints, base, head and
-the required GitHub reviewer logins.
+the required GitHub reviewer logins, nonempty `required_checks` names and explicit
+`required_statuses` contexts (which may be an empty list). These identities are
+declared review policy; do not infer protected-branch settings from them. Missing
+declared checks or statuses leave the session pending even when API pages are empty.
 
 The helper reports `continue`, `wait`, `investigate`, `replan`, `incomplete` or
 `complete`. The defaults are three collected correction batches and 90 active
-minutes. A second finding in a family requires investigation; a subsequent escape
+minutes. A finding arriving after a family's correction requires investigation; an escape after investigation
 requires replanning. Budget extensions require an explicit maintainer identity and
 do not reset counters. The packet command preserves only compact scope, unresolved
 findings, evidence, investigations and separated cached-input, uncached-input,
 output and cost measurements. Missing measurements remain unknown.
+
+Initialization captures the real Git HEAD, tracked/untracked input contents and
+staged Git blob identities and file modes.
+`status` rejects changed inputs. Record an `advance_head` event with the new local
+commit to refresh that binding explicitly, preserve history and counters, and clear
+the previous monitor and completion phase. Prior passing evidence remains in history
+but is invalidated, including on a same-head input refresh. Missing input bindings
+or gate-identity configuration require recovery.
+Evidence events use `kind: "evidence"` with a separate `evidence_type` of `gate` or
+`reviewer`, their `head` and `result`. The latest result for each category applies.
+A scope resolution names the pending event's identity in `supersedes`.
+Completion requires a complete current-head monitor snapshot as well as passing
+local evidence. Pending checks, commit statuses, reviewers and unresolved threads
+(including outdated threads) block completion. Exhausted budgets take precedence
+over waiting; a fully verified final allowed batch may complete.
 
 The optional watcher uses paginated read-only `gh api` requests for current checks,
 statuses, reviews and issue comments, plus GraphQL `reviewThreads` and their

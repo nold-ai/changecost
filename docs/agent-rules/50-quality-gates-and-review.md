@@ -24,10 +24,15 @@ Resolve findings at every severity or document a narrow justified exception.
 
 For review/fix work, initialize the ignored local record with
 `python -m quality.review_session init <change-id> --json <contract.json>`. Before
-each correction batch or publication, inspect its `status`. A second escape in one
-finding family requires a family-wide investigation; an escape after that, three
+each correction batch or publication, inspect its `status`. An escape after a
+finding family's correction requires investigation; an escape after investigation, three
 batches, 90 active minutes, a pending scope decision, or incomplete monitor evidence
 requires replanning. A maintainer-recorded extension retains existing counters.
+Declare nonempty `required_checks` names and explicit `required_statuses` contexts
+(an empty status list is allowed). A missing expected identity blocks completion.
+Review inputs include Git HEAD, working contents and staged blob identities/modes.
+An explicit `advance_head` refresh invalidates earlier passing evidence even if
+HEAD is unchanged; keep the historical receipt and obtain fresh evidence.
 
 `packet` retains scope, unresolved findings and evidence across context windows.
 `watch` is read-only and uses REST pagination for checks/statuses/reviews/comments

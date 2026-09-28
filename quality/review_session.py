@@ -6,6 +6,7 @@ import argparse
 import fcntl
 import hashlib
 import json
+import math
 import os
 import subprocess
 import tempfile
@@ -13,6 +14,8 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
+
+from quality import repository
 
 SCHEMA_VERSION = 1
 DEFAULT_BATCHES = 3
@@ -45,6 +48,7 @@ def initialize(root: Path, change_id: str, contract: dict[str, Any]) -> dict[str
             "change_id": change_id,
             "contract": contract,
             "reviewed_head": contract["head"],
+            "inputs": capture_inputs(root, contract["head"]),
             "budget": {"batches": DEFAULT_BATCHES, "minutes": DEFAULT_MINUTES},
             "batches": 0,
             "active_minutes": 0,
@@ -62,6 +66,8 @@ def initialize(root: Path, change_id: str, contract: dict[str, Any]) -> dict[str
 
 
 def validate_contract(contract: dict[str, Any]) -> None:
+    if not isinstance(contract, dict):
+        raise ValueError("contract must be an object")
     required = {
         "requirements",
         "acceptance_criteria",
@@ -71,6 +77,8 @@ def validate_contract(contract: dict[str, Any]) -> None:
         "base",
         "head",
         "required_reviewers",
+        "required_checks",
+        "required_statuses",
     }
     missing = sorted(required - contract.keys())
     if missing:
@@ -79,6 +87,27 @@ def validate_contract(contract: dict[str, Any]) -> None:
         isinstance(reviewer, str) and reviewer for reviewer in contract["required_reviewers"]
     ):
         raise ValueError("required_reviewers must be a list of non-empty GitHub logins")
+    validate_gate_contract(contract)
+
+
+def validate_gate_contract(contract: dict[str, Any]) -> None:
+    for key in ("required_checks", "required_statuses"):
+        value = contract[key]
+        if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+            raise ValueError(f"{key} must be an explicit list of gate identities")
+    if not contract["required_checks"]:
+        raise ValueError("required_checks must name at least one expected CI check")
+
+
+def capture_inputs(root: Path, expected_head: str) -> dict[str, str]:
+    head = repository.git(root, "rev-parse", "HEAD").decode().strip()
+    if head != expected_head:
+        raise ValueError("reviewed head differs from local HEAD")
+    names = repository.git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
+    files = set(names.decode().split("\0")) - {""}
+    index = repository.git(root, "ls-files", "--stage", "-z")
+    fingerprint = repository.digest(root, files).encode() + b"\0" + index
+    return {"head": head, "digest": hashlib.sha256(fingerprint).hexdigest()}
 
 
 def load(root: Path, change_id: str) -> dict[str, Any]:
@@ -94,6 +123,12 @@ def load(root: Path, change_id: str) -> dict[str, Any]:
     if not isinstance(value.get("contract"), dict):
         raise ValueError("malformed session contract")
     validate_contract(value["contract"])
+    validate_state_fields(value)
+    validate_nested_state(value)
+    return value
+
+
+def validate_state_fields(value: dict[str, Any]) -> None:
     required = {
         "revision": int,
         "reviewed_head": str,
@@ -117,7 +152,122 @@ def load(root: Path, change_id: str) -> dict[str, Any]:
         or not {"snapshot", "data", "errors", "pending"} <= value["monitor"].keys()
     ):
         raise ValueError("malformed session budget or monitor")
-    return value
+
+
+def validate_nonnegative(value: Any, label: str) -> None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{label} must be numeric")
+    if not math.isfinite(value) or value < 0:
+        raise ValueError(f"{label} must be finite and nonnegative")
+
+
+def validate_entries(entries: Any, fields: tuple[str, ...]) -> None:
+    if not isinstance(entries, list):
+        raise ValueError("malformed entry list")
+    for item in entries:
+        if not isinstance(item, dict) or any(
+            not isinstance(item.get(key), str) or not item[key] for key in fields
+        ):
+            raise ValueError("malformed persisted entry")
+
+
+def validate_nested_state(state: dict[str, Any]) -> None:
+    for key in ("revision", "batches", "active_minutes"):
+        validate_nonnegative(state[key], key)
+    for key in ("batches", "minutes"):
+        validate_nonnegative(state["budget"][key], key)
+    collections = {
+        "events": ("id", "kind"),
+        "findings": ("id", "family", "disposition"),
+        "investigations": ("id", "family"),
+        "scope_decisions": ("id", "decision"),
+        "evidence": ("id", "evidence_type", "result", "head"),
+    }
+    for key, fields in collections.items():
+        validate_entries(state[key], fields)
+    for event in state["events"]:
+        validate_event(event)
+    validate_event_references(state["events"])
+    validate_disposition_history(state)
+    validate_monitor_state(state["monitor"])
+    validate_inputs_usage(state)
+
+
+def validate_inputs_usage(state: dict[str, Any]) -> None:
+    inputs = state.get("inputs")
+    if not isinstance(inputs, dict) or not all(
+        isinstance(inputs.get(key), str) for key in ("head", "digest")
+    ):
+        raise ValueError("missing or malformed reviewed inputs; recovery required")
+    for key in ("cached_input", "uncached_input", "output", "cost"):
+        if key not in state["usage"]:
+            raise ValueError("malformed usage")
+        if state["usage"][key] is not None:
+            validate_nonnegative(state["usage"][key], key)
+
+
+def validate_monitor_state(monitor: dict[str, Any]) -> None:
+    for key in ("errors", "pending"):
+        if not isinstance(monitor[key], list) or not all(
+            isinstance(item, str) for item in monitor[key]
+        ):
+            raise ValueError("malformed monitor messages")
+    if monitor["data"] is not None and not isinstance(monitor["data"], dict):
+        raise ValueError("malformed monitor data")
+
+
+def validate_event(event: dict[str, Any]) -> None:
+    fields = {
+        "batch": (),
+        "active_minutes": (),
+        "extension": ("approved_by",),
+        "finding": ("family",),
+        "disposition": ("finding_id", "disposition"),
+        "investigation": ("family",),
+        "scope_decision": ("decision",),
+        "evidence": ("evidence_type", "result", "head"),
+        "usage": (),
+        "phase": ("phase",),
+        "advance_head": ("head",),
+    }
+    validate_entries([event], ("id", "kind"))
+    if event["kind"] not in fields:
+        raise ValueError("unknown persisted event kind")
+    validate_entries([event], fields[event["kind"]])
+    numeric_fields = {
+        "active_minutes": ("minutes",),
+        "extension": ("batches", "minutes"),
+        "usage": ("cached_input", "uncached_input", "output", "cost"),
+    }
+    for key in numeric_fields.get(event["kind"], ()):
+        validate_nonnegative(event.get(key, 0), key)
+
+
+def validate_event_references(events: list[dict[str, Any]]) -> None:
+    findings: set[str] = set()
+    identities: set[str] = set()
+    for event in events:
+        if event["id"] in identities:
+            raise ValueError("duplicate persisted event identity")
+        identities.add(event["id"])
+        if event["kind"] == "finding":
+            findings.add(event["id"])
+        if event["kind"] == "disposition" and event["finding_id"] not in findings:
+            raise ValueError("persisted disposition names an unknown finding")
+
+
+def validate_disposition_history(state: dict[str, Any]) -> None:
+    expected: dict[str, str] = {}
+    for event in state["events"]:
+        if event["kind"] == "finding":
+            expected[event["id"]] = "unresolved"
+        if event["kind"] == "disposition":
+            if event["disposition"] not in {"fixed", "non_finding", "accepted_exception"}:
+                raise ValueError("malformed persisted disposition")
+            expected[event["finding_id"]] = event["disposition"]
+    actual = {item["id"]: item["disposition"] for item in state["findings"]}
+    if actual != expected:
+        raise ValueError("finding dispositions contradict recorded events; recovery required")
 
 
 def write_state(path: Path, state: dict[str, Any]) -> None:
@@ -152,19 +302,30 @@ def record(
     path = state_path(root, change_id)
     with state_lock(path):
         state = load(root, change_id)
+        validate_event(event)
         if expected_revision is not None and state["revision"] != expected_revision:
             raise ConflictError(f"expected revision {expected_revision}, found {state['revision']}")
         event_id = event.get("id")
         kind = event.get("kind")
         if not isinstance(event_id, str) or not event_id or not isinstance(kind, str):
             raise ValueError("event requires non-empty id and kind")
-        if any(item["id"] == event_id for item in state["events"]):
+        if duplicate_event(state["events"], event):
             return state
         apply_event(state, event)
+        if kind == "advance_head":
+            state["inputs"] = capture_inputs(root, state["reviewed_head"])
         state["events"].append(event)
         state["revision"] += 1
+        validate_nested_state(state)
         write_state(path, state)
         return state
+
+
+def duplicate_event(events: list[dict[str, Any]], event: dict[str, Any]) -> bool:
+    existing = next((item for item in events if item["id"] == event["id"]), None)
+    if existing is not None and existing != event:
+        raise ConflictError("event identity already has a different payload")
+    return existing is not None
 
 
 def apply_event(state: dict[str, Any], event: dict[str, Any]) -> None:
@@ -209,9 +370,7 @@ def add_extension(state: dict[str, Any], event: dict[str, Any]) -> None:
 def add_finding(state: dict[str, Any], event: dict[str, Any]) -> None:
     if not isinstance(event.get("family"), str) or not event["family"]:
         raise ValueError("finding requires family")
-    state["findings"].append(
-        {**event, "batch": state["batches"], "disposition": event.get("disposition", "unresolved")}
-    )
+    state["findings"].append({**event, "batch": state["batches"], "disposition": "unresolved"})
 
 
 def add_disposition(state: dict[str, Any], event: dict[str, Any]) -> None:
@@ -234,11 +393,20 @@ def add_investigation(state: dict[str, Any], event: dict[str, Any]) -> None:
 
 def add_scope_decision(state: dict[str, Any], event: dict[str, Any]) -> None:
     require_field(event, "decision", "scope decision")
+    supersedes = event.get("supersedes")
+    if supersedes and not any(
+        item["id"] == supersedes and item["decision"] == "pending"
+        for item in state["scope_decisions"]
+    ):
+        raise ValueError("scope resolution must name an existing pending decision")
     state["scope_decisions"].append(event)
 
 
 def add_evidence(state: dict[str, Any], event: dict[str, Any]) -> None:
     require_field(event, "result", "evidence")
+    if event.get("evidence_type") not in {"gate", "reviewer"}:
+        raise ValueError("evidence requires evidence_type gate or reviewer")
+    require_field(event, "head", "evidence")
     state["evidence"].append(event)
 
 
@@ -261,6 +429,7 @@ def advance_head(state: dict[str, Any], event: dict[str, Any]) -> None:
     if not isinstance(head, str) or len(head) != 40:
         raise ValueError("advance_head requires a 40-character head")
     state["reviewed_head"] = head
+    state["phase"] = "active"
     state["monitor"] = {"snapshot": None, "data": None, "errors": [], "pending": []}
 
 
@@ -271,14 +440,17 @@ def require_field(event: dict[str, Any], field: str, name: str) -> None:
 
 def number(event: dict[str, Any], key: str, default: int | float | None = None) -> float:
     value = event.get(key, default)
-    if not isinstance(value, (int, float)) or isinstance(value, bool):
-        raise ValueError(f"{key} must be numeric")
+    validate_nonnegative(value, key)
     return float(value)
 
 
 def status(root: Path, change_id: str) -> dict[str, Any]:
     try:
         state = load(root, change_id)
+        if capture_inputs(root, state["reviewed_head"]) != state["inputs"]:
+            raise ValueError(
+                "reviewed repository inputs changed; recovery or explicit head advancement required"
+            )
     except ValueError as error:
         return {"action": "incomplete", "reason": str(error)}
     action, reason = decision(state)
@@ -294,33 +466,55 @@ def status(root: Path, change_id: str) -> dict[str, Any]:
 
 def decision(state: dict[str, Any]) -> tuple[str, str]:
     terminal = terminal_decision(state)
-    if terminal:
+    family = family_decision(state)
+    if terminal and terminal[0] == "complete" and family:
+        return family
+    if terminal and terminal[0] != "wait":
         return terminal
     budget = budget_decision(state)
     if budget:
         return budget
-    family = family_decision(state)
-    return family or ("continue", "within budget with no escalation trigger")
+    return family or terminal or ("continue", "within budget with no escalation trigger")
 
 
 def terminal_decision(state: dict[str, Any]) -> tuple[str, str] | None:
-    if state["monitor"]["errors"]:
-        return "incomplete", "monitor evidence is incomplete"
-    if any(item.get("decision") == "pending" for item in state["scope_decisions"]):
-        return "incomplete", "scope decision is pending"
     if state["monitor"].get("head") and state["monitor"]["head"] != state["reviewed_head"]:
         return "incomplete", "monitor evidence is for a different head"
-    if state["phase"] == "complete":
-        if unresolved_findings(state):
-            return "incomplete", "completed session has unresolved findings"
-        if not completion_evidence(state):
-            return "incomplete", "completion lacks current gate and reviewer evidence"
-        return "complete", "completion recorded with no unresolved findings"
-    if state["phase"] == "paused":
-        return "wait", "session is paused"
+    if state["monitor"]["errors"]:
+        return "incomplete", "monitor evidence is incomplete"
+    scope = scope_pending(state)
+    if scope:
+        return "incomplete", "scope decision is pending"
     if state["monitor"].get("pending"):
         return "wait", "monitor is awaiting current-head reviewer results"
+    if state["phase"] == "complete":
+        return completed_decision(state)
+    if state["phase"] == "paused":
+        return "wait", "session is paused"
     return None
+
+
+def scope_pending(state: dict[str, Any]) -> bool:
+    resolved = {
+        item.get("supersedes") for item in state["scope_decisions"] if item["decision"] != "pending"
+    }
+    return any(
+        item["decision"] == "pending" and item["id"] not in resolved
+        for item in state["scope_decisions"]
+    )
+
+
+def completed_decision(state: dict[str, Any]) -> tuple[str, str]:
+    if unresolved_findings(state):
+        return "incomplete", "completed session has unresolved findings"
+    if not completion_evidence(state) or state["monitor"].get("head") != state["reviewed_head"]:
+        return "incomplete", "completion lacks current gate and reviewer evidence"
+    if (
+        state["batches"] > state["budget"]["batches"]
+        or state["active_minutes"] > state["budget"]["minutes"]
+    ):
+        return "replan", "completion exceeded the review budget"
+    return "complete", "completion recorded with no unresolved findings"
 
 
 def budget_decision(state: dict[str, Any]) -> tuple[str, str] | None:
@@ -332,25 +526,43 @@ def budget_decision(state: dict[str, Any]) -> tuple[str, str] | None:
 
 
 def family_decision(state: dict[str, Any]) -> tuple[str, str] | None:
-    investigated = {item["family"] for item in state["investigations"]}
-    for family, count in escaped_family_counts(state).items():
-        if count >= 2 and family in investigated:
-            return "replan", f"finding family {family} escaped after investigation"
-        if count >= 1 and family not in investigated:
-            return "investigate", f"finding family {family} escaped after correction"
-    return None
+    corrected, investigated, escaped, post_investigation = family_history(state)
+    del corrected
+    if post_investigation:
+        return (
+            "replan",
+            f"finding family {sorted(post_investigation)[0]} escaped after investigation",
+        )
+    pending = escaped - investigated
+    return (
+        ("investigate", f"finding family {sorted(pending)[0]} escaped after correction")
+        if pending
+        else None
+    )
 
 
-def escaped_family_counts(state: dict[str, Any]) -> dict[str, int]:
-    counts: dict[str, int] = {}
+def family_history(state: dict[str, Any]) -> tuple[set[str], set[str], set[str], set[str]]:
+    investigated: set[str] = set()
     corrected: set[str] = set()
-    for finding in state["findings"]:
-        family = finding["family"]
-        if finding.get("disposition") == "fixed":
-            corrected.add(family)
-        elif family in corrected:
-            counts[family] = counts.get(family, 0) + 1
-    return counts
+    families: dict[str, str] = {}
+    escaped: set[str] = set()
+    post_investigation: set[str] = set()
+    for event in state["events"]:
+        family = event.get("family", "")
+        kind = event["kind"]
+        if kind == "investigation":
+            investigated.add(family)
+        if kind == "disposition" and event["disposition"] == "fixed":
+            corrected.add(families[event["finding_id"]])
+        if kind != "finding":
+            continue
+        families[event["id"]] = family
+        if family not in corrected:
+            continue
+        if family in investigated:
+            post_investigation.add(family)
+        escaped.add(family)
+    return corrected, investigated, escaped, post_investigation
 
 
 def unresolved_findings(state: dict[str, Any]) -> list[dict[str, Any]]:
@@ -359,12 +571,23 @@ def unresolved_findings(state: dict[str, Any]) -> list[dict[str, Any]]:
 
 def completion_evidence(state: dict[str, Any]) -> bool:
     required = {"gate", "reviewer"}
-    completed = {
-        item.get("kind")
-        for item in state["evidence"]
-        if item.get("result") == "pass" and item.get("head") == state["reviewed_head"]
+    latest = {
+        item["evidence_type"]: item["result"]
+        for item in current_evidence(state)
+        if item.get("head") == state["reviewed_head"]
     }
+    completed = {category for category, result in latest.items() if result == "pass"}
     return required <= completed
+
+
+def current_evidence(state: dict[str, Any]) -> list[dict[str, Any]]:
+    evidence: list[dict[str, Any]] = []
+    for event in state["events"]:
+        if event["kind"] == "advance_head":
+            evidence.clear()
+        if event["kind"] == "evidence":
+            evidence.append(event)
+    return evidence
 
 
 def packet(root: Path, change_id: str) -> dict[str, Any]:
@@ -417,6 +640,8 @@ def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
     for name, endpoint in endpoints.items():
         result[name] = gh_json(endpoint.format(head=head), paginate=True)
     result["threads"] = gh_review_threads(repository, pull_request)
+    if gh_json(f"repos/{repository}/pulls/{pull_request}")["head"]["sha"] != head:
+        raise ValueError("PR head changed during collection")
     return result
 
 
@@ -430,6 +655,7 @@ def gh_review_threads(repository: str, pull_request: int) -> list[dict[str, Any]
       } } }"""
     cursor: str | None = None
     threads: list[dict[str, Any]] = []
+    seen: set[str] = set()
     while True:
         result = gh_graphql(query, owner=owner, name=name, number=pull_request, cursor=cursor)
         page = result["data"]["repository"]["pullRequest"]["reviewThreads"]
@@ -438,24 +664,33 @@ def gh_review_threads(repository: str, pull_request: int) -> list[dict[str, Any]
             threads.append(thread)
         if not page["pageInfo"]["hasNextPage"]:
             return threads
-        cursor = page["pageInfo"]["endCursor"]
+        cursor = next_cursor(page["pageInfo"], seen)
 
 
 def complete_thread_comments(thread: dict[str, Any]) -> list[dict[str, Any]]:
     comments = thread["comments"]
     nodes = comments["nodes"]
     page_info = comments["pageInfo"]
+    seen: set[str] = set()
     query = """query($id:ID!,$cursor:String) {
       node(id:$id) { ... on PullRequestReviewThread {
         comments(first:100,after:$cursor) { nodes { id body } pageInfo { hasNextPage endCursor } }
       } }
     }"""
     while page_info["hasNextPage"]:
-        result = gh_graphql(query, id=thread["id"], cursor=page_info["endCursor"])
+        result = gh_graphql(query, id=thread["id"], cursor=next_cursor(page_info, seen))
         comments = result["data"]["node"]["comments"]
         nodes.extend(comments["nodes"])
         page_info = comments["pageInfo"]
     return nodes
+
+
+def next_cursor(page_info: dict[str, Any], seen: set[str]) -> str:
+    cursor = page_info.get("endCursor")
+    if not isinstance(cursor, str) or not cursor or cursor in seen:
+        raise ValueError("incomplete pagination: missing or repeated cursor")
+    seen.add(cursor)
+    return cursor
 
 
 def gh_graphql(query: str, **variables: Any) -> dict[str, Any]:
@@ -466,7 +701,7 @@ def gh_graphql(query: str, **variables: Any) -> dict[str, Any]:
         if value is not None
         for value in ("-F", f"{key}={value}")
     )
-    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=60)
     if result.returncode:
         raise RuntimeError(result.stderr.strip() or "gh graphql failed")
     payload = json.loads(result.stdout)
@@ -480,7 +715,7 @@ def gh_json(endpoint: str, *, paginate: bool = False) -> Any:
     command = ["gh", "api", endpoint]
     if paginate:
         command.append("--paginate")
-    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=60)
     if result.returncode:
         raise RuntimeError(result.stderr.strip() or "gh api failed")
     values = [json.loads(line) for line in result.stdout.splitlines() if line]
@@ -493,52 +728,108 @@ def monitor_errors(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[s
         return errors
     head = snapshot.get("head")
     if head != contract["head"]:
-        return errors
-    if contract["required_reviewers"] and "reviews" not in snapshot:
-        return ["monitor evidence is missing reviews"]
+        return ["monitor evidence is for a different head"]
+    try:
+        validate_snapshot(snapshot)
+    except ValueError as error:
+        return [str(error)]
+    return failed_external_checks(snapshot)
+
+
+def validate_snapshot(snapshot: dict[str, Any]) -> None:
+    missing = [
+        key
+        for key in ("checks", "statuses", "reviews", "threads", "comments")
+        if not isinstance(snapshot.get(key), list)
+    ]
+    if missing:
+        raise ValueError(f"monitor evidence is missing or malformed: {', '.join(missing)}")
+    page_items(snapshot["checks"], "check_runs")
+    page_items(snapshot["statuses"], "statuses")
+    for key in ("reviews", "comments"):
+        for page in snapshot[key]:
+            validate_entries(page, ())
+    validate_entries(snapshot["threads"], ("id",))
+    for thread in snapshot["threads"]:
+        if not isinstance(thread.get("isResolved"), bool):
+            raise ValueError("malformed thread resolution")
+
+
+def failed_external_checks(snapshot: dict[str, Any]) -> list[str]:
     failed_checks = [
         run.get("name", "unnamed check")
         for run in page_items(snapshot.get("checks", []), "check_runs")
-        if run.get("status") == "COMPLETED" and run.get("conclusion") not in {"SUCCESS", "NEUTRAL"}
+        if run.get("status") == "completed" and run.get("conclusion") not in {"success", "neutral"}
     ]
-    if failed_checks:
-        return [f"failed current-head check: {name}" for name in failed_checks]
+    errors = [f"failed current-head check: {name}" for name in failed_checks]
+    errors.extend(
+        f"failed current-head status: {item.get('context', 'unnamed status')}"
+        for item in page_items(snapshot["statuses"], "statuses")
+        if item.get("state") not in {"success", "pending"}
+    )
     return errors
 
 
 def monitor_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
-    if snapshot.get("errors") or snapshot.get("head") != contract["head"]:
+    if monitor_errors(snapshot, contract):
         return []
-    head = snapshot["head"]
-    required_reviewers = contract["required_reviewers"]
-    if required_reviewers and "reviews" not in snapshot:
-        return []
-    reviews = [review for page in snapshot.get("reviews", []) for review in page]
-    current_logins = {
-        review.get("user", {}).get("login")
-        for review in reviews
-        if review.get("commit_id") == head and review.get("state") != "PENDING"
-    }
-    pending = [
-        f"required reviewer has no current-head result: {reviewer}"
-        for reviewer in required_reviewers
-        if reviewer not in current_logins
-    ]
+    pending = reviewer_pending(snapshot, contract)
+    pending.extend(missing_gates(snapshot, contract))
     pending.extend(
         f"current-head check is pending: {run.get('name', 'unnamed check')}"
-        for run in page_items(snapshot.get("checks", []), "check_runs")
-        if run.get("status") != "COMPLETED"
+        for run in page_items(snapshot["checks"], "check_runs")
+        if run.get("status") != "completed"
     )
     pending.extend(
-        "unresolved current review thread"
-        for thread in snapshot.get("threads", [])
-        if not thread.get("isResolved") and not thread.get("isOutdated")
+        f"current-head status is pending: {item.get('context', 'unnamed status')}"
+        for item in page_items(snapshot["statuses"], "statuses")
+        if item.get("state") == "pending"
+    )
+    pending.extend(
+        "unresolved review thread" for thread in snapshot["threads"] if not thread.get("isResolved")
     )
     return pending
 
 
+def missing_gates(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
+    checks = {item.get("name") for item in page_items(snapshot["checks"], "check_runs")}
+    statuses = {item.get("context") for item in page_items(snapshot["statuses"], "statuses")}
+    pending = [
+        f"required check is missing: {name}"
+        for name in contract["required_checks"]
+        if name not in checks
+    ]
+    pending.extend(
+        f"required status is missing: {name}"
+        for name in contract["required_statuses"]
+        if name not in statuses
+    )
+    return pending
+
+
+def reviewer_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
+    reviews = [review for page in snapshot.get("reviews", []) for review in page]
+    current_logins = {
+        str(review.get("user", {}).get("login", "")).removesuffix("[bot]")
+        for review in reviews
+        if review.get("commit_id") == snapshot["head"]
+        and review.get("state") in {"APPROVED", "COMMENTED", "CHANGES_REQUESTED"}
+    }
+    return [
+        f"required reviewer has no current-head result: {reviewer}"
+        for reviewer in contract["required_reviewers"]
+        if reviewer.removesuffix("[bot]") not in current_logins
+    ]
+
+
 def page_items(pages: list[Any], key: str) -> list[dict[str, Any]]:
-    return [item for page in pages if isinstance(page, dict) for item in page.get(key, [])]
+    result: list[dict[str, Any]] = []
+    for page in pages:
+        if not isinstance(page, dict) or not isinstance(page.get(key), list):
+            raise ValueError("malformed paginated API collection")
+        validate_entries(page[key], ())
+        result.extend(page[key])
+    return result
 
 
 def watch(
@@ -553,7 +844,7 @@ def watch(
         try:
             snapshot = gh_snapshot(repository, pull_request)
             outcome = record_monitor_snapshot(root, change_id, snapshot)
-        except (RuntimeError, KeyError, json.JSONDecodeError) as error:
+        except (RuntimeError, KeyError, ValueError, subprocess.TimeoutExpired) as error:
             snapshot = {"errors": [str(error)]}
             outcome = record_monitor_snapshot(root, change_id, snapshot)
         current = status(root, change_id)
@@ -573,7 +864,7 @@ def watch(
         index += 1
 
 
-def main() -> int:
+def argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("operation", choices=("init", "record", "status", "packet", "watch"))
     parser.add_argument("change_id")
@@ -583,36 +874,35 @@ def main() -> int:
     parser.add_argument("--repo")
     parser.add_argument("--pr", type=int)
     parser.add_argument("--timeout-minutes", type=int, default=WAIT_LIMIT_MINUTES)
-    args = parser.parse_args()
-    try:
+    return parser
+
+
+def dispatch(args: argparse.Namespace) -> Any:
+    if args.operation in {"init", "record"}:
+        if args.input_json is None:
+            raise ValueError(f"{args.operation} requires --json file")
+        payload = json.loads(args.input_json.read_text())
         if args.operation == "init":
-            if args.input_json is None:
-                raise ValueError("init requires --json contract file")
-            output: Any = initialize(
-                args.root, args.change_id, json.loads(args.input_json.read_text())
-            )
-        elif args.operation == "record":
-            if args.input_json is None:
-                raise ValueError("record requires --json event file")
-            output = record(
-                args.root,
-                args.change_id,
-                json.loads(args.input_json.read_text()),
-                expected_revision=args.expected_revision,
-            )
-        elif args.operation == "status":
-            output = status(args.root, args.change_id)
-        elif args.operation == "packet":
-            output = packet(args.root, args.change_id)
-        else:
+            return initialize(args.root, args.change_id, payload)
+        return record(args.root, args.change_id, payload, expected_revision=args.expected_revision)
+    if args.operation == "status":
+        return status(args.root, args.change_id)
+    return packet(args.root, args.change_id)
+
+
+def main() -> int:
+    args = argument_parser().parse_args()
+    try:
+        if args.operation == "watch":
             if not args.repo or args.pr is None:
                 raise ValueError("watch requires --repo and --pr")
             return watch(args.root, args.change_id, args.repo, args.pr, args.timeout_minutes)
+        output = dispatch(args)
     except (ConflictError, OSError, ValueError, json.JSONDecodeError) as error:
         print(json.dumps({"action": "incomplete", "reason": str(error)}))
         return 1
     print(json.dumps(output, indent=2, sort_keys=True))
-    return 0
+    return 1 if output.get("action") == "incomplete" else 0
 
 
 if __name__ == "__main__":
