@@ -29,6 +29,9 @@ case "$EVENT" in
   *) exit 1 ;;
 esac
 resolved=$(git rev-parse --verify --end-of-options "$base^{commit}")
+if test "$EVENT" = workflow_dispatch; then
+  test "$resolved" != "$EXPECTED_HEAD"
+fi
 echo "BASE_REF=$resolved" >> "$GITHUB_ENV"
 """
 
@@ -85,6 +88,7 @@ def wiring_errors(config: dict) -> list[str]:
     errors = []
     if "if" in job or job.get("continue-on-error") not in {None, "false"}:
         errors.append("required quality job can be skipped or ignored")
+    errors.extend(execution_errors(config))
     errors.extend(checkout_errors(job))
     errors.extend(capsule_setup_errors(job))
     errors.extend(comparison_errors(config))
@@ -100,6 +104,23 @@ def wiring_errors(config: dict) -> list[str]:
         or checks[0].get("continue-on-error") not in {None, "false"}
     ):
         errors.append("required aggregate must run unconditionally and propagate failure")
+    return errors
+
+
+def execution_errors(config: dict) -> list[str]:
+    """Keep all quality run steps on the reviewed shell and repository directory."""
+    expected = {"run": {"shell": "bash", "working-directory": "."}}
+    job = config.get("jobs", {}).get("quality", {})
+    errors = []
+    if job.get("defaults") != expected:
+        errors.append("quality execution defaults must declare Bash and repository root")
+    if config.get("defaults") not in (None, expected):
+        errors.append("workflow execution defaults differ from the reviewed context")
+    for step in job.get("steps", []):
+        if "run" in step and any(
+            step.get(key, value) != value for key, value in expected["run"].items()
+        ):
+            errors.append("quality step execution context differs from Bash/repository root")
     return errors
 
 

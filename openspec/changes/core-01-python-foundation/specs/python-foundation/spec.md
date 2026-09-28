@@ -143,6 +143,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **WHEN** the gate invokes that external validator
 - **THEN** it rejects the collision explicitly instead of executing it or silently falling through to another executable; a resolved external installation is invoked by absolute path. This prevents accidental tool-role collisions and is not malicious-PR attestation.
 
+#### Scenario: Manual CI comparison cannot use the tested head
+
+- **GIVEN** a manual workflow dispatch with an explicit comparison reference
+- **WHEN** the resolved comparison SHA equals the expected tested head
+- **THEN** resolution fails before exporting BASE_REF rather than creating an empty comparison interval
+- **AND** a distinct resolved manual base remains valid; this restriction does not change PR merge-base, push-before or local staged-HEAD semantics.
+
 #### Scenario: CI comparison base override
 
 - **GIVEN** a workflow that replaces the reviewed event-based resolver, changes its inputs/order, or overrides BASE_REF at another workflow/job/step scope
@@ -154,6 +161,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **GIVEN** a pull request, push or manual workflow event with an expected head commit
 - **WHEN** the checked-out HEAD differs from that event head or the reviewed checkout wiring is changed
 - **THEN** verification fails before resolving the comparison base; the canonical checkout remains unique, unconditional, first, pinned, with full history and no persisted credentials.
+
+#### Scenario: Quality steps retain their reviewed execution context
+
+- **GIVEN** the quality job declares Bash and the repository root as its run defaults
+- **WHEN** workflow/job defaults or any run-step override changes the shell or working directory
+- **THEN** workflow validation rejects the unreviewed execution context, even if the aggregate command text is unchanged
+- **AND** absent workflow defaults and inherited or identical step settings remain valid; the explicit quality-job defaults are required.
 
 #### Scenario: Inherited Make flags cannot hide aggregate failures
 

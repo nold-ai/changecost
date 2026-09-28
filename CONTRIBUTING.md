@@ -116,3 +116,11 @@ hooks can interpret them as options. Rename these inputs before staging; deletin
 one remains allowed. Nested paths such as `fixtures/--help` and root names such
 as `.--help` are valid. The inventory, staged snapshot and direct hygiene leaf
 reject unsafe current inputs with an explicit filename diagnostic.
+
+The quality job explicitly defaults every run step to Bash in the repository root
+(`working-directory: .`). Preserve these execution defaults; workflow defaults
+and individual run steps may not replace them with a different shell or directory.
+
+Manual CI requires a resolved comparison base different from the tested head;
+HEAD or an alias resolving to that head is rejected before export. PR and push
+comparison rules and the ordinary staged-hook HEAD default are unchanged.

@@ -616,3 +616,53 @@ Receipts: `promotion/hygiene-option-runtime-red.json`,
 `promotion/hygiene-option-test-red.log`, `promotion/hygiene-option-test-green.log`
 and `promotion/hygiene-option-runtime-green.json`. This fix and the inherited
 Make-flag correction remain pending independent verification and fresh hosted CI.
+
+
+## Static quality execution context validation
+
+Codex code review 5341369751 of `37cb81d` (comment 4124356205) identified that
+matching aggregate command text alone did not constrain its execution shell.
+The spec now requires explicit quality-job Bash/root defaults and rejects
+conflicting inherited or per-step contexts. Nineteen YAML-only regression cases
+failed before correction and pass afterward: changed workflow/job shell/directory,
+missing job defaults, and each of the seven quality run steps with altered shell
+or directory. Repairs restore canonical or inherited settings. No alternate shell
+is executed by these regressions. Actual actionlint also accepts the corrected YAML.
+Receipts: `promotion/execution-context-static-red.log` and
+`promotion/execution-context-static-green.log`.
+
+An earlier local dynamic attempt was unavailable because the reported executable
+path was absent on this Mac; it produced no successful reproduction or saved
+runtime evidence. Subsequent work is limited to static YAML validation and normal
+quality checks. GitHub's [workflow syntax reference](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iddefaultsrun)
+(accessed 2026-09-28) documents job run defaults and more-specific step settings;
+this patch validates the reviewed subset rather than parsing arbitrary shell code.
+
+Hosted run [36447375954](https://github.com/nold-ai/changecost/actions/runs/36447375954)
+passed both Python versions at `37cb81d`, with all ten required native analyzers
+ran/PASS and 231 nonblocking findings. Its
+[report-bound disposition](https://github.com/nold-ai/changecost/pull/22#issuecomment-5873842916)
+includes 82 additions, 71 removals and six explicit reassessments among 149
+retained identities. That evidence covers the previous head; this static context
+correction still requires independent verification and fresh hosted CI/reviews.
+
+
+## Manual CI comparison interval
+
+Codex security review 5341400576 of `37cb81d` (comment 4124381219) identified
+that a manual comparison resolving to the tested head created an empty interval.
+The explicit-base design is now clarified for manual CI only: the resolved base
+must differ from the expected head. The shared local baseline function and the
+staged-hook HEAD default are unchanged; no ancestry restriction was added.
+
+An ordinary resolver fixture using only Git reads and temporary output files
+confirmed the previous script accepted both HEAD and its exact SHA and exported
+that equal base. After correction those two manual cases exit one without any
+BASE_REF export; a distinct explicit base succeeds. PR and push fixtures retain
+their previous behavior. A YAML-only guard-removal regression failed before the
+change and passes after correction; all 20 combined static execution/manual cases
+pass. This uses the normal Bash resolver, with no alternate execution shell.
+Receipts: `promotion/manual-base-runtime-red.json`,
+`promotion/manual-base-static-red.log`, `promotion/manual-base-runtime-green.json`
+and `promotion/execution-manual-green.log`. Independent verification and fresh
+hosted CI/reviews remain required for this uncommitted combined correction.

@@ -23,6 +23,10 @@ jobs:
   quality:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+        working-directory: .
     strategy:
       fail-fast: false
       matrix:
@@ -66,6 +70,9 @@ jobs:
             *) exit 1 ;;
           esac
           resolved=$(git rev-parse --verify --end-of-options "$base^{commit}")
+          if test "$EVENT" = workflow_dispatch; then
+            test "$resolved" != "$EXPECTED_HEAD"
+          fi
           echo "BASE_REF=$resolved" >> "$GITHUB_ENV"
       - name: Install locked project environment
         run: uv sync --locked --group build

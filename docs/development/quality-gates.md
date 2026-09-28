@@ -20,7 +20,9 @@ Supply `BASE_REF` explicitly for local aggregate/manual review and CI. The stage
 commit hook alone defaults an unset base to HEAD and preserves explicit overrides.
 A PR checks its head and the merge-base with
 the event base; main pushes use the event's before SHA, including all commits in
-the push. Manual CI requires a comparison SHA. Missing history fails. Local
+the push. Manual CI requires a comparison SHA distinct from the tested head. Equal-head
+manual bases fail before BASE_REF is exported; PR merge-base, push-before and
+staged-hook HEAD semantics are unchanged. Missing history fails. Local
 `make check` reads tracked working files plus an explicit `MANIFEST` for intended
 new files; it refuses implicit omission when untracked files exist. Unrelated
 private `artifacts/` directories are ignored at every depth. Every nonempty manifest
@@ -274,3 +276,10 @@ individual hooks. The always-run staged repository-contracts hook rejects these
 index entries even if an earlier hygiene hook interprets the name as help.
 Rename or delete the input; deletion is a valid repair. Nested `fixtures/--help`
 and root `.--help` remain ordinary filenames and are allowed.
+
+The quality job declares `defaults.run` with `shell: bash` and
+`working-directory: .`. Validation requires this exact job declaration, allows
+absent or identical workflow defaults, and checks every quality run step for
+conflicting shell/directory overrides. Matching aggregate text alone does not
+prove its script will run in the intended context. This is static configuration
+validation and does not authenticate a hostile runner or general shell program.

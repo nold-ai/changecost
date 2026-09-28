@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Reject manual CI comparison references resolving to the tested head while
+  preserving PR, push and staged-hook comparison semantics.
+
+- Require canonical Bash/repository-root execution defaults for the quality job
+  and reject conflicting workflow or run-step overrides.
+
 - Reject option-shaped current root paths before hygiene or staged input acceptance,
   preserving valid nested filenames and deletion repairs.
 

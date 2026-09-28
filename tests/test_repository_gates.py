@@ -789,3 +789,91 @@ def test_harmless_hyphen_paths_remain_valid(tmp_path, name):
     git(tmp_path, "add", "--", name)
     assert inventory(tmp_path) == {name}
     assert materialize_index(tmp_path, tmp_path / "snapshot") == {name}
+
+
+@pytest.mark.parametrize("scope", ["workflow", "job"])
+@pytest.mark.parametrize(("field", "value"), [("shell", "python"), ("working-directory", "other")])
+def test_quality_execution_defaults_reject_drift(scope, field, value):
+    import copy
+
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    target = config if scope == "workflow" else config["jobs"]["quality"]
+    original = copy.deepcopy(target.get("defaults"))
+    target.setdefault("defaults", {}).setdefault("run", {})[field] = value
+    assert any("execution" in error for error in wiring_errors(config))
+    if original is None:
+        del target["defaults"]
+    else:
+        target["defaults"] = original
+    assert wiring_errors(config) == []
+
+
+def test_quality_execution_defaults_are_required():
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    job = config["jobs"]["quality"]
+    job.pop("defaults", None)
+    assert any("execution" in error for error in wiring_errors(config))
+    job["defaults"] = {"run": {"shell": "bash", "working-directory": "."}}
+    assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize(
+    "step_name",
+    [
+        "Install pinned bootstrap tools",
+        "Resolve comparison base",
+        "Install locked project environment",
+        "Install pinned review module",
+        "Allow namespaces for this job's capsule launcher paths",
+        "Check repository",
+        "Remove job-local capsule profile",
+    ],
+)
+@pytest.mark.parametrize(("field", "value"), [("shell", "python"), ("working-directory", "other")])
+def test_quality_run_steps_reject_execution_overrides(step_name, field, value):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    step = next(
+        step for step in config["jobs"]["quality"]["steps"] if step.get("name") == step_name
+    )
+    step[field] = value
+    assert any("execution" in error for error in wiring_errors(config))
+    step[field] = {"shell": "bash", "working-directory": "."}[field]
+    assert wiring_errors(config) == []
+
+
+def test_manual_dispatch_requires_distinct_comparison():
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    step = next(
+        step
+        for step in config["jobs"]["quality"]["steps"]
+        if step.get("name") == "Resolve comparison base"
+    )
+    guard = (
+        'if test "$EVENT" = workflow_dispatch; then\n  test "$resolved" != "$EXPECTED_HEAD"\nfi\n'
+    )
+    assert guard in step["run"]
+    original = step["run"]
+    step["run"] = original.replace(guard, "")
+    assert any("comparison" in error for error in wiring_errors(config))
+    step["run"] = original
+    assert wiring_errors(config) == []
