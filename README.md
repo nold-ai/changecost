@@ -90,6 +90,9 @@ Canonical event replay checks saved decisions against their history. Exact repos
 PR and reviewer identities prevent unrelated evidence from satisfying the session.
 Initialize only genuinely new sessions; recover existing missing receipts without
 resetting counters. Published completion requires clean inputs.
+Initial scope uses verified commit IDs and real file hashes (or `<absent>` for
+planned files). Effective reviewer objections remain blocking until approval or
+dismissal of the original rejecting review, rather than disappearing on a comment.
 
 ## Community and license
 

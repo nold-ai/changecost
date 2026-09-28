@@ -161,3 +161,47 @@ OpenSpec and hygiene pass; maximum complexity remains 10 with no KISS findings.
 Final instrumented focused verification passes 154 tests and measures 672/729
 helper statements (92% rounded). Exact final logs are
 `.changecost/family-enum-full.txt` and `.changecost/family-enum-coverage.txt`.
+
+## Effective objections, initial contracts and bounded timing fixture
+
+On 2026-09-29 (Europe/Berlin), the next collected batch addresses effective review
+objections, usable initial scope and the supported-Linux targeted-coverage timeout.
+New specification-first contract/history tests produced 32 failures and three
+passes before implementation (`.changecost/batch7-red.txt`). Schema 3 verifies
+initial real Git/file facts and preserves them for pure replay; incompatible
+receipts require explicit recovery without invented provenance or budget resets.
+Current-head changes-requested objections survive later comments/pending reviews
+and dismissal of another review, while later approval or dismissal of the original
+rejecting review is recognized from the complete fresh snapshot.
+
+The 900-measurement timing fixture was replaced with 89 minutes plus ten 0.1-minute
+measurements. An actual incremental-addition mutant fails at
+89.99999999999994 instead of 90 (`.changecost/batch7-timing-mutant-red.txt`), so the
+smaller fixture retains the arithmetic, restart, final-completion and next-batch
+boundary proof. No production timeout, analyzer enforcement or accumulation logic
+was weakened. This reduces test input volume; fresh Linux evidence must confirm
+the timeout repair rather than inferring it from local timing.
+
+Final local verification: 202 focused tests pass in 18.25 seconds under coverage,
+370 full tests pass in 19.58 seconds, and helper coverage is 736/794 statements
+(93% rounded). Ruff, BasedPyright, docs against HEAD/main and strict OpenSpec pass;
+maximum complexity remains 10 and native KISS reports no findings. Logs are
+`.changecost/batch7-focused.txt`, `.changecost/batch7-coverage.txt` and
+`.changecost/batch7-full.txt`. These local durations are test observations, not
+review-token or cost savings.
+
+The watcher documentation now explicitly distinguishes read-only GitHub operations
+from local code isolation: checkout Python executes with operator privileges and
+credentials. The existing trusted-contributor boundary remains unchanged; hostile
+PR isolation needs a separate architecture decision and is not claimed fixed.
+
+Independent review found that assume-unchanged/skip-worktree flags could hide a
+tracked edit from the initial Git change set. Six real-Git scenarios failed before
+repair (`.changecost/batch7-index-flags-red.txt`), covering both flags during
+initialization, input refresh and final completion. Shared input capture now
+rejects these unsupported flags without mutating the index. All six pass; the
+final tree passes 208 focused tests and 376 full tests. Final logs are
+`.changecost/batch7-final-coverage.txt` and `.changecost/batch7-final-full.txt`.
+Types, Ruff, docs against both bases and OpenSpec pass, with maximum complexity10
+and no native KISS findings. Helper coverage measures 741/799 statements (93%
+rounded). This stayed within the same unpublished batch.

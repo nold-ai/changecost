@@ -34,13 +34,19 @@ Review inputs include Git HEAD, working contents and staged blob identities/mode
 An explicit `advance_head` refresh invalidates earlier passing evidence even if
 HEAD is unchanged; keep the historical receipt and obtain fresh evidence.
 Missing active-time measurements block completion: record explicit measured minutes
-after the latest input refresh. A latest current-head changes-requested review is
+after the latest input refresh. An effective current-head changes-requested review is
 blocking, including top-level review bodies without inline threads. Required
 reviewers must have a latest APPROVED or COMMENTED result.
-Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-2
+Comments, pending submissions and dismissal of another review cannot clear that
+objection. Only a later approval or a fresh snapshot showing the original rejecting
+review dismissed can clear it.
+Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-3
 replay reconciles all cached fields; missing or incompatible history requires
 recovery, never reinitialization. Final published inputs must be clean. Exclude
 non-findings from family escalation while retaining genuine fixed recurrences.
+The initial typed scope and path/hash manifest must match real inputs and existing
+base/head commits, including changed/staged/untracked paths. Explicit `<absent>`
+entries permit future intended files; older receipts require recovery.
 
 `packet` retains scope, unresolved findings and evidence across context windows.
 `watch` is read-only and uses REST pagination with `--slurp` for checks/statuses/reviews/comments

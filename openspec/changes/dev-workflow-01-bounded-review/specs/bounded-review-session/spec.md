@@ -7,6 +7,34 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Usable initial scope and effective reviewer objections
+
+Schema-3 initialization SHALL require typed, nonblank scope and exact identities,
+full commit IDs and a safe path-to-SHA256 manifest using `<absent>` for planned
+absent paths. It SHALL verify the initial base and actual manifest, including
+changed/index/untracked paths, and preserve captured facts for filesystem-free
+replay. Unchanged intended paths and future absent paths remain allowed. Existing
+incompatible receipts require recovery without fabricated history or budget reset.
+
+#### Scenario: Reject unusable contracts
+- **WHEN** scope is mistyped/blank, a base is unknown, a path/hash is unsafe or inaccurate, or an existing changed path is omitted
+- **THEN** initialization rejects the contract before persisting a session
+- **AND** a valid initial contract remains immutable and retryable after later head refreshes
+
+#### Scenario: Preserve an effective changes-requested objection
+- **WHEN** a reviewer requests changes then submits COMMENTED, PENDING or a separate DISMISSED review
+- **THEN** their objection remains blocking across pages for required and other reviewers
+- **AND** a later APPROVED result clears it, or a complete fresh snapshot reflects dismissal of the original rejecting review itself
+
+#### Scenario: Exact active-minute boundary with fractional increments
+- **WHEN** 89 measured minutes are followed by ten measurements of 0.1 minute
+- **THEN** canonical accumulation reaches exactly 90 minutes across restart, permits legitimate final completion, and requires replanning for more correction work
+
+#### Scenario: Unsupported index flags cannot conceal inputs
+- **WHEN** a tracked entry uses assume-unchanged or skip-worktree
+- **THEN** initialization, input refresh and completion checks require recovery rather than accepting incomplete Git change/cleanliness evidence
+- **AND** the helper preserves the user's index flags without changing them
+
 ### Requirement: Validate collection and event transaction boundaries
 The helper SHALL bind observations to the input epoch captured before collection,
 validate all consumed comment/thread fields and optional event references before

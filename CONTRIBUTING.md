@@ -46,7 +46,7 @@ For implementation/review work, initialize the bounded local review receipt with
 `python -m quality.review_session init <change-id> --json <contract.json>`. It
 keeps the complete scope, finding families and counters across chats and commits.
 Use initialization only for a genuinely new session; recover lost or incompatible
-receipts. Schema 2 replays original events with separately captured timestamps and
+receipts. Schema 3 replays original events with separately captured timestamps and
 Git inputs, checking all cached decisions against that history. A durable genesis
 marker detects a missing state file; preserve the entire ignored directory because
 this local recovery guard is not a backup or a tamper-proof store.
@@ -62,6 +62,13 @@ Record measured `active_minutes` explicitly after each input refresh, including 
 actual measured zero when appropriate. The helper retains UTC receipt timestamps
 without estimating activity from elapsed wall time. Latest current-head reviewer
 rejections block completion; pending/dismissed results cannot reuse old approvals.
+An effective changes-requested objection survives later comments, pending reviews
+and dismissal of a different review. A later approval clears it; dismissal of the
+original rejection is recognized from the complete fresh snapshot.
+Initialization verifies typed scope, full commit IDs and a path/SHA256 manifest
+against actual initial inputs; `<absent>` represents an intended future file.
+Changed, staged and untracked paths must be included. Captured initial facts remain
+immutable through head refreshes; incompatible older schemas require recovery.
 Dirty inputs may be reviewed locally but cannot establish published completion.
 Non-findings do not seed family escalation; genuine fixed recurrences remain in
 history. Investigate the first escape after correction and replan after a further

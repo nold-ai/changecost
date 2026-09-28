@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Validate initial review scope against real Git/file facts, retain effective
+  reviewer objections across later comments, and reduce the fractional-boundary
+  regression's input volume without weakening its failure proof.
+
 - Reconcile review receipts from canonical event history, bind exact PR/reviewer
   identities, preserve genuine family chronology and bound watcher collection
   deadlines; distinguish new-session initialization from recovery.

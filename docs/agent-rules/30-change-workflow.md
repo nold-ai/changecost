@@ -123,7 +123,8 @@ Only a genuinely new session uses
 Existing sessions use `status`, then `packet` when recovery or replanning is
 required. A missing or incompatible receipt must not reset counters, including
 after moving to another worktree. Preserve schema-1 history as recovery evidence;
-do not synthesize prior measurements into a new schema-2 allowance.
+do not synthesize prior measurements into a new schema-3 allowance. Schema-1/2
+receipts remain recovery evidence; new required initial-scope facts are not invented.
 
 The complete JSON contract has this shape (replace example SHAs, file fingerprint,
 requirements, gates and exact REST reviewer identities with inspected values):
@@ -143,6 +144,18 @@ requirements, gates and exact REST reviewer identities with inspected values):
   "required_statuses": []
 }
 ```
+
+Requirements and acceptance criteria are nonempty lists of nonblank strings;
+non-goals may be an explicit empty list. Trust boundary is nonblank text. Supply
+full existing commit IDs, normalized repository-relative file paths and actual
+initial SHA256 values. Use `<absent>` for an intended path not created yet. All
+initial changed, staged and untracked paths must be covered; unchanged planned
+files are allowed. Initialization verifies those facts once and captures them in
+genesis. Later replay uses captured facts, and `init` with the same original
+contract remains idempotent after `advance_head`.
+Tracked `assume-unchanged` or `skip-worktree` flags are unsupported because they
+can hide changes from Git inspection. The helper rejects them at every input
+capture; it never clears or mutates the user's index flags.
 
 The first `watch <change-id> --repo <owner/repo> --pr <number>` binds the PR.
 That source remains fixed across input refreshes. `advance_head` captures a new

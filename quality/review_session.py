@@ -9,18 +9,19 @@ import hashlib
 import json
 import math
 import os
+import re
 import subprocess
 import tempfile
 import time
 from contextlib import contextmanager
 from contextvars import ContextVar
 from datetime import UTC, datetime
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from quality import repository
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 DEFAULT_BATCHES = 3
 DEFAULT_MINUTES = 90
 WAIT_LIMIT_MINUTES = 30
@@ -54,8 +55,11 @@ def initialize(root: Path, change_id: str, contract: dict[str, Any]) -> dict[str
             "change_id": change_id,
             "contract": copy.deepcopy(contract),
             "inputs": capture_inputs(root, contract["head"]),
+            "initial_scope": capture_initial_scope(root, contract),
             "created_at": datetime.now(UTC).isoformat(),
         }
+        if genesis["inputs"] != capture_inputs(root, contract["head"]):
+            raise ConflictError("inputs changed during initialization")
         state = replay(genesis, [], [], None, 0)
         write_state(marker, genesis)
         write_state(path, state)
@@ -118,6 +122,7 @@ def replay(
     validate_entries(events, ("id", "kind"))
     validate_entries(facts, ("event_id", "recorded_at"))
     validate_contract(genesis["contract"])
+    validate_initial_scope(genesis["contract"], genesis["initial_scope"])
     validate_timestamp(genesis["created_at"])
     validate_inputs(genesis["inputs"], genesis["contract"]["head"])
     if integer(genesis.get("schema_version"), "schema version") != SCHEMA_VERSION or len(
@@ -178,25 +183,122 @@ def validate_contract(contract: dict[str, Any]) -> None:
     missing = sorted(required - contract.keys())
     if missing:
         raise ValueError(f"contract missing: {', '.join(missing)}")
-    if not isinstance(contract["required_reviewers"], list) or not all(
-        isinstance(reviewer, str) and reviewer for reviewer in contract["required_reviewers"]
-    ):
-        raise ValueError("required_reviewers must be a list of non-empty GitHub logins")
+    validate_scope_contract(contract)
     validate_gate_contract(contract)
-    if not isinstance(contract["repository"], str) or len(contract["repository"].split("/")) != 2:
+    if not isinstance(contract["repository"], str) or not re.fullmatch(
+        r"[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9][A-Za-z0-9_.-]*", contract["repository"]
+    ):
         raise ValueError("repository requires owner/name")
+
+
+def nonblank(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and bool(value.strip())
+        and value == value.strip()
+        and not any(ord(char) < 32 or ord(char) == 127 for char in value)
+    )
+
+
+def string_list(value: Any, label: str, *, allow_empty: bool = False) -> None:
+    if not isinstance(value, list) or not all(nonblank(item) for item in value):
+        raise ValueError(f"{label} requires nonblank strings")
+    if not allow_empty and not value:
+        raise ValueError(f"{label} must not be empty")
+
+
+def validate_scope_contract(contract: dict[str, Any]) -> None:
+    for key in ("requirements", "acceptance_criteria", "required_reviewers", "non_goals"):
+        string_list(contract[key], key, allow_empty=key == "non_goals")
+    if not all(
+        re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]*(?:\[bot\])?", login)
+        for login in contract["required_reviewers"]
+    ):
+        raise ValueError("required_reviewers requires exact GitHub logins")
+    if not nonblank(contract["trust_boundary"]):
+        raise ValueError("trust_boundary requires nonblank text")
+    for key in ("base", "head"):
+        if not isinstance(contract[key], str) or not re.fullmatch(
+            r"[0-9a-f]{40}|[0-9a-f]{64}", contract[key]
+        ):
+            raise ValueError(f"{key} requires a full commit ID")
+    validate_manifest(contract["intended_files"])
+
+
+def validate_manifest(manifest: Any) -> None:
+    if not isinstance(manifest, dict) or not manifest:
+        raise ValueError("intended_files requires a nonempty path fingerprint mapping")
+    for name, fingerprint in manifest.items():
+        validate_manifest_path(name)
+        if fingerprint != "<absent>" and (
+            not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", fingerprint)
+        ):
+            raise ValueError("manifest fingerprint requires SHA256 or <absent>")
+
+
+def validate_manifest_path(name: Any) -> None:
+    if not nonblank(name) or "\\" in name:
+        raise ValueError("manifest path requires a safe relative path")
+    path = PurePosixPath(name)
+    if (
+        path.is_absolute()
+        or ".." in path.parts
+        or not path.parts
+        or str(path) != name
+        or path.parts[0] == ".git"
+    ):
+        raise ValueError("manifest path requires a normalized repository path")
+
+
+def capture_initial_scope(root: Path, contract: dict[str, Any]) -> dict[str, Any]:
+    base = (
+        repository.git(root, "rev-parse", "--verify", f"{contract['base']}^{{commit}}")
+        .decode()
+        .strip()
+    )
+    changed = repository.git(root, "diff", "--name-only", "--no-renames", "-z", base)
+    staged = repository.git(root, "diff", "--cached", "--name-only", "--no-renames", "-z", base)
+    untracked = repository.git(root, "ls-files", "--others", "--exclude-standard", "-z")
+    names = set((changed + staged + untracked).decode().split("\0")) - {""}
+    actual = {name: file_fingerprint(root, name) for name in contract["intended_files"]}
+    facts = {"base": base, "files": actual, "changed_paths": sorted(names)}
+    validate_initial_scope(contract, facts)
+    return facts
+
+
+def file_fingerprint(root: Path, name: str) -> str:
+    path = repository.safe_path(root, name)
+    if not path.exists():
+        return "<absent>"
+    if not path.is_file():
+        raise ValueError("intended path is not a regular file")
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def validate_initial_scope(contract: dict[str, Any], facts: Any) -> None:
+    if not isinstance(facts, dict) or facts.keys() != {"base", "files", "changed_paths"}:
+        raise ValueError("missing or malformed initial scope facts; recovery required")
+    string_list(facts["changed_paths"], "initial changed paths", allow_empty=True)
+    if facts["changed_paths"] != sorted(set(facts["changed_paths"])):
+        raise ValueError("initial changed paths must be unique and sorted")
+    for name in facts["changed_paths"]:
+        validate_manifest_path(name)
+    if facts["base"] != contract["base"] or facts["files"] != contract["intended_files"]:
+        raise ValueError("initial manifest does not match captured inputs/base")
+    if not set(facts["changed_paths"]) <= contract["intended_files"].keys():
+        raise ValueError("initial manifest omits changed inputs")
 
 
 def validate_gate_contract(contract: dict[str, Any]) -> None:
     for key in ("required_checks", "required_statuses"):
         value = contract[key]
-        if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
-            raise ValueError(f"{key} must be an explicit list of gate identities")
+        string_list(value, key, allow_empty=key == "required_statuses")
     if not contract["required_checks"]:
         raise ValueError("required_checks must name at least one expected CI check")
 
 
 def capture_inputs(root: Path, expected_head: str) -> dict[str, Any]:
+    validate_index_flags(root)
     head = repository.git(root, "rev-parse", "HEAD").decode().strip()
     if head != expected_head:
         raise ValueError("reviewed head differs from local HEAD")
@@ -206,6 +308,14 @@ def capture_inputs(root: Path, expected_head: str) -> dict[str, Any]:
     fingerprint = repository.digest(root, files).encode() + b"\0" + index
     clean = not repository.git(root, "status", "--porcelain", "--untracked-files=all")
     return {"head": head, "digest": hashlib.sha256(fingerprint).hexdigest(), "clean": clean}
+
+
+def validate_index_flags(root: Path) -> None:
+    records = repository.git(root, "ls-files", "-v", "-z").split(b"\0")
+    if any(record[:1].islower() or record[:1] == b"S" for record in records if record):
+        raise ValueError(
+            "unsupported index flags: clear assume-unchanged/skip-worktree explicitly before review"
+        )
 
 
 def load(root: Path, change_id: str) -> dict[str, Any]:
@@ -1090,7 +1200,10 @@ def latest_review_states(snapshot: dict[str, Any]) -> dict[str, str]:
     for review in reviews:
         if review.get("commit_id") == snapshot["head"]:
             login = review["user"]["login"]
-            latest[login] = str(review.get("state", ""))
+            state = review["state"]
+            if latest.get(login) == "CHANGES_REQUESTED" and state != "APPROVED":
+                continue
+            latest[login] = state
     return latest
 
 

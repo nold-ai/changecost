@@ -73,6 +73,9 @@ Use `python -m quality.review_session watch <change-id> --repo <owner/repo>
 --pr <number>` for active PR observation when available. It is read-only and
 emits only changed state or explicit errors; do not retain unchanged polling in
 model context. Before every correction batch or publication, consult `status`.
+Read-only means no GitHub mutations by the watcher; the command executes local
+checkout-controlled Python with operator privileges and credentials. It assumes
+trusted contributor code and provides no isolation for a hostile PR checkout.
 At three batches, 90 active minutes, a pending scope decision, incomplete monitor
 evidence, or a post-investigation family escape, preserve the packet and hand off
 for replanning rather than continuing a narrow fix loop. An extension requires an

@@ -128,12 +128,21 @@ the required GitHub reviewer logins, nonempty `required_checks` names and explic
 declared review policy; do not infer protected-branch settings from them. Missing
 declared checks or statuses leave the session pending even when API pages are empty.
 Name the exact repository and REST reviewer logins, including `[bot]`. The first
-PR selection becomes immutable. Schema-2 canonical replay reconciles all derived
+PR selection becomes immutable. Schema-3 canonical replay reconciles all derived
 fields with original events and separately captured time/input facts. Preserve the
 genesis marker and state together; lost or incompatible history requires recovery,
 not another allowance. The marker detects state-file loss, not full-directory
 deletion or hostile tampering. See the
 [complete contract example](../agent-rules/30-change-workflow.md#bounded-review-contract).
+Initialization validates nonblank typed scope, full existing commits and safe
+path-to-SHA256 fingerprints against actual inputs. `<absent>` explicitly permits
+future planned files. Cover all changed, staged and untracked paths while allowing
+unchanged intended files. Captured initial scope facts remain immutable through
+head refreshes and are validated without filesystem access during replay. Existing
+schema-1/2 receipts require recovery rather than synthesized migration.
+Tracked assume-unchanged and skip-worktree entries are unsupported. Initialization,
+head refresh and final input/status checks reject those flags without changing the
+index, because Git's reported change set and clean state may conceal file edits.
 
 The helper reports `continue`, `wait`, `investigate`, `replan`, `incomplete` or
 `complete`. The defaults are three collected correction batches and 90 active
@@ -161,9 +170,12 @@ Completion also requires an `active_minutes` event with explicit finite nonnegat
 `minutes` after the latest binding refresh. Missing timing remains unknown; measured
 zero is allowed. Separate UTC recording timestamps preserve measurement provenance
 and idempotent ingestion, without inferring active time from wall-clock duration.
-For each reviewer, the latest current-head state applies: CHANGES_REQUESTED blocks
+For each reviewer, the effective current-head objection applies: CHANGES_REQUESTED blocks
 even without inline comments; a required reviewer with PENDING or DISMISSED cannot
 reuse an older approval. APPROVED and COMMENTED satisfy reviewer completion only.
+An earlier rejection survives later COMMENTED/PENDING rows and dismissal of a
+different review. A later APPROVED row clears it; a complete fresh snapshot can
+also show the original rejecting review itself changed to DISMISSED.
 Unknown or malformed review states make the observation incomplete rather than
 overwriting a prior rejection, for required and other reviewers alike.
 
@@ -174,6 +186,10 @@ as one complete JSON document, not physical lines. It never pushes, replies,
 resolves a thread or requests a review. Unchanged snapshots are suppressed; API
 or GraphQL failures make the session incomplete. The helper cannot authenticate a
 hostile runner or prevent arbitrary model calls outside this workflow.
+"Read-only" describes GitHub operations, not local code isolation: invoking this
+helper executes checkout-controlled Python with the operator's privileges and
+credentials. This contributor workflow assumes trusted local code; running hostile
+PR code safely requires a separate external-verifier architecture decision.
 It polls changed nonterminal state with 15/30/60-second backoff and returns a
 `wait` handoff after at most 30 minutes without progress; that wait never resets
 the correction-batch or active-time budgets.

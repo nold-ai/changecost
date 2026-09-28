@@ -9,6 +9,6 @@
   },
   "docs/commands.md": {
     "reason": "Canonical contributor review receipts change development tooling and skill bodies, not the public changecost help/version command tree or skill frontmatter. Regeneration confirms docs/commands.md remains exact; the updated shared workflow and development quality guide document the helper contract and recovery behavior.",
-    "digest": "b3bbf385d4530f9ce8506f0d577f8d5033aa444a75cc0b6f17b9903e04d64120"
+    "digest": "c4fa5d188993d7c5ee64472ad9c385e7fffa24cf35d7e1ec3bb0638d64a388c3"
   }
 }

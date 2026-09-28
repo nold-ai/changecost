@@ -16,12 +16,16 @@ mutation, or hostile-runner integrity guarantee.
 
 ## Decisions
 
-1. Store schema-2 state plus a durable genesis marker under
+1. Store schema-3 state plus a durable genesis marker under
    `.changecost/workflow/<change-id>/`. Pure replay of original event payloads and
    separately captured time/input facts reconciles every derived field. Atomic
    replacement preserves recoverability; a missing state file with a marker
    requires recovery. This is local accidental-loss detection, not tamper-proof
    storage or protection against deletion of the entire ignored directory.
+   Verify initial typed scope, existing full commits and safe file fingerprints,
+   including changed/index/untracked paths. Capture those facts once for pure
+   replay, permitting unchanged intended files and explicit `<absent>` planned
+   paths. Older schemas require recovery without invented provenance.
 2. Use standard-library JSON, `gh api --paginate --slurp` for REST collections and
    `gh api graphql` cursor pagination for review threads and their comments. The
    helper parses the complete returned JSON document, including pretty-printed pages. The
@@ -38,7 +42,9 @@ mutation, or hostile-runner integrity guarantee.
    has no GitHub mutation command.
 6. The contract names the required GitHub reviewer logins. The watcher fails
    closed until each latest current-head review is APPROVED or COMMENTED. The
-   latest CHANGES_REQUESTED from any reviewer blocks completion; required pending
+   effective CHANGES_REQUESTED from any reviewer blocks completion; later comments,
+   pending reviews or dismissal of another review do not withdraw it. A later
+   approval or dismissal of the original rejecting review clears it; required pending
    or dismissed reviews cannot reuse an earlier approval. It polls
    changed nonterminal state through the separate 30-minute no-progress limit.
 7. Record manually measured active minutes with separate UTC recording timestamps

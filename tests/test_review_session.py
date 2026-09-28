@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -13,14 +14,17 @@ import pytest
 from quality import review_session
 
 TEST_HEAD = ""
+TEST_ROOT = Path()
 
 
 @pytest.fixture(autouse=True)
 def git_fixture(tmp_path: Path) -> None:
-    global TEST_HEAD
+    global TEST_HEAD, TEST_ROOT
+    TEST_ROOT = tmp_path
     subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
     (tmp_path / ".gitignore").write_text(".changecost/\n")
-    subprocess.run(["git", "-C", str(tmp_path), "add", ".gitignore"], check=True)
+    (tmp_path / "input.txt").write_text("initial\n")
+    subprocess.run(["git", "-C", str(tmp_path), "add", ".gitignore", "input.txt"], check=True)
     subprocess.run(
         [
             "git",
@@ -48,12 +52,35 @@ def contract() -> dict[str, object]:
         "acceptance_criteria": ["review evidence is current"],
         "non_goals": ["host authentication"],
         "trust_boundary": "configuration validation only",
-        "intended_files": {"quality/example.py": "abc"},
-        "base": "a" * 40,
+        "intended_files": fixture_manifest(),
+        "base": TEST_HEAD,
         "head": TEST_HEAD,
         "required_reviewers": ["reviewer-a"],
         "required_checks": ["ci"],
         "required_statuses": [],
+    }
+
+
+def fixture_manifest() -> dict[str, str]:
+    names = subprocess.check_output(
+        [
+            "git",
+            "-C",
+            str(TEST_ROOT),
+            "ls-files",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+            "-z",
+        ],
+        text=True,
+    ).split("\0")
+    return {
+        name: hashlib.sha256((TEST_ROOT / name).read_bytes()).hexdigest()
+        if (TEST_ROOT / name).is_file()
+        else "<absent>"
+        for name in names
+        if name
     }
 
 
@@ -915,11 +942,18 @@ def test_review_supersession_spans_pages_and_ignores_old_head(tmp_path: Path) ->
 
 def test_fractional_minutes_sum_canonically_across_restart_and_budget(tmp_path: Path) -> None:
     review_session.initialize(tmp_path, "change", contract())
-    for index in range(900):
+    review_session.record(
+        tmp_path, "change", {"id": "initial-time", "kind": "active_minutes", "minutes": 89}
+    )
+    for index in range(10):
         review_session.record(
             tmp_path, "change", {"id": f"time-{index}", "kind": "active_minutes", "minutes": 0.1}
         )
     assert review_session.load(tmp_path, "change")["active_minutes"] == 90
+    assert review_session.status(tmp_path, "change")["action"] == "replan"
+    complete_session(tmp_path)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    review_session.record(tmp_path, "change", {"id": "resume", "kind": "phase", "phase": "active"})
     assert review_session.status(tmp_path, "change")["action"] == "replan"
 
 
@@ -1265,3 +1299,194 @@ def test_documented_review_states_preserve_completion_policy(
     snapshot["reviews"][0][0]["state"] = state
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] == action
+
+
+@pytest.mark.parametrize("login", ["reviewer-a", "other-human"])
+@pytest.mark.parametrize("later", ["COMMENTED", "PENDING", "DISMISSED"])
+def test_review_objection_survives_nonapproving_later_review(
+    tmp_path: Path, login: str, later: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["reviews"] += [
+        [
+            {
+                "id": 100,
+                "commit_id": TEST_HEAD,
+                "state": "CHANGES_REQUESTED",
+                "user": {"login": login},
+            }
+        ],
+        [{"id": 101, "commit_id": TEST_HEAD, "state": later, "user": {"login": login}}],
+    ]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    snapshot["reviews"][-1][0]["state"] = "APPROVED"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("requirements", None),
+        ("requirements", []),
+        ("requirements", [" "]),
+        ("acceptance_criteria", "pass"),
+        ("non_goals", False),
+        ("trust_boundary", {}),
+        ("trust_boundary", " "),
+        ("repository", "/repo"),
+        ("repository", "owner/../repo"),
+        ("repository", "owner/repo\n"),
+        ("required_reviewers", [" "]),
+        ("required_checks", ["\t"]),
+        ("required_statuses", ["context\n"]),
+        ("base", None),
+        ("base", "HEAD"),
+        ("base", "f" * 40),
+        ("head", True),
+        ("intended_files", None),
+        ("intended_files", {}),
+        ("intended_files", {"../outside": "a" * 64}),
+        ("intended_files", {".gitignore": "fake"}),
+        ("intended_files", {".gitignore": "a" * 64}),
+        ("intended_files", {".gitignore": "<absent>"}),
+    ],
+)
+def test_initial_contract_requires_usable_verified_scope(
+    tmp_path: Path, field: str, value: object
+) -> None:
+    policy = {**contract(), field: value}
+    with pytest.raises(ValueError):
+        review_session.initialize(tmp_path, "change", policy)
+    assert not review_session.state_path(tmp_path, "change").exists()
+
+
+@pytest.mark.parametrize("kind", ["dirty", "staged", "untracked", "deleted", "renamed"])
+def test_initial_manifest_covers_every_changed_input(tmp_path: Path, kind: str) -> None:
+    policy = contract()
+    path = tmp_path / "input.txt"
+    if kind == "untracked":
+        (tmp_path / "new.py").write_text("new")
+    elif kind == "deleted":
+        path.unlink()
+    elif kind == "renamed":
+        path.rename(tmp_path / "renamed")
+    else:
+        path.write_text(".changecost/\n# change\n")
+        if kind == "staged":
+            subprocess.run(["git", "-C", str(tmp_path), "add", "input.txt"], check=True)
+    with pytest.raises(ValueError):
+        review_session.initialize(tmp_path, "change", policy)
+    updated = {**policy, "intended_files": fixture_manifest()}
+    review_session.initialize(tmp_path, "change", updated)
+
+
+def test_initial_manifest_allows_planned_absence_and_retry_after_advance(tmp_path: Path) -> None:
+    policy = contract()
+    policy["intended_files"] = {**fixture_manifest(), "planned.py": "<absent>"}
+    before = review_session.initialize(tmp_path, "change", policy)
+    (tmp_path / "planned.py").write_text("planned")
+    review_session.record(
+        tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+    )
+    after = review_session.initialize(tmp_path, "change", policy)
+    assert after["contract"] == before["contract"]
+    assert after["inputs"] != before["inputs"]
+
+
+@pytest.mark.parametrize(
+    "name",
+    [".", "./input.txt", "a//b", "a/../b", "/input.txt", ".git/config", "bad\\path", "bad\npath"],
+)
+def test_manifest_paths_are_normalized_and_safe(tmp_path: Path, name: str) -> None:
+    with pytest.raises(ValueError):
+        review_session.initialize(
+            tmp_path, "change", {**contract(), "intended_files": {name: "<absent>"}}
+        )
+
+
+def test_manifest_symlink_cannot_bind_another_file(tmp_path: Path) -> None:
+    (tmp_path / "link").symlink_to(tmp_path / "input.txt")
+    policy = contract()
+    with pytest.raises(ValueError):
+        review_session.initialize(tmp_path, "change", policy)
+
+
+def test_original_rejection_dismissal_is_recomputed_from_fresh_snapshot(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    rejection = {
+        "id": 100,
+        "commit_id": TEST_HEAD,
+        "state": "CHANGES_REQUESTED",
+        "user": {"login": "reviewer-a"},
+    }
+    snapshot["reviews"] += [
+        [rejection],
+        [
+            {
+                "id": 101,
+                "commit_id": TEST_HEAD,
+                "state": "COMMENTED",
+                "user": {"login": "reviewer-a"},
+            }
+        ],
+    ]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    rejection["state"] = "DISMISSED"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+@pytest.mark.parametrize(
+    "other_login,old_head",
+    [("other-human", False), ("reviewer-a[bot]", False), ("reviewer-a", True)],
+)
+def test_other_identity_or_head_cannot_clear_objection(
+    tmp_path: Path, other_login: str, old_head: bool
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["reviews"] += [
+        [{"commit_id": TEST_HEAD, "state": "CHANGES_REQUESTED", "user": {"login": "reviewer-a"}}],
+        [
+            {
+                "commit_id": "old" if old_head else TEST_HEAD,
+                "state": "APPROVED",
+                "user": {"login": other_login},
+            }
+        ],
+    ]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("flag", ["--assume-unchanged", "--skip-worktree"])
+@pytest.mark.parametrize("phase", ["init", "advance", "completion"])
+def test_unsupported_index_flags_cannot_hide_inputs(tmp_path: Path, flag: str, phase: str) -> None:
+    policy = contract()
+    if phase != "init":
+        review_session.initialize(tmp_path, "change", policy)
+        complete_session(tmp_path)
+    subprocess.run(["git", "-C", str(tmp_path), "update-index", flag, "input.txt"], check=True)
+    before = subprocess.check_output(["git", "-C", str(tmp_path), "ls-files", "-v"])
+    if phase == "completion":
+        assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    elif phase == "advance":
+        (tmp_path / "input.txt").write_text("hidden change")
+        with pytest.raises(ValueError, match="index flags"):
+            review_session.record(
+                tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+            )
+    else:
+        (tmp_path / "input.txt").write_text("hidden change")
+        policy["intended_files"] = {".gitignore": fixture_manifest()[".gitignore"]}
+        with pytest.raises(ValueError, match="index flags"):
+            review_session.initialize(tmp_path, "change", policy)
+    assert subprocess.check_output(["git", "-C", str(tmp_path), "ls-files", "-v"]) == before
