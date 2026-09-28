@@ -1,10 +1,10 @@
 {
   "README.md": {
-    "reason": "The CI validator now binds the Python matrix, pins Ubuntu env/Make launcher selection and rejects direct PATH overrides. README setup commands, package scope and local staged-hook behavior are unchanged; CONTRIBUTING.md and docs/development/quality-gates.md document these CI constraints and the existing operator-selected manual comparison evidence scope.",
-    "digest": "f75bc95f688c5d482b19bf519e51663669e7941c4f25820fd0e69dc8f2527204"
+    "reason": "CI now uses a canonical Bash startup template, exact Python matrix expansion and explicit run-step interpreter bindings. README setup commands, package scope and local staged-hook behavior are unchanged. CONTRIBUTING.md and docs/development/quality-gates.md document these CI constraints, environment precedence and non-attestation limits.",
+    "digest": "e044c65eb36e6e9c7f7b08d1d373bceb5f95e53a9acd617710bb31ec564af5d9"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "The agent procedure already requires supported-version checks, workflow validation and behavior review for applicable changes. Matrix binding and explicit Ubuntu launcher selection constrain CI wiring without changing agent invocation or assurance policy. CONTRIBUTING.md and docs/development/quality-gates.md document direct PATH rejection and clarify that scoped manual not-applicable results cannot replace required PR/promotion behavior evidence.",
-    "digest": "f75bc95f688c5d482b19bf519e51663669e7941c4f25820fd0e69dc8f2527204"
+    "reason": "The agent procedure already requires supported-version checks, workflow validation and complete applicable evidence. Canonical Bash startup, exact matrix expansion and explicit per-run-step UV_PYTHON bindings constrain CI wiring without changing agent invocation or assurance policy. CONTRIBUTING.md and docs/development/quality-gates.md explain official semantics and limits; static local checks and pending hosted execution remain explicit.",
+    "digest": "e044c65eb36e6e9c7f7b08d1d373bceb5f95e53a9acd617710bb31ec564af5d9"
   }
 }

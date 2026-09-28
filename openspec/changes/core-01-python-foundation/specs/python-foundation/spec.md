@@ -172,9 +172,16 @@ publish/deploy or execute PR code with privileged repository credentials.
 #### Scenario: Python matrix labels select their actual interpreters
 
 - **GIVEN** the required Python matrix entries
-- **WHEN** the quality job's `UV_PYTHON` differs from the canonical matrix binding, is missing, or any step supplies its own `UV_PYTHON`
-- **THEN** workflow validation fails instead of accepting labels that could run the same interpreter
-- **AND** the job's exact `${{ matrix.python }}` binding with no step override passes.
+- **WHEN** the matrix mapping differs from the exact two-version Python mapping, the quality job lacks its canonical `UV_PYTHON` binding, or any run step lacks that same binding
+- **THEN** workflow validation fails instead of accepting altered matrix expansion or inherited interpreter selection
+- **AND** every run step explicitly binds `${{ matrix.python }}` so step environment precedence supersedes earlier GITHUB_ENV values; action steps may omit the variable or use the exact binding, but may not substitute another value. Unsupported include/exclude entries and extra axes require gate reconciliation.
+
+#### Scenario: Quality Bash startup does not inherit environment hooks
+
+- **GIVEN** the ordinary-user Ubuntu quality job
+- **WHEN** a run step starts with inherited Bash startup variables or exported shell functions, regardless of their environment source
+- **THEN** its canonical shell template is `/bin/bash --noprofile --norc -p -e -o pipefail {0}`, retaining fail-fast behavior and ignoring inherited Bash startup configuration
+- **AND** workflow validation rejects altered templates in defaults or explicit run-step overrides; this grants no new operating-system privilege and does not authenticate child interpreters, host tools or outputs.
 
 #### Scenario: Quality steps retain their reviewed execution context
 

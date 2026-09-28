@@ -823,7 +823,12 @@ def test_quality_execution_defaults_are_required():
     job = config["jobs"]["quality"]
     job.pop("defaults", None)
     assert any("execution" in error for error in wiring_errors(config))
-    job["defaults"] = {"run": {"shell": "bash", "working-directory": "."}}
+    job["defaults"] = {
+        "run": {
+            "shell": "/bin/bash --noprofile --norc -p -e -o pipefail {0}",
+            "working-directory": ".",
+        }
+    }
     assert wiring_errors(config) == []
 
 
@@ -852,7 +857,10 @@ def test_quality_run_steps_reject_execution_overrides(step_name, field, value):
     )
     step[field] = value
     assert any("execution" in error for error in wiring_errors(config))
-    step[field] = {"shell": "bash", "working-directory": "."}[field]
+    step[field] = {
+        "shell": "/bin/bash --noprofile --norc -p -e -o pipefail {0}",
+        "working-directory": ".",
+    }[field]
     assert wiring_errors(config) == []
 
 
@@ -897,7 +905,7 @@ def test_quality_interpreter_follows_matrix(value):
     assert wiring_errors(config) == []
 
 
-@pytest.mark.parametrize("value", ["3.11.15", "${{ matrix.python }}"])
+@pytest.mark.parametrize("value", ["3.11.15", "3.13.14"])
 def test_quality_steps_cannot_override_matrix_interpreter(value):
     import yaml
 
@@ -909,7 +917,12 @@ def test_quality_steps_cannot_override_matrix_interpreter(value):
         env = step.setdefault("env", {})
         env["UV_PYTHON"] = value
         assert any("interpreter" in error for error in wiring_errors(config))
-        del env["UV_PYTHON"]
+        if "run" in step:
+            env["UV_PYTHON"] = "${{ matrix.python }}"
+        else:
+            del env["UV_PYTHON"]
+        assert wiring_errors(config) == []
+        env["UV_PYTHON"] = "${{ matrix.python }}"
         assert wiring_errors(config) == []
 
 
@@ -949,3 +962,64 @@ def test_quality_requires_absolute_aggregate_launchers(command):
     assert any("aggregate" in error for error in wiring_errors(config))
     check["run"] = required
     assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("scope", ["workflow", "job", "steps"])
+@pytest.mark.parametrize(
+    "remove", ["legacy", "/bin/", "--noprofile ", "--norc ", "-p ", "-e ", "-o pipefail ", "{0}"]
+)
+def test_quality_requires_canonical_bash_startup(scope, remove):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    job = config["jobs"]["quality"]
+    required = "/bin/bash --noprofile --norc -p -e -o pipefail {0}"
+    targets = [job["defaults"]["run"]]
+    if scope == "workflow":
+        config["defaults"] = {"run": dict(job["defaults"]["run"])}
+        targets = [config["defaults"]["run"]]
+    if scope == "steps":
+        targets = [step for step in job["steps"] if "run" in step]
+    for target in targets:
+        target["shell"] = "bash" if remove == "legacy" else required.replace(remove, "")
+        assert any("execution" in error for error in wiring_errors(config))
+        target["shell"] = required
+        assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("extra", ["include", "exclude", "platform"])
+def test_quality_matrix_mapping_cannot_change_expansion(extra):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    matrix = config["jobs"]["quality"]["strategy"]["matrix"]
+    matrix[extra] = ["other"] if extra == "platform" else [{"python": "3.13.14"}]
+    assert any("matrix" in error for error in wiring_errors(config))
+    del matrix[extra]
+    assert wiring_errors(config) == []
+
+
+@pytest.mark.parametrize("value", [None, "3.11.15", "3.13.14"])
+def test_quality_run_steps_bind_interpreter_after_inherited_environment(value):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    for step in config["jobs"]["quality"]["steps"]:
+        if "run" not in step:
+            continue
+        env = step.setdefault("env", {})
+        env.pop("UV_PYTHON", None)
+        if value is not None:
+            env["UV_PYTHON"] = value
+        assert any("interpreter" in error for error in wiring_errors(config))
+        env["UV_PYTHON"] = "${{ matrix.python }}"
+        assert wiring_errors(config) == []

@@ -288,15 +288,38 @@ index entries even if an earlier hygiene hook interprets the name as help.
 Rename or delete the input; deletion is a valid repair. Nested `fixtures/--help`
 and root `.--help` remain ordinary filenames and are allowed.
 
-The quality job declares `defaults.run` with `shell: bash` and
+The quality job declares `defaults.run` with
+`shell: /bin/bash --noprofile --norc -p -e -o pipefail {0}` and
 `working-directory: .`. Validation requires this exact job declaration, allows
 absent or identical workflow defaults, and checks every quality run step for
 conflicting shell/directory overrides. Matching aggregate text alone does not
 prove its script will run in the intended context. This is static configuration
 validation and does not authenticate a hostile runner or general shell program.
 
-Python matrix validation also requires the quality job's exact
-`UV_PYTHON: ${{ matrix.python }}` environment binding. Any step-level UV_PYTHON
-entry is rejected, including a redundant identical expression, so interpreter
-selection has one declared owner. The current workflow already used both correct
-versions; this check prevents prospective label/interpreter drift.
+The [GNU Bash manual](https://www.gnu.org/s/bash/manual/html_node/The-Set-Builtin.html)
+(accessed 2026-09-28) documents that startup `-p` ignores BASH_ENV/ENV files,
+inherited shell functions, and environment SHELLOPTS, BASHOPTS, CDPATH and
+GLOBIGNORE. This applies regardless of whether the environment came from a direct
+YAML entry or a previous GITHUB_ENV export; no producer script parser is used.
+[GitHub's custom-shell contract](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#custom-shell)
+(accessed 2026-09-28) supports the command/options/`{0}` template. Explicit `-e`
+and `-o pipefail` preserve fail-fast behavior when replacing its built-in Bash
+invocation. This shell mode does not acquire operating-system privileges: the
+ordinary runner retains its equal real/effective UID. It does not protect child
+interpreters' startup, host binaries or report authenticity. GITHUB_PATH and
+normal environment values remain available. Static YAML mutation/repair tests
+cover the template; no adversarial startup script was executed locally, and fresh
+hosted CI must establish normal execution on the pinned Ubuntu runner.
+
+Python matrix validation requires exactly `python: ['3.11.15', '3.13.14']`, with
+no include/exclude entries or additional axes that change the expanded jobs. The
+quality job and every run step explicitly bind `UV_PYTHON: ${{ matrix.python }}`;
+action steps may omit it or use that exact expression. This supersedes the earlier
+blanket prohibition on step entries. GitHub's [step environment precedence](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsenv)
+(accessed 2026-09-28) and its [runner implementation](https://github.com/actions/runner/blob/main/src/Runner.Worker/StepsRunner.cs)
+show global environment values being merged before evaluated step entries. The
+[environment-file handler](https://github.com/actions/runner/blob/main/src/Runner.Worker/FileCommandManager.cs)
+places earlier GITHUB_ENV values in that global environment. Explicit step bindings
+therefore restore the matrix value without parsing earlier commands. Static tests
+check removal, substitution and repair. Fresh CI must prove normal matrix execution;
+these constraints do not authenticate arbitrary host code or child tools.

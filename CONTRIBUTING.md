@@ -117,18 +117,23 @@ one remains allowed. Nested paths such as `fixtures/--help` and root names such
 as `.--help` are valid. The inventory, staged snapshot and direct hygiene leaf
 reject unsafe current inputs with an explicit filename diagnostic.
 
-The quality job explicitly defaults every run step to Bash in the repository root
-(`working-directory: .`). Preserve these execution defaults; workflow defaults
-and individual run steps may not replace them with a different shell or directory.
+The quality job explicitly defaults every run step to
+`/bin/bash --noprofile --norc -p -e -o pipefail {0}` in the repository root
+(`working-directory: .`). Preserve the exact template in defaults and any explicit
+step shell. It ignores inherited Bash startup hooks/options/functions while
+retaining fail-fast behavior. Bash's `-p` startup mode grants no OS privilege on
+the ordinary equal-UID runner; it does not authenticate child tools or outputs.
 
 Manual CI requires a resolved comparison base different from the tested head;
 HEAD or an alias resolving to that head is rejected before export. PR and push
 comparison rules and the ordinary staged-hook HEAD default are unchanged.
 
-Keep the quality job's `UV_PYTHON` set exactly to `${{ matrix.python }}` and do not
-set that variable on individual steps. Matrix labels alone do not prove that uv
-selected each intended interpreter; the workflow gate checks both the version
-matrix and this single job-level binding.
+Keep the quality job's `UV_PYTHON` and every run step's explicit binding set exactly
+to `${{ matrix.python }}`. Step bindings take precedence over earlier inherited
+GITHUB_ENV values; action steps may omit the variable or use the exact expression.
+The workflow gate requires the exact two-version Python matrix mapping, without
+include/exclude entries or extra axes. Matrix labels alone do not prove the
+intended jobs ran with their intended interpreters.
 
 CI uses the pinned Ubuntu runner's `/usr/bin/env` and `/usr/bin/make` for the
 aggregate. Do not set PATH directly in workflow, quality-job or quality-step

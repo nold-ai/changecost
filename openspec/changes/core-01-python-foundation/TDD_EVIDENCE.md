@@ -723,3 +723,57 @@ The combined matrix/PATH correction still needs independent verification and
 fresh hosted CI/reviews. The current `f43bf23` run and its published 248 advisory
 dispositions remain bound to that earlier head; the two mutable-host scope disputes
 remain open.
+
+
+## Canonical Bash startup semantics
+
+Codex review 5341854941 at `42b8325` (comment 4124762056) identified inherited
+Bash startup configuration before the aggregate command. The reviewed correction
+uses `/bin/bash --noprofile --norc -p -e -o pipefail {0}` for quality-job defaults
+and explicit run-step shells, enforced by one exact validator constant. GNU Bash
+and GitHub's documented contracts, accessed 2026-09-28 and linked in the quality
+guide, establish startup-environment handling and supported template semantics.
+No environment-producer parser or additional host-integrity claim was added.
+
+Twenty-four static YAML cases failed before correction: legacy Bash or removal of
+the absolute path, profile/rc guards, startup mode, fail-fast flags or placeholder,
+at workflow/job/step scope. The previous validator accepted legacy Bash and
+rejected the new canonical repair. After correction all 43 new and existing
+execution-context mutation/repair cases pass. Receipts:
+`promotion/bash-startup-static-red.log` and
+`promotion/bash-startup-static-green.log`. No adversarial startup script or
+alternative launcher was executed locally; these are static validator tests.
+Fresh hosted CI remains necessary to verify normal execution of this template.
+The ordinary equal-UID runner gains no OS privileges from this Bash mode, which
+does not authenticate child interpreters, tools or outputs.
+
+Previous [run 36452928317](https://github.com/nold-ai/changecost/actions/runs/36452928317)
+passed every aggregate leaf at `42b8325` on both Python versions, including 132
+tests plus four subtests and all ten native analyzers. Its [264 advisory dispositions](https://github.com/nold-ai/changecost/pull/22#issuecomment-5874558999)
+include 17 additions, one removal and seven changed-context reassessments among
+247 retained identities; independent evidence review found no errors. Those
+receipts do not certify this new correction. The manual-scope thread and two
+mutable-host scope disputes remain open pending responses/decisions.
+
+
+## Exact matrix expansion and step interpreter precedence
+
+CodeRabbit review 5341926714 of `42b8325` reported unsupported matrix expansion
+(comment 4124816212) and interpreter values inherited through earlier GITHUB_ENV
+writes (comment 4124816228). Six new static YAML cases failed before correction:
+include/exclude/extra-axis entries and missing/either fixed run-step interpreter
+bindings. After correction all 35 focused Bash/matrix cases pass, including
+restoration checks at each run step. The earlier step-override regression now
+checks either wrong fixed version while accepting the exact expression; this
+explicitly supersedes the previous prohibition on every step-level entry.
+
+The validator requires the exact two-version matrix mapping, preserves the job
+binding, and requires `${{ matrix.python }}` on every run step. Action steps can
+omit the variable or use that exact expression. The resolver's exact environment
+contract includes the same binding. GitHub documentation and runner source,
+accessed 2026-09-28 and linked in the gate guide, show global environment values
+merged before the evaluated step environment. This avoids a producer-script parser.
+No fake runner, interpreter or environment-writing script was executed. Receipts:
+`promotion/matrix-expansion-static-red.log` and
+`promotion/bash-matrix-static-green.log`. Fresh hosted execution remains required;
+the earlier current-head CI success does not certify these uncommitted fixes.

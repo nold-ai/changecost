@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Preserve exact Python matrix expansion and bind every quality run step's uv
+  interpreter explicitly, overriding earlier inherited environment values.
+
+- Require the canonical fail-fast Bash startup template for quality run steps,
+  ignoring inherited startup hooks/options/functions without granting OS privileges.
+
 - Pin CI aggregate env/Make launcher paths and reject direct quality PATH overrides;
   clarify the declared scope of operator-selected manual comparison evidence.
 

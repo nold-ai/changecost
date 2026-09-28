@@ -11,9 +11,11 @@ from quality import external_tools
 
 CHECKOUT_ACTION = "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
 AGGREGATE_COMMAND = "/usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check"
+QUALITY_SHELL = "/bin/bash --noprofile --norc -p -e -o pipefail {0}"
 HEAD_REF = "${{ github.event.pull_request.head.sha || github.sha }}"
 
 COMPARISON_ENV = {
+    "UV_PYTHON": "${{ matrix.python }}",
     "EXPECTED_HEAD": HEAD_REF,
     "EVENT": "${{ github.event_name }}",
     "PR_BASE": "${{ github.event.pull_request.base.sha }}",
@@ -108,23 +110,27 @@ def wiring_errors(config: dict) -> list[str]:
 def matrix_errors(job: dict) -> list[str]:
     """Bind the required matrix labels to uv's actual interpreter selection."""
     errors = []
-    matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])
-    if matrix != ["3.11.15", "3.13.14"]:
+    matrix = job.get("strategy", {}).get("matrix", {})
+    if matrix != {"python": ["3.11.15", "3.13.14"]}:
         errors.append("required Python matrix changed without gate reconciliation")
     if job.get("env", {}).get("UV_PYTHON") != "${{ matrix.python }}":
         errors.append("quality interpreter must use the canonical Python matrix binding")
-    if any("UV_PYTHON" in step.get("env", {}) for step in job.get("steps", [])):
-        errors.append("quality steps cannot override the matrix interpreter")
+    for step in job.get("steps", []):
+        value = step.get("env", {}).get("UV_PYTHON")
+        if ("run" in step or value is not None) and value != "${{ matrix.python }}":
+            errors.append("quality steps must retain the canonical matrix interpreter")
     return errors
 
 
 def execution_errors(config: dict) -> list[str]:
     """Keep all quality run steps on the reviewed shell and repository directory."""
-    expected = {"run": {"shell": "bash", "working-directory": "."}}
+    expected = {"run": {"shell": QUALITY_SHELL, "working-directory": "."}}
     job = config.get("jobs", {}).get("quality", {})
     errors = []
     if job.get("defaults") != expected:
-        errors.append("quality execution defaults must declare Bash and repository root")
+        errors.append(
+            "quality execution defaults must declare canonical Bash startup and repository root"
+        )
     if config.get("defaults") not in (None, expected):
         errors.append("workflow execution defaults differ from the reviewed context")
     scopes = [config, job, *job.get("steps", [])]
@@ -134,7 +140,9 @@ def execution_errors(config: dict) -> list[str]:
         if "run" in step and any(
             step.get(key, value) != value for key, value in expected["run"].items()
         ):
-            errors.append("quality step execution context differs from Bash/repository root")
+            errors.append(
+                "quality step execution context differs from canonical Bash/repository root"
+            )
     return errors
 
 
