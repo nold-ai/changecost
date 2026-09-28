@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- Review regenerated Enterprise v2 bundles: add reported VS Code message-counter
+  evidence, check synthetic arithmetic and record OTLP enum, normalized-schema and
+  duplicate-member limits; preserve received bytes and keep hook mapping unverified.
+
+- Add source-feasibility research and synthetic edge cases for Copilot, Cursor,
+  Codex and Claude Code; record local Codex/Claude usage shapes, version drift,
+  repeated-record risks, Cursor Basic local context/counter distinctions, and
+  conflicting Cursor cash-export evidence. Record VS Code hosted Copilot identity,
+  turn-token totals and differing nano-AIU snapshots. Keep missing
+  account/export evidence explicit; no runtime adapter or live collection is added.
+- Review supplied Enterprise Cursor/Copilot projections against official schemas;
+  distinguish transformed clocks, context occupancy, missing stores and SDK events.
+  Preserve source bundles and report the duplicate-member JSON admission issue.
+- Correct the work source path to reported session-log parsing and custom upload with OTel disabled;
+  require native/log-to-payload mapping, units, coverage and binding evidence.
+
 - Extend the planned Python foundation with docs ownership/consistency, generated
   agent/command index integrity, changelog/version checks and pre-commit/CI parity;
   distinguish repository quality gates from later advisory budget summaries.

@@ -12,6 +12,18 @@ Nine changes are planned in [the pilot backlog](openspec/CHANGE_ORDER.md).
 Product implementation and live collection require a subsequent request.
 This repository remains private.
 
+The [source-feasibility research](docs/providers/source-feasibility.md) now covers
+Copilot, Cursor, Codex and Claude Code. Local Codex/Claude metadata supplies partial
+usage evidence and synthetic fixtures. [Cursor Basic local metadata](docs/providers/cursor-local-metrics.md)
+adds context evidence; [VS Code hosted Copilot](docs/providers/copilot-local-metrics.md)
+adds linked usage/checkpoint evidence. Copilot OTel and Cursor CSV remain uninspected.
+The [Enterprise artifact review](docs/providers/enterprise-schema-review.md) now
+compares supplied projections with official contracts and records their limits.
+Its [v2 review](docs/providers/enterprise-v2-schema-review.md) adds reported VS Code
+message counters and checks synthetic examples without claiming native compatibility.
+Work OTel is reported disabled; custom session-log hook output is the next evidence source.
+No provider import profile or runtime adapter is approved yet.
+
 ## Direction
 
 The proposed feedback loop is **quote → bind → meter → settle → calibrate**.

@@ -6,7 +6,8 @@ Personal IDE and CLI accounts may expose usage without billable money or stable 
 
 ## What Changes
 
-- Record a dated access and capability matrix for Copilot IDE, Copilot CLI, and personal Cursor exports.
+- Record a dated access and capability matrix for Copilot IDE, Copilot CLI,
+  personal Cursor exports, Codex CLI/app/IDE usage and Claude Code CLI/IDE metrics.
 - Define source-specific identifiers, economic units, completeness, correction semantics, and safe fixture requirements.
 - Classify each capability as supported, partial, unavailable, or unverified and gate adapter implementation accordingly.
 
@@ -24,6 +25,11 @@ None; no main capability specs exist yet.
 
 Future implementation affects the standalone Python CLI and local evidence workflow.
 Documentation: docs/providers/source-feasibility.md, docs/providers/fixtures.md, and docs/research/pilot-source-assessment.md.
+The maintainer also authorized comparison of supplied Enterprise Cursor/Copilot
+projections on 2026-09-28, without extending adapter or collection scope.
+The maintainer extended research scope to Codex and Claude Code on 2026-09-28;
+docs/providers/codex-claude-metrics.md records their interfaces and evidence gaps.
+This adds no adapter implementation or live collection.
 Verification: the scenarios in [the capability spec](specs/source-feasibility/spec.md),
 strict OpenSpec validation, applicable quality gates and truthful review evidence.
 No runtime files or dependencies are introduced by this planning proposal.
@@ -62,5 +68,6 @@ evidence and prior local database versions; do not erase financial history.
 - Parent epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
 - Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status Todo.
 - Source: maintainer-approved pilot plan, 2026-09-28 (Europe/Berlin).
-- Tracking verified: 2026-09-28; implementation is unstarted, unassigned and undated.
+- Tracking baseline: 2026-09-28; issue Todo, unassigned and undated. Research is
+  underway locally; personal-source inspection remains pending. See [research evidence](RESEARCH_EVIDENCE.md).
 <!-- tracking:end -->

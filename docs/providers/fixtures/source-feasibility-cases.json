@@ -1,0 +1,631 @@
+{
+  "format": "changecost-source-feasibility-examples/v1",
+  "synthetic": true,
+  "observed_account_tier": null,
+  "notice": "Research projections only; not provider wire fixtures or approved import profiles. All IDs, times and quantities are synthetic.",
+  "cases": [
+    {
+      "id": "cli-repeated-billing",
+      "source": "copilot-cli-attribute-projection",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "span_id": "span-001",
+          "parent_span_id": null,
+          "attributes": {
+            "gen_ai.operation.name": "invoke_agent",
+            "gen_ai.conversation.id": "conversation-001",
+            "github.copilot.nano_aiu": 100
+          }
+        },
+        {
+          "span_id": "span-002",
+          "parent_span_id": "span-001",
+          "attributes": {
+            "gen_ai.operation.name": "chat",
+            "gen_ai.conversation.id": "conversation-001",
+            "github.copilot.nano_aiu": 100
+          }
+        },
+        {
+          "span_id": "span-001",
+          "parent_span_id": null,
+          "attributes": {
+            "gen_ai.operation.name": "invoke_agent",
+            "gen_ai.conversation.id": "conversation-001",
+            "github.copilot.nano_aiu": 100
+          }
+        }
+      ],
+      "expected": {
+        "authoritative_nano_aiu": 100,
+        "billed_money": null,
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "cli-missing-root",
+      "source": "copilot-cli-attribute-projection",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "span_id": "span-002",
+          "parent_span_id": "span-001",
+          "attributes": {
+            "gen_ai.operation.name": "chat",
+            "gen_ai.conversation.id": "conversation-001",
+            "github.copilot.nano_aiu": 100
+          }
+        }
+      ],
+      "expected": {
+        "aggregate_billing": "unverified",
+        "completeness": "unknown",
+        "billed_money": null
+      }
+    },
+    {
+      "id": "multiplier-only",
+      "source": "copilot-cli-attribute-projection",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "attributes": {
+            "github.copilot.cost": 2
+          }
+        }
+      ],
+      "expected": {
+        "multiplier": 2,
+        "billed_money": null
+      }
+    },
+    {
+      "id": "ide-window-only",
+      "source": "copilot-ide-attribute-projection",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "record_id": "record-001",
+          "resource": {
+            "session.id": "window-001"
+          },
+          "attributes": {
+            "gen_ai.usage.input_tokens": 100
+          }
+        },
+        {
+          "record_id": "record-002",
+          "resource": {
+            "session.id": "window-001"
+          },
+          "attributes": {
+            "gen_ai.usage.input_tokens": 20
+          }
+        }
+      ],
+      "expected": {
+        "automatic_attribution": "unavailable_for_sample",
+        "unbound_record_count": 2
+      }
+    },
+    {
+      "id": "tokens-only",
+      "source": "fictional-personal-csv-semantics",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "input_tokens": 100,
+          "output_tokens": 20
+        }
+      ],
+      "expected": {
+        "input_tokens": 100,
+        "output_tokens": 20,
+        "cash_capability": "unavailable_for_sample",
+        "billed_money": null
+      }
+    },
+    {
+      "id": "timestamp-only",
+      "source": "fictional-personal-csv-semantics",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "timestamp": "2000-01-01T00:00:00Z"
+        },
+        {
+          "timestamp": "2000-01-01T00:00:00Z"
+        }
+      ],
+      "expected": {
+        "automatic_attribution": "unavailable_for_sample",
+        "unbound_record_count": 2
+      }
+    },
+    {
+      "id": "ambiguous-overlap",
+      "source": "fictional-personal-csv-semantics",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "file": "file-001",
+          "timestamp": "2000-01-01T00:00:00Z",
+          "input_tokens": 100
+        },
+        {
+          "file": "file-002",
+          "timestamp": "2000-01-01T00:00:00Z",
+          "input_tokens": 100
+        }
+      ],
+      "expected": {
+        "completeness": "unresolved_overlap",
+        "additive_total": null
+      }
+    },
+    {
+      "id": "correction",
+      "source": "fictional-replacement-semantics",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "event_id": "event-001",
+          "revision": 1,
+          "amount": "0.05",
+          "currency": "USD",
+          "billing_basis": "fictional_charge"
+        },
+        {
+          "event_id": "event-001",
+          "revision": 2,
+          "amount": "0.03",
+          "currency": "USD",
+          "billing_basis": "fictional_charge",
+          "replaces_revision": 1
+        },
+        {
+          "event_id": "event-001",
+          "revision": 2,
+          "amount": "0.03",
+          "currency": "USD",
+          "billing_basis": "fictional_charge",
+          "replaces_revision": 1
+        }
+      ],
+      "expected": {
+        "current_amount": "0.03",
+        "currency": "USD",
+        "retained_revision_count": 2,
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "codex-usage-snapshot",
+      "source": "codex-app-server-0.139.0-schema-projection",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "threadId": "thread-001",
+          "turnId": "turn-001",
+          "tokenUsage": {
+            "last": {
+              "inputTokens": 100,
+              "cachedInputTokens": 40,
+              "outputTokens": 20,
+              "reasoningOutputTokens": 5,
+              "totalTokens": 120
+            },
+            "total": {
+              "inputTokens": 100,
+              "cachedInputTokens": 40,
+              "outputTokens": 20,
+              "reasoningOutputTokens": 5,
+              "totalTokens": 120
+            }
+          }
+        },
+        {
+          "threadId": "thread-001",
+          "turnId": "turn-001",
+          "tokenUsage": {
+            "last": {
+              "inputTokens": 100,
+              "cachedInputTokens": 40,
+              "outputTokens": 20,
+              "reasoningOutputTokens": 5,
+              "totalTokens": 120
+            },
+            "total": {
+              "inputTokens": 100,
+              "cachedInputTokens": 40,
+              "outputTokens": 20,
+              "reasoningOutputTokens": 5,
+              "totalTokens": 120
+            }
+          }
+        }
+      ],
+      "expected": {
+        "snapshot_total_tokens": 120,
+        "billed_money": null,
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "claude-estimated-cost",
+      "source": "claude-code-conceptual-metric",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "metric": "claude_code.cost.usage",
+          "value": "0.03",
+          "unit": "USD",
+          "temporality": "cumulative",
+          "interval_start": "2000-01-01T00:00:00Z",
+          "interval_end": "2000-01-01T00:01:00Z"
+        },
+        {
+          "metric": "claude_code.cost.usage",
+          "value": "0.03",
+          "unit": "USD",
+          "temporality": "cumulative",
+          "interval_start": "2000-01-01T00:00:00Z",
+          "interval_end": "2000-01-01T00:01:00Z"
+        }
+      ],
+      "expected": {
+        "estimate_amount": "0.03",
+        "currency": "USD",
+        "billed_money": null,
+        "attribution": "unbound"
+      }
+    },
+    {
+      "id": "codex-rollout-cache-write",
+      "source": "codex-desktop-rollout-0.158.0-alpha.2.1-projection",
+      "provenance": "synthetic-values-from-observed-local-shape",
+      "records": [
+        {
+          "type": "session_meta",
+          "payload": {
+            "id": "session-001",
+            "cli_version": "0.158.0-alpha.2.1",
+            "originator": "Codex Desktop",
+            "source": "vscode"
+          }
+        },
+        {
+          "type": "turn_context",
+          "payload": {
+            "turn_id": "turn-001"
+          }
+        },
+        {
+          "type": "event_msg",
+          "payload": {
+            "type": "token_count",
+            "info": {
+              "total_token_usage": {
+                "input_tokens": 100,
+                "cached_input_tokens": 40,
+                "cache_write_input_tokens": 10,
+                "output_tokens": 20,
+                "reasoning_output_tokens": 5,
+                "total_tokens": 120
+              },
+              "last_token_usage": {
+                "input_tokens": 100,
+                "cached_input_tokens": 40,
+                "cache_write_input_tokens": 10,
+                "output_tokens": 20,
+                "reasoning_output_tokens": 5,
+                "total_tokens": 120
+              }
+            },
+            "rate_limits": null
+          }
+        },
+        {
+          "type": "event_msg",
+          "payload": {
+            "type": "token_count",
+            "info": {
+              "total_token_usage": {
+                "input_tokens": 100,
+                "cached_input_tokens": 40,
+                "cache_write_input_tokens": 10,
+                "output_tokens": 20,
+                "reasoning_output_tokens": 5,
+                "total_tokens": 120
+              },
+              "last_token_usage": {
+                "input_tokens": 100,
+                "cached_input_tokens": 40,
+                "cache_write_input_tokens": 10,
+                "output_tokens": 20,
+                "reasoning_output_tokens": 5,
+                "total_tokens": 120
+              }
+            },
+            "rate_limits": null
+          }
+        }
+      ],
+      "expected": {
+        "cache_write_field": "present",
+        "token_event_turn_id": "absent",
+        "snapshot_total_tokens": 120,
+        "billed_money": null,
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "claude-message-revisions",
+      "source": "claude-code-local-2.1.215-projection",
+      "provenance": "synthetic-values-from-observed-local-shape",
+      "records": [
+        {
+          "type": "assistant",
+          "sessionId": "session-001",
+          "uuid": "record-001",
+          "parentUuid": "record-000",
+          "requestId": "request-001",
+          "version": "2.1.215",
+          "message": {
+            "id": "message-001",
+            "usage": {
+              "input_tokens": 10,
+              "cache_creation_input_tokens": 20,
+              "cache_read_input_tokens": 30,
+              "output_tokens": 4
+            }
+          }
+        },
+        {
+          "type": "assistant",
+          "sessionId": "session-001",
+          "uuid": "record-002",
+          "parentUuid": "record-001",
+          "requestId": "request-001",
+          "version": "2.1.215",
+          "message": {
+            "id": "message-001",
+            "usage": {
+              "input_tokens": 10,
+              "cache_creation_input_tokens": 20,
+              "cache_read_input_tokens": 30,
+              "output_tokens": 4
+            }
+          }
+        },
+        {
+          "type": "assistant",
+          "sessionId": "session-001",
+          "uuid": "record-003",
+          "parentUuid": "record-002",
+          "requestId": "request-001",
+          "version": "2.1.215",
+          "message": {
+            "id": "message-001",
+            "usage": {
+              "input_tokens": 10,
+              "cache_creation_input_tokens": 20,
+              "cache_read_input_tokens": 30,
+              "output_tokens": 8
+            }
+          }
+        }
+      ],
+      "expected": {
+        "record_count": 3,
+        "request_count": 1,
+        "message_count": 1,
+        "usage_variant_count": 2,
+        "additive_total": null,
+        "final_usage": "unverified",
+        "billed_money": null
+      }
+    },
+    {
+      "id": "cursor-context-not-consumption",
+      "provenance": "synthetic-values-from-observed-local-shape",
+      "source_version": "Cursor macOS 3.22.7; internal _v 18 (meaning unverified)",
+      "records": [
+        {
+          "composerId": "conversation-001",
+          "_v": 18,
+          "status": "completed",
+          "usageData": {},
+          "contextTokensUsed": 120,
+          "contextTokenLimit": 1000,
+          "contextUsagePercent": 12
+        },
+        {
+          "bubbleId": "bubble-001",
+          "tokenCount": {
+            "inputTokens": 0,
+            "outputTokens": 0
+          }
+        }
+      ],
+      "expected": {
+        "context_occupancy_tokens": 120,
+        "consumed_tokens": null,
+        "billed_money": null,
+        "session_finality": "unverified",
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "copilot-hosted-usage-boundaries",
+      "provenance": "synthetic-values-from-observed-local-shape",
+      "source_version": "VS Code 1.139.1; bundled copilot-chat 0.67.0; SDK package 1.0.73; recorded copilotVersion 0.0.0",
+      "identity_evidence": {
+        "host_session_id": "host-session-001",
+        "sdk_session_id": "sdk-session-001",
+        "relationship": "explicit host log link (synthetic projection)"
+      },
+      "records": [
+        {
+          "source": "host-turn-usage",
+          "turn_id": "turn-001",
+          "usage": {
+            "inputTokens": 100,
+            "outputTokens": 10,
+            "cacheReadTokens": 80,
+            "_meta": {
+              "cost": 2,
+              "turnTokenTotals": [
+                {
+                  "inputTokens": 1000,
+                  "cachedTokens": 800,
+                  "outputTokens": 100
+                }
+              ],
+              "directTurnTokenTotals": [
+                {
+                  "inputTokens": 1000,
+                  "cachedTokens": 800,
+                  "outputTokens": 100
+                }
+              ],
+              "copilotUsage": {
+                "totalNanoAiu": 300000000,
+                "sessionTotalNanoAiu": 250000000
+              },
+              "directCopilotUsage": {
+                "totalNanoAiu": 300000000
+              }
+            }
+          }
+        },
+        {
+          "type": "session.usage_checkpoint",
+          "id": "event-001",
+          "data": {
+            "totalNanoAiu": 300000000,
+            "totalPremiumRequests": 2
+          }
+        }
+      ],
+      "expected": {
+        "identity_namespaces_distinct": true,
+        "overlapping_totals_additive": false,
+        "missing_ephemeral_usage_is_zero": false,
+        "final_session_nano_aiu": null,
+        "billed_money": null,
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "enterprise-projection-boundaries",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "session_id": "session-001",
+          "time_basis": "relative_ms_per_session",
+          "created_at": 0,
+          "native_created_at_type": "ISO-8601 string",
+          "contextTokensUsed": 120,
+          "usageData": {},
+          "status": "aborted"
+        },
+        {
+          "session_id": "session-002",
+          "time_basis": "relative_ms_per_session",
+          "created_at": 0,
+          "native_created_at_type": "ISO-8601 string",
+          "usageData": {},
+          "omitted_records": 3
+        }
+      ],
+      "expected": {
+        "cross_session_overlap": "unverified",
+        "native_wire_compatible": false,
+        "consumed_tokens": null,
+        "billing_correction_observed": false,
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "copilot-container-absence",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "source_container": "chat-session-store",
+          "narrative_checkpoint_rows": 0,
+          "usage_columns_present": false
+        },
+        {
+          "source_container": "agent-host-catalog",
+          "provider": "copilotcli",
+          "payload_exported": false
+        }
+      ],
+      "expected": {
+        "sdk_usage_checkpoint": "not inspected",
+        "per_session_turn_usage": "not inspected",
+        "consumed_tokens": null,
+        "host_to_sdk_join": "unverified",
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "enterprise-message-counter-boundary",
+      "source": "vscode-workspace-metadata-projection",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "v": {
+            "metadata": {
+              "promptTokens": 70,
+              "outputTokens": 14
+            }
+          }
+        },
+        {
+          "v": {
+            "metadata": {
+              "promptTokens": 70,
+              "outputTokens": 14
+            }
+          }
+        }
+      ],
+      "expected": {
+        "field_type_evidence": "producer-reported integer paths",
+        "repeat_semantics": "unverified",
+        "host_to_sdk_binding": "unverified",
+        "cache_inclusion": "unverified",
+        "additive_session_tokens": null,
+        "billed_money": null,
+        "approved_profile": false
+      }
+    },
+    {
+      "id": "documented-example-not-wire-evidence",
+      "source": "synthetic-fixture-admission-projection",
+      "provenance": "hand-authored-synthetic",
+      "records": [
+        {
+          "representation": "otlp-json-candidate",
+          "aggregationTemporality": "AGGREGATION_TEMPORALITY_DELTA",
+          "asInt": "70"
+        },
+        {
+          "representation": "otlp-json-reference",
+          "aggregationTemporality": 1,
+          "asInt": "70"
+        }
+      ],
+      "expected": {
+        "string_enum_valid_otlp_json": false,
+        "integer_enum_valid_for_delta": true,
+        "native_export_observed": false,
+        "hook_mapping_verified": false,
+        "approved_profile": false
+      }
+    }
+  ]
+}
