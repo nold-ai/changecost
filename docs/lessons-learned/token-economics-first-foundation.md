@@ -1,7 +1,9 @@
 # Lessons learned: the token cost of the review loop
 
 **ChangeCost · First Python foundation · 28 September 2026**  
-Evidence snapshot: **19:50 Europe/Berlin**. Recommendations below are proposed, not implemented.
+Evidence snapshot: **19:50 Europe/Berlin**. The snapshot's measurements remain
+historical. This change implements the bounded-session recommendations; the
+supported-Linux preflight and reviewer calibration remain pending.
 
 ChangeCost aims to make the cost of a software change understandable. Its first
 foundation exposed why that matters: a small runtime change can accumulate a large

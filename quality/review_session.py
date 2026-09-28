@@ -33,30 +33,32 @@ def state_path(root: Path, change_id: str) -> Path:
 def initialize(root: Path, change_id: str, contract: dict[str, Any]) -> dict[str, Any]:
     validate_contract(contract)
     path = state_path(root, change_id)
-    if path.exists():
-        existing = load(root, change_id)
-        if existing["contract"] != contract:
-            raise ConflictError("session already exists with a different contract")
-        return existing
-    state: dict[str, Any] = {
-        "schema_version": SCHEMA_VERSION,
-        "revision": 0,
-        "change_id": change_id,
-        "contract": contract,
-        "budget": {"batches": DEFAULT_BATCHES, "minutes": DEFAULT_MINUTES},
-        "batches": 0,
-        "active_minutes": 0,
-        "events": [],
-        "findings": [],
-        "investigations": [],
-        "scope_decisions": [],
-        "evidence": [],
-        "usage": {"cached_input": None, "uncached_input": None, "output": None, "cost": None},
-        "monitor": {"snapshot": None, "errors": [], "pending": []},
-        "phase": "active",
-    }
-    write_state(path, state)
-    return state
+    with state_lock(path):
+        if path.exists():
+            existing = load(root, change_id)
+            if existing["contract"] != contract:
+                raise ConflictError("session already exists with a different contract")
+            return existing
+        state: dict[str, Any] = {
+            "schema_version": SCHEMA_VERSION,
+            "revision": 0,
+            "change_id": change_id,
+            "contract": contract,
+            "reviewed_head": contract["head"],
+            "budget": {"batches": DEFAULT_BATCHES, "minutes": DEFAULT_MINUTES},
+            "batches": 0,
+            "active_minutes": 0,
+            "events": [],
+            "findings": [],
+            "investigations": [],
+            "scope_decisions": [],
+            "evidence": [],
+            "usage": {"cached_input": None, "uncached_input": None, "output": None, "cost": None},
+            "monitor": {"snapshot": None, "data": None, "errors": [], "pending": []},
+            "phase": "active",
+        }
+        write_state(path, state)
+        return state
 
 
 def validate_contract(contract: dict[str, Any]) -> None:
@@ -92,6 +94,29 @@ def load(root: Path, change_id: str) -> dict[str, Any]:
     if not isinstance(value.get("contract"), dict):
         raise ValueError("malformed session contract")
     validate_contract(value["contract"])
+    required = {
+        "revision": int,
+        "reviewed_head": str,
+        "budget": dict,
+        "batches": (int, float),
+        "active_minutes": (int, float),
+        "findings": list,
+        "investigations": list,
+        "scope_decisions": list,
+        "evidence": list,
+        "usage": dict,
+        "monitor": dict,
+        "phase": str,
+    }
+    if any(not isinstance(value.get(key), expected) for key, expected in required.items()):
+        raise ValueError("malformed session state fields")
+    if value["phase"] not in {"active", "paused", "complete"}:
+        raise ValueError("malformed session phase")
+    if (
+        not {"batches", "minutes"} <= value["budget"].keys()
+        or not {"snapshot", "data", "errors", "pending"} <= value["monitor"].keys()
+    ):
+        raise ValueError("malformed session budget or monitor")
     return value
 
 
@@ -154,6 +179,7 @@ def apply_event(state: dict[str, Any], event: dict[str, Any]) -> None:
         "evidence": add_evidence,
         "usage": add_usage,
         "phase": set_phase,
+        "advance_head": advance_head,
     }
     try:
         handlers[event["kind"]](state, event)
@@ -230,6 +256,14 @@ def set_phase(state: dict[str, Any], event: dict[str, Any]) -> None:
     state["phase"] = event["phase"]
 
 
+def advance_head(state: dict[str, Any], event: dict[str, Any]) -> None:
+    head = event.get("head")
+    if not isinstance(head, str) or len(head) != 40:
+        raise ValueError("advance_head requires a 40-character head")
+    state["reviewed_head"] = head
+    state["monitor"] = {"snapshot": None, "data": None, "errors": [], "pending": []}
+
+
 def require_field(event: dict[str, Any], field: str, name: str) -> None:
     if not event.get(field):
         raise ValueError(f"{name} requires {field}")
@@ -274,7 +308,7 @@ def terminal_decision(state: dict[str, Any]) -> tuple[str, str] | None:
         return "incomplete", "monitor evidence is incomplete"
     if any(item.get("decision") == "pending" for item in state["scope_decisions"]):
         return "incomplete", "scope decision is pending"
-    if state["monitor"].get("head") and state["monitor"]["head"] != state["contract"]["head"]:
+    if state["monitor"].get("head") and state["monitor"]["head"] != state["reviewed_head"]:
         return "incomplete", "monitor evidence is for a different head"
     if state["phase"] == "complete":
         if unresolved_findings(state):
@@ -292,7 +326,7 @@ def terminal_decision(state: dict[str, Any]) -> tuple[str, str] | None:
 def budget_decision(state: dict[str, Any]) -> tuple[str, str] | None:
     if state["active_minutes"] >= state["budget"]["minutes"]:
         return "replan", "active review-time budget is exhausted"
-    if state["batches"] >= state["budget"]["batches"] and unresolved_findings(state):
+    if state["batches"] >= state["budget"]["batches"]:
         return "replan", "correction-batch budget is exhausted"
     return None
 
@@ -328,7 +362,7 @@ def completion_evidence(state: dict[str, Any]) -> bool:
     completed = {
         item.get("kind")
         for item in state["evidence"]
-        if item.get("result") == "pass" and item.get("head") == state["contract"]["head"]
+        if item.get("result") == "pass" and item.get("head") == state["reviewed_head"]
     }
     return required <= completed
 
@@ -338,12 +372,14 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
     return {
         "change_id": change_id,
         "contract": state["contract"],
+        "reviewed_head": state["reviewed_head"],
         "status": status(root, change_id),
         "unresolved_findings": unresolved_findings(state),
         "investigations": state["investigations"],
         "evidence": state["evidence"],
         "scope_decisions": state["scope_decisions"],
         "usage": state["usage"],
+        "monitor": state["monitor"],
     }
 
 
@@ -358,8 +394,10 @@ def record_monitor_snapshot(
         if state["monitor"]["snapshot"] == digest:
             return {"changed": False}
         state["monitor"]["snapshot"] = digest
-        state["monitor"]["errors"] = monitor_errors(snapshot, state["contract"])
-        state["monitor"]["pending"] = monitor_pending(snapshot, state["contract"])
+        state["monitor"]["data"] = snapshot
+        contract = {**state["contract"], "head": state["reviewed_head"]}
+        state["monitor"]["errors"] = monitor_errors(snapshot, contract)
+        state["monitor"]["pending"] = monitor_pending(snapshot, contract)
         state["monitor"]["head"] = snapshot.get("head")
         state["revision"] += 1
         write_state(path, state)
@@ -458,6 +496,13 @@ def monitor_errors(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[s
         return errors
     if contract["required_reviewers"] and "reviews" not in snapshot:
         return ["monitor evidence is missing reviews"]
+    failed_checks = [
+        run.get("name", "unnamed check")
+        for run in page_items(snapshot.get("checks", []), "check_runs")
+        if run.get("status") == "COMPLETED" and run.get("conclusion") not in {"SUCCESS", "NEUTRAL"}
+    ]
+    if failed_checks:
+        return [f"failed current-head check: {name}" for name in failed_checks]
     return errors
 
 
@@ -474,11 +519,26 @@ def monitor_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[
         for review in reviews
         if review.get("commit_id") == head and review.get("state") != "PENDING"
     }
-    return [
+    pending = [
         f"required reviewer has no current-head result: {reviewer}"
         for reviewer in required_reviewers
         if reviewer not in current_logins
     ]
+    pending.extend(
+        f"current-head check is pending: {run.get('name', 'unnamed check')}"
+        for run in page_items(snapshot.get("checks", []), "check_runs")
+        if run.get("status") != "COMPLETED"
+    )
+    pending.extend(
+        "unresolved current review thread"
+        for thread in snapshot.get("threads", [])
+        if not thread.get("isResolved") and not thread.get("isOutdated")
+    )
+    return pending
+
+
+def page_items(pages: list[Any], key: str) -> list[dict[str, Any]]:
+    return [item for page in pages if isinstance(page, dict) for item in page.get(key, [])]
 
 
 def watch(
@@ -491,14 +551,15 @@ def watch(
     index = 0
     while True:
         try:
-            outcome = record_monitor_snapshot(
-                root, change_id, gh_snapshot(repository, pull_request)
-            )
+            snapshot = gh_snapshot(repository, pull_request)
+            outcome = record_monitor_snapshot(root, change_id, snapshot)
         except (RuntimeError, KeyError, json.JSONDecodeError) as error:
-            outcome = record_monitor_snapshot(root, change_id, {"errors": [str(error)]})
+            snapshot = {"errors": [str(error)]}
+            outcome = record_monitor_snapshot(root, change_id, snapshot)
         current = status(root, change_id)
         if outcome["changed"]:
-            print(json.dumps(packet(root, change_id), indent=2))
+            deadline = time.monotonic() + timeout_minutes * 60
+            print(json.dumps({"packet": packet(root, change_id), "snapshot": snapshot}, indent=2))
         if current["action"] == "incomplete":
             if not outcome["changed"]:
                 print(json.dumps(current, indent=2))
@@ -521,7 +582,7 @@ def main() -> int:
     parser.add_argument("--expected-revision", type=int)
     parser.add_argument("--repo")
     parser.add_argument("--pr", type=int)
-    parser.add_argument("--timeout-minutes", type=int, default=0)
+    parser.add_argument("--timeout-minutes", type=int, default=WAIT_LIMIT_MINUTES)
     args = parser.parse_args()
     try:
         if args.operation == "init":

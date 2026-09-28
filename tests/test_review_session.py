@@ -67,6 +67,44 @@ def test_budget_and_extension_keep_existing_counters(tmp_path: Path) -> None:
     assert result["batches"] == 3
 
 
+def test_final_allowed_batch_requires_replanning_even_after_fixes(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    review_session.record(
+        tmp_path, "change", {"id": "finding", "kind": "finding", "family": "gate"}
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        {"id": "fixed", "kind": "disposition", "finding_id": "finding", "disposition": "fixed"},
+    )
+    for number in range(3):
+        review_session.record(tmp_path, "change", {"id": f"batch-{number}", "kind": "batch"})
+    assert review_session.status(tmp_path, "change")["action"] == "replan"
+
+
+def test_head_advance_preserves_budget_and_history(tmp_path: Path) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    review_session.record(tmp_path, "change", {"id": "batch", "kind": "batch"})
+    review_session.record(
+        tmp_path, "change", {"id": "advance", "kind": "advance_head", "head": "c" * 40}
+    )
+    updated = review_session.load(tmp_path, "change")
+    assert updated["reviewed_head"] == "c" * 40
+    assert updated["batches"] == 1
+    assert updated["contract"] == state["contract"]
+
+
+def test_partial_state_is_incomplete_instead_of_crashing(tmp_path: Path) -> None:
+    path = review_session.state_path(tmp_path, "change")
+    path.parent.mkdir(parents=True)
+    path.write_text(
+        json.dumps(
+            {"schema_version": 1, "change_id": "change", "contract": contract(), "events": []}
+        )
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
 def test_finding_family_requires_investigation_then_replan(tmp_path: Path) -> None:
     review_session.initialize(tmp_path, "change", contract())
     review_session.record(
@@ -206,7 +244,7 @@ def test_watcher_polls_after_a_changed_continue_snapshot(
         ],
     }
     calls: list[int] = []
-    monotonic = iter((0.0, 0.0, 61.0))
+    monotonic = iter((0.0, 0.0, 59.0, 61.0))
     monkeypatch.setattr(
         review_session, "gh_snapshot", lambda repository, pull_request: calls.append(1) or snapshot
     )

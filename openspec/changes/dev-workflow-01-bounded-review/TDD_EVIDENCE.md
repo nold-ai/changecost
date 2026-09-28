@@ -9,7 +9,7 @@ Date: 2026-09-28 (Europe/Berlin)
 
 ## Passing implementation evidence
 
-- `uv run --locked pytest tests/test_review_session.py` — 16 passed, including
+- `uv run --locked pytest tests/test_review_session.py` — 19 passed, including
   synthetic multi-page GraphQL `reviewThreads` and nested comment pagination.
 - `uv run --locked ruff check quality/review_session.py tests/test_review_session.py` — passed.
 - `uv run --locked ruff format --check quality/review_session.py tests/test_review_session.py` — passed.
@@ -20,11 +20,11 @@ Date: 2026-09-28 (Europe/Berlin)
 - `openspec validate dev-workflow-01-bounded-review --strict --no-interactive` — valid.
 - `BASE_REF=origin/main MANIFEST=/private/tmp/bounded-review-manifest make docs` — passed.
 - `BASE_REF=origin/main MANIFEST=/private/tmp/bounded-review-manifest make check` —
-  all gates through build passed, including 184 tests; review failed closed because
+  all gates through build passed, including 187 tests; review failed closed because
   every required SpecFact analyzer reported `unsupported_controller_platform` on macOS.
 
 The local macOS controller cannot establish a supported SpecFact capsule review.
-The supported-Linux preflight remains pending until this feature branch is pushed;
+The supported-Linux preflight remains pending on PR #24 for its current head;
 this document does not claim it completed.
 
 The ignored receipt for `dev-workflow-01-bounded-review` was initialized against

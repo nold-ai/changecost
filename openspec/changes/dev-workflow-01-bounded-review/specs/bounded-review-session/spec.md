@@ -38,6 +38,12 @@ by correction and verification, independent of its number of commits.
 - **WHEN** a maintainer records a budget extension
 - **THEN** status retains existing counters and applies only the recorded additional allowance.
 
+#### Scenario: Corrected PR head
+
+- **WHEN** a verified correction creates a new PR head
+- **THEN** the session advances its reviewed head while preserving its existing
+  budget counters, findings and event history.
+
 ### Requirement: Finding-family investigation
 
 The workflow SHALL retain finding identities, evidence, family assignment and
