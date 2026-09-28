@@ -60,6 +60,9 @@ documented CI trust boundary or authenticate PR-controlled code.
 Requests, pagination and sleep consume the same remaining no-progress deadline.
 The helper stays pending when a provider emits only a clean summary without a REST
 review; retain separately verified coordinator evidence and disclose this limit.
+Local terminal results are still emitted when the remote snapshot is unchanged;
+the no-progress deadline checks current local status before reporting wait.
+Initialization, head refresh and replay share full SHA-1/SHA-256 ID validation.
 
 ## CodeRabbit review policy
 

@@ -104,6 +104,7 @@ def validate_timestamp(value: Any) -> None:
 
 
 def validate_inputs(inputs: Any, head: str) -> None:
+    validate_commit_id(head, "reviewed head")
     if not isinstance(inputs, dict) or inputs.get("head") != head:
         raise ValueError("captured inputs do not match reviewed head")
     if not isinstance(inputs.get("digest"), str) or len(inputs["digest"]) != 64:
@@ -218,11 +219,13 @@ def validate_scope_contract(contract: dict[str, Any]) -> None:
     if not nonblank(contract["trust_boundary"]):
         raise ValueError("trust_boundary requires nonblank text")
     for key in ("base", "head"):
-        if not isinstance(contract[key], str) or not re.fullmatch(
-            r"[0-9a-f]{40}|[0-9a-f]{64}", contract[key]
-        ):
-            raise ValueError(f"{key} requires a full commit ID")
+        validate_commit_id(contract[key], key)
     validate_manifest(contract["intended_files"])
+
+
+def validate_commit_id(value: Any, label: str) -> None:
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", value):
+        raise ValueError(f"{label} requires a full hexadecimal commit ID")
 
 
 def validate_manifest(manifest: Any) -> None:
@@ -579,8 +582,7 @@ def set_phase(state: dict[str, Any], event: dict[str, Any]) -> None:
 
 def advance_head(state: dict[str, Any], event: dict[str, Any]) -> None:
     head = event.get("head")
-    if not isinstance(head, str) or len(head) != 40:
-        raise ValueError("advance_head requires a 40-character head")
+    validate_commit_id(head, "advance_head")
     state["reviewed_head"] = head
     state["phase"] = "active"
     state["monitor"] = {"snapshot": None, "data": None, "errors": [], "pending": []}
@@ -1235,8 +1237,7 @@ def watch(
     index = 0
     while True:
         if index and time.monotonic() >= deadline:
-            print(json.dumps({"action": "wait", "reason": "watch timeout"}))
-            return 0
+            return watch_timeout(root, change_id)
         snapshot = collect_snapshot(
             root,
             change_id,
@@ -1249,16 +1250,29 @@ def watch(
         if outcome["changed"]:
             deadline = time.monotonic() + timeout_minutes * 60
             print(json.dumps({"packet": packet(root, change_id), "snapshot": snapshot}, indent=2))
-        if current["action"] == "incomplete":
-            if not outcome["changed"]:
-                print(json.dumps(current, indent=2))
-            return 1
-        if current["action"] in {"complete", "investigate", "replan"}:
-            return 0
+        terminal = emit_terminal(current, already_emitted=outcome["changed"])
+        if terminal is not None:
+            return terminal
         time.sleep(
             min(intervals[min(index, len(intervals) - 1)], max(0, deadline - time.monotonic()))
         )
         index += 1
+
+
+def emit_terminal(current: dict[str, Any], *, already_emitted: bool = False) -> int | None:
+    if current["action"] not in {"complete", "investigate", "replan", "incomplete"}:
+        return None
+    if not already_emitted:
+        print(json.dumps(current, indent=2))
+    return int(current["action"] == "incomplete")
+
+
+def watch_timeout(root: Path, change_id: str) -> int:
+    terminal = emit_terminal(status(root, change_id))
+    if terminal is not None:
+        return terminal
+    print(json.dumps({"action": "wait", "reason": "watch timeout"}))
+    return 0
 
 
 def collect_snapshot(

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Emit local review terminal decisions despite quiet remote polls, recheck budgets
+  at watcher deadlines and validate full commit identities consistently on refresh.
+
 - Validate initial review scope against real Git/file facts, retain effective
   reviewer objections across later comments, and reduce the fractional-boundary
   regression's input volume without weakening its failure proof.

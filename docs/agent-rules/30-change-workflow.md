@@ -153,6 +153,8 @@ initial changed, staged and untracked paths must be covered; unchanged planned
 files are allowed. Initialization verifies those facts once and captures them in
 genesis. Later replay uses captured facts, and `init` with the same original
 contract remains idempotent after `advance_head`.
+Full commit IDs use the same 40/64-character hexadecimal rule at initialization,
+head refresh and replay; the declared head must still match actual Git HEAD.
 Tracked `assume-unchanged` or `skip-worktree` flags are unsupported because they
 can hide changes from Git inspection. The helper rejects them at every input
 capture; it never clears or mutates the user's index flags.
@@ -176,6 +178,9 @@ snapshot with a 60-second collection cap. Missing REST reviewer submissions stay
 pending even if a provider emits only a clean summary. The coordinator may retain
 separately verified current-head provider output, but must disclose that the helper
 cannot validate that completion; silence and reactions are not proof.
+Unchanged remote evidence does not suppress local terminal decisions. A terminal
+result is emitted once, and deadline handling rereads local status before reporting
+wait so newly exhausted budgets or incomplete scope remain visible.
 
 ### Delegation evidence
 

@@ -62,6 +62,12 @@ mutation, or hostile-runner integrity guarantee.
 
 ## Risks / Trade-offs
 
+Full hexadecimal commit IDs share one validator across initialization, captured
+inputs, refresh and replay for SHA-1/SHA-256 repositories. Watcher output suppresses
+unchanged remote polls, never terminal local decisions. Deadline handling rereads
+the receipt so local budget exhaustion or incomplete scope takes precedence over
+wait; a changed terminal packet is not printed twice.
+
 - [Manual time recording is inaccurate] → retain timestamps and treat missing
   elapsed data as incomplete rather than free time.
 - [A family is misclassified] → require explicit family assignment and preserve

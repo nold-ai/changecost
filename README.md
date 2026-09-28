@@ -93,6 +93,8 @@ resetting counters. Published completion requires clean inputs.
 Initial scope uses verified commit IDs and real file hashes (or `<absent>` for
 planned files). Effective reviewer objections remain blocking until approval or
 dismissal of the original rejecting review, rather than disappearing on a comment.
+Watcher completion/replanning output remains visible even without a GitHub change;
+local budget changes take precedence over a no-progress timeout.
 
 ## Community and license
 

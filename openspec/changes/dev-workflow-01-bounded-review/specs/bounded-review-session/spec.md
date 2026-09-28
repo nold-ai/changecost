@@ -7,6 +7,23 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Visible local terminal decisions and consistent commit identities
+
+The watcher SHALL emit every terminal local decision even when remote evidence
+is unchanged, and SHALL recheck local state at the no-progress deadline before
+reporting wait. Contract initialization, input refresh and pure replay SHALL use
+one full commit-ID validation rule supporting hexadecimal SHA-1 and SHA-256 IDs.
+
+#### Scenario: Local transition while remote state is unchanged
+- **WHEN** the receipt becomes complete, investigative, replanning or incomplete while remote evidence stays unchanged
+- **THEN** watch emits the current terminal decision exactly once
+- **AND** a budget exhausted during the final sleep is reported as replanning rather than wait
+
+#### Scenario: Repository object format survives refresh and restart
+- **WHEN** a real SHA-1 or SHA-256 repository advances its head
+- **THEN** the full head ID is validated consistently through recording and replay while retaining scope/history/counters
+- **AND** malformed IDs or mismatched actual heads are rejected
+
 ### Requirement: Usable initial scope and effective reviewer objections
 
 Schema-3 initialization SHALL require typed, nonblank scope and exact identities,

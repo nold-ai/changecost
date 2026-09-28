@@ -140,6 +140,9 @@ future planned files. Cover all changed, staged and untracked paths while allowi
 unchanged intended files. Captured initial scope facts remain immutable through
 head refreshes and are validated without filesystem access during replay. Existing
 schema-1/2 receipts require recovery rather than synthesized migration.
+Contract and refresh paths use one full hexadecimal commit-ID rule for 40-character
+SHA-1 and 64-character SHA-256 repositories. Shape validation does not replace
+checking the actual Git head; pure replay retains the same identity rule.
 Tracked assume-unchanged and skip-worktree entries are unsupported. Initialization,
 head refresh and final input/status checks reject those flags without changing the
 index, because Git's reported change set and clean state may conceal file edits.
@@ -193,6 +196,10 @@ PR code safely requires a separate external-verifier architecture decision.
 It polls changed nonterminal state with 15/30/60-second backoff and returns a
 `wait` handoff after at most 30 minutes without progress; that wait never resets
 the correction-batch or active-time budgets.
+Local complete/investigate/replan/incomplete decisions are emitted once even when
+the remote snapshot is unchanged. At the deadline, the watcher rereads local
+status before reporting wait; a budget exhausted during sleep returns replan.
+Incomplete retains exit status 1; other documented terminal/wait results retain 0.
 Requests and pagination share the remaining deadline; sleep is capped accordingly.
 Zero timeout means one collection with a 60-second cap. Progress hashes exclude
 incidental avatar metadata. A snapshot binds repository, PR, head and input epoch;

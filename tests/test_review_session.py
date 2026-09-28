@@ -1490,3 +1490,154 @@ def test_unsupported_index_flags_cannot_hide_inputs(tmp_path: Path, flag: str, p
         with pytest.raises(ValueError, match="index flags"):
             review_session.initialize(tmp_path, "change", policy)
     assert subprocess.check_output(["git", "-C", str(tmp_path), "ls-files", "-v"]) == before
+
+
+@pytest.mark.parametrize("action", ["complete", "investigate", "replan", "incomplete"])
+def test_watch_emits_unchanged_local_terminal(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], action: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    if action != "complete":
+        review_session.record(
+            tmp_path, "change", {"id": "active", "kind": "phase", "phase": "active"}
+        )
+    if action == "replan":
+        for index in range(3):
+            review_session.record(tmp_path, "change", {"id": f"batch-{index}", "kind": "batch"})
+    elif action == "investigate":
+        for event in (
+            {"id": "first", "kind": "finding", "family": "f"},
+            {"id": "fixed", "kind": "disposition", "finding_id": "first", "disposition": "fixed"},
+            {"id": "escape", "kind": "finding", "family": "f"},
+        ):
+            review_session.record(tmp_path, "change", event)
+    elif action == "incomplete":
+        review_session.record(
+            tmp_path, "change", {"id": "scope", "kind": "scope_decision", "decision": "pending"}
+        )
+    monkeypatch.setattr(review_session, "gh_snapshot", lambda *args: complete_snapshot())
+    assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 0) == int(
+        action == "incomplete"
+    )
+    assert json.loads(capsys.readouterr().out)["action"] == action
+
+
+def test_watch_deadline_rechecks_local_budget(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    clock = [0.0]
+    monkeypatch.setattr(review_session.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(review_session, "gh_snapshot", lambda *args: complete_snapshot())
+
+    def sleep(seconds: float) -> None:
+        clock[0] += seconds
+        if clock[0] >= 60:
+            for index in range(3):
+                review_session.record(tmp_path, "change", {"id": f"batch-{index}", "kind": "batch"})
+
+    monkeypatch.setattr(review_session.time, "sleep", sleep)
+    assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 1) == 0
+    assert json.loads(capsys.readouterr().out)["action"] == "replan"
+
+
+@pytest.mark.parametrize("object_format", ["sha1", "sha256"])
+def test_full_commit_format_survives_real_refresh(tmp_path: Path, object_format: str) -> None:
+    root = tmp_path / "format-repo"
+    subprocess.run(["git", "init", "-q", f"--object-format={object_format}", str(root)], check=True)
+    (root / ".gitignore").write_text(".changecost/\n")
+    subprocess.run(["git", "-C", str(root), "add", ".gitignore"], check=True)
+
+    def commit(message: str) -> str:
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "-c",
+                "user.name=Test",
+                "-c",
+                "user.email=test@example.com",
+                "commit",
+                "--allow-empty",
+                "-qm",
+                message,
+            ],
+            check=True,
+        )
+        return subprocess.check_output(
+            ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
+        ).strip()
+
+    first = commit("initial")
+    policy = {
+        **contract(),
+        "head": first,
+        "base": first,
+        "intended_files": {
+            ".gitignore": hashlib.sha256((root / ".gitignore").read_bytes()).hexdigest()
+        },
+    }
+    review_session.initialize(root, "change", policy)
+    review_session.record(root, "change", {"id": "batch", "kind": "batch"})
+    second = commit("next")
+    review_session.record(root, "change", {"id": "advance", "kind": "advance_head", "head": second})
+    loaded = review_session.load(root, "change")
+    assert loaded["reviewed_head"] == second
+    assert loaded["batches"] == 1
+    assert loaded["contract"] == policy
+
+
+@pytest.mark.parametrize("value", ["short", "g" * 40, "g" * 64, "a" * 39, "a" * 65, True, None, 42])
+def test_commit_identity_rule_is_shared_by_contract_and_replay(
+    tmp_path: Path, value: object
+) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    with pytest.raises(ValueError):
+        review_session.validate_contract({**contract(), "head": value})
+    event = {"id": "advance", "kind": "advance_head", "head": value}
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", event)
+    facts = {
+        "event_id": "advance",
+        "recorded_at": "2026-09-29T00:00:00+00:00",
+        "inputs": {**state["inputs"], "head": value},
+    }
+    with pytest.raises(ValueError):
+        review_session.replay(state["genesis"], [event], [facts], None, 0)
+    assert review_session.load(tmp_path, "change") == state
+
+
+@pytest.mark.parametrize("head", ["f" * 40, "f" * 64])
+def test_valid_format_head_still_must_match_actual_git(tmp_path: Path, head: str) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    with pytest.raises(ValueError, match="local HEAD"):
+        review_session.record(
+            tmp_path, "change", {"id": "wrong", "kind": "advance_head", "head": head}
+        )
+    assert review_session.load(tmp_path, "change") == state
+
+
+def test_changed_terminal_watch_emits_one_packet(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["comments"] = [[{"id": 1, "body": "new evidence"}]]
+    monkeypatch.setattr(review_session, "gh_snapshot", lambda *args: snapshot)
+    assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 0) == 0
+    assert json.loads(capsys.readouterr().out)["packet"]["status"]["action"] == "complete"
+
+
+def test_watch_timeout_preserves_incomplete_exit(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    review_session.record(
+        tmp_path, "change", {"id": "pending", "kind": "scope_decision", "decision": "pending"}
+    )
+    assert review_session.watch_timeout(tmp_path, "change") == 1
+    assert json.loads(capsys.readouterr().out)["action"] == "incomplete"

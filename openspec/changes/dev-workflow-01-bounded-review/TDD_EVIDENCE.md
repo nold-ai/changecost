@@ -205,3 +205,27 @@ final tree passes 208 focused tests and 376 full tests. Final logs are
 Types, Ruff, docs against both bases and OpenSpec pass, with maximum complexity10
 and no native KISS findings. Helper coverage measures 741/799 statements (93%
 rounded). This stayed within the same unpublished batch.
+
+## Visible watcher decisions and shared commit-ID validation
+
+On 2026-09-29 (Europe/Berlin), the next collected batch repairs silent local terminal
+decisions during unchanged polling, stale wait output at the final sleep boundary,
+and inconsistent SHA-1/SHA-256 head validation. Specification-first regressions
+produced five failures and two passes before implementation
+(`.changecost/batch8-red.txt`). Terminal output is emitted once, changed packets
+are not duplicated, and the deadline rereads local state before reporting wait.
+Incomplete retains exit status 1; other terminal/wait results retain 0.
+
+Real SHA-1 and SHA-256 Git fixtures initialize, record a batch, commit, advance and
+reload while preserving their initial contracts and counters. Additional variants
+reject malformed/short/nonhex/type-invalid identities in contract, recording and
+pure replay, and reject valid-format heads that differ from actual Git HEAD.
+
+Final local verification passes 227 focused tests and 395 full repository tests;
+helper coverage measures 756/809 statements (93% rounded).
+Ruff, BasedPyright, docs against HEAD/main and strict OpenSpec pass; maximum
+complexity remains 10 with no native KISS findings. Logs are
+`.changecost/batch8-focused.txt`, `.changecost/batch8-coverage.txt` and
+`.changecost/batch8-full.txt`. Fresh supported-Linux and current-head provider
+results remain required after publication; historical receipt recovery and
+calibration limitations remain unchanged.

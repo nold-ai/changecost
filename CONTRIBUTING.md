@@ -69,6 +69,10 @@ Initialization verifies typed scope, full commit IDs and a path/SHA256 manifest
 against actual initial inputs; `<absent>` represents an intended future file.
 Changed, staged and untracked paths must be included. Captured initial facts remain
 immutable through head refreshes; incompatible older schemas require recovery.
+The same full hexadecimal commit-ID rule covers SHA-1 and SHA-256 repositories
+through initialization, refresh and replay. Watcher terminal decisions are emitted
+even when GitHub data is unchanged; the timeout boundary rechecks local budget
+and scope before reporting a wait.
 Dirty inputs may be reviewed locally but cannot establish published completion.
 Non-findings do not seed family escalation; genuine fixed recurrences remain in
 history. Investigate the first escape after correction and replan after a further

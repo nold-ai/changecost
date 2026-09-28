@@ -32,7 +32,7 @@
   {
     "title": "Change workflow",
     "path": "docs/agent-rules/30-change-workflow.md",
-    "description": "freshness, verified initial review scope, canonical receipts and recovery."
+    "description": "freshness, verified scope, visible review checkpoints and canonical recovery."
   },
   {
     "title": "OpenSpec configuration",
