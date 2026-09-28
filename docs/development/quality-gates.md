@@ -210,3 +210,15 @@ outside the checkout) fails explicitly; a later PATH entry is not silently used.
 Install these external validators outside that environment to repair a collision.
 Project-managed uv, Ruff and BasedPyright remain locked project dependencies. This
 guard prevents accidental project-environment collisions, not hostile-PR forgery.
+
+
+The required quality job may inherit root `contents: read` permissions or repeat
+that exact permission map. Job-level write permissions and other overrides are
+rejected, because GitHub job permissions replace the workflow-level setting.
+
+
+The host lock fixture uses a project-version change with no dependencies, so the
+stale metadata remains resolvable offline. It verifies that `uv lock --check`
+fails without changing lock bytes, restoring metadata passes unchanged, and
+ordinary `uv lock` can update that same drift before a subsequent check passes.
+This distinguishes lock freshness enforcement from dependency resolution failure.

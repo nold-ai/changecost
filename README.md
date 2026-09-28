@@ -92,7 +92,9 @@ No deployed site is claimed by this bootstrap.
 
 
 The foundation's commit hook checks the staged snapshot against HEAD by default.
-The required host lock gate includes real missing/stale/repaired lock probes.
+The required host lock gate includes real missing/stale/repaired lock probes. Its
+stale fixture uses resolvable version drift, distinguishing lock freshness from
+dependency resolution failure.
 The complete local/CI gates additionally verify the installed CLI, distribution
 privacy, dependency evidence and all required review analyzers; incomplete capsule
 results remain failures. See the [gate guide](docs/development/quality-gates.md)

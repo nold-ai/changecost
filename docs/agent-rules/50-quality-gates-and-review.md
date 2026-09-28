@@ -56,3 +56,9 @@ Keep external-tool host proofs in the required gate path when a signed capsule
 cannot perform the tool's own interpreter probe. The uv missing/stale/repaired
 fixture runs through the lock leaf for local, hook and CI invocations; its move
 out of pytest collection does not waive the proof or allow analyzer failures.
+
+Verify the final complete staged snapshot with BASE_REF unset as well as the
+explicit aggregate comparison. A passing main-branch comparison does not prove
+that incremental documentation freshness passes against the hook's HEAD baseline.
+For negative tool fixtures, show the same input succeeds when the guarded check
+is removed or repaired; an unrelated resolution failure is not lock-check proof.

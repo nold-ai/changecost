@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Reject quality-job token permission overrides and flatten workflow regression
+  setup to satisfy native nesting checks without dropping mutation cases; use
+  offline-resolvable metadata drift to prove stale-lock enforcement.
+
 - Keep real offline uv lock probes in the required host gate when capsule runtime
   attachment rejects uv's isolated interpreter probe; reject CI comparison-base
   overrides and drift from the reviewed event resolver, and reject project-environment

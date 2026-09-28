@@ -375,3 +375,47 @@ resolver. Ruff, format, BasedPyright, actual actionlint/OpenSpec, the real host 
 proof and docs/index/metadata checks passed. Coverage and complexity receipts are
 `promotion/controller-coverage.json` and `promotion/controller-complexity.json`.
 These local results do not replace the pending corrected-head hosted capsule run.
+
+
+## Native nesting and job token permissions
+
+Hosted run [36433228924](https://github.com/nold-ai/changecost/actions/runs/36433228924)
+at `9bf9ad6159300f9adaf0acbd8d8b68b9ada8ae4b` passed the host missing/stale/repaired
+uv proof, every non-review leaf and nine analyzers, including targeted pytest and
+coverage, on both Python versions. The sole blocking finding was native KISS
+nesting depth seven in the workflow mutation test's elif dispatch. The signed
+module counts nested AST If nodes, so passing Radon cyclomatic checks did not
+cover that independent rule. The unchanged installed nesting metric reproduces
+seven before and two after replacing six scalar branches with an explicit
+mutation table; all eight negative cases and repaired workflow checks pass. No
+nesting threshold, test scope or analyzer was changed. Actual metric evidence is
+`promotion/nesting-red-green.json`; the current native report's 194 nonblocking
+findings have scoped dispositions in `promotion/nonblocking-dispositions-9bf9ad6.json`.
+
+Codex comment 4123113287 then identified that quality-job permissions could
+override root read-only permissions. Three new cases (contents write, write-all,
+and issues write) failed before the guard and pass after it. The job may inherit
+the root permissions or repeat exactly contents read. Each negative case verifies
+the repaired explicit read map, preserving the current hosted runner setup.
+Receipts: `promotion/job-permissions-red.log` and `promotion/job-permissions-green.log`.
+Fresh corrected-head full hosted assurance remains required.
+
+Local verification after these corrections passed 68 tests and four subtests,
+including all eleven targeted nesting/permission cases. Source coverage remains
+at least 87.27%; maximum measured cyclomatic complexity across source and tests
+is 13. Ruff/format, BasedPyright, actual actionlint, strict OpenSpec, docs/metadata
+and hygiene passed. Evidence is in `promotion/nesting-coverage.json`,
+`promotion/nesting-complexity.json` and the corresponding local logs.
+
+
+CodeRabbit comment 4123160190 identified an ambiguous stale-lock negative: the
+nonexistent dependency could fail resolution even without `--check`. Removing
+only that flag from the old probe confirmed the defect: it still exited zero.
+The fixture now drifts the project's own version from 0.1.0 to 0.2.0 with no
+dependencies. Check failure preserves exact lock bytes; restoring metadata passes
+without a rewrite. Reapplying the same drift then succeeds with ordinary offline
+locking, changes the lock bytes, and passes the subsequent check. The same flag
+removal mutant now exits one at the stale-check assertion, while the required host
+lock leaf passes unchanged. Receipts: `promotion/stale-check-bypass-before.log`,
+`promotion/stale-check-bypass-after.log`, `promotion/stale-lock-host-green.log`.
+No test skip or weaker resolution assertion is involved.

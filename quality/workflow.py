@@ -63,6 +63,8 @@ def wiring_errors(config: dict) -> list[str]:
     errors = []
     if "if" in job or job.get("continue-on-error") not in {None, "false"}:
         errors.append("required quality job can be skipped or ignored")
+    if "permissions" in job and job["permissions"] != {"contents": "read"}:
+        errors.append("quality job must retain contents: read permissions")
     errors.extend(capsule_setup_errors(job))
     errors.extend(comparison_errors(config))
     matrix = job.get("strategy", {}).get("matrix", {}).get("python", [])

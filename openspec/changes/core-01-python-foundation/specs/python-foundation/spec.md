@@ -129,7 +129,7 @@ publish/deploy or execute PR code with privileged repository credentials.
 
 - **GIVEN** a review capsule whose attached interpreter cannot accept the isolation flag used by uv's interpreter probe
 - **WHEN** local, staged-hook or CI lock validation runs
-- **THEN** the ordinary host executes both the project lock check and the real offline missing/stale/repaired fixture, and either failure fails the gate; capsule unit tests check failure propagation without weakening runtime protection or skipping the proof.
+- **THEN** the ordinary host executes both the project lock check and the real offline missing/stale/repaired fixture, and either failure fails the gate; capsule unit tests check failure propagation without weakening runtime protection or skipping the proof. The stale fixture SHALL use offline-resolvable metadata drift, prove unchanged lock bytes on check failure, and prove that ordinary locking updates the lock successfully before a subsequent check passes.
 
 #### Scenario: Project environment shadows an external validator
 
@@ -142,6 +142,13 @@ publish/deploy or execute PR code with privileged repository credentials.
 - **GIVEN** a workflow that replaces the reviewed event-based resolver, changes its inputs/order, or overrides BASE_REF at another workflow/job/step scope
 - **WHEN** workflow validation runs
 - **THEN** it rejects the changed comparison wiring instead of allowing empty-diff applicability to hide required gates; the ordinary staged-hook HEAD default remains valid.
+
+#### Scenario: Quality job overrides repository read-only permissions
+
+- **GIVEN** the workflow declares only `contents: read` at its root
+- **WHEN** the quality job overrides permissions with write access or another unreviewed permission set
+- **THEN** workflow validation fails
+- **AND** an absent job override or an explicit identical `contents: read` override passes this contract.
 
 #### Scenario: Ordinary commit without a comparison override
 

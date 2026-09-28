@@ -549,21 +549,40 @@ def test_workflow_rejects_comparison_base_bypass(mutation):
     steps = job["steps"]
     resolver = next(step for step in steps if step.get("name") == "Resolve comparison base")
     check = next(step for step in steps if step.get("run") == "make check")
-    if mutation == "workflow-env":
-        config["env"] = {"BASE_REF": "HEAD"}
-    elif mutation == "job-env":
-        job["env"]["BASE_REF"] = "HEAD"
-    elif mutation == "step-env":
-        check["env"] = {"BASE_REF": "HEAD"}
-    elif mutation == "resolver-script":
-        resolver["run"] = 'echo "BASE_REF=HEAD" >> "$GITHUB_ENV"'
-    elif mutation == "resolver-input":
-        resolver["env"]["PR_BASE"] = "${{ github.event.pull_request.head.sha }}"
-    elif mutation == "resolver-condition":
-        resolver["if"] = "false"
+    overrides = {
+        "workflow-env": (config, "env", {"BASE_REF": "HEAD"}),
+        "job-env": (job["env"], "BASE_REF", "HEAD"),
+        "step-env": (check, "env", {"BASE_REF": "HEAD"}),
+        "resolver-script": (resolver, "run", 'echo "BASE_REF=HEAD" >> "$GITHUB_ENV"'),
+        "resolver-input": (resolver["env"], "PR_BASE", "${{ github.event.pull_request.head.sha }}"),
+        "resolver-condition": (resolver, "if", "false"),
+    }
+    if mutation in overrides:
+        target, key, value = overrides[mutation]
+        target[key] = value
     elif mutation == "resolver-order":
         steps.remove(resolver)
         steps.append(resolver)
     else:
         steps.insert(steps.index(check), {"run": 'echo "BASE_REF=HEAD" >> "$GITHUB_ENV"'})
     assert any("comparison" in error for error in wiring_errors(config))
+    repaired = yaml.load(
+        (root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader
+    )
+    assert wiring_errors(repaired) == []
+
+
+@pytest.mark.parametrize("permissions", [{"contents": "write"}, "write-all", {"issues": "write"}])
+def test_quality_job_cannot_override_read_only_permissions(permissions):
+    import yaml
+
+    from quality.workflow import wiring_errors
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    assert wiring_errors(config) == []
+    job = config["jobs"]["quality"]
+    job["permissions"] = permissions
+    assert "quality job must retain contents: read permissions" in wiring_errors(config)
+    job["permissions"] = {"contents": "read"}
+    assert wiring_errors(config) == []

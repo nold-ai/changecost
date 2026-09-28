@@ -91,3 +91,5 @@ comparison bases remain authoritative. The lock leaf includes the real external 
 probe on the host; capsule unit tests verify its failure propagation. Local aggregate checks still require an
 explicit base. Keep the locked development analyzer versions aligned with the
 signed review capsule; see the [gate guide](docs/development/quality-gates.md).
+When editing CI, preserve `contents: read` both at workflow level and in any
+quality-job permission override; the workflow gate rejects broader job permissions.
