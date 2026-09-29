@@ -1,6 +1,30 @@
 {
+  "CONTRIBUTING.md": {
+    "reason": "Reviewed lifecycle request refactor: contributor setup, locked dependencies, offline distribution proof and GitHub-only capsule assurance are unchanged.",
+    "digest": "a773cc551bb85abdeb6b3be111e7786031dc0ec5dc9b9096e22f093b33c3fc85"
+  },
+  "README.md": {
+    "reason": "Reviewed lifecycle request refactor: CLI capabilities, setup, project phase and runtime dependencies remain accurate; this changes only the internal operation input.",
+    "digest": "a773cc551bb85abdeb6b3be111e7786031dc0ec5dc9b9096e22f093b33c3fc85"
+  },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Core-02 adds offline runtime records and locked Pydantic. The existing rules already mandate scoped runtime tests, installed distributions, dependency checks and full Linux analyzers; the assurance policy is unchanged. The quality guide and implementation evidence explain the extended package proof and current platform blocker.",
-    "digest": "9b253d4c464a4f328abcfdc1ba93d1cb7c1a18be659c45a292a6131f4e8d5437"
+    "reason": "Reviewed lifecycle request refactor: mandatory local gates, staged freshness and native Linux assurance policy remain unchanged. The authorized additional correction batch is recorded in the retained session receipt and TDD evidence.",
+    "digest": "a773cc551bb85abdeb6b3be111e7786031dc0ec5dc9b9096e22f093b33c3fc85"
+  },
+  "docs/commands.md": {
+    "reason": "Reviewed lifecycle request refactor: Typer command signatures and generated help are unchanged; the generation check still must pass.",
+    "digest": "f02bba6481a5551dac786f3b16f1d9097d393f6515a1944de0b4fa73f31a9fb5"
+  },
+  "docs/development/quality-gates.md": {
+    "reason": "Reviewed lifecycle request refactor: all required gates and installed package proof remain unchanged, and the guide already directs macOS capsule assurance to GitHub CI/CD.",
+    "digest": "a773cc551bb85abdeb6b3be111e7786031dc0ec5dc9b9096e22f093b33c3fc85"
+  },
+  "llms.txt": {
+    "reason": "Reviewed lifecycle request refactor: entry points, document links, project phase and supported capability index remain unchanged; the generation check still must pass.",
+    "digest": "f02bba6481a5551dac786f3b16f1d9097d393f6515a1944de0b4fa73f31a9fb5"
+  },
+  "docs/cli.md": {
+    "reason": "Reviewed lifecycle request refactor against settle call sites: selector rules, flags, atomic failure, retry behavior and economic_status remain unchanged.",
+    "digest": "5e8a8315cd200be746a7b52eb61b844b5ae8ceb3cb94de18fb728136d4605c2f"
   }
 }

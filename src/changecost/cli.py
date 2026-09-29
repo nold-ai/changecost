@@ -205,12 +205,14 @@ def settle(
                 for r in operations.declare(
                     context.obj,
                     ref,
-                    outcome=outcome or run_outcome,
-                    start=timestamp(work_start) if work_start is not None else None,
-                    end=timestamp(work_end) if work_end is not None else None,
-                    correct_outcome=correct_outcome,
-                    correct_interval=correct_interval,
-                    reason=reason,
+                    operations.LifecycleDeclaration(
+                        outcome=outcome or run_outcome,
+                        start=timestamp(work_start) if work_start is not None else None,
+                        end=timestamp(work_end) if work_end is not None else None,
+                        correct_outcome=correct_outcome,
+                        correct_interval=correct_interval,
+                        reason=reason,
+                    ),
                 )
             ],
             "economic_status": "not_computed",

@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from dataclasses import dataclass
 from datetime import datetime
 from uuid import uuid4
 
@@ -157,44 +158,74 @@ def bind_evidence(store: Store, evidence_id: str, ref: RunRef):
     return store.apply(operation)
 
 
-def outcome_update(records, target, outcome, correct, reason, store_id, now):
-    if outcome is None:
+@dataclass(frozen=True, kw_only=True)
+class LifecycleDeclaration:
+    """One atomic request to declare or explicitly correct lifecycle facts."""
+
+    outcome: str | None = None
+    start: datetime | None = None
+    end: datetime | None = None
+    correct_outcome: bool = False
+    correct_interval: bool = False
+    reason: str | None = None
+
+
+def require_correction(correct: bool, reason: str | None, kind: str) -> None:
+    if not correct or not reason or not reason.strip():
+        raise ContractError(f"{kind} correction requires flag and reason")
+
+
+def outcome_update(records, target, declaration: LifecycleDeclaration, store_id, now):
+    if declaration.outcome is None:
         return []
     prior = latest(records, "outcome", key(target))
-    if prior is not None and prior.outcome == outcome:
+    if prior is not None and prior.outcome == declaration.outcome:
         return []
-    if prior is not None and (not correct or not reason or not reason.strip()):
-        raise ContractError("outcome correction requires flag and reason")
+    if prior is not None:
+        require_correction(declaration.correct_outcome, declaration.reason, "outcome")
     return [
-        Outcome(
-            **common(store_id, now),
-            subject=target,
-            outcome=outcome,
-            previous=reference(prior) if prior else None,
-            reason=reason if prior else None,
+        Outcome.model_validate(
+            {
+                **common(store_id, now),
+                "subject": target,
+                "outcome": declaration.outcome,
+                "previous": reference(prior) if prior else None,
+                "reason": declaration.reason if prior else None,
+            }
         )
     ]
 
 
-def interval_update(records, target, start, end, correct, reason, store_id, now):
-    if start is None and end is None:
+def interval_bounds(prior: Interval | None, declaration: LifecycleDeclaration):
+    previous = (prior.start, prior.end) if prior else (None, None)
+    return (
+        declaration.start if declaration.start is not None else previous[0],
+        declaration.end if declaration.end is not None else previous[1],
+    )
+
+
+def changes_known_bound(prior: Interval | None, bounds) -> bool:
+    if prior is None:
+        return False
+    return any(
+        old is not None and old != new
+        for old, new in zip((prior.start, prior.end), bounds, strict=True)
+    )
+
+
+def interval_update(records, target, declaration: LifecycleDeclaration, store_id, now):
+    if declaration.start is None and declaration.end is None:
         return []
     run = lookup(records, target, "run")
     if not isinstance(run, Run):
         raise ContractError("interval requires a Run")
     prior = latest(records, "interval", tuple(run.ref.model_dump().values()))
-    bounds = (
-        start if start is not None else (prior.start if prior else None),
-        end if end is not None else (prior.end if prior else None),
-    )
+    bounds = interval_bounds(prior, declaration)
     if prior is not None and bounds == (prior.start, prior.end):
         return []
-    changed = prior is not None and any(
-        old is not None and old != new
-        for old, new in zip((prior.start, prior.end), bounds, strict=True)
-    )
-    if changed and (not correct or not reason or not reason.strip()):
-        raise ContractError("interval correction requires flag and reason")
+    changed = changes_known_bound(prior, bounds)
+    if changed:
+        require_correction(declaration.correct_interval, declaration.reason, "interval")
     return [
         Interval(
             **common(store_id, now),
@@ -202,31 +233,19 @@ def interval_update(records, target, start, end, correct, reason, store_id, now)
             start=bounds[0],
             end=bounds[1],
             previous=reference(prior) if prior else None,
-            reason=reason if changed else None,
+            reason=declaration.reason if changed else None,
         )
     ]
 
 
-def declare(
-    store: Store,
-    target: RecordRef,
-    *,
-    outcome: str | None = None,
-    start: datetime | None = None,
-    end: datetime | None = None,
-    correct_outcome: bool = False,
-    correct_interval: bool = False,
-    reason: str | None = None,
-):
-    if outcome is None and start is None and end is None:
+def declare(store: Store, target: RecordRef, declaration: LifecycleDeclaration):
+    if declaration.outcome is None and declaration.start is None and declaration.end is None:
         raise ContractError("settlement computation is not implemented; specify lifecycle fields")
 
     def operation(records, store_id, now):
         lookup(records, target)
-        outcomes = outcome_update(records, target, outcome, correct_outcome, reason, store_id, now)
-        intervals = interval_update(
-            records, target, start, end, correct_interval, reason, store_id, now
-        )
+        outcomes = outcome_update(records, target, declaration, store_id, now)
+        intervals = interval_update(records, target, declaration, store_id, now)
         return [*outcomes, *intervals], [reference(r) for r in [*outcomes, *intervals]]
 
     return store.apply(operation)

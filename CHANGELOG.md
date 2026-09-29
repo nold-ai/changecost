@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Group lifecycle operation fields into an immutable declaration request and
+  separate interval merging from correction checks. Preserve CLI flags, portable
+  records, retry idempotency and atomic outcome/interval updates while resolving
+  the native Radon complexity and parameter-count blockers.
+
 - Archive the delivered Python foundation and bounded-review changes through the
   OpenSpec CLI, synchronize their accepted specs, and retain accepted verifier and
   unvalidated calibration limitations. Keep incomplete source feasibility active.

@@ -92,6 +92,12 @@ Outcome/interval changes append revisions; changing an existing outcome or known
 bound requires a correction flag and reason through the CLI. Filling a missing
 bound requires no correction. Outcomes never synthesize work times.
 
+Python callers submit these fields as one immutable `LifecycleDeclaration` to
+`operations.declare(store, target, declaration)`. The request groups the paired
+outcome and interval updates inside the same transaction. Identical retries append
+no revisions; a rejected correction preserves both histories. This request is an
+internal operation input, not another portable record or wire schema.
+
 Each committed record has destination-local `available_at` and transaction
 `sequence`, separate from imported origin observations. A captured cutoff includes
 store_id, time and committed sequence. Eligibility checks every referenced dependency

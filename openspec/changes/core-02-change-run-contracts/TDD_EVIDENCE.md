@@ -189,3 +189,24 @@ clarification together with the existing instruction to fix findings as continua
 of the final documentation correction and CI verification route. This does not
 reset history or certify the helper's published-completion state. Actual remote
 commit/run/report identities belong in the local handoff and issue after dispatch.
+
+## Authorized lifecycle complexity correction
+
+GitHub run [36552094082](https://github.com/nold-ai/changecost/actions/runs/36552094082)
+analyzed commit `1d9046a40ba40d48fdccf9355f4ada567d0b89e2` on both Python versions.
+All ten analyzers ran. Nine passed; Radon reported three blockers in operations.py:
+interval_update complexity 19, and eight parameters on interval_update and declare.
+The reports also retain 824 nonblocking warnings and 17 informational findings.
+The maintainer explicitly authorized one additional correction batch on 2026-09-29;
+the existing bounded-session history, findings and counters remain intact.
+
+The correction groups one atomic lifecycle request into LifecycleDeclaration and
+separates bound merging, known-bound change detection and correction authorization.
+CLI flags, portable schema and transaction semantics remain unchanged. A new
+characterization test proves combined retry idempotency and paired-update rollback.
+It passes before and after the refactor; its initial assertion incorrectly assumed
+record ordering and was repaired before the baseline pass. That test-writing error
+is not product-defect TDD evidence. The actual failing-before evidence for this
+maintainability correction is the native Radon report above. All 39 focused store
+and CLI tests pass after the refactor. Final matrix tests, independent review and
+current-commit native CI evidence are recorded in the workflow handoff and issue.

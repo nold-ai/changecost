@@ -5,7 +5,14 @@ from datetime import UTC, datetime, timedelta
 import pytest
 
 from changecost.models import RecordRef, RunRef
-from changecost.operations import bind_evidence, bind_run, declare, register_change, register_run
+from changecost.operations import (
+    LifecycleDeclaration,
+    bind_evidence,
+    bind_run,
+    declare,
+    register_change,
+    register_run,
+)
 from changecost.serialization import ContractError, dumps_bundle, loads_bundle
 from changecost.store import Store, reference
 
@@ -30,8 +37,8 @@ def test_registration_replay_and_terminal_retry(store):
     assert register_change(store, "repo", "c", change_shape="bugfix") == c
     assert register_run(store, RUN, "c") == r
     assert store.export_bundle() == before
-    declare(store, reference(r), outcome="failed")
-    declare(store, reference(c), outcome="accepted")
+    declare(store, reference(r), LifecycleDeclaration(outcome="failed"))
+    declare(store, reference(c), LifecycleDeclaration(outcome="accepted"))
     assert register_run(store, RUN, "c") == r
     with pytest.raises(ContractError):
         register_run(store, RUN.model_copy(update={"run_id": "new"}), "c")
@@ -41,24 +48,32 @@ def test_registration_replay_and_terminal_retry(store):
 
 def test_revision_corrections_are_atomic(store):
     c, r = initialized(store)
-    declare(store, reference(r), start=NOW - timedelta(hours=1))
+    declare(store, reference(r), LifecycleDeclaration(start=NOW - timedelta(hours=1)))
     before = store.export_bundle()
     with pytest.raises(ContractError):
-        declare(store, reference(r), end=NOW - timedelta(hours=2), outcome="succeeded")
+        declare(
+            store,
+            reference(r),
+            LifecycleDeclaration(end=NOW - timedelta(hours=2), outcome="succeeded"),
+        )
     assert store.export_bundle() == before
-    declare(store, reference(r), end=NOW, outcome="succeeded")
-    declare(store, reference(c), outcome="accepted")
+    declare(store, reference(r), LifecycleDeclaration(end=NOW, outcome="succeeded"))
+    declare(store, reference(c), LifecycleDeclaration(outcome="accepted"))
     before = store.export_bundle()
     with pytest.raises(ContractError):
-        declare(store, reference(c), outcome="abandoned")
+        declare(store, reference(c), LifecycleDeclaration(outcome="abandoned"))
     assert store.export_bundle() == before
-    declare(store, reference(c), outcome="abandoned", correct_outcome=True, reason="correction")
+    declare(
+        store,
+        reference(c),
+        LifecycleDeclaration(outcome="abandoned", correct_outcome=True, reason="correction"),
+    )
     declare(
         store,
         reference(r),
-        start=NOW - timedelta(hours=2),
-        correct_interval=True,
-        reason="earlier work",
+        LifecycleDeclaration(
+            start=NOW - timedelta(hours=2), correct_interval=True, reason="earlier work"
+        ),
     )
     assert len([r for r in store.records() if r.kind == "outcome"]) == 3
     assert len([r for r in store.records() if r.kind == "interval"]) == 3
@@ -77,6 +92,46 @@ def test_bind_conflict_and_namespaces(store):
     with pytest.raises(ContractError):
         bind_evidence(store, "missing", RUN)
     assert c.features.change_shape == "bugfix"
+
+
+def test_combined_lifecycle_retry_and_rejected_correction_preserve_history(store):
+    _, run = initialized(store)
+    target = reference(run)
+    start, end = NOW - timedelta(hours=1), NOW
+    declare(store, target, LifecycleDeclaration(outcome="failed", start=start, end=end))
+    before = store.export_bundle()
+    assert (
+        declare(store, target, LifecycleDeclaration(outcome="failed", start=start, end=end)) == []
+    )
+    assert store.export_bundle() == before
+    # A valid outcome correction must roll back if its paired interval is rejected.
+    with pytest.raises(ContractError, match="interval correction requires flag and reason"):
+        declare(
+            store,
+            target,
+            LifecycleDeclaration(
+                outcome="succeeded",
+                start=start - timedelta(hours=1),
+                correct_outcome=True,
+                reason="reviewed correction",
+            ),
+        )
+    assert store.export_bundle() == before
+    revisions = declare(
+        store,
+        target,
+        LifecycleDeclaration(
+            outcome="succeeded",
+            start=start - timedelta(hours=1),
+            correct_outcome=True,
+            correct_interval=True,
+            reason="reviewed correction",
+        ),
+    )
+    assert {r.kind for r in revisions} == {"outcome", "interval"}
+    corrected = next(r for r in store.records() if r.kind == "interval" and r.previous)
+    assert corrected.end == end
+    assert corrected.reason == "reviewed correction"
 
 
 def test_import_roundtrip_preserves_origin_and_destination_history(store, tmp_path):
@@ -315,7 +370,9 @@ def settlement_fixture(store):
     from changecost.operations import common
 
     c, r = initialized(store)
-    outcome, interval = declare(store, reference(r), outcome="failed", start=NOW, end=NOW)
+    outcome, interval = declare(
+        store, reference(r), LifecycleDeclaration(outcome="failed", start=NOW, end=NOW)
+    )
     source = store.export_bundle()
     evidence = Evidence(
         **common("producer", NOW, "evidence"),
@@ -457,12 +514,12 @@ def test_delayed_outcomes_keep_work_bounds_and_retry_history(store):
     c, r = initialized(store)
     start, end = NOW + timedelta(minutes=10), NOW + timedelta(minutes=30)
     store.clock = lambda: NOW + timedelta(minutes=40)
-    declare(store, reference(r), start=start, end=end)
+    declare(store, reference(r), LifecycleDeclaration(start=start, end=end))
     store.clock = lambda: NOW + timedelta(hours=2)
-    declare(store, reference(r), outcome="failed")
+    declare(store, reference(r), LifecycleDeclaration(outcome="failed"))
     retry = register_run(store, RUN.model_copy(update={"run_id": "retry"}), "c")
-    declare(store, reference(retry), outcome="succeeded")
-    declare(store, reference(c), outcome="accepted")
+    declare(store, reference(retry), LifecycleDeclaration(outcome="succeeded"))
+    declare(store, reference(c), LifecycleDeclaration(outcome="accepted"))
     intervals = [r for r in store.records() if r.kind == "interval"]
     assert len(intervals) == 1 and (intervals[0].start, intervals[0].end) == (start, end)
     assert {r.outcome for r in store.records() if r.kind == "outcome"} == {
