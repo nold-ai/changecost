@@ -3513,3 +3513,72 @@ def test_report_namespaces_and_metadata_do_not_collide_or_revoke_coverage(tmp_pa
     assert review_session.report_receipts(snapshot) == receipts
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+@pytest.mark.parametrize("duplicate", [False, True])
+def test_required_neutral_check_cannot_satisfy_completion(tmp_path: Path, duplicate: bool) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    neutral = {**snapshot["checks"][0]["check_runs"][0], "conclusion": "neutral"}
+    if duplicate:
+        snapshot["checks"].append({"check_runs": [neutral]})
+    else:
+        snapshot["checks"] = [{"check_runs": [neutral]}]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    assert review_session.load(tmp_path, "change")["monitor"]["errors"]
+
+
+@pytest.mark.parametrize("required", [True, False])
+@pytest.mark.parametrize(
+    "conclusion",
+    [
+        "success",
+        "neutral",
+        "skipped",
+        "failure",
+        "cancelled",
+        "timed_out",
+        "action_required",
+        "stale",
+        "startup_failure",
+        "unknown",
+        None,
+    ],
+)
+def test_check_conclusion_policy_preserves_required_positive_assurance(
+    tmp_path: Path, required: bool, conclusion: Any
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    item = {
+        **snapshot["checks"][0]["check_runs"][0],
+        "name": "ci" if required else "optional",
+        "conclusion": conclusion,
+    }
+    if required:
+        snapshot["checks"] = [{"check_runs": [item]}]
+    else:
+        snapshot["checks"].append({"check_runs": [item]})
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    expected = (
+        "complete"
+        if conclusion == "success" or (not required and conclusion == "neutral")
+        else "incomplete"
+    )
+    assert review_session.status(tmp_path, "change")["action"] == expected
+
+
+@pytest.mark.parametrize(
+    "status", ["queued", "in_progress", "waiting", "pending", "requested", "unknown"]
+)
+def test_uncompleted_checks_never_become_positive(tmp_path: Path, status: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["checks"][0]["check_runs"][0]["status"] = status
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] != "complete"
+    assert review_session.load(tmp_path, "change")["monitor"]["pending"]

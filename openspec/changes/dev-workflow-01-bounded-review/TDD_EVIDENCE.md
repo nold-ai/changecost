@@ -554,3 +554,29 @@ The full run used the project interpreter with the existing cached coverage pack
 an initial cached-only interpreter lacked typer during collection and ran no tests.
 Fresh native Linux and provider evidence remains required after publication;
 legacy receipt recovery and unknown historical usage/time remain explicit.
+
+## Required checks need positive success
+
+On 2026-09-29 (Europe/Berlin), two failures reproduced required neutral conclusions
+preserving completion, alone and alongside a same-name successful result on a later
+page (`.changecost/batch20-red.txt`). Classification now uses exact contract names:
+completed required checks must conclude success, while optional neutral results
+retain their existing nonblocking behavior. Other failures and pending states are
+unchanged; no run-supersession policy or analyzer setting is introduced.
+
+The conclusion matrix covers required/optional success, neutral, skipped, failure,
+cancelled, timed-out, action-required, stale, startup-failure, unknown and absent
+conclusions. Pending-state variants and existing absent-name/freshness cases remain
+covered. This is the repository's executed-positive-assurance policy, not a claim
+that GitHub's native merge rules reject neutral checks. The original report's P1
+label was triaged as a P2 advisory workflow-policy defect.
+
+Final verification passes 676 repository tests plus four subtests under an empty
+Git template, including all 508 helper cases. Coverage in that run measures
+974/1025 helper statements (95% rounded); maximum complexity is 10 and native KISS
+findings are empty. Ruff/formatting, BasedPyright, docs against HEAD/main, index,
+metadata and strict OpenSpec pass. Final logs are `.changecost/batch20-full.txt`,
+`.changecost/batch20-focused.txt`, `.changecost/batch20-coverage.txt` and
+`.changecost/batch20-types.txt`. Fresh native Linux/provider results remain required
+after publication; historical counters, recovery limitations and unknown time/usage
+remain retained without a reset or claimed savings.

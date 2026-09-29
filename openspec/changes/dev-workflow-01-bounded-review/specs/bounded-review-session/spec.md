@@ -472,3 +472,19 @@ duplicate identities SHALL invalidate monitoring, never silently omit a report.
   change without report-content changes
 - **THEN** content receipts SHALL remain stable while objections, unresolved status,
   freshness and input requirements remain independent blockers.
+
+### Requirement: Required checks provide positive success
+Every completed check whose name is declared in required_checks SHALL conclude
+success. Neutral is not evidence that a required validation executed successfully.
+Optional neutral checks SHALL retain their existing nonblocking behavior; other
+failure and pending states remain unchanged. This is the repository's assurance
+policy, not a claim about GitHub's native merge rules.
+
+#### Scenario: Required neutral conclusion
+- **WHEN** a required check concludes neutral, including alongside another
+  same-name successful result on a different page
+- **THEN** completion SHALL remain blocked without silently selecting the success.
+
+#### Scenario: Optional neutral conclusion
+- **WHEN** all required checks succeed and an optional check concludes neutral
+- **THEN** that optional neutral result SHALL not independently block completion.

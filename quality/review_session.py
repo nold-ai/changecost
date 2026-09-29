@@ -1322,7 +1322,7 @@ def monitor_errors(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[s
             return list(errors)
         validate_snapshot_source(snapshot, contract)
         validate_snapshot(snapshot)
-        return failed_external_checks(snapshot) + rejected_reviews(snapshot)
+        return failed_external_checks(snapshot, contract) + rejected_reviews(snapshot)
     except (ValueError, KeyError, TypeError) as error:
         return [str(error)]
 
@@ -1420,11 +1420,11 @@ def validate_review(review: dict[str, Any]) -> None:
     validate_entries([review["user"]], ("login",))
 
 
-def failed_external_checks(snapshot: dict[str, Any]) -> list[str]:
+def failed_external_checks(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
     failed_checks = [
         run.get("name", "unnamed check")
         for run in page_items(snapshot.get("checks", []), "check_runs")
-        if run.get("status") == "completed" and run.get("conclusion") not in {"success", "neutral"}
+        if check_failed(run, contract["required_checks"])
     ]
     errors = [f"failed current-head check: {name}" for name in failed_checks]
     errors.extend(
@@ -1433,6 +1433,11 @@ def failed_external_checks(snapshot: dict[str, Any]) -> list[str]:
         if item.get("state") not in {"success", "pending"}
     )
     return errors
+
+
+def check_failed(run: dict[str, Any], required: list[str]) -> bool:
+    accepted = {"success"} if run.get("name") in required else {"success", "neutral"}
+    return run.get("status") == "completed" and run.get("conclusion") not in accepted
 
 
 def monitor_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:

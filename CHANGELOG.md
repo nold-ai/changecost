@@ -20,6 +20,9 @@
 - Bind review evidence to explicit PR target and comparison bases, preserve their
   original contract, and require fresh evidence after atomic context adoption.
 
+- Require positive success from contract-required completed checks while retaining
+  optional neutral behavior and existing pending/failure handling.
+
 - Cover top-level reviews and PR comments in explicit local adjudication receipts;
   make ignore-rule fixtures independent of optional Git template directories.
 

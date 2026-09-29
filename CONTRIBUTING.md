@@ -90,6 +90,9 @@ the update atomically. Unmeasured usage remains unknown and batch counts stay in
 Every refresh validates current changed-path coverage. Changing authorized paths
 requires an explicitly referenced approved scope manifest; packets retain both
 the original contract and recaptured current manifest.
+Contract-required completed checks must conclude `success`; `neutral` cannot prove
+required validation ran. Optional neutral checks retain their nonblocking policy.
+This repository assurance rule is stricter than GitHub's native merge eligibility.
 Local reviewer coverage includes every fetched thread, review body and PR comment,
 including historical and informational reports. Namespaced thread/review/comment IDs
 bind exact content without metadata noise; new, edited or removed reports require

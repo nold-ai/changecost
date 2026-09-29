@@ -164,6 +164,9 @@ Minute extensions and measured time/usage use finite canonical sums of original
 event components, preserving exact budget boundaries across retries and restarts.
 Overflow fails closed; do not round limits or reset history to recover.
 
+Contract-required completed checks must conclude `success`; `neutral` cannot prove
+required validation ran. Optional neutral checks retain their nonblocking policy.
+This repository assurance rule is stricter than GitHub's native merge eligibility.
 Local reviewer coverage includes every fetched thread, review body and PR comment,
 including historical and informational reports. Namespaced thread/review/comment IDs
 bind exact content without metadata noise; new, edited or removed reports require

@@ -152,3 +152,9 @@ independent objections, resolution, freshness and input gates still apply. Unifo
 coverage includes empty and informational bodies rather than classifying intent.
 Changes require fresh explicit local attestation, including summary churn. Missing or malformed report identities/bodies and duplicate identities fail closed. Earlier thread-only
 receipts require recovery without resetting counters or synthesizing adjudication.
+
+Required check classification uses the contract's exact names: completed required
+checks must succeed. Optional neutral checks remain allowed, and other failures or
+pending states retain existing behavior. Same-name success cannot hide a neutral
+required result on another page; this change does not introduce run supersession.
+The rule expresses repository positive assurance, not GitHub native merge semantics.
