@@ -85,6 +85,9 @@ New or edited report content invalidates coverage; unresolved threads and local
 findings still block independently. This is a trusted operator assertion, not
 verification of GitHub resolver permissions. An exhausted budget permits exact-limit
 completion only when no remaining family investigation is required.
+Keep each observation's explicit `_input_epoch` captured before collection. Direct
+ingestion never supplies the current generation for missing metadata; absent,
+malformed or stale epochs persist as incomplete evidence, including the first generation.
 Initialization verifies typed scope, full commit IDs and a path/SHA256 manifest
 against actual initial inputs; `<absent>` represents an intended future file.
 Changed, staged and untracked paths must be included. Captured initial facts remain

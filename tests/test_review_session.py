@@ -87,8 +87,9 @@ def fixture_manifest() -> dict[str, str]:
     }
 
 
-def complete_snapshot() -> dict[str, Any]:
+def complete_snapshot(epoch: str = "input-generation:0") -> dict[str, Any]:
     return {
+        "_input_epoch": epoch,
         "requested_reviewers": [],
         "repository": "nold-ai/changecost",
         "pull_request": 24,
@@ -719,7 +720,9 @@ def test_same_head_rebind_invalidates_passing_evidence(tmp_path: Path) -> None:
     review_session.record(
         tmp_path, "change", {"id": "rebind", "kind": "advance_head", "head": TEST_HEAD}
     )
-    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    review_session.record_monitor_snapshot(
+        tmp_path, "change", complete_snapshot("input-generation:1")
+    )
     review_session.record(
         tmp_path, "change", {"id": "done-again", "kind": "phase", "phase": "complete"}
     )
@@ -806,11 +809,14 @@ def test_completion_requires_explicit_current_timing(tmp_path: Path) -> None:
                 "result": "pass",
             },
         )
-    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    review_session.record_monitor_snapshot(
+        tmp_path, "change", complete_snapshot("input-generation:1")
+    )
     review_session.record(
         tmp_path, "change", {"id": "new-done", "kind": "phase", "phase": "complete"}
     )
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    assert "elapsed-time measurement" in review_session.status(tmp_path, "change")["reason"]
 
 
 def test_missing_minutes_in_persisted_event_requires_recovery(tmp_path: Path) -> None:
@@ -1702,7 +1708,7 @@ def test_base_adoption_retains_history_and_rejects_stale_local_payload(tmp_path:
         review_session.record(tmp_path, "change", old)
     packet = review_session.packet(tmp_path, "change")
     assert packet["binding"]["pr_base"] == state["pr_base"]
-    snapshot = complete_snapshot()
+    snapshot = complete_snapshot("input-generation:1")
     snapshot["pr_base"] = state["pr_base"]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.load(tmp_path, "change")["monitor"]["pending"]
@@ -1769,7 +1775,7 @@ def test_base_adoption_requires_fresh_positive_remote_evidence(
             "pr_base": {"ref": "release", "sha": TEST_HEAD},
         },
     )
-    snapshot = complete_snapshot()
+    snapshot = complete_snapshot("input-generation:1")
     snapshot["pr_base"] = state["pr_base"]
     snapshot["checks"][0]["check_runs"][0]["started_at"] = state["context_since"]
     snapshot["reviews"][0][0]["submitted_at"] = state["context_since"]
@@ -2551,3 +2557,68 @@ def test_thread_receipt_digest_is_order_independent_and_complete() -> None:
     assert review_session.thread_report_receipts(snapshot) == receipt
     snapshot["threads"][0]["comments"][0]["body"] = "edited later page"
     assert review_session.thread_report_receipts(snapshot) != receipt
+
+
+@pytest.mark.parametrize("refresh", [False, True])
+@pytest.mark.parametrize("epoch", ["missing", None, False, 0, 0.0, [], "", "old-generation"])
+def test_missing_or_invalid_observation_epoch_replaces_green(
+    tmp_path: Path, refresh: bool, epoch: Any
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    if refresh:
+        review_session.record(
+            tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+        )
+    snapshot = complete_snapshot()
+    if epoch == "missing":
+        snapshot.pop("_input_epoch", None)
+    else:
+        snapshot["_input_epoch"] = epoch
+    assert review_session.record_monitor_snapshot(tmp_path, "change", snapshot)["changed"]
+    state = review_session.load(tmp_path, "change")
+    assert state["monitor"]["errors"]
+    packet = review_session.packet(tmp_path, "change")
+    assert packet["status"]["action"] == "incomplete"
+    assert packet["thread_reports"] is None
+    assert not review_session.record_monitor_snapshot(tmp_path, "change", snapshot)["changed"]
+    assert review_session.load(tmp_path, "change") == state
+
+
+@pytest.mark.parametrize("generation", [0, 1, 2])
+def test_explicit_current_epoch_is_accepted_and_prior_epoch_stays_stale(
+    tmp_path: Path, generation: int
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for index in range(generation):
+        event = {"id": f"refresh-{index}", "kind": "advance_head", "head": TEST_HEAD}
+        first = review_session.record(tmp_path, "change", event)
+        assert review_session.record(tmp_path, "change", event) == first
+    snapshot = complete_snapshot(f"input-generation:{generation}")
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    state = review_session.load(tmp_path, "change")
+    assert not state["monitor"]["errors"]
+    assert review_session.packet(tmp_path, "change")["thread_reports"] == {}
+    snapshot["_input_epoch"] = f"input-generation:{generation - 1}"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    assert review_session.packet(tmp_path, "change")["thread_reports"] is None
+
+
+def test_collection_error_without_epoch_replaces_prior_green(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+
+    def unavailable(*args: Any) -> Any:
+        raise RuntimeError("API unavailable")
+
+    monkeypatch.setattr(review_session, "gh_snapshot", unavailable)
+    observation = review_session.collect_snapshot(tmp_path, "change", "nold-ai/changecost", 24, 60)
+    assert "_input_epoch" not in observation
+    review_session.record_monitor_snapshot(tmp_path, "change", observation)
+    state = review_session.load(tmp_path, "change")
+    assert "API unavailable" in state["monitor"]["errors"]
+    assert review_session.packet(tmp_path, "change")["status"]["action"] == "incomplete"
+    assert review_session.packet(tmp_path, "change")["thread_reports"] is None

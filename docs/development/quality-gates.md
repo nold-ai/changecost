@@ -233,7 +233,14 @@ head/base freshness or budget limits. Older snapshots missing request data becom
 incomplete under schema 5; no new session allowance is created.
 Input epochs use `input-generation:N`, starting at zero and advancing only for
 recorded `advance_head` events. Caller IDs, ordinary events, monitor revisions and
-exact retries cannot change or collide with that generation. Automatic PR binding
+exact retries cannot change or collide with that generation. Positive monitoring
+requires the observation's explicit collection-time `_input_epoch`; direct ingestion
+does not fill missing metadata. Missing/null/malformed/stale epochs, including at
+generation zero, persist as incomplete observations and replace previous green
+evidence. The collector captures its epoch before network calls; a same-head refresh
+during collection makes that observation stale. Error observations without an epoch
+remain storable incomplete evidence and expose no usable thread receipts.
+Automatic PR binding
 selects the first unused `bind-pr`/`bind-pr:N` event ID while holding the same session
 lock through persistence. Caller IDs are not reserved or rewritten; same-target
 binding is idempotent and conflicting targets are rejected. Preserve incompatible

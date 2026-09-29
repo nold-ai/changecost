@@ -90,6 +90,11 @@ mutation, or hostile-runner integrity guarantee.
     Resolution/outdated flips alone do not alter report content; unchanged reclosure
     may reuse explicit adjudication. This trusts local coordinator assertions, adds
     no resolver-permission architecture, and cannot detect unobserved transitions.
+14. Preserve collection-time observation epoch metadata unchanged at ingestion.
+    Never synthesize the current generation for missing values. Missing/malformed/
+    stale metadata replaces previous green monitoring with persisted incomplete
+    evidence; epochless API-error observations remain storable and yield no receipts.
+    No additional identity, authorization or observation-history framework is needed.
 
 ## Risks / Trade-offs
 

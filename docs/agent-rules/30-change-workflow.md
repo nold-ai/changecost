@@ -174,6 +174,9 @@ Passing reviewer evidence acknowledges the packet's current `thread_reports` in
 `reviewed_threads` after explicit local triage. Remote resolution cannot substitute
 for this coverage or for dispositions of known local findings. Changed report content
 requires revalidation; exhaustion overrides any remaining family investigation.
+Every positive observation retains `_input_epoch` captured before collection.
+Ingestion must not attach the current epoch to an unbound old snapshot. Missing,
+malformed and stale epochs replace prior green monitoring with incomplete evidence.
 The initial comparison `base` and target `pr_base` remain immutable history. To
 adopt changed target context, supply both `comparison_base` and `pr_base` on an
 `advance_head` event; the packet exposes the current binding. Capture that full

@@ -961,10 +961,7 @@ def record_monitor_snapshot(
     path = state_path(root, change_id)
     with state_lock(path):
         state = load(root, change_id)
-        observation = {
-            **snapshot,
-            "_input_epoch": snapshot.get("_input_epoch", binding_epoch(state)),
-        }
+        observation = copy.deepcopy(snapshot)
         monitor = classify_observation(observation, state)
         if state["monitor"]["snapshot"] == monitor["snapshot"]:
             return {"changed": False}

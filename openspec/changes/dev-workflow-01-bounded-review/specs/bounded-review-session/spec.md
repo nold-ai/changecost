@@ -7,6 +7,19 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Observation epochs are captured before collection
+
+Every positive observation SHALL carry an explicit collection-time input epoch.
+Ingestion SHALL NOT fill missing metadata with the current generation. Missing,
+null, malformed and stale epochs SHALL persist as incomplete observations,
+replacing any earlier passing evidence. Error observations without epochs remain
+storable incomplete evidence and SHALL NOT produce thread-adjudication receipts.
+
+#### Scenario: An unbound old observation arrives after a same-head refresh
+- **WHEN** a retained snapshot lacks its collection epoch
+- **THEN** ingestion does not relabel it as current, including generation zero
+- **AND** status and packets remain incomplete until explicitly bound fresh evidence arrives.
+
 ### Requirement: Completion exceptions cannot authorize further investigation
 
 An otherwise complete session with a remaining family investigation SHALL replan

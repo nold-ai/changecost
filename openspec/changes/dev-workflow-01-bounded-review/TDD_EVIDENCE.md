@@ -367,3 +367,29 @@ HEAD/main, index, metadata and strict OpenSpec pass. Exact logs are
 `.changecost/batch13-coverage.txt` and `.changecost/batch13-types.txt`.
 Fresh Linux/provider evidence is still required after publication; historical
 recovery, unknown measurements, calibration and trust-boundary limits remain.
+
+## Explicit observation epoch provenance
+
+On 2026-09-29 (Europe/Berlin), the epoch-ingestion matrix produced two failures and
+14 passes before implementation (`.changecost/batch14-red.txt`). Ingestion now
+preserves the original observation without defaulting its epoch to the current
+generation. Missing, null, malformed and stale epochs persist as incomplete,
+replacing earlier passing monitoring; error observations without epochs remain
+storable and expose no adjudication receipts.
+
+Cases cover generation zero and repeated same-head refresh, direct ingestion,
+collection-time concurrent refresh, accepted explicit current epochs, rejected old
+epochs, quiet repeated invalid observations, canonical reload and exact event
+retries. Existing valid post-refresh fixtures now provide their explicit generation;
+the elapsed-time test also checks its intended missing-measurement reason rather
+than accidentally passing on an invalid monitor binding.
+
+Final verification passes 371 focused tests and 539 full tests plus four subtests.
+Coverage measures 901/954 statements (94% rounded); maximum complexity remains 10
+and native KISS findings are empty. Ruff/formatting, BasedPyright, docs against
+HEAD/main, index, metadata and strict OpenSpec pass. Final logs are
+`.changecost/batch14-coverage-test.txt`, `.changecost/batch14-full.txt`,
+`.changecost/batch14-coverage.txt` and `.changecost/batch14-types.txt`.
+The earlier batch14-focused.txt records an intermediate fixture-adjustment failure,
+not final verification. Current-head Linux/provider evidence remains pending
+publication; history and recovery limitations are preserved without a new allowance.

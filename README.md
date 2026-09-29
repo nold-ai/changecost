@@ -107,6 +107,8 @@ Required event text rejects whitespace-only values without rewriting valid ident
 Resolved remote reports require explicit local reviewer coverage of current thread
 content; resolution alone does not adjudicate a finding. Budget exhaustion overrides
 remaining investigation even when all other completion evidence passes.
+Observations must retain their collection-time input epoch; missing or stale metadata
+replaces earlier green evidence with incomplete status instead of being relabeled.
 
 ## Community and license
 

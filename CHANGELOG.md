@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Require explicit collection-time observation epochs at ingestion rather than
+  relabeling unbound snapshots with the current generation.
+
 - Make exhausted budgets override remaining family investigation, and require local
   reviewer coverage of current remote thread reports before resolved threads can pass.
 

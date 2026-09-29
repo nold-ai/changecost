@@ -32,6 +32,9 @@ Exact-limit completion is allowed only when no family investigation remains.
 Resolved threads need explicit reviewer-evidence coverage of stable thread/comment
 identities and content; new/edited reports invalidate it. Local unresolved findings
 and remote unresolved status remain independent blockers.
+Observation epochs are explicit collection-time facts. Missing, malformed or stale
+epochs remain incomplete on ingestion; error observations without epochs are retained
+to invalidate earlier passing monitoring and cannot supply report receipts.
 
 Schema-5 contracts name the PR target ref/SHA separately from the comparison base.
 Retargeting or target advancement invalidates monitoring. Explicit atomic base
