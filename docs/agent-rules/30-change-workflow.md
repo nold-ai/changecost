@@ -166,6 +166,10 @@ input epoch and invalidates prior completion evidence while retaining counters.
 Epoch strings derive from refresh generations independently of caller event IDs.
 Automatic binding chooses a deterministic unused ID under the session lock;
 existing finding and scope identities remain unchanged.
+Required event strings and supplied `supersedes` references must contain non-whitespace
+text. Preserve exact nonblank bytes; do not trim identifiers or alias family labels.
+Handoff status and contents derive from one receipt revision, with actual-input drift
+still checked; changed watcher output uses that packet's status and observation.
 The initial comparison `base` and target `pr_base` remain immutable history. To
 adopt changed target context, supply both `comparison_base` and `pr_base` on an
 `advance_head` event; the packet exposes the current binding. Capture that full

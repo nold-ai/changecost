@@ -7,6 +7,29 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Handoffs use a single receipt revision
+
+Packet status and body SHALL derive from one loaded receipt while retaining the
+actual-input drift check. Changed watcher output SHALL use that packet's status
+for its exit decision and that packet's monitor observation for emitted evidence.
+
+#### Scenario: Another writer changes the receipt during handoff
+- **WHEN** scope or monitor data changes between potential reads
+- **THEN** the emitted packet, associated observation and exit decision describe
+  one revision rather than combining earlier success with later incomplete data.
+
+### Requirement: Required event strings contain non-whitespace text
+
+Required event identities and semantic strings, including extension approved_by,
+SHALL reject nonstrings, empty and whitespace-only values, including Unicode
+whitespace. Supplied supersedes references SHALL use the same validation. Nonblank
+values SHALL retain exact bytes without trimming or creating aliases.
+
+#### Scenario: Blank extension approval is submitted or recovered
+- **WHEN** an extension has only whitespace in approved_by
+- **THEN** recording rejects it without changing counters or revision
+- **AND** malformed persisted history requires recovery rather than an allowance.
+
 ### Requirement: Helper identities cannot collide with caller events
 
 Input epochs SHALL be generation-tagged values derived from the count of recorded

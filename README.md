@@ -102,6 +102,8 @@ Input generations are independent of caller event IDs; automatic PR binding choo
 an unused identity atomically, retaining existing finding/scope references.
 Renewed requests to required reviewers block completion even with a prior approval;
 missing or changing request metadata cannot retain a green result.
+Handoff status, evidence and watcher exit decisions use one receipt revision.
+Required event text rejects whitespace-only values without rewriting valid identities.
 
 ## Community and license
 

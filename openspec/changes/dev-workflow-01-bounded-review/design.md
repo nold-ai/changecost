@@ -77,6 +77,11 @@ mutation, or hostile-runner integrity guarantee.
     of caller event identities. Allocate deterministic unused automatic bind IDs under
     the same session lock as persistence. Keep original caller/finding/scope references;
     incompatible persisted epochs require recovery with no synthesized allowance.
+12. Build packet status and body from one loaded receipt, retaining the actual-input
+    drift check. Changed watcher output associates that packet's raw observation and
+    exit decision, avoiding mixed revisions under concurrent writers. Required event
+    text rejects whitespace-only values but preserves every nonblank byte and exact
+    reference; no new family-label grammar or normalization is introduced.
 
 ## Risks / Trade-offs
 

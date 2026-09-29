@@ -439,6 +439,11 @@ def validate_event(event: dict[str, Any]) -> None:
     if event["kind"] not in fields:
         raise ValueError("unknown persisted event kind")
     validate_entries([event], fields[event["kind"]])
+    required_text = ("id", "kind", *fields[event["kind"]])
+    for key in required_text:
+        validate_event_text(event[key], key)
+    if "supersedes" in event:
+        validate_event_text(event["supersedes"], "supersedes")
     numeric_fields = {
         "active_minutes": ("minutes",),
         "extension": ("batches", "minutes"),
@@ -447,6 +452,11 @@ def validate_event(event: dict[str, Any]) -> None:
     for key in numeric_fields.get(event["kind"], ()):
         default = None if event["kind"] == "active_minutes" else 0
         validate_nonnegative(event.get(key, default), key)
+
+
+def validate_event_text(value: Any, field: str) -> None:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field} requires non-whitespace text")
 
 
 def write_state(path: Path, state: dict[str, Any]) -> None:
@@ -680,6 +690,13 @@ def number(event: dict[str, Any], key: str, default: int | float | None = None) 
 def status(root: Path, change_id: str) -> dict[str, Any]:
     try:
         state = load(root, change_id)
+    except ValueError as error:
+        return {"action": "incomplete", "reason": str(error)}
+    return status_from_state(root, state)
+
+
+def status_from_state(root: Path, state: dict[str, Any]) -> dict[str, Any]:
+    try:
         if capture_inputs(root, state["reviewed_head"]) != state["inputs"]:
             raise ValueError(
                 "reviewed repository inputs changed; recovery or explicit head advancement required"
@@ -850,7 +867,7 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
         "contract": state["contract"],
         "reviewed_head": state["reviewed_head"],
         "binding": evidence_binding(state),
-        "status": status(root, change_id),
+        "status": status_from_state(root, state),
         "unresolved_findings": unresolved_findings(state),
         "investigations": state["investigations"],
         "evidence": state["evidence"],
@@ -1427,10 +1444,13 @@ def watch(
             deadline if timeout_minutes else time.monotonic() + 60,
         )
         outcome = record_monitor_snapshot(root, change_id, snapshot)
-        current = status(root, change_id)
         if outcome["changed"]:
             deadline = time.monotonic() + timeout_minutes * 60
-            print(json.dumps({"packet": packet(root, change_id), "snapshot": snapshot}, indent=2))
+            handoff = packet(root, change_id)
+            current = handoff["status"]
+            print(json.dumps({"packet": handoff, "snapshot": handoff["monitor"]["data"]}, indent=2))
+        else:
+            current = status(root, change_id)
         terminal = emit_terminal(current, already_emitted=outcome["changed"])
         if terminal is not None:
             return terminal

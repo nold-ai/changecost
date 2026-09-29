@@ -217,6 +217,15 @@ selects the first unused `bind-pr`/`bind-pr:N` event ID while holding the same s
 lock through persistence. Caller IDs are not reserved or rewritten; same-target
 binding is idempotent and conflicting targets are rejected. Preserve incompatible
 old epoch histories for recovery rather than synthesizing a new allowance.
+Packets load one receipt and derive status and body from that state while retaining
+the actual Git/input drift check. When the watcher emits a changed packet, its exit
+decision and associated snapshot come from that same packet rather than separate
+receipt reads. Later concurrent writes remain a later revision, not mixed evidence.
+Required event identities and semantic strings must contain non-whitespace text,
+including Unicode whitespace handling; supplied `supersedes` references follow the
+same rule. Valid padded or internal-space identities stay byte-for-byte exact, with
+no trimming or family-label aliasing. Replay enforces the same validation. Free-form
+GitHub comment bodies keep their separate rules and may be empty.
 
 The optional watcher uses paginated read-only `gh api --paginate --slurp` requests for current checks,
 statuses, reviews and issue comments, plus GraphQL `reviewThreads` and their

@@ -75,6 +75,10 @@ does not replace approval or other current-context evidence.
 Epochs derive from the count of recorded refreshes, not caller IDs. Automatic PR
 binding selects an unused identity under the session lock. Preserve original IDs;
 incompatible prior receipts require recovery without restarting the allowance.
+Packets derive status and contents from one loaded receipt while still checking
+actual input drift. Changed watcher output and exit decisions use that same packet.
+Required event text, including extension approval identity, must contain non-whitespace
+text; valid exact IDs and references are never trimmed or normalized.
 Initialization verifies typed scope, full commit IDs and a path/SHA256 manifest
 against actual initial inputs; `<absent>` represents an intended future file.
 Changed, staged and untracked paths must be included. Captured initial facts remain

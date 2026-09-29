@@ -25,6 +25,9 @@ Resolve findings at every severity or document a narrow justified exception.
 Input generations depend only on recorded refresh counts, not caller IDs. Automatic
 binding atomically selects an unused event identity; retries preserve existing IDs
 and counters. Older incompatible epoch receipts require recovery.
+Packet status and evidence must describe one loaded revision; the watcher uses
+that same packet for changed-output exit decisions. Required event strings reject
+blank/Unicode-whitespace-only values, including budget-extension approvers.
 
 Schema-5 contracts name the PR target ref/SHA separately from the comparison base.
 Retargeting or target advancement invalidates monitoring. Explicit atomic base

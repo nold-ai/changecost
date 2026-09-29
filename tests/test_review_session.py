@@ -2154,3 +2154,150 @@ def test_ordinary_events_and_monitor_updates_do_not_advance_epoch(tmp_path: Path
     state = review_session.record(tmp_path, "change", event)
     assert state["batches"] == 1
     assert review_session.binding_epoch(state) == "input-generation:0"
+
+
+@pytest.mark.parametrize("blank", [" ", "\t", "\n", "\u00a0", "\u2003"])
+@pytest.mark.parametrize("field", ["id", "approved_by", "family", "supersedes"])
+def test_event_semantic_strings_reject_whitespace_without_mutating_state(
+    tmp_path: Path, blank: str, field: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    before = review_session.record(
+        tmp_path, "change", {"id": "spent", "kind": "active_minutes", "minutes": 90}
+    )
+    events = {
+        "id": {"id": blank, "kind": "batch"},
+        "approved_by": {
+            "id": "extension",
+            "kind": "extension",
+            "approved_by": blank,
+            "minutes": 90,
+        },
+        "family": {"id": "finding", "kind": "finding", "family": blank},
+        "supersedes": {
+            "id": "resolution",
+            "kind": "scope_decision",
+            "decision": "approved",
+            "supersedes": blank,
+        },
+    }
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", events[field])
+    assert review_session.load(tmp_path, "change") == before
+
+
+@pytest.mark.parametrize("pending_first", [False, True])
+def test_packet_uses_one_receipt_revision(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, pending_first: bool
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    complete = review_session.load(tmp_path, "change")
+    review_session.record(
+        tmp_path, "change", {"id": "scope", "kind": "scope_decision", "decision": "pending"}
+    )
+    pending = review_session.load(tmp_path, "change")
+    first, second = (pending, complete) if pending_first else (complete, pending)
+    calls = 0
+
+    def changing_load(*args: Any) -> Any:
+        nonlocal calls
+        calls += 1
+        return first if calls == 1 else second
+
+    monkeypatch.setattr(review_session, "load", changing_load)
+    result = review_session.packet(tmp_path, "change")
+    assert calls == 1
+    assert result["status"]["revision"] == first["revision"]
+    assert bool(result["scope_decisions"]) == pending_first
+    assert result["status"]["action"] == ("incomplete" if pending_first else "complete")
+
+
+@pytest.mark.parametrize("action", ["complete", "incomplete"])
+def test_changed_watch_exit_and_snapshot_match_packet(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], action: str
+) -> None:
+    opposite = "incomplete" if action == "complete" else "complete"
+    handoff = {"status": {"action": action}, "monitor": {"data": {"source": "same revision"}}}
+    monkeypatch.setattr(review_session, "collect_snapshot", lambda *args: {"source": "superseded"})
+    monkeypatch.setattr(review_session, "record_monitor_snapshot", lambda *args: {"changed": True})
+    monkeypatch.setattr(review_session, "status", lambda *args: {"action": opposite})
+    monkeypatch.setattr(review_session, "packet", lambda *args: handoff)
+    result = review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 0)
+    output = json.loads(capsys.readouterr().out)
+    assert result == int(action == "incomplete")
+    assert output["packet"] == handoff
+    assert output["snapshot"] == handoff["monitor"]["data"]
+
+
+def test_valid_padded_event_references_remain_exact(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    finding = {"id": " finding id ", "kind": "finding", "family": " family label "}
+    first = review_session.record(tmp_path, "change", finding)
+    assert review_session.record(tmp_path, "change", finding) == first
+    review_session.record(
+        tmp_path,
+        "change",
+        {"id": "fix", "kind": "disposition", "finding_id": finding["id"], "disposition": "fixed"},
+    )
+    review_session.record(
+        tmp_path, "change", {"id": " scope id ", "kind": "scope_decision", "decision": "pending"}
+    )
+    state = review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "resolution",
+            "kind": "scope_decision",
+            "decision": "approved",
+            "supersedes": " scope id ",
+        },
+    )
+    assert state["findings"][0]["id"] == finding["id"]
+    assert state["findings"][0]["family"] == finding["family"]
+    assert not review_session.scope_pending(state)
+    assert state["findings"][0]["disposition"] == "fixed"
+
+
+@pytest.mark.parametrize(
+    "field", ["id", "approved_by", "family", "finding_id", "supersedes", "kind"]
+)
+def test_persisted_blank_semantic_event_requires_recovery(tmp_path: Path, field: str) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    events = {
+        "id": {"id": " ", "kind": "batch"},
+        "approved_by": {
+            "id": "extend",
+            "kind": "extension",
+            "approved_by": "\u00a0",
+            "minutes": 90,
+        },
+        "family": {"id": "finding", "kind": "finding", "family": "\t"},
+        "finding_id": {
+            "id": "fix",
+            "kind": "disposition",
+            "finding_id": " ",
+            "disposition": "fixed",
+        },
+        "supersedes": {
+            "id": "resolve",
+            "kind": "scope_decision",
+            "decision": "approved",
+            "supersedes": " ",
+        },
+        "kind": {"id": "event", "kind": " "},
+    }
+    event = events[field]
+    state["events"].append(event)
+    state["provenance"].append({"event_id": event["id"], "recorded_at": "2026-09-29T00:00:00Z"})
+    review_session.write_state(review_session.state_path(tmp_path, "change"), state)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_packet_retains_real_input_drift_validation(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    (tmp_path / "input.txt").write_text("unreviewed edit\n")
+    packet = review_session.packet(tmp_path, "change")
+    assert packet["status"]["action"] == "incomplete"
+    assert "inputs changed" in packet["status"]["reason"]

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Derive handoff and watcher decisions from one receipt revision and reject blank
+  semantic event strings without normalizing valid caller identities.
+
 - Separate input generations from caller event IDs and atomically allocate unused
   automatic PR-binding identities without rewriting history or resetting budgets.
 

@@ -310,3 +310,31 @@ HEAD/main, index, metadata and strict OpenSpec pass. Logs are
 `.changecost/batch11-coverage.txt` and `.changecost/batch11-types.txt`.
 Fresh Linux and provider evidence remain pending publication; no new allowance,
 inferred historical timing or review-efficiency claim is introduced.
+
+## Consistent handoffs and meaningful event text
+
+On 2026-09-29 (Europe/Berlin), the collected handoff/text family matrix produced
+19 failures and five passes before implementation (`.changecost/batch12-red.txt`).
+Packets now load one state revision and derive both body and status from it,
+retaining actual input-drift verification. Changed watcher output uses that same
+packet's status for its exit decision and its raw monitor data for the associated
+snapshot. Deterministic cases cover both complete/incomplete directions and
+replacement observation association; quiet and timeout behavior remains covered.
+
+Required event identities/semantic fields and supplied scope references reject
+nonstring, empty and whitespace-only values, including Unicode whitespace. Padded
+valid IDs and family labels retain exact bytes; no normalization or extra identity
+grammar was added. Recording rejected extensions leaves exhausted budgets and
+revision untouched; replay rejects malformed history. Exact finding/disposition,
+scope/supersedes and identical-retry cases remain valid. Comment body rules remain
+independent and allow legitimate empty bodies.
+
+Final local verification passes 322 focused tests and 490 full tests plus four
+subtests. Coverage measures 872/924 statements (94% rounded); maximum complexity
+is 10, with no native KISS findings. Ruff/formatting, BasedPyright, docs against
+HEAD/main, index, metadata and strict OpenSpec pass. Logs are
+`.changecost/batch12-full.txt`, `.changecost/batch12-coverage-test.txt`,
+`.changecost/batch12-coverage.txt` and `.changecost/batch12-types.txt`.
+Fresh current-head Linux/provider evidence remains required after publication;
+legacy receipt recovery, unknown historical measurements and calibration remain
+explicit limitations rather than a reset or inferred savings.
