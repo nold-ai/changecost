@@ -46,7 +46,7 @@ For implementation/review work, initialize the bounded local review receipt with
 `python -m quality.review_session init <change-id> --json <contract.json>`. It
 keeps the complete scope, finding families and counters across chats and commits.
 Use initialization only for a genuinely new session; recover lost or incompatible
-receipts. Schema 7 replays original events with separately captured timestamps and
+receipts. Schema 8 replays original events with separately captured timestamps and
 Git inputs, checking all cached decisions against that history. A durable genesis
 marker detects a missing state file; preserve the entire ignored directory because
 this local recovery guard is not a backup or a tamper-proof store.
@@ -57,7 +57,7 @@ logins match REST identities exactly, including `[bot]`. See the complete
 [contract example](docs/agent-rules/30-change-workflow.md#bounded-review-contract).
 An `advance_head` event refreshes the Git HEAD, working-content and staged-index
 binding. Supply both `comparison_base` and `pr_base` to explicitly adopt a changed
-PR target. Schema-7 evidence events include the full binding captured before the
+PR target. Schema-8 evidence events include the full binding captured before the
 check; remote positive results must postdate base adoption. This retains history
 and does not establish hostile-runner authenticity. The refresh preserves counters;
 passing evidence from before that refresh
@@ -79,8 +79,8 @@ Packets derive status and contents from one loaded receipt while still checking
 actual input drift. Changed watcher output and exit decisions use that same packet.
 Required event text, including extension approval identity, must contain non-whitespace
 text; valid exact IDs and references are never trimmed or normalized.
-Before recording passing reviewer evidence, explicitly adjudicate current thread
-reports and supply their packet `thread_reports` mapping as `reviewed_threads`.
+Before recording passing reviewer evidence, explicitly adjudicate all current fetched
+reports and supply their packet `report_receipts` mapping as `reviewed_reports`.
 New or edited report content invalidates coverage; unresolved threads and local
 findings still block independently. This is a trusted operator assertion, not
 verification of GitHub resolver permissions. An exhausted budget permits exact-limit
@@ -90,6 +90,12 @@ the update atomically. Unmeasured usage remains unknown and batch counts stay in
 Every refresh validates current changed-path coverage. Changing authorized paths
 requires an explicitly referenced approved scope manifest; packets retain both
 the original contract and recaptured current manifest.
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
 Input binding includes every declared path, even ignored files or explicit absence.
 Existing declared content outside the index prevents clean completion; unrelated
 ignored artifacts remain excluded. Remote positive evidence must also postdate

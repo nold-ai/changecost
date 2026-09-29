@@ -128,7 +128,7 @@ semantic changes. Nonrequired requests are informational; no team expansion is i
 Initial and adopted base IDs SHALL identify commit objects exactly. Annotated-tag
 object IDs SHALL be rejected without silently replacing caller-supplied identities.
 
-Schema-7 contracts SHALL name an expected PR base ref/SHA independently from the
+Schema-8 contracts SHALL name an expected PR base ref/SHA independently from the
 immutable comparison commit. Current comparison/base context SHALL be replayed
 separately and exposed in packets. Explicit atomic adoption through advance_head
 SHALL verify local commits and capture provenance without rewriting original scope,
@@ -167,7 +167,7 @@ one full commit-ID validation rule supporting hexadecimal SHA-1 and SHA-256 IDs.
 
 ### Requirement: Usable initial scope and effective reviewer objections
 
-Schema-7 initialization SHALL require typed, nonblank scope and exact identities,
+Schema-8 initialization SHALL require typed, nonblank scope and exact identities,
 full commit IDs and a safe path-to-SHA256 manifest using `<absent>` for planned
 absent paths. It SHALL verify the initial base and actual manifest, including
 changed/index/untracked paths, and preserve captured facts for filesystem-free
@@ -454,3 +454,21 @@ SHALL update it. This conservative rule may require repeating valid same-base wo
 - **THEN** it SHALL remain pending even if the PR head/base envelope matches.
 - **AND** old objections and failed/pending evidence SHALL continue to block rather
   than being removed by the positive freshness filter.
+
+### Requirement: Local adjudication covers every fetched report
+Passing local reviewer evidence SHALL explicitly cover the exact current receipt
+set for review threads, top-level reviews and general PR comments across all pages,
+including historical and informational content. Typed namespaced identities SHALL
+prevent cross-source collisions. Missing or malformed report identities/bodies and
+duplicate identities SHALL invalidate monitoring, never silently omit a report.
+
+#### Scenario: Non-thread report changes
+- **WHEN** a review body or PR comment is added, edited or removed
+- **THEN** prior local coverage SHALL no longer satisfy completion until explicit
+  revalidation covers the current content; unchanged content may reuse coverage.
+
+#### Scenario: Harmless metadata changes
+- **WHEN** ordering, avatars, reactions, transport timestamps or lifecycle flags
+  change without report-content changes
+- **THEN** content receipts SHALL remain stable while objections, unresolved status,
+  freshness and input requirements remain independent blockers.

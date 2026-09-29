@@ -21,7 +21,7 @@ from typing import Any
 
 from quality import repository
 
-SCHEMA_VERSION = 7
+SCHEMA_VERSION = 8
 DEFAULT_BATCHES = 3
 DEFAULT_MINUTES = 90
 WAIT_LIMIT_MINUTES = 30
@@ -715,18 +715,20 @@ def add_evidence(state: dict[str, Any], event: dict[str, Any]) -> None:
         raise ValueError("unknown evidence result")
     if event.get("binding") != evidence_binding(state) or event["head"] != state["reviewed_head"]:
         raise ValueError("evidence binding is missing or stale")
-    if "reviewed_threads" in event:
-        validate_thread_coverage(event["reviewed_threads"])
+    if "reviewed_reports" in event:
+        validate_report_coverage(event["reviewed_reports"])
     state["evidence"].append(event)
 
 
-def validate_thread_coverage(coverage: Any) -> None:
+def validate_report_coverage(coverage: Any) -> None:
     if not isinstance(coverage, dict):
-        raise ValueError("reviewed_threads requires a thread identity/digest mapping")
+        raise ValueError("reviewed_reports requires a namespaced report identity/digest mapping")
     for identity, digest in coverage.items():
-        validate_event_text(identity, "thread identity")
+        validate_event_text(identity, "report identity")
+        if not re.fullmatch(r"(?:thread:.+|(?:review|comment):[1-9][0-9]*)", identity):
+            raise ValueError("report identity requires a typed source namespace")
         if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
-            raise ValueError("reviewed thread digest requires SHA256")
+            raise ValueError("reviewed report digest requires SHA256")
 
 
 def add_usage(state: dict[str, Any], event: dict[str, Any]) -> None:
@@ -935,8 +937,8 @@ def completion_evidence(state: dict[str, Any]) -> bool:
     completed = {category for category, event in latest.items() if event["result"] == "pass"}
     if not required <= completed:
         return False
-    receipts = current_thread_reports(state)
-    return receipts is not None and latest["reviewer"].get("reviewed_threads", {}) == receipts
+    receipts = current_report_receipts(state)
+    return receipts is not None and latest["reviewer"].get("reviewed_reports", {}) == receipts
 
 
 def current_evidence(state: dict[str, Any]) -> list[dict[str, Any]]:
@@ -969,7 +971,7 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
         "timing_measurements": state["timing_measurements"],
         "pull_request": state["pull_request"],
         "monitor": state["monitor"],
-        "thread_reports": current_thread_reports(state),
+        "report_receipts": current_report_receipts(state),
     }
 
 
@@ -1125,35 +1127,50 @@ def semantic_thread(item: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def thread_report_receipts(snapshot: Any) -> dict[str, str] | None:
-    """Return report-content receipts, never infer local adjudication from resolution."""
+def report_receipts(snapshot: Any) -> dict[str, str] | None:
+    """Return explicit content receipts for all fetched reports without adjudicating them."""
     if not isinstance(snapshot, dict) or snapshot.get("errors"):
         return None
     try:
         validate_snapshot(snapshot)
         reports = {}
-        for thread in snapshot["threads"]:
-            content = {
-                **selected_fields(thread, ("id", "path", "line")),
-                "comments": sorted(
-                    (semantic_comment(item) for item in thread["comments"]),
-                    key=lambda item: item["id"],
-                ),
-            }
-            if thread["id"] in reports:
-                raise ValueError("duplicate thread identity")
-            reports[thread["id"]] = hashlib.sha256(
-                json.dumps(content, sort_keys=True).encode()
-            ).hexdigest()
+        for surface, identity, content in report_contents(snapshot):
+            key = f"{surface}:{identity}"
+            reports[key] = hashlib.sha256(json.dumps(content, sort_keys=True).encode()).hexdigest()
         return reports
     except (ValueError, KeyError, TypeError):
         return None
 
 
-def current_thread_reports(state: dict[str, Any]) -> dict[str, str] | None:
+def report_contents(snapshot: dict[str, Any]) -> list[tuple[str, Any, Any]]:
+    reports = []
+    for thread in snapshot["threads"]:
+        content = {
+            **selected_fields(thread, ("id", "path", "line")),
+            "comments": sorted(
+                (
+                    selected_fields(item, ("id", "body", "path", "line"))
+                    for item in thread["comments"]
+                ),
+                key=lambda item: item["id"],
+            ),
+        }
+        reports.append(("thread", thread["id"], content))
+    for review in [item for page in snapshot["reviews"] for item in page]:
+        content = {
+            **selected_fields(review, ("id", "body", "commit_id")),
+            "login": review["user"]["login"],
+        }
+        reports.append(("review", review["id"], content))
+    for comment in [item for page in snapshot["comments"] for item in page]:
+        reports.append(("comment", comment["id"], selected_fields(comment, ("id", "body"))))
+    return reports
+
+
+def current_report_receipts(state: dict[str, Any]) -> dict[str, str] | None:
     if state["monitor"]["errors"]:
         return None
-    return thread_report_receipts(state["monitor"]["data"])
+    return report_receipts(state["monitor"]["data"])
 
 
 def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
@@ -1330,15 +1347,20 @@ def validate_snapshot(snapshot: dict[str, Any]) -> None:
     if missing:
         raise ValueError(f"monitor evidence is missing or malformed: {', '.join(missing)}")
     validate_check_results(snapshot)
+    validate_report_sources(snapshot)
+
+
+def validate_report_sources(snapshot: dict[str, Any]) -> None:
     for key in ("reviews", "comments"):
         for page in snapshot[key]:
             validate_entries(page, ())
+        validate_comments([item for page in snapshot[key] for item in page], graphql=False)
+        validate_unique_report_ids([item for page in snapshot[key] for item in page])
     for review in [item for page in snapshot["reviews"] for item in page]:
         validate_review(review)
-    for page in snapshot["comments"]:
-        validate_comments(page, graphql=False)
     validate_entries(snapshot["threads"], ("id",))
     validate_threads(snapshot["threads"])
+    validate_unique_report_ids(snapshot["threads"])
 
 
 def validate_threads(threads: list[dict[str, Any]]) -> None:
@@ -1348,6 +1370,13 @@ def validate_threads(threads: list[dict[str, Any]]) -> None:
         ):
             raise ValueError("malformed thread resolution")
         validate_comments(thread.get("comments"), graphql=True)
+        validate_unique_report_ids(thread["comments"])
+
+
+def validate_unique_report_ids(items: list[dict[str, Any]]) -> None:
+    identities = [item["id"] for item in items]
+    if len(identities) != len(set(identities)):
+        raise ValueError("duplicate report identity")
 
 
 def validate_comments(comments: Any, *, graphql: bool) -> None:
@@ -1376,6 +1405,7 @@ def validate_check_results(snapshot: dict[str, Any]) -> None:
 
 
 def validate_review(review: dict[str, Any]) -> None:
+    validate_comments([review], graphql=False)
     validate_entries([review], ("commit_id", "state"))
     if review["state"] not in {
         "APPROVED",

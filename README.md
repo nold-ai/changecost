@@ -90,6 +90,12 @@ original measurements; overflowing updates are rejected without granting unlimit
 Every refresh validates current changed-path coverage. Changing authorized paths
 requires an explicitly referenced approved scope manifest; packets retain both
 the original contract and recaptured current manifest.
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
 Input binding includes every declared path, even ignored files or explicit absence.
 Existing declared content outside the index prevents clean completion; unrelated
 ignored artifacts remain excluded. Remote positive evidence must also postdate
@@ -111,7 +117,7 @@ Watcher completion/replanning output remains visible even without a GitHub chang
 local budget changes take precedence over a no-progress timeout.
 Expected PR target ref/SHA is separate from the comparison commit. Retargeting or
 base advancement requires explicit adoption and fresh local/remote evidence, even
-with unchanged HEAD; schema-7 receipts preserve the original contract and counters.
+with unchanged HEAD; schema-8 receipts preserve the original contract and counters.
 Input generations are independent of caller event IDs; automatic PR binding chooses
 an unused identity atomically, retaining existing finding/scope references.
 Renewed requests to required reviewers block completion even with a prior approval;

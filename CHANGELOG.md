@@ -20,6 +20,9 @@
 - Bind review evidence to explicit PR target and comparison bases, preserve their
   original contract, and require fresh evidence after atomic context adoption.
 
+- Cover top-level reviews and PR comments in explicit local adjudication receipts;
+  make ignore-rule fixtures independent of optional Git template directories.
+
 - Bind declared ignored paths and require fresh remote positives from initial
   context creation; preserve negative evidence and explicit receipt recovery.
 

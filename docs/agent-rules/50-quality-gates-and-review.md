@@ -35,6 +35,12 @@ unknown usage stays unknown.
 Every refresh validates current changed-path coverage. Changing authorized paths
 requires an explicitly referenced approved scope manifest; packets retain both
 the original contract and recaptured current manifest.
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
 Input binding includes every declared path, even ignored files or explicit absence.
 Existing declared content outside the index prevents clean completion; unrelated
 ignored artifacts remain excluded. Remote positive evidence must also postdate
@@ -51,7 +57,7 @@ Observation epochs are explicit collection-time facts. Missing, malformed or sta
 epochs remain incomplete on ingestion; error observations without epochs are retained
 to invalidate earlier passing monitoring and cannot supply report receipts.
 
-Schema-7 contracts name the PR target ref/SHA separately from the comparison base.
+Schema-8 contracts name the PR target ref/SHA separately from the comparison base.
 Retargeting or target advancement invalidates monitoring. Explicit atomic base
 adoption retains counters but requires a new evidence epoch: local results carry
 their original full binding, and required remote positives postdate adoption.
@@ -78,7 +84,7 @@ reviewers must have a latest APPROVED or COMMENTED result.
 Comments, pending submissions and dismissal of another review cannot clear that
 objection. Only a later approval or a fresh snapshot showing the original rejecting
 review dismissed can clear it.
-Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-7
+Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-8
 replay reconciles all cached fields; missing or incompatible history requires
 recovery, never reinitialization. Final published inputs must be clean. Exclude
 non-findings from family escalation while retaining genuine fixed recurrences.

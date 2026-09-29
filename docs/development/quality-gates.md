@@ -128,7 +128,7 @@ the required GitHub reviewer logins, nonempty `required_checks` names and explic
 declared review policy; do not infer protected-branch settings from them. Missing
 declared checks or statuses leave the session pending even when API pages are empty.
 Name the exact repository and REST reviewer logins, including `[bot]`. The first
-PR selection becomes immutable. Schema-7 canonical replay reconciles all derived
+PR selection becomes immutable. Schema-8 canonical replay reconciles all derived
 fields with original events and separately captured time/input facts. Minute budgets,
 active time and measured usage use finite canonical sums of their original components;
 overflow rejects the update without changing the receipt. Batch counts remain integers,
@@ -140,6 +140,12 @@ deletion or hostile tampering. See the
 Every refresh validates current changed-path coverage. Changing authorized paths
 requires an explicitly referenced approved scope manifest; packets retain both
 the original contract and recaptured current manifest.
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
 Input binding includes every declared path, even ignored files or explicit absence.
 Existing declared content outside the index prevents clean completion; unrelated
 ignored artifacts remain excluded. Remote positive evidence must also postdate
@@ -154,7 +160,7 @@ path-to-SHA256 fingerprints against actual inputs. `<absent>` explicitly permits
 future planned files. Cover all changed, staged and untracked paths while allowing
 unchanged intended files. Captured initial scope facts remain immutable through
 head refreshes and are validated without filesystem access during replay. Existing
-schema-1/2/3/4/5/6 receipts require recovery rather than synthesized migration.
+schema-1/2/3/4/5/6/7 receipts require recovery rather than synthesized migration.
 Contract and refresh paths use one full hexadecimal commit-ID rule for 40-character
 SHA-1 and 64-character SHA-256 repositories. Shape validation does not replace
 checking the actual Git head; pure replay retains the same identity rule.
@@ -209,14 +215,14 @@ otherwise complete session still needs investigation, either exhausted budget
 requires replanning. Extensions must cover every exhausted budget axis.
 
 Resolved remote threads require explicit local adjudication coverage, rather than
-trusting GitHub resolution flags alone. A packet's `thread_reports` maps stable
-thread IDs to deterministic SHA256 digests of all collected comment IDs/content
-and meaningful report context. After actual triage, the trusted coordinator records
-that exact map as `reviewed_threads` on its binding-qualified reviewer evidence event.
+trusting GitHub resolution flags alone. A packet's `report_receipts` maps stable
+namespaced `thread:<id>`, `review:<id>` and `comment:<id>` identities to deterministic
+SHA256 digests of exact bodies and stable context across every collected page. After actual triage, the trusted coordinator records
+that exact map as `reviewed_reports` on its binding-qualified reviewer evidence event.
 Known local defects still require their separate finding/disposition records.
 New/edited comments, added threads, extra stale coverage IDs or changed input/base
 bindings prevent completion until revalidated. Missing coverage cannot cover any
-nonempty thread set; the no-thread case retains implicit empty coverage.
+nonempty report set; only the no-report case permits empty coverage.
 Malformed/error observations expose no usable packet receipts. Supplied mappings
 are validated at ingestion and replay; observations never fabricate acknowledgment.
 Unresolved threads, including outdated ones, always block. Resolution/outdated flags
@@ -245,7 +251,7 @@ the observation. Order, duplicates and avatar changes are semantically quiet.
 Nonrequired requests remain informational; team membership is not expanded.
 Cancellation only restores still-qualifying evidence and cannot override rejection,
 head/base freshness or budget limits. Older snapshots missing request data become
-incomplete under schema 7; no new session allowance is created.
+incomplete under schema 8; no new session allowance is created.
 Input epochs use `input-generation:N`, starting at zero and advancing only for
 recorded `advance_head` events. Caller IDs, ordinary events, monitor revisions and
 exact retries cannot change or collide with that generation. Positive monitoring

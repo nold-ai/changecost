@@ -123,7 +123,7 @@ Only a genuinely new session uses
 Existing sessions use `status`, then `packet` when recovery or replanning is
 required. A missing or incompatible receipt must not reset counters, including
 after moving to another worktree. Preserve schema-1 history as recovery evidence;
-do not synthesize prior measurements into a new schema-7 allowance. Schema-1/2/3/4/5/6
+do not synthesize prior measurements into a new schema-8 allowance. Schema-1/2/3/4/5/6/7
 receipts remain recovery evidence; new required initial-scope facts are not invented.
 
 The complete JSON contract has this shape (replace example SHAs, file fingerprint,
@@ -164,6 +164,12 @@ Minute extensions and measured time/usage use finite canonical sums of original
 event components, preserving exact budget boundaries across retries and restarts.
 Overflow fails closed; do not round limits or reset history to recover.
 
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
 Input binding includes every declared path, even ignored files or explicit absence.
 Existing declared content outside the index prevents clean completion; unrelated
 ignored artifacts remain excluded. Remote positive evidence must also postdate
@@ -195,8 +201,8 @@ Required event strings and supplied `supersedes` references must contain non-whi
 text. Preserve exact nonblank bytes; do not trim identifiers or alias family labels.
 Handoff status and contents derive from one receipt revision, with actual-input drift
 still checked; changed watcher output uses that packet's status and observation.
-Passing reviewer evidence acknowledges the packet's current `thread_reports` in
-`reviewed_threads` after explicit local triage. Remote resolution cannot substitute
+Passing reviewer evidence acknowledges the packet's current `report_receipts` in
+`reviewed_reports` after explicit local triage. Remote resolution cannot substitute
 for this coverage or for dispositions of known local findings. Changed report content
 requires revalidation; exhaustion overrides any remaining family investigation.
 Every positive observation retains `_input_epoch` captured before collection.

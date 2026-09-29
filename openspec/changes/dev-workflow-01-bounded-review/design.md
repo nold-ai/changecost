@@ -16,7 +16,7 @@ mutation, or hostile-runner integrity guarantee.
 
 ## Decisions
 
-1. Store schema-7 state plus a durable genesis marker under
+1. Store schema-8 state plus a durable genesis marker under
    `.changecost/workflow/<change-id>/`. Pure replay of original event payloads and
    separately captured time/input facts reconciles every derived field. Atomic
    replacement preserves recoverability; a missing state file with a marker
@@ -77,7 +77,7 @@ mutation, or hostile-runner integrity guarantee.
     semantic hashing, required-reviewer pending decisions and both metadata reads.
     Request changes invalidate collection; ordering/duplicates/avatar changes do not.
     Cancellation restores only still-qualifying evidence. Nonrequired users are
-    informational; team expansion is outside this contract. Schema 7 retains raw
+    informational; team expansion is outside this contract. Schema 8 retains raw
     observations; older missing request data becomes incomplete without resetting history.
 11. Derive generation-tagged epoch strings from recorded refresh counts, independently
     of caller event identities. Allocate deterministic unused automatic bind IDs under
@@ -125,7 +125,7 @@ they do not authorize a fresh allowance. Revert
 the change to remove the helper and skill requirements while keeping ignored local
 receipts and the lessons document.
 
-Schema 7 requires captured scope facts on each head refresh. The derived reviewed
+Schema 8 requires captured scope facts on each head refresh. The derived reviewed
 manifest preserves authorized keys on ordinary refreshes; explicit prior approved
 scope-decision references select a replacement complete keyset. Approval hashes
 are immutable intent evidence, not a claim about current reviewed contents. Scope
@@ -134,7 +134,7 @@ against the effective adopted-or-current comparison base between consistent inpu
 reads. Pure replay validates those facts without accessing historical files. The
 original contract and counters remain unchanged; no one-use approval system is added.
 
-Schema 7 binds all declared path fingerprints/absence in every input capture and
+Schema 8 binds all declared path fingerprints/absence in every input capture and
 marks existing non-indexed declared content dirty even when ignored. Initialization,
 selected-scope refreshes and live status use the same required declared keyset;
 unrelated ignored output remains excluded. Prior receipt semantics require recovery,
@@ -143,3 +143,12 @@ remains through ordinary refreshes, and updates on explicit base adoption. Requi
 positive timestamps compare exactly with timezone awareness; valid pre-init or
 coarse same-second results may need reruns. This is conservative contextual evidence,
 not authenticated execution; older objections/failures are never filtered away.
+
+Schema 8 generalizes local reviewer evidence to reviewed_reports, matching the
+packet report_receipts map. Thread, review and comment namespaces preserve exact
+source identities across all pages and historical reports. Stable content/context
+hashes exclude reactions, avatars, transport timestamps and lifecycle flags;
+independent objections, resolution, freshness and input gates still apply. Uniform
+coverage includes empty and informational bodies rather than classifying intent.
+Changes require fresh explicit local attestation, including summary churn. Missing or malformed report identities/bodies and duplicate identities fail closed. Earlier thread-only
+receipts require recovery without resetting counters or synthesizing adjudication.

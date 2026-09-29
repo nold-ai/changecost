@@ -515,3 +515,42 @@ The batch18-focused.txt log precedes the three final path-readability cases;
 the coverage run includes them. Supported-Linux/provider evidence remains required
 for the published head. Legacy recovery, retained counters and unknown historical
 time/usage remain explicit; no fresh allowance or savings claim is introduced.
+
+## All-report adjudication and portable Git fixtures
+
+On 2026-09-29 (Europe/Berlin), the actual empty-Git-template run reproduced three
+fixture failures and one passing control (`.changecost/batch19-red.txt`). Both
+Linux capsule jobs failed because .git/info was absent, not because of a timeout.
+The fixture now creates its intended metadata parent explicitly; no analyzer,
+timeout or production Git behavior is weakened. The test audit found no other
+optional Git-template-directory write assumption.
+
+Two failing cases showed changed top-level review bodies and PR comments preserving
+completion (`.changecost/batch19-reports-red.txt`). Schema 8 generalizes explicit
+coverage to packet `report_receipts` and local `reviewed_reports`, namespaced by
+thread/review/comment source. All fetched pages and historical reports participate;
+exact bodies and stable context are hashed, while transport metadata and lifecycle
+flags do not revoke content adjudication. Independent objections, unresolved state,
+freshness and input gates remain blocking. Missing or malformed identities/bodies and duplicate identities
+invalidate monitoring rather than silently omitting reports.
+
+Valid old fixtures now provide explicit REST identities/bodies and full-report
+attestations; rejection tests attest reports before verifying objections still
+block. The changed-terminal watcher test changes check metadata rather than adding
+an unadjudicated report. Tests cover add/edit/delete, historical pages, empty bodies,
+namespace collisions, duplicate IDs, malformed types, metadata/reordering stability,
+stale extra coverage and explicit revalidation. Earlier receipt semantics require
+recovery, with no synthesized approvals, counter reset or savings claim.
+
+Final verification passes 646 repository tests plus four subtests under an empty
+Git template, covering all 478 helper cases; four normal-template ignore-rule
+controls also pass. Coverage in that full run measures 971/1022 helper statements
+(95% rounded); maximum complexity is 10 and native KISS findings are empty.
+Ruff/formatting, BasedPyright, docs against HEAD/main, index, metadata and strict
+OpenSpec pass. Final logs are `.changecost/batch19-empty-template-full.txt`,
+`.changecost/batch19-normal-controls.txt`, `.changecost/batch19-focused.txt`,
+`.changecost/batch19-coverage.txt` and `.changecost/batch19-types.txt`.
+The full run used the project interpreter with the existing cached coverage package;
+an initial cached-only interpreter lacked typer during collection and ran no tests.
+Fresh native Linux and provider evidence remains required after publication;
+legacy receipt recovery and unknown historical usage/time remain explicit.

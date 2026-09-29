@@ -113,6 +113,8 @@ def complete_snapshot(epoch: str = "input-generation:0") -> dict[str, Any]:
         "reviews": [
             [
                 {
+                    "id": 115,
+                    "body": "",
                     "commit_id": TEST_HEAD,
                     "state": "APPROVED",
                     "user": {"login": "reviewer-a"},
@@ -136,6 +138,7 @@ def complete_session(tmp_path: Path, *, timing: bool = True) -> None:
                 "result": "pass",
                 "head": TEST_HEAD,
                 "binding": review_session.evidence_binding(review_session.load(tmp_path, "change")),
+                "reviewed_reports": review_session.report_receipts(complete_snapshot()),
             },
         )
     review_session.record(tmp_path, "change", {"id": "done", "kind": "phase", "phase": "complete"})
@@ -443,6 +446,8 @@ def test_monitor_waits_for_current_head_results_from_named_reviewers(tmp_path: P
             "reviews": [
                 [
                     {
+                        "id": 446,
+                        "body": "",
                         "commit_id": contract()["head"],
                         "state": "APPROVED",
                         "user": {"login": "other"},
@@ -478,6 +483,8 @@ def test_watcher_polls_after_a_changed_continue_snapshot(
         "reviews": [
             [
                 {
+                    "id": 481,
+                    "body": "",
                     "commit_id": contract()["head"],
                     "state": "APPROVED",
                     "user": {"login": "reviewer-a"},
@@ -827,6 +834,7 @@ def test_completion_requires_explicit_current_timing(tmp_path: Path) -> None:
             "change",
             {
                 "id": "new-" + category,
+                "reviewed_reports": review_session.report_receipts(complete_snapshot()),
                 "binding": review_session.evidence_binding(review_session.load(tmp_path, "change")),
                 "kind": "evidence",
                 "evidence_type": category,
@@ -873,6 +881,7 @@ def test_latest_reviewer_state_controls_completion(
     snapshot["reviews"] = [
         [
             {
+                "body": "",
                 "id": index + 1,
                 "commit_id": TEST_HEAD,
                 "user": {"login": login},
@@ -883,6 +892,7 @@ def test_latest_reviewer_state_controls_completion(
         ]
     ]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "explicit-review")
     assert review_session.status(tmp_path, "change")["action"] == expected
 
 
@@ -970,6 +980,8 @@ def test_review_supersession_spans_pages_and_ignores_old_head(tmp_path: Path) ->
     snapshot["reviews"] = [
         [
             {
+                "id": 973,
+                "body": "",
                 "commit_id": TEST_HEAD,
                 "user": {"login": "reviewer-a[bot]"},
                 "state": "CHANGES_REQUESTED",
@@ -977,12 +989,16 @@ def test_review_supersession_spans_pages_and_ignores_old_head(tmp_path: Path) ->
         ],
         [
             {
+                "id": 980,
+                "body": "",
                 "commit_id": TEST_HEAD,
                 "user": {"login": "reviewer-a[bot]"},
                 "state": "APPROVED",
                 "submitted_at": "2099-01-01T00:00:00Z",
             },
             {
+                "id": 986,
+                "body": "",
                 "commit_id": "old",
                 "user": {"login": "reviewer-a[bot]"},
                 "state": "CHANGES_REQUESTED",
@@ -990,6 +1006,7 @@ def test_review_supersession_spans_pages_and_ignores_old_head(tmp_path: Path) ->
         ],
     ]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "explicit-review")
     assert review_session.status(tmp_path, "change")["action"] == "complete"
 
 
@@ -1087,8 +1104,20 @@ def test_bot_identity_cannot_approve_for_or_erase_human(tmp_path: Path) -> None:
     snapshot = complete_snapshot()
     snapshot["reviews"] = [
         [
-            {"commit_id": TEST_HEAD, "state": "CHANGES_REQUESTED", "user": {"login": "reviewer-a"}},
-            {"commit_id": TEST_HEAD, "state": "APPROVED", "user": {"login": "reviewer-a[bot]"}},
+            {
+                "id": 1091,
+                "body": "",
+                "commit_id": TEST_HEAD,
+                "state": "CHANGES_REQUESTED",
+                "user": {"login": "reviewer-a"},
+            },
+            {
+                "id": 1092,
+                "body": "",
+                "commit_id": TEST_HEAD,
+                "state": "APPROVED",
+                "user": {"login": "reviewer-a[bot]"},
+            },
         ]
     ]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
@@ -1326,8 +1355,20 @@ def test_unknown_review_states_cannot_erase_rejection(
     snapshot = complete_snapshot()
     snapshot["reviews"][0].extend(
         [
-            {"commit_id": TEST_HEAD, "state": "CHANGES_REQUESTED", "user": {"login": login}},
-            {"commit_id": TEST_HEAD, "state": state, "user": {"login": login}},
+            {
+                "id": 1330,
+                "body": "",
+                "commit_id": TEST_HEAD,
+                "state": "CHANGES_REQUESTED",
+                "user": {"login": login},
+            },
+            {
+                "id": 1331,
+                "body": "",
+                "commit_id": TEST_HEAD,
+                "state": state,
+                "user": {"login": login},
+            },
         ]
     )
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
@@ -1366,15 +1407,17 @@ def test_review_objection_survives_nonapproving_later_review(
     snapshot["reviews"] += [
         [
             {
+                "body": "",
                 "id": 100,
                 "commit_id": TEST_HEAD,
                 "state": "CHANGES_REQUESTED",
                 "user": {"login": login},
             }
         ],
-        [{"id": 101, "commit_id": TEST_HEAD, "state": later, "user": {"login": login}}],
+        [{"body": "", "id": 101, "commit_id": TEST_HEAD, "state": later, "user": {"login": login}}],
     ]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "explicit-review")
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
     snapshot["reviews"][-1][0]["state"] = "APPROVED"
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
@@ -1474,6 +1517,7 @@ def test_original_rejection_dismissal_is_recomputed_from_fresh_snapshot(tmp_path
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     rejection = {
+        "body": "",
         "id": 100,
         "commit_id": TEST_HEAD,
         "state": "CHANGES_REQUESTED",
@@ -1483,6 +1527,7 @@ def test_original_rejection_dismissal_is_recomputed_from_fresh_snapshot(tmp_path
         [rejection],
         [
             {
+                "body": "",
                 "id": 101,
                 "commit_id": TEST_HEAD,
                 "state": "COMMENTED",
@@ -1491,6 +1536,7 @@ def test_original_rejection_dismissal_is_recomputed_from_fresh_snapshot(tmp_path
         ],
     ]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "explicit-review")
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
     rejection["state"] = "DISMISSED"
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
@@ -1508,9 +1554,19 @@ def test_other_identity_or_head_cannot_clear_objection(
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["reviews"] += [
-        [{"commit_id": TEST_HEAD, "state": "CHANGES_REQUESTED", "user": {"login": "reviewer-a"}}],
         [
             {
+                "id": 1512,
+                "body": "",
+                "commit_id": TEST_HEAD,
+                "state": "CHANGES_REQUESTED",
+                "user": {"login": "reviewer-a"},
+            }
+        ],
+        [
+            {
+                "id": 1514,
+                "body": "",
                 "commit_id": "old" if old_head else TEST_HEAD,
                 "state": "APPROVED",
                 "user": {"login": other_login},
@@ -1681,7 +1737,7 @@ def test_changed_terminal_watch_emits_one_packet(
     review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
-    snapshot["comments"] = [[{"id": 1, "body": "new evidence"}]]
+    snapshot["checks"][0]["check_runs"][0]["started_at"] = "2100-01-01T00:00:00Z"
     monkeypatch.setattr(review_session, "gh_snapshot", lambda *args: snapshot)
     assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 0) == 0
     assert json.loads(capsys.readouterr().out)["packet"]["status"]["action"] == "complete"
@@ -1837,6 +1893,8 @@ def test_base_adoption_requires_fresh_positive_remote_evidence(
     assert review_session.load(tmp_path, "change")["monitor"]["pending"]
     snapshot["reviews"][0].append(
         {
+            "id": 1840,
+            "body": "",
             "commit_id": TEST_HEAD,
             "state": "CHANGES_REQUESTED",
             "user": {"login": "other"},
@@ -2385,7 +2443,7 @@ def test_remote_resolved_thread_does_not_create_local_adjudication(tmp_path: Pat
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
 
 
-def acknowledge_threads(tmp_path: Path, identity: str) -> dict[str, Any]:
+def acknowledge_reports(tmp_path: Path, identity: str) -> dict[str, Any]:
     state = review_session.load(tmp_path, "change")
     event = {
         "id": identity,
@@ -2394,7 +2452,7 @@ def acknowledge_threads(tmp_path: Path, identity: str) -> dict[str, Any]:
         "head": TEST_HEAD,
         "result": "pass",
         "binding": review_session.evidence_binding(state),
-        "reviewed_threads": review_session.thread_report_receipts(state["monitor"]["data"]),
+        "reviewed_reports": review_session.report_receipts(state["monitor"]["data"]),
     }
     review_session.record(tmp_path, "change", event)
     return event
@@ -2419,7 +2477,7 @@ def test_changed_report_content_requires_explicit_revalidation(tmp_path: Path, c
     complete_session(tmp_path)
     snapshot = reviewed_thread_snapshot()
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
-    event = acknowledge_threads(tmp_path, "reviewed")
+    event = acknowledge_reports(tmp_path, "reviewed")
     assert review_session.record(tmp_path, "change", event) == review_session.load(
         tmp_path, "change"
     )
@@ -2441,12 +2499,12 @@ def test_changed_report_content_requires_explicit_revalidation(tmp_path: Path, c
         event = {
             **event,
             "id": "extra",
-            "reviewed_threads": {**event["reviewed_threads"], "stale": "a" * 64},
+            "reviewed_reports": {**event["reviewed_reports"], "thread:stale": "a" * 64},
         }
         review_session.record(tmp_path, "change", event)
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
-    acknowledge_threads(tmp_path, "revalidated")
+    acknowledge_reports(tmp_path, "revalidated")
     assert review_session.status(tmp_path, "change")["action"] == "complete"
 
 
@@ -2455,12 +2513,12 @@ def test_thread_adjudication_does_not_override_unresolved_or_local_findings(tmp_
     complete_session(tmp_path)
     snapshot = reviewed_thread_snapshot()
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
-    acknowledge_threads(tmp_path, "reviewed")
-    receipts = review_session.packet(tmp_path, "change")["thread_reports"]
+    acknowledge_reports(tmp_path, "reviewed")
+    receipts = review_session.packet(tmp_path, "change")["report_receipts"]
     snapshot["threads"][0].update(isResolved=False, isOutdated=True)
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] == "wait"
-    assert review_session.packet(tmp_path, "change")["thread_reports"] == receipts
+    assert review_session.packet(tmp_path, "change")["report_receipts"] == receipts
     snapshot["threads"][0]["isResolved"] = True
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] == "complete"
@@ -2484,7 +2542,7 @@ def test_malformed_thread_coverage_rejected_at_ingestion_and_replay(
         "head": TEST_HEAD,
         "result": "pass",
         "binding": review_session.evidence_binding(state),
-        "reviewed_threads": coverage,
+        "reviewed_reports": coverage,
     }
     with pytest.raises(ValueError):
         review_session.record(tmp_path, "change", event)
@@ -2507,7 +2565,7 @@ def test_malformed_report_has_no_usable_receipt(tmp_path: Path, thread: Any) -> 
     snapshot["threads"] = [thread]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     packet = review_session.packet(tmp_path, "change")
-    assert packet["thread_reports"] is None
+    assert packet["report_receipts"] is None
     assert packet["status"]["action"] == "incomplete"
 
 
@@ -2560,7 +2618,7 @@ def test_thread_coverage_cannot_transfer_to_new_binding(tmp_path: Path, refresh:
     review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     review_session.record_monitor_snapshot(tmp_path, "change", reviewed_thread_snapshot())
-    old = acknowledge_threads(tmp_path, "reviewed")
+    old = acknowledge_reports(tmp_path, "reviewed")
     event: dict[str, Any] = {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
     if refresh == "base":
         event.update(comparison_base=TEST_HEAD, pr_base={"ref": "release", "sha": TEST_HEAD})
@@ -2590,11 +2648,11 @@ def test_satisfied_completion_exception_is_exactly_bounded(
 def test_thread_receipt_digest_is_order_independent_and_complete() -> None:
     snapshot = reviewed_thread_snapshot()
     snapshot["threads"][0]["comments"].append({"id": "second-page-comment", "body": "later page"})
-    receipt = review_session.thread_report_receipts(snapshot)
+    receipt = review_session.report_receipts(snapshot)
     snapshot["threads"][0]["comments"].reverse()
-    assert review_session.thread_report_receipts(snapshot) == receipt
+    assert review_session.report_receipts(snapshot) == receipt
     snapshot["threads"][0]["comments"][0]["body"] = "edited later page"
-    assert review_session.thread_report_receipts(snapshot) != receipt
+    assert review_session.report_receipts(snapshot) != receipt
 
 
 @pytest.mark.parametrize("refresh", [False, True])
@@ -2618,7 +2676,7 @@ def test_missing_or_invalid_observation_epoch_replaces_green(
     assert state["monitor"]["errors"]
     packet = review_session.packet(tmp_path, "change")
     assert packet["status"]["action"] == "incomplete"
-    assert packet["thread_reports"] is None
+    assert packet["report_receipts"] is None
     assert not review_session.record_monitor_snapshot(tmp_path, "change", snapshot)["changed"]
     assert review_session.load(tmp_path, "change") == state
 
@@ -2636,11 +2694,13 @@ def test_explicit_current_epoch_is_accepted_and_prior_epoch_stays_stale(
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     state = review_session.load(tmp_path, "change")
     assert not state["monitor"]["errors"]
-    assert review_session.packet(tmp_path, "change")["thread_reports"] == {}
+    assert review_session.packet(tmp_path, "change")[
+        "report_receipts"
+    ] == review_session.report_receipts(snapshot)
     snapshot["_input_epoch"] = f"input-generation:{generation - 1}"
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
-    assert review_session.packet(tmp_path, "change")["thread_reports"] is None
+    assert review_session.packet(tmp_path, "change")["report_receipts"] is None
 
 
 def test_collection_error_without_epoch_replaces_prior_green(
@@ -2659,7 +2719,7 @@ def test_collection_error_without_epoch_replaces_prior_green(
     state = review_session.load(tmp_path, "change")
     assert "API unavailable" in state["monitor"]["errors"]
     assert review_session.packet(tmp_path, "change")["status"]["action"] == "incomplete"
-    assert review_session.packet(tmp_path, "change")["thread_reports"] is None
+    assert review_session.packet(tmp_path, "change")["report_receipts"] is None
 
 
 @pytest.mark.parametrize("count,minutes,expected", [(3, 0.1, 90.3), (5, 0.2, 91.0)])
@@ -2870,7 +2930,7 @@ def test_numeric_pr_identity_mismatch_invalidates_prior_green(tmp_path: Path, va
     snapshot["pull_request"] = value
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
-    assert review_session.packet(tmp_path, "change")["thread_reports"] is None
+    assert review_session.packet(tmp_path, "change")["report_receipts"] is None
 
 
 @pytest.mark.parametrize("value", [10**1000, -(10**1000), True, 1.5])
@@ -3180,6 +3240,7 @@ def test_declared_binding_respects_ignore_sources_without_hiding_content(
 ) -> None:
     name = "input.txt" if ignore_source == "tracked" else "declared.txt"
     ignore = tmp_path / ".git" / ("global-ignore" if ignore_source == "global" else "info/exclude")
+    ignore.parent.mkdir(parents=True, exist_ok=True)
     ignore.write_text(name + "\n" + ("!" + name + "\n" if ignore_source == "negated" else ""))
     if ignore_source == "global":
         subprocess.run(
@@ -3344,3 +3405,111 @@ def test_declared_ignored_nonregular_or_unreadable_is_incomplete(
 
         monkeypatch.setattr(Path, "read_bytes", denied)
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("surface", ["reviews", "comments"])
+def test_nonthread_report_changes_require_local_adjudication(tmp_path: Path, surface: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    if surface == "reviews":
+        snapshot["reviews"][0][0]["body"] = "actionable top-level finding"
+    else:
+        snapshot["comments"] = [[{"id": 23, "body": "actionable PR comment"}]]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("surface", ["reviews", "comments"])
+@pytest.mark.parametrize("mutation", ["add", "edit", "delete"])
+def test_all_report_changes_require_exact_current_receipts(
+    tmp_path: Path, surface: str, mutation: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    report = {"id": 42, "body": "historical informational report"}
+    if surface == "reviews":
+        report.update({"commit_id": "a" * 40, "state": "COMMENTED", "user": {"login": "human"}})
+    snapshot[surface].append([report])
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "initial-all")
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    if mutation == "add":
+        snapshot[surface].append([{**report, "id": 43}])
+    elif mutation == "edit":
+        report["body"] = "new actionable concern"
+    else:
+        snapshot[surface].pop()
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    acknowledge_reports(tmp_path, "revalidated-all")
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+@pytest.mark.parametrize("surface", ["reviews", "comments"])
+@pytest.mark.parametrize(
+    "field,value",
+    [("id", None), ("id", True), ("id", "1"), ("id", 0), ("body", None), ("body", 17)],
+)
+def test_malformed_nonthread_reports_replace_green(
+    tmp_path: Path, surface: str, field: str, value: Any
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    if surface == "comments":
+        snapshot[surface] = [[{"id": 1, "body": ""}]]
+    snapshot[surface][0][0][field] = value
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    state = review_session.load(tmp_path, "change")
+    assert state["monitor"]["errors"]
+    assert review_session.packet(tmp_path, "change")["report_receipts"] is None
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("surface", ["reviews", "comments"])
+def test_duplicate_nonthread_ids_across_pages_fail_closed(tmp_path: Path, surface: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    snapshot = complete_snapshot()
+    if surface == "comments":
+        snapshot[surface] = [[{"id": 1, "body": ""}]]
+    snapshot[surface].append([dict(snapshot[surface][0][0])])
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.load(tmp_path, "change")["monitor"]["errors"]
+    assert review_session.report_receipts(snapshot) is None
+
+
+def test_report_namespaces_and_metadata_do_not_collide_or_revoke_coverage(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["reviews"][0][0]["id"] = 42
+    snapshot["comments"] = [[{"id": 42, "body": ""}], [{"id": 43, "body": "second"}]]
+    snapshot["threads"] = [
+        {
+            "id": "42",
+            "isResolved": True,
+            "isOutdated": False,
+            "comments": [{"id": "comment:42", "body": ""}],
+        }
+    ]
+    receipts = review_session.report_receipts(snapshot)
+    assert receipts is not None and set(receipts) == {
+        "review:42",
+        "comment:42",
+        "comment:43",
+        "thread:42",
+    }
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "all-namespaces")
+    snapshot["comments"].reverse()
+    snapshot["comments"][0][0].update(
+        {"updated_at": "2099-01-01T00:00:00Z", "reactions": {"+1": 99}}
+    )
+    snapshot["reviews"][0][0]["user"]["avatar_url"] = "changed"
+    snapshot["reviews"][0][0]["state"] = "COMMENTED"
+    snapshot["threads"][0]["isOutdated"] = True
+    assert review_session.report_receipts(snapshot) == receipts
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
