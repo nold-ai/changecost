@@ -642,7 +642,18 @@ def add_evidence(state: dict[str, Any], event: dict[str, Any]) -> None:
         raise ValueError("unknown evidence result")
     if event.get("binding") != evidence_binding(state) or event["head"] != state["reviewed_head"]:
         raise ValueError("evidence binding is missing or stale")
+    if "reviewed_threads" in event:
+        validate_thread_coverage(event["reviewed_threads"])
     state["evidence"].append(event)
+
+
+def validate_thread_coverage(coverage: Any) -> None:
+    if not isinstance(coverage, dict):
+        raise ValueError("reviewed_threads requires a thread identity/digest mapping")
+    for identity, digest in coverage.items():
+        validate_event_text(identity, "thread identity")
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValueError("reviewed thread digest requires SHA256")
 
 
 def add_usage(state: dict[str, Any], event: dict[str, Any]) -> None:
@@ -718,7 +729,7 @@ def decision(state: dict[str, Any]) -> tuple[str, str]:
     terminal = terminal_decision(state)
     family = family_decision(state)
     if terminal and terminal[0] == "complete" and family:
-        return family
+        return budget_decision(state) or family
     if terminal and terminal[0] != "wait":
         return terminal
     budget = budget_decision(state)
@@ -839,12 +850,15 @@ def unresolved_findings(state: dict[str, Any]) -> list[dict[str, Any]]:
 def completion_evidence(state: dict[str, Any]) -> bool:
     required = {"gate", "reviewer"}
     latest = {
-        item["evidence_type"]: item["result"]
+        item["evidence_type"]: item
         for item in current_evidence(state)
         if item.get("head") == state["reviewed_head"]
     }
-    completed = {category for category, result in latest.items() if result == "pass"}
-    return required <= completed
+    completed = {category for category, event in latest.items() if event["result"] == "pass"}
+    if not required <= completed:
+        return False
+    receipts = current_thread_reports(state)
+    return receipts is not None and latest["reviewer"].get("reviewed_threads", {}) == receipts
 
 
 def current_evidence(state: dict[str, Any]) -> list[dict[str, Any]]:
@@ -876,6 +890,7 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
         "timing_measurements": state["timing_measurements"],
         "pull_request": state["pull_request"],
         "monitor": state["monitor"],
+        "thread_reports": current_thread_reports(state),
     }
 
 
@@ -1032,6 +1047,37 @@ def semantic_thread(item: dict[str, Any]) -> dict[str, Any]:
         **selected_fields(item, ("id", "isResolved", "isOutdated", "path", "line")),
         "comments": [semantic_comment(comment) for comment in item.get("comments", [])],
     }
+
+
+def thread_report_receipts(snapshot: Any) -> dict[str, str] | None:
+    """Return report-content receipts, never infer local adjudication from resolution."""
+    if not isinstance(snapshot, dict) or snapshot.get("errors"):
+        return None
+    try:
+        validate_snapshot(snapshot)
+        reports = {}
+        for thread in snapshot["threads"]:
+            content = {
+                **selected_fields(thread, ("id", "path", "line")),
+                "comments": sorted(
+                    (semantic_comment(item) for item in thread["comments"]),
+                    key=lambda item: item["id"],
+                ),
+            }
+            if thread["id"] in reports:
+                raise ValueError("duplicate thread identity")
+            reports[thread["id"]] = hashlib.sha256(
+                json.dumps(content, sort_keys=True).encode()
+            ).hexdigest()
+        return reports
+    except (ValueError, KeyError, TypeError):
+        return None
+
+
+def current_thread_reports(state: dict[str, Any]) -> dict[str, str] | None:
+    if state["monitor"]["errors"]:
+        return None
+    return thread_report_receipts(state["monitor"]["data"])
 
 
 def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:

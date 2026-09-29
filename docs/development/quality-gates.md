@@ -189,6 +189,27 @@ Completion requires a complete current-head monitor snapshot as well as passing
 local evidence. Pending checks, commit statuses, reviewers and unresolved threads
 (including outdated threads) block completion. Exhausted budgets take precedence
 over waiting; a fully verified final allowed batch may complete.
+That exact-limit exception does not permit further family investigation: if an
+otherwise complete session still needs investigation, either exhausted budget
+requires replanning. Extensions must cover every exhausted budget axis.
+
+Resolved remote threads require explicit local adjudication coverage, rather than
+trusting GitHub resolution flags alone. A packet's `thread_reports` maps stable
+thread IDs to deterministic SHA256 digests of all collected comment IDs/content
+and meaningful report context. After actual triage, the trusted coordinator records
+that exact map as `reviewed_threads` on its binding-qualified reviewer evidence event.
+Known local defects still require their separate finding/disposition records.
+New/edited comments, added threads, extra stale coverage IDs or changed input/base
+bindings prevent completion until revalidated. Missing coverage cannot cover any
+nonempty thread set; the no-thread case retains implicit empty coverage.
+Malformed/error observations expose no usable packet receipts. Supplied mappings
+are validated at ingestion and replay; observations never fabricate acknowledgment.
+Unresolved threads, including outdated ones, always block. Resolution/outdated flags
+are separate from report content: an unchanged report reopened then reclosed under
+the same input binding may reuse its explicit adjudication. Only observed status is
+known; no unobserved transition guarantee is made. This is local operator attestation,
+not independent verification of resolver permissions or protection from a dishonest
+operator. Authorized PR-author resolution remains supported; no role lookup is added.
 Completion also requires an `active_minutes` event with explicit finite nonnegative
 `minutes` after the latest binding refresh. Missing timing remains unknown; measured
 zero is allowed. Separate UTC recording timestamps preserve measurement provenance

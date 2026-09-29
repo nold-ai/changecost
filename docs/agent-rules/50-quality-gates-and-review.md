@@ -28,6 +28,10 @@ and counters. Older incompatible epoch receipts require recovery.
 Packet status and evidence must describe one loaded revision; the watcher uses
 that same packet for changed-output exit decisions. Required event strings reject
 blank/Unicode-whitespace-only values, including budget-extension approvers.
+Exact-limit completion is allowed only when no family investigation remains.
+Resolved threads need explicit reviewer-evidence coverage of stable thread/comment
+identities and content; new/edited reports invalidate it. Local unresolved findings
+and remote unresolved status remain independent blockers.
 
 Schema-5 contracts name the PR target ref/SHA separately from the comparison base.
 Retargeting or target advancement invalidates monitoring. Explicit atomic base

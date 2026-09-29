@@ -170,6 +170,10 @@ Required event strings and supplied `supersedes` references must contain non-whi
 text. Preserve exact nonblank bytes; do not trim identifiers or alias family labels.
 Handoff status and contents derive from one receipt revision, with actual-input drift
 still checked; changed watcher output uses that packet's status and observation.
+Passing reviewer evidence acknowledges the packet's current `thread_reports` in
+`reviewed_threads` after explicit local triage. Remote resolution cannot substitute
+for this coverage or for dispositions of known local findings. Changed report content
+requires revalidation; exhaustion overrides any remaining family investigation.
 The initial comparison `base` and target `pr_base` remain immutable history. To
 adopt changed target context, supply both `comparison_base` and `pr_base` on an
 `advance_head` event; the packet exposes the current binding. Capture that full

@@ -2301,3 +2301,253 @@ def test_packet_retains_real_input_drift_validation(tmp_path: Path) -> None:
     packet = review_session.packet(tmp_path, "change")
     assert packet["status"]["action"] == "incomplete"
     assert "inputs changed" in packet["status"]["reason"]
+
+
+@pytest.mark.parametrize("axis,values", [("batches", (2, 3, 4)), ("minutes", (89, 90, 91))])
+@pytest.mark.parametrize("disposition", ["fixed", "accepted_exception"])
+def test_exhausted_budget_overrides_remaining_family_investigation(
+    tmp_path: Path, axis: str, values: tuple[int, int, int], disposition: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for event in [
+        {"id": "f1", "kind": "finding", "family": "inputs"},
+        {"id": "fix1", "kind": "disposition", "finding_id": "f1", "disposition": "fixed"},
+        {"id": "b1", "kind": "batch"},
+        {"id": "f2", "kind": "finding", "family": "inputs"},
+        {"id": "fix2", "kind": "disposition", "finding_id": "f2", "disposition": disposition},
+    ]:
+        review_session.record(tmp_path, "change", event)
+    complete_session(tmp_path)
+    state = review_session.load(tmp_path, "change")
+    for value in values:
+        state["batches" if axis == "batches" else "active_minutes"] = value
+        expected = "investigate" if value == values[0] else "replan"
+        assert review_session.decision(state)[0] == expected
+
+
+def test_remote_resolved_thread_does_not_create_local_adjudication(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["threads"] = [
+        {
+            "id": "thread-a",
+            "isResolved": True,
+            "isOutdated": False,
+            "comments": [{"id": "comment-a", "body": "actionable concern"}],
+        }
+    ]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def acknowledge_threads(tmp_path: Path, identity: str) -> dict[str, Any]:
+    state = review_session.load(tmp_path, "change")
+    event = {
+        "id": identity,
+        "kind": "evidence",
+        "evidence_type": "reviewer",
+        "head": TEST_HEAD,
+        "result": "pass",
+        "binding": review_session.evidence_binding(state),
+        "reviewed_threads": review_session.thread_report_receipts(state["monitor"]["data"]),
+    }
+    review_session.record(tmp_path, "change", event)
+    return event
+
+
+def reviewed_thread_snapshot() -> dict[str, Any]:
+    snapshot = complete_snapshot()
+    snapshot["threads"] = [
+        {
+            "id": "thread-a",
+            "isResolved": True,
+            "isOutdated": False,
+            "comments": [{"id": "comment-a", "body": "review this"}],
+        }
+    ]
+    return snapshot
+
+
+@pytest.mark.parametrize("change", ["edit", "add-comment", "add-thread", "extra-coverage"])
+def test_changed_report_content_requires_explicit_revalidation(tmp_path: Path, change: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = reviewed_thread_snapshot()
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    event = acknowledge_threads(tmp_path, "reviewed")
+    assert review_session.record(tmp_path, "change", event) == review_session.load(
+        tmp_path, "change"
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    if change == "edit":
+        snapshot["threads"][0]["comments"][0]["body"] = "changed concern"
+    elif change == "add-comment":
+        snapshot["threads"][0]["comments"].append({"id": "comment-b", "body": "another concern"})
+    elif change == "add-thread":
+        snapshot["threads"].append(
+            {
+                "id": "thread-b",
+                "isResolved": True,
+                "isOutdated": True,
+                "comments": [{"id": "comment-b", "body": "human concern"}],
+            }
+        )
+    else:
+        event = {
+            **event,
+            "id": "extra",
+            "reviewed_threads": {**event["reviewed_threads"], "stale": "a" * 64},
+        }
+        review_session.record(tmp_path, "change", event)
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    acknowledge_threads(tmp_path, "revalidated")
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+def test_thread_adjudication_does_not_override_unresolved_or_local_findings(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = reviewed_thread_snapshot()
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_threads(tmp_path, "reviewed")
+    receipts = review_session.packet(tmp_path, "change")["thread_reports"]
+    snapshot["threads"][0].update(isResolved=False, isOutdated=True)
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+    assert review_session.packet(tmp_path, "change")["thread_reports"] == receipts
+    snapshot["threads"][0]["isResolved"] = True
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    review_session.record(
+        tmp_path, "change", {"id": "local-defect", "kind": "finding", "family": "inputs"}
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize(
+    "coverage", [None, [], {"": "a" * 64}, {"thread": "short"}, {"thread": True}]
+)
+def test_malformed_thread_coverage_rejected_at_ingestion_and_replay(
+    tmp_path: Path, coverage: Any
+) -> None:
+    state = review_session.initialize(tmp_path, "change", contract())
+    event = {
+        "id": "review",
+        "kind": "evidence",
+        "evidence_type": "reviewer",
+        "head": TEST_HEAD,
+        "result": "pass",
+        "binding": review_session.evidence_binding(state),
+        "reviewed_threads": coverage,
+    }
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", event)
+    with pytest.raises(ValueError):
+        review_session.replay(
+            state["genesis"],
+            [event],
+            [{"event_id": "review", "recorded_at": "2026-09-29T00:00:00Z"}],
+            None,
+            0,
+        )
+
+
+@pytest.mark.parametrize(
+    "thread", [{}, {"id": "t", "isResolved": True, "isOutdated": False, "comments": [{}]}]
+)
+def test_malformed_report_has_no_usable_receipt(tmp_path: Path, thread: Any) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    snapshot = complete_snapshot()
+    snapshot["threads"] = [thread]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    packet = review_session.packet(tmp_path, "change")
+    assert packet["thread_reports"] is None
+    assert packet["status"]["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("extension", ["batches", "minutes", "both"])
+def test_family_budget_extension_must_cover_each_exhausted_axis(
+    tmp_path: Path,
+    extension: str,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for event in [
+        {"id": "f1", "kind": "finding", "family": "inputs"},
+        {"id": "fix1", "kind": "disposition", "finding_id": "f1", "disposition": "fixed"},
+        {"id": "b1", "kind": "batch"},
+        {"id": "f2", "kind": "finding", "family": "inputs"},
+        {"id": "fix2", "kind": "disposition", "finding_id": "f2", "disposition": "fixed"},
+    ]:
+        review_session.record(tmp_path, "change", event)
+    complete_session(tmp_path)
+    for n in (2, 3):
+        review_session.record(tmp_path, "change", {"id": f"b{n}", "kind": "batch"})
+    review_session.record(
+        tmp_path, "change", {"id": "elapsed", "kind": "active_minutes", "minutes": 90}
+    )
+    assert review_session.packet(tmp_path, "change")["status"]["action"] == "replan"
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "extension",
+            "kind": "extension",
+            "approved_by": "maintainer",
+            "batches": 1 if extension in {"batches", "both"} else 0,
+            "minutes": 1 if extension in {"minutes", "both"} else 0,
+        },
+    )
+    assert review_session.status(tmp_path, "change")["action"] == (
+        "investigate" if extension == "both" else "replan"
+    )
+    monkeypatch.setattr(review_session, "gh_snapshot", lambda *args: complete_snapshot())
+    assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 0) == 0
+    output = json.loads(capsys.readouterr().out)
+    action = output.get("packet", {"status": output})["status"]["action"]
+    assert action == ("investigate" if extension == "both" else "replan")
+
+
+@pytest.mark.parametrize("refresh", ["input", "base"])
+def test_thread_coverage_cannot_transfer_to_new_binding(tmp_path: Path, refresh: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    review_session.record_monitor_snapshot(tmp_path, "change", reviewed_thread_snapshot())
+    old = acknowledge_threads(tmp_path, "reviewed")
+    event: dict[str, Any] = {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+    if refresh == "base":
+        event.update(comparison_base=TEST_HEAD, pr_base={"ref": "release", "sha": TEST_HEAD})
+    review_session.record(tmp_path, "change", event)
+    with pytest.raises(ValueError, match="binding"):
+        review_session.record(tmp_path, "change", {**old, "id": "old-report-new-id"})
+
+
+@pytest.mark.parametrize("axis,values", [("batches", (2, 3, 4)), ("active_minutes", (89, 90, 91))])
+@pytest.mark.parametrize("phase", ["complete", "active", "paused"])
+def test_satisfied_completion_exception_is_exactly_bounded(
+    tmp_path: Path, axis: str, values: tuple[int, int, int], phase: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    state = review_session.load(tmp_path, "change")
+    state["phase"] = phase
+    for index, value in enumerate(values):
+        state[axis] = value
+        if phase == "complete":
+            expected = "complete" if index < 2 else "replan"
+        else:
+            expected = ("continue" if phase == "active" else "wait") if index == 0 else "replan"
+        assert review_session.decision(state)[0] == expected
+
+
+def test_thread_receipt_digest_is_order_independent_and_complete() -> None:
+    snapshot = reviewed_thread_snapshot()
+    snapshot["threads"][0]["comments"].append({"id": "second-page-comment", "body": "later page"})
+    receipt = review_session.thread_report_receipts(snapshot)
+    snapshot["threads"][0]["comments"].reverse()
+    assert review_session.thread_report_receipts(snapshot) == receipt
+    snapshot["threads"][0]["comments"][0]["body"] = "edited later page"
+    assert review_session.thread_report_receipts(snapshot) != receipt

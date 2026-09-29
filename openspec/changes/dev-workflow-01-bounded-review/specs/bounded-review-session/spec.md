@@ -7,6 +7,33 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Completion exceptions cannot authorize further investigation
+
+An otherwise complete session with a remaining family investigation SHALL replan
+when either budget is exhausted. Exact-limit completion remains permitted only
+when all evidence and family obligations are satisfied.
+
+#### Scenario: Corrected recurrence exhausts a budget
+- **WHEN** a genuine fixed or accepted-exception recurrence still needs investigation
+- **AND** batches or active minutes reach their limit
+- **THEN** status, packet and watcher return replan instead of investigate.
+
+### Requirement: Resolved thread reports require explicit local adjudication coverage
+
+Reviewer evidence SHALL explicitly acknowledge current remote thread reports by
+stable thread IDs and semantic comment/content digests, bound to current inputs.
+Resolved remote flags alone SHALL NOT establish adjudication. Local unresolved
+findings SHALL still block independently. Missing coverage is incomplete evidence.
+
+#### Scenario: A resolved report is new or changed
+- **WHEN** a thread or paginated comment is added/edited after local review
+- **THEN** prior reviewer evidence cannot establish completion until explicit updated coverage.
+
+#### Scenario: An adjudicated thread is reopened
+- **WHEN** the remote thread is unresolved, including outdated threads
+- **THEN** it blocks completion regardless of local coverage
+- **AND** reclosure without changed report content or inputs may reuse that adjudication.
+
 ### Requirement: Handoffs use a single receipt revision
 
 Packet status and body SHALL derive from one loaded receipt while retaining the

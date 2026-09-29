@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Make exhausted budgets override remaining family investigation, and require local
+  reviewer coverage of current remote thread reports before resolved threads can pass.
+
 - Derive handoff and watcher decisions from one receipt revision and reject blank
   semantic event strings without normalizing valid caller identities.
 

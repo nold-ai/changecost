@@ -104,6 +104,9 @@ Renewed requests to required reviewers block completion even with a prior approv
 missing or changing request metadata cannot retain a green result.
 Handoff status, evidence and watcher exit decisions use one receipt revision.
 Required event text rejects whitespace-only values without rewriting valid identities.
+Resolved remote reports require explicit local reviewer coverage of current thread
+content; resolution alone does not adjudicate a finding. Budget exhaustion overrides
+remaining investigation even when all other completion evidence passes.
 
 ## Community and license
 

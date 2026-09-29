@@ -79,6 +79,12 @@ Packets derive status and contents from one loaded receipt while still checking
 actual input drift. Changed watcher output and exit decisions use that same packet.
 Required event text, including extension approval identity, must contain non-whitespace
 text; valid exact IDs and references are never trimmed or normalized.
+Before recording passing reviewer evidence, explicitly adjudicate current thread
+reports and supply their packet `thread_reports` mapping as `reviewed_threads`.
+New or edited report content invalidates coverage; unresolved threads and local
+findings still block independently. This is a trusted operator assertion, not
+verification of GitHub resolver permissions. An exhausted budget permits exact-limit
+completion only when no remaining family investigation is required.
 Initialization verifies typed scope, full commit IDs and a path/SHA256 manifest
 against actual initial inputs; `<absent>` represents an intended future file.
 Changed, staged and untracked paths must be included. Captured initial facts remain

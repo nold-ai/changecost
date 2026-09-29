@@ -82,6 +82,14 @@ mutation, or hostile-runner integrity guarantee.
     exit decision, avoiding mixed revisions under concurrent writers. Required event
     text rejects whitespace-only values but preserves every nonblank byte and exact
     reference; no new family-label grammar or normalization is introduced.
+13. Preserve exact-limit completion only when no family investigation remains;
+    otherwise exhaustion of either budget requires replanning. Extend existing
+    binding-qualified reviewer evidence with explicit thread ID/content-digest
+    coverage. Compare it against all current report content before completion,
+    independently of local finding dispositions and remote unresolved status.
+    Resolution/outdated flips alone do not alter report content; unchanged reclosure
+    may reuse explicit adjudication. This trusts local coordinator assertions, adds
+    no resolver-permission architecture, and cannot detect unobserved transitions.
 
 ## Risks / Trade-offs
 

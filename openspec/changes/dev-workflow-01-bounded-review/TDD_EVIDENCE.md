@@ -338,3 +338,32 @@ HEAD/main, index, metadata and strict OpenSpec pass. Logs are
 Fresh current-head Linux/provider evidence remains required after publication;
 legacy receipt recovery, unknown historical measurements and calibration remain
 explicit limitations rather than a reset or inferred savings.
+
+## Budget precedence and explicit thread-report adjudication
+
+On 2026-09-29 (Europe/Berlin), the collected budget/thread family regressions
+produced five failures before implementation (`.changecost/batch13-red.txt`). An
+otherwise complete receipt that still needs family investigation now replans when
+either allowance is exhausted. Genuine fully satisfied completion remains permitted
+exactly at the limit. Cases cover below/equal/over batch and minute boundaries,
+fixed/accepted-exception recurrences, independently insufficient and combined
+extensions, and matching status/packet/watch decisions.
+
+Existing reviewer evidence can explicitly acknowledge current remote reports via
+`reviewed_threads`, a stable thread ID/content-digest map exposed by the packet.
+Resolved flags alone never supply this acknowledgment. Tests cover first-observed
+resolved reports, added/edited comments and threads, complete collected comment
+content, malformed mappings at ingestion/replay, extra stale IDs, local unresolved
+findings, input/base refresh, outdated/reopened blocking, and unchanged reclosure.
+Resolution-only flips may reuse actual prior adjudication of unchanged content;
+this is trusted local operator evidence, not resolver-role authentication or a
+guarantee about unobserved transitions. No new observation-history subsystem is added.
+
+Final local runs pass 351 focused tests and 519 full tests plus four subtests.
+Coverage measures 901/954 statements (94% rounded), maximum complexity remains 10,
+and native KISS findings are empty. Ruff/formatting, BasedPyright, docs against
+HEAD/main, index, metadata and strict OpenSpec pass. Exact logs are
+`.changecost/batch13-full.txt`, `.changecost/batch13-coverage-test.txt`,
+`.changecost/batch13-coverage.txt` and `.changecost/batch13-types.txt`.
+Fresh Linux/provider evidence is still required after publication; historical
+recovery, unknown measurements, calibration and trust-boundary limits remain.
