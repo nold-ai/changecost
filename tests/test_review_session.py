@@ -714,7 +714,10 @@ def test_invalid_events_do_not_mutate_state(
 
 
 def test_same_head_rebind_invalidates_passing_evidence(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+    scope = contract()
+    assert isinstance(scope["intended_files"], dict)
+    scope["intended_files"]["added.py"] = "<absent>"
+    review_session.initialize(tmp_path, "change", scope)
     complete_session(tmp_path)
     (tmp_path / "added.py").write_text("new input")
     review_session.record(
@@ -2862,3 +2865,251 @@ def test_oversized_measurement_cli_is_structured_incomplete(
     )
     assert review_session.main() == 1
     assert json.loads(capsys.readouterr().out)["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("mode", ["untracked", "staged", "committed"])
+def test_advance_rejects_undeclared_path_atomically(tmp_path: Path, mode: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    (tmp_path / "outside.txt").write_text("new scope\n")
+    if mode != "untracked":
+        subprocess.run(["git", "-C", str(tmp_path), "add", "outside.txt"], check=True)
+    if mode == "committed":
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(tmp_path),
+                "-c",
+                "user.name=Test",
+                "-c",
+                "user.email=test@example.com",
+                "commit",
+                "-qm",
+                "outside",
+            ],
+            check=True,
+        )
+    head = review_session.repository.git(tmp_path, "rev-parse", "HEAD").decode().strip()
+    path = review_session.state_path(tmp_path, "change")
+    original = path.read_bytes()
+    with pytest.raises(ValueError):
+        review_session.record(
+            tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": head}
+        )
+    assert path.read_bytes() == original
+
+
+def test_explicit_scope_approval_recaptures_planned_absent_file(tmp_path: Path) -> None:
+    original = contract()
+    review_session.initialize(tmp_path, "change", original)
+    assert isinstance(original["intended_files"], dict)
+    manifest = {**original["intended_files"], "outside.txt": "<absent>"}
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "approval",
+            "kind": "scope_decision",
+            "decision": "approved",
+            "intended_files": manifest,
+        },
+    )
+    (tmp_path / "outside.txt").write_text("new approved content\n")
+    event = {
+        "id": "refresh",
+        "kind": "advance_head",
+        "head": TEST_HEAD,
+        "scope_decision_id": "approval",
+    }
+    state = review_session.record(tmp_path, "change", event)
+    assert (
+        state["reviewed_manifest"]["outside.txt"]
+        == hashlib.sha256(b"new approved content\n").hexdigest()
+    )
+    assert state["contract"] == original
+    assert (
+        review_session.packet(tmp_path, "change")["reviewed_manifest"] == state["reviewed_manifest"]
+    )
+    assert review_session.record(tmp_path, "change", event) == state
+    assert review_session.load(tmp_path, "change") == state
+
+
+@pytest.mark.parametrize("decision", ["pending", "rejected", "deferred", "missing", "unrelated"])
+def test_scope_refresh_requires_selected_approved_manifest(tmp_path: Path, decision: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    event = {
+        "id": "approval",
+        "kind": "scope_decision",
+        "decision": decision,
+        "intended_files": {"outside.txt": "<absent>"},
+    }
+    if decision != "missing":
+        if decision == "unrelated":
+            event = {"id": "approval", "kind": "scope_decision", "decision": "approved"}
+        review_session.record(tmp_path, "change", event)
+    path = review_session.state_path(tmp_path, "change")
+    original = path.read_bytes()
+    with pytest.raises(ValueError):
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "refresh",
+                "kind": "advance_head",
+                "head": TEST_HEAD,
+                "scope_decision_id": "approval",
+            },
+        )
+    assert path.read_bytes() == original
+
+
+def test_scope_contraction_is_not_implicitly_reexpanded(tmp_path: Path) -> None:
+    original = contract()
+    assert isinstance(original["intended_files"], dict)
+    original["intended_files"]["outside.txt"] = "<absent>"
+    review_session.initialize(tmp_path, "change", original)
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "expand",
+            "kind": "scope_decision",
+            "decision": "approved",
+            "intended_files": original["intended_files"],
+        },
+    )
+    narrowed = {
+        key: value for key, value in original["intended_files"].items() if key != "outside.txt"
+    }
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "narrow",
+            "kind": "scope_decision",
+            "decision": "approved",
+            "intended_files": narrowed,
+        },
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "contract",
+            "kind": "advance_head",
+            "head": TEST_HEAD,
+            "scope_decision_id": "narrow",
+        },
+    )
+    (tmp_path / "outside.txt").write_text("explicitly reconsidered\n")
+    with pytest.raises(ValueError):
+        review_session.record(
+            tmp_path, "change", {"id": "implicit", "kind": "advance_head", "head": TEST_HEAD}
+        )
+    state = review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "explicit",
+            "kind": "advance_head",
+            "head": TEST_HEAD,
+            "scope_decision_id": "expand",
+        },
+    )
+    assert "outside.txt" in state["reviewed_manifest"]
+    assert state["contract"] == original
+
+
+@pytest.mark.parametrize("mode", ["edit", "delete", "rename"])
+def test_scope_refresh_recaptures_changes_and_checks_rename_destination(
+    tmp_path: Path, mode: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    path = tmp_path / "input.txt"
+    if mode == "edit":
+        path.write_text("edited\n")
+    elif mode == "delete":
+        path.unlink()
+    else:
+        path.rename(tmp_path / "renamed.txt")
+    event = {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+    if mode == "rename":
+        with pytest.raises(ValueError):
+            review_session.record(tmp_path, "change", event)
+    else:
+        state = review_session.record(tmp_path, "change", event)
+        assert state["reviewed_manifest"]["input.txt"] == review_session.file_fingerprint(
+            tmp_path, "input.txt"
+        )
+        assert "input.txt" in state["provenance"][-1]["scope"]["changed_paths"]
+
+
+def test_refresh_scope_replay_rejects_forged_manifest_without_filesystem(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    state = review_session.record(
+        tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+    )
+    monkeypatch.setattr(
+        review_session, "capture_inputs", lambda *args: pytest.fail("replay read filesystem")
+    )
+    assert review_session.load(tmp_path, "change") == state
+    state["provenance"][-1]["scope"]["files"]["outside.txt"] = "<absent>"
+    review_session.write_state(review_session.state_path(tmp_path, "change"), state)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_refresh_rejects_concurrent_scope_capture(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    capture = review_session.capture_initial_scope
+
+    def racing_capture(*args: Any) -> Any:
+        result = capture(*args)
+        (tmp_path / "input.txt").write_text("concurrent edit")
+        return result
+
+    monkeypatch.setattr(review_session, "capture_initial_scope", racing_capture)
+    path = review_session.state_path(tmp_path, "change")
+    before = path.read_bytes()
+    with pytest.raises(review_session.ConflictError):
+        review_session.record(
+            tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+        )
+    assert path.read_bytes() == before
+
+
+def test_adopted_comparison_base_controls_refreshed_scope(tmp_path: Path) -> None:
+    original = contract()
+    review_session.initialize(tmp_path, "change", original)
+    (tmp_path / "outside.txt").write_text("new baseline")
+    subprocess.run(["git", "-C", str(tmp_path), "add", "outside.txt"], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(tmp_path),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "-qm",
+            "baseline",
+        ],
+        check=True,
+    )
+    head = review_session.repository.git(tmp_path, "rev-parse", "HEAD").decode().strip()
+    event = {"id": "refresh", "kind": "advance_head", "head": head}
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", event)
+    state = review_session.record(
+        tmp_path,
+        "change",
+        {**event, "comparison_base": head, "pr_base": {"ref": "main", "sha": head}},
+    )
+    assert state["provenance"][-1]["scope"]["changed_paths"] == []
+    assert state["comparison_base"] == head
+    assert state["contract"] == original

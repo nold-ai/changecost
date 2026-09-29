@@ -16,7 +16,7 @@ mutation, or hostile-runner integrity guarantee.
 
 ## Decisions
 
-1. Store schema-5 state plus a durable genesis marker under
+1. Store schema-6 state plus a durable genesis marker under
    `.changecost/workflow/<change-id>/`. Pure replay of original event payloads and
    separately captured time/input facts reconciles every derived field. Atomic
    replacement preserves recoverability; a missing state file with a marker
@@ -77,7 +77,7 @@ mutation, or hostile-runner integrity guarantee.
     semantic hashing, required-reviewer pending decisions and both metadata reads.
     Request changes invalidate collection; ordering/duplicates/avatar changes do not.
     Cancellation restores only still-qualifying evidence. Nonrequired users are
-    informational; team expansion is outside this contract. Schema 5 retains raw
+    informational; team expansion is outside this contract. Schema 6 retains raw
     observations; older missing request data becomes incomplete without resetting history.
 11. Derive generation-tagged epoch strings from recorded refresh counts, independently
     of caller event identities. Allocate deterministic unused automatic bind IDs under
@@ -124,3 +124,12 @@ require explicit recovery retaining original history and unknown measurements;
 they do not authorize a fresh allowance. Revert
 the change to remove the helper and skill requirements while keeping ignored local
 receipts and the lessons document.
+
+Schema 6 requires captured scope facts on each head refresh. The derived reviewed
+manifest preserves authorized keys on ordinary refreshes; explicit prior approved
+scope-decision references select a replacement complete keyset. Approval hashes
+are immutable intent evidence, not a claim about current reviewed contents. Scope
+capture recaptures fingerprints and validates changed/index/untracked coverage
+against the effective adopted-or-current comparison base between consistent input
+reads. Pure replay validates those facts without accessing historical files. The
+original contract and counters remain unchanged; no one-use approval system is added.

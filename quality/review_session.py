@@ -21,7 +21,7 @@ from typing import Any
 
 from quality import repository
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 DEFAULT_BATCHES = 3
 DEFAULT_MINUTES = 90
 WAIT_LIMIT_MINUTES = 30
@@ -74,6 +74,7 @@ def initial_state(genesis: dict[str, Any]) -> dict[str, Any]:
         "change_id": genesis["change_id"],
         "contract": copy.deepcopy(contract),
         "reviewed_head": contract["head"],
+        "reviewed_manifest": copy.deepcopy(contract["intended_files"]),
         "comparison_base": contract["base"],
         "pr_base": copy.deepcopy(contract["pr_base"]),
         "context_since": None,
@@ -155,7 +156,7 @@ def validate_provenance(event: dict[str, Any], provenance: Any) -> None:
     validate_timestamp(provenance.get("recorded_at"))
     expected = {"event_id", "recorded_at"}
     if event["kind"] == "advance_head":
-        expected.add("inputs")
+        expected.update({"inputs", "scope"})
         validate_inputs(provenance.get("inputs"), event["head"])
         if validate_adoption(event):
             expected.add("adoption")
@@ -509,7 +510,7 @@ def persist_event(
         "event_id": event["id"],
         "recorded_at": datetime.now(UTC).isoformat(),
     }
-    capture_event_facts(root, event, provenance)
+    capture_event_facts(root, state, event, provenance)
     observation = None if event["kind"] in {"advance_head", "bind_pr"} else state["monitor"]["data"]
     updated = replay(
         state["genesis"],
@@ -522,14 +523,52 @@ def persist_event(
     return updated
 
 
-def capture_event_facts(root: Path, event: dict[str, Any], provenance: dict[str, Any]) -> None:
+def capture_event_facts(
+    root: Path, state: dict[str, Any], event: dict[str, Any], provenance: dict[str, Any]
+) -> None:
     if event["kind"] != "advance_head":
         return
     provenance["inputs"] = capture_inputs(root, event["head"])
+    scope = refresh_scope_contract(state, event)
+    scope["intended_files"] = {
+        name: file_fingerprint(root, name) for name in scope["intended_files"]
+    }
+    provenance["scope"] = capture_initial_scope(root, scope)
+    if provenance["inputs"] != capture_inputs(root, event["head"]):
+        raise ConflictError("inputs changed during scope refresh")
     if validate_adoption(event):
         verified_commit(root, event["comparison_base"])
         verified_commit(root, event["pr_base"]["sha"])
         provenance["adoption"] = copy.deepcopy(adoption_binding(event))
+
+
+def refresh_scope_contract(state: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
+    manifest = state["reviewed_manifest"]
+    if "scope_decision_id" in event:
+        identity = event["scope_decision_id"]
+        validate_event_text(identity, "scope_decision_id")
+        approval = next((item for item in state["scope_decisions"] if item["id"] == identity), None)
+        if approval is None or approval["decision"] != "approved":
+            raise ValueError("scope refresh requires an existing approved decision")
+        manifest = approval.get("intended_files")
+        validate_manifest(manifest)
+    return {
+        "base": event.get("comparison_base", state["comparison_base"]),
+        "pr_base": event.get("pr_base", state["pr_base"]),
+        "intended_files": copy.deepcopy(manifest),
+    }
+
+
+def apply_reviewed_scope(state: dict[str, Any], event: dict[str, Any], facts: Any) -> None:
+    scope = refresh_scope_contract(state, event)
+    if not isinstance(facts, dict):
+        raise ValueError("missing refresh scope facts; recovery required")
+    validate_manifest(facts.get("files"))
+    if facts["files"].keys() != scope["intended_files"].keys():
+        raise ValueError("refresh scope differs from explicitly authorized paths")
+    scope["intended_files"] = facts["files"]
+    validate_initial_scope(scope, facts)
+    state["reviewed_manifest"] = copy.deepcopy(facts["files"])
 
 
 def duplicate_event(events: list[dict[str, Any]], event: dict[str, Any]) -> bool:
@@ -546,6 +585,7 @@ def apply_event(state: dict[str, Any], event: dict[str, Any], provenance: dict[s
         add_active_minutes(state, event, provenance)
         return
     if event["kind"] == "advance_head":
+        apply_reviewed_scope(state, event, provenance["scope"])
         advance_head(state, event)
         state["inputs"] = copy.deepcopy(provenance["inputs"])
         if "adoption" in provenance:
@@ -649,6 +689,8 @@ def add_scope_decision(state: dict[str, Any], event: dict[str, Any]) -> None:
         for item in state["scope_decisions"]
     ):
         raise ValueError("scope resolution must name an existing pending decision")
+    if "intended_files" in event:
+        validate_manifest(event["intended_files"])
     state["scope_decisions"].append(event)
 
 
@@ -901,6 +943,7 @@ def packet(root: Path, change_id: str) -> dict[str, Any]:
         "change_id": change_id,
         "contract": state["contract"],
         "reviewed_head": state["reviewed_head"],
+        "reviewed_manifest": state["reviewed_manifest"],
         "binding": evidence_binding(state),
         "status": status_from_state(root, state),
         "unresolved_findings": unresolved_findings(state),

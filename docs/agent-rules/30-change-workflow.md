@@ -123,7 +123,7 @@ Only a genuinely new session uses
 Existing sessions use `status`, then `packet` when recovery or replanning is
 required. A missing or incompatible receipt must not reset counters, including
 after moving to another worktree. Preserve schema-1 history as recovery evidence;
-do not synthesize prior measurements into a new schema-5 allowance. Schema-1/2/3/4
+do not synthesize prior measurements into a new schema-6 allowance. Schema-1/2/3/4/5
 receipts remain recovery evidence; new required initial-scope facts are not invented.
 
 The complete JSON contract has this shape (replace example SHAs, file fingerprint,
@@ -167,6 +167,18 @@ Overflow fails closed; do not round limits or reset history to recover.
 Integer counters retain exact nonnegative values without floating conversion;
 unrepresentable floating measurements reject atomically with controlled recovery
 for malformed persisted history.
+
+Each `advance_head` recaptures a `reviewed_manifest` and complete changed/staged/
+untracked path coverage against the effective comparison base. Normal refreshes
+retain authorized keys. To change them, first record a `scope_decision` with
+`decision: "approved"` and the complete `intended_files` mapping, then explicitly
+reference its ID in `advance_head.scope_decision_id`. Approval fingerprints retain
+intent; current fingerprints are recaptured, so planned-absent files may materialize
+and authorized content may change. No approval is adopted implicitly; explicitly
+selecting an earlier approval is permitted. The packet exposes the current manifest
+separately from the immutable original contract. Fresh review evidence is still
+required after every refresh; incompatible receipts require recovery without reset.
+
 The first `watch <change-id> --repo <owner/repo> --pr <number>` binds the PR.
 That source remains fixed across input refreshes. `advance_head` captures a new
 input epoch and invalidates prior completion evidence while retaining counters.

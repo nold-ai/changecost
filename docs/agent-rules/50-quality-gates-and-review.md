@@ -32,6 +32,9 @@ Exact-limit completion is allowed only when no family investigation remains.
 Fractional extensions and elapsed measurements use the same canonical summation
 rule. Overflow rejects updates atomically and malformed histories require recovery;
 unknown usage stays unknown.
+Every refresh validates current changed-path coverage. Changing authorized paths
+requires an explicitly referenced approved scope manifest; packets retain both
+the original contract and recaptured current manifest.
 Integer counters retain exact nonnegative values without floating conversion;
 unrepresentable floating measurements reject atomically with controlled recovery
 for malformed persisted history.
@@ -42,7 +45,7 @@ Observation epochs are explicit collection-time facts. Missing, malformed or sta
 epochs remain incomplete on ingestion; error observations without epochs are retained
 to invalidate earlier passing monitoring and cannot supply report receipts.
 
-Schema-5 contracts name the PR target ref/SHA separately from the comparison base.
+Schema-6 contracts name the PR target ref/SHA separately from the comparison base.
 Retargeting or target advancement invalidates monitoring. Explicit atomic base
 adoption retains counters but requires a new evidence epoch: local results carry
 their original full binding, and required remote positives postdate adoption.
@@ -69,7 +72,7 @@ reviewers must have a latest APPROVED or COMMENTED result.
 Comments, pending submissions and dismissal of another review cannot clear that
 objection. Only a later approval or a fresh snapshot showing the original rejecting
 review dismissed can clear it.
-Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-5
+Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-6
 replay reconciles all cached fields; missing or incompatible history requires
 recovery, never reinitialization. Final published inputs must be clean. Exclude
 non-findings from family escalation while retaining genuine fixed recurrences.

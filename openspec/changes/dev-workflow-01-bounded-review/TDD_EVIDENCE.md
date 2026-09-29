@@ -446,3 +446,36 @@ batch16-focused.txt is the intermediate CLI-fixture failure, not final evidence.
 Fresh supported-Linux and provider results remain required after publication.
 The preserved legacy receipt still requires recovery; prior counters and unknown
 historical time/usage are retained without a reset or savings claim.
+
+## Explicit refreshed scope coverage
+
+On 2026-09-29 (Europe/Berlin), four failures reproduced undeclared untracked,
+staged and committed paths being accepted at refresh, plus the missing current
+reviewed manifest (`.changecost/batch17-red.txt`). Schema 6 retains the immutable
+initial contract and derives the current reviewed manifest from required captured
+scope facts on each advance. Coverage includes changed/index/untracked paths
+against the effective comparison base between consistent input reads.
+
+Ordinary refreshes retain authorized keys and recapture fingerprints. Keyset changes
+require an explicitly referenced prior approved scope decision with a validated
+complete manifest. Approval fingerprints record intent, so planned-absent files
+may materialize and authorized content may change; they do not substitute for
+fresh review evidence. Historical approvals are never adopted implicitly, while
+explicit selection remains allowed under the trusted operator contract.
+
+Tests cover declaration omissions, pending/rejected/deferred/missing/unrelated
+approvals, planned files, edits/deletes/renames, contraction and explicit reexpansion,
+retries, pure replay, forged scope facts, concurrent edits and adopted comparison
+bases. An existing rebind test now declares its planned added.py before initialization
+so it continues testing evidence invalidation within authorized scope. No prior
+measurements or counters are rewritten; schema-5 receipts require explicit recovery.
+
+Final verification passes 426 focused tests and 594 full tests plus four subtests.
+Coverage measures 941/994 statements (95% rounded); maximum complexity is 10 and
+native KISS findings are empty. Ruff/formatting, BasedPyright, docs against
+HEAD/main, index, metadata and strict OpenSpec pass. Final logs are
+`.changecost/batch17-coverage-test.txt`, `.changecost/batch17-full.txt`,
+`.changecost/batch17-coverage.txt` and `.changecost/batch17-types.txt`.
+Fresh supported-Linux and provider checks remain required after publication.
+Legacy receipt recovery and unknown historical active-time/usage limits remain;
+this change neither grants a new allowance nor claims review savings.

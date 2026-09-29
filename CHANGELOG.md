@@ -20,6 +20,9 @@
 - Bind review evidence to explicit PR target and comparison bases, preserve their
   original contract, and require fresh evidence after atomic context adoption.
 
+- Revalidate scope on every head refresh and require explicit approved manifest
+  references for changed path authorization; preserve original and current scope.
+
 - Validate integer counters exactly and reject oversized floating measurements
   through controlled ingestion/recovery errors instead of tracebacks.
 

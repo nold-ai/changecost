@@ -87,6 +87,9 @@ requires fresh passing evidence before completion.
 Completion also requires explicit measured active time; a missing measurement is
 unknown. Fractional budgets, time and usage retain finite canonical totals from
 original measurements; overflowing updates are rejected without granting unlimited allowance.
+Every refresh validates current changed-path coverage. Changing authorized paths
+requires an explicitly referenced approved scope manifest; packets retain both
+the original contract and recaptured current manifest.
 Integer counters retain exact nonnegative values without floating conversion;
 unrepresentable floating measurements reject atomically with controlled recovery
 for malformed persisted history.
@@ -102,7 +105,7 @@ Watcher completion/replanning output remains visible even without a GitHub chang
 local budget changes take precedence over a no-progress timeout.
 Expected PR target ref/SHA is separate from the comparison commit. Retargeting or
 base advancement requires explicit adoption and fresh local/remote evidence, even
-with unchanged HEAD; schema-5 receipts preserve the original contract and counters.
+with unchanged HEAD; schema-6 receipts preserve the original contract and counters.
 Input generations are independent of caller event IDs; automatic PR binding chooses
 an unused identity atomically, retaining existing finding/scope references.
 Renewed requests to required reviewers block completion even with a prior approval;

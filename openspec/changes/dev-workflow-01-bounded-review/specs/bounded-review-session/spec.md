@@ -128,7 +128,7 @@ semantic changes. Nonrequired requests are informational; no team expansion is i
 Initial and adopted base IDs SHALL identify commit objects exactly. Annotated-tag
 object IDs SHALL be rejected without silently replacing caller-supplied identities.
 
-Schema-5 contracts SHALL name an expected PR base ref/SHA independently from the
+Schema-6 contracts SHALL name an expected PR base ref/SHA independently from the
 immutable comparison commit. Current comparison/base context SHALL be replayed
 separately and exposed in packets. Explicit atomic adoption through advance_head
 SHALL verify local commits and capture provenance without rewriting original scope,
@@ -167,7 +167,7 @@ one full commit-ID validation rule supporting hexadecimal SHA-1 and SHA-256 IDs.
 
 ### Requirement: Usable initial scope and effective reviewer objections
 
-Schema-5 initialization SHALL require typed, nonblank scope and exact identities,
+Schema-6 initialization SHALL require typed, nonblank scope and exact identities,
 full commit IDs and a safe path-to-SHA256 manifest using `<absent>` for planned
 absent paths. It SHALL verify the initial base and actual manifest, including
 changed/index/untracked paths, and preserve captured facts for filesystem-free
@@ -399,3 +399,28 @@ controlled validation error, before persistence.
 - **WHEN** an approved extension supplies a nonnegative integer batch count
 - **THEN** recording and replay SHALL preserve the exact integer without imposing
   an incidental floating-point range limit.
+
+### Requirement: Refresh preserves explicitly authorized scope
+Every head refresh SHALL capture current fingerprints and complete changed,
+staged, untracked, deleted and renamed path coverage against its effective
+comparison base. The current reviewed manifest SHALL be exposed separately from
+the immutable initial contract. An ordinary refresh SHALL preserve authorized keys.
+
+#### Scenario: Undeclared correction path
+- **WHEN** a refresh contains a changed path outside the authorized manifest
+- **THEN** it SHALL reject atomically until an explicitly referenced prior approved
+  scope decision supplies a complete validated intended-file manifest.
+
+#### Scenario: Explicit scope reconciliation
+- **WHEN** an advance references an approved scope decision's intended manifest
+- **THEN** its exact keyset SHALL authorize the transition while fingerprints are
+  recaptured from current inputs; planned-absent files may materialize and approved
+  file contents may change, but fresh evidence remains required.
+- **AND** pending, rejected, deferred, missing and unrelated decisions SHALL not
+  authorize new paths; approval SHALL never be adopted implicitly.
+
+#### Scenario: Replay and concurrent changes
+- **WHEN** a receipt is replayed or inputs change during scope capture
+- **THEN** replay SHALL validate captured scope facts without filesystem access and
+  concurrent changes SHALL reject before persistence. Older receipts without these
+  required facts SHALL require recovery without resetting counters.
