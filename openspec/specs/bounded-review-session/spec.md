@@ -277,8 +277,12 @@ by correction and verification, independent of its number of commits.
 
 #### Scenario: Exhausted budget
 
-- **WHEN** the session reaches three correction batches or 90 active minutes
-- **THEN** status requires replanning and identifies pending findings without reporting completion.
+- **WHEN** a session with valid state and local prerequisite evidence reaches its effective correction-batch or active-time limit, including any explicit extension
+- **AND** work, family obligations, or external checks/reviews remain pending
+- **THEN** status requires replanning rather than waiting or investigating
+- **AND** completion at the exact limit remains permitted only when all current evidence and obligations are satisfied
+- **AND** exceeding either limit requires replanning for an otherwise complete session
+- **AND** missing, malformed or stale session/evidence inputs retain their incomplete-recovery outcome rather than being overridden by budget replanning.
 
 #### Scenario: Explicit extension
 

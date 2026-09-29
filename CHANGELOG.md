@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Clarify the synchronized bounded-review spec: exact-budget completion requires
+  all evidence and obligations; valid sessions with pending work or exceeded limits
+  require replanning, while incomplete-state recovery retains precedence.
+
 - Reject future historical cutoffs and display inspected correction chains in
   predecessor order, preserving read-only replay and lifecycle history.
 
