@@ -419,3 +419,30 @@ The batch15-focused.txt log predates the final three boundary cases; the coverag
 run includes them. Current-head Linux/provider evidence remains required after
 publication; the preserved legacy receipt remains recovery-required, and prior
 counters and unknown historical measurements are not reset.
+
+## Exact integer validation and floating conversion failures
+
+On 2026-09-29 (Europe/Berlin), thirteen failures reproduced oversized JSON integer
+measurement errors and accidental floating-range restrictions on integer batch
+counts (`.changecost/batch16-red.txt`). Numeric validation now checks integers by
+sign without floating conversion, while floating measurements convert under an
+explicit overflow guard. Rejected events preserve the receipt; malformed replay
+returns recovery-incomplete instead of an exception traceback.
+
+The matrix covers positive/negative 1001-digit integers in all six measurement
+fields, exact large batch grants and retries, negative batches, optimistic revision
+conflicts, PR mismatch/malformed identity replacing previous green observations,
+observation-revision integer semantics and structured CLI output. Exact integer
+counters gain no new numeric bound. The initial focused run had one test-harness
+failure from an incorrect CLI flag; the final test uses the actual `--json` option.
+
+Final verification passes 410 focused tests and 578 full tests plus four subtests.
+Coverage measures 913/965 statements (95% rounded); maximum complexity is 10 and
+native KISS findings are empty. Ruff/formatting, BasedPyright, docs against
+HEAD/main, index, metadata and strict OpenSpec pass. Final logs are
+`.changecost/batch16-coverage-test.txt`, `.changecost/batch16-full.txt`,
+`.changecost/batch16-coverage.txt` and `.changecost/batch16-types.txt`;
+batch16-focused.txt is the intermediate CLI-fixture failure, not final evidence.
+Fresh supported-Linux and provider results remain required after publication.
+The preserved legacy receipt still requires recovery; prior counters and unknown
+historical time/usage are retained without a reset or savings claim.

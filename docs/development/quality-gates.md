@@ -137,6 +137,9 @@ genesis marker and state together; lost or incompatible history requires recover
 not another allowance. The marker detects state-file loss, not full-directory
 deletion or hostile tampering. See the
 [complete contract example](../agent-rules/30-change-workflow.md#bounded-review-contract).
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
 Initialization validates nonblank typed scope, full existing commits and safe
 path-to-SHA256 fingerprints against actual inputs. `<absent>` explicitly permits
 future planned files. Cover all changed, staged and untracked paths while allowing

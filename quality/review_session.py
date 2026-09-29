@@ -406,7 +406,7 @@ def validate_canonical_state(state: dict[str, Any], marker: Any, change_id: str)
 def validate_nonnegative(value: Any, label: str) -> None:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ValueError(f"{label} must be numeric")
-    if not math.isfinite(value) or value < 0:
+    if value < 0 or (isinstance(value, float) and not math.isfinite(value)):
         raise ValueError(f"{label} must be finite and nonnegative")
 
 
@@ -713,7 +713,10 @@ def require_field(event: dict[str, Any], field: str, name: str) -> None:
 def number(event: dict[str, Any], key: str, default: int | float | None = None) -> float:
     value = event.get(key, default)
     validate_nonnegative(value, key)
-    return float(value)
+    try:
+        return float(value)
+    except OverflowError as error:
+        raise ValueError(f"{key} exceeds floating-point range") from error
 
 
 def status(root: Path, change_id: str) -> dict[str, Any]:

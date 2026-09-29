@@ -164,6 +164,9 @@ Minute extensions and measured time/usage use finite canonical sums of original
 event components, preserving exact budget boundaries across retries and restarts.
 Overflow fails closed; do not round limits or reset history to recover.
 
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
 The first `watch <change-id> --repo <owner/repo> --pr <number>` binds the PR.
 That source remains fixed across input refreshes. `advance_head` captures a new
 input epoch and invalidates prior completion evidence while retaining counters.

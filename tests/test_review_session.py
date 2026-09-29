@@ -2776,3 +2776,89 @@ def test_fractional_budget_decisions_survive_refresh_and_zero_grants(
             assert action == "replan"
         else:
             assert action in {"continue", "wait"}
+
+
+@pytest.mark.parametrize(
+    "kind,key",
+    [
+        ("active_minutes", "minutes"),
+        ("extension", "minutes"),
+        ("usage", "cached_input"),
+        ("usage", "uncached_input"),
+        ("usage", "output"),
+        ("usage", "cost"),
+    ],
+)
+@pytest.mark.parametrize("sign", [1, -1])
+def test_oversized_measurements_reject_atomically_and_recover(
+    tmp_path: Path, kind: str, key: str, sign: int
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    event = {"id": "large", "kind": kind, key: sign * 10**1000, "approved_by": "maintainer"}
+    path = review_session.state_path(tmp_path, "change")
+    original = path.read_bytes()
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", event)
+    assert path.read_bytes() == original
+    state = review_session.load(tmp_path, "change")
+    state["events"].append(event)
+    state["provenance"].append({"event_id": "large", "recorded_at": "2026-09-29T00:00:00Z"})
+    review_session.write_state(path, state)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_large_integer_batches_remain_exact_through_replay(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    event = {"id": "large", "kind": "extension", "batches": 10**1000, "approved_by": "maintainer"}
+    state = review_session.record(tmp_path, "change", event)
+    assert state["budget"]["batches"] == 3 + 10**1000
+    assert review_session.load(tmp_path, "change") == state
+    assert review_session.record(tmp_path, "change", event) == state
+    with pytest.raises(ValueError):
+        review_session.record(
+            tmp_path, "change", {**event, "id": "negative", "batches": -(10**1000)}
+        )
+    with pytest.raises(review_session.ConflictError):
+        review_session.record(
+            tmp_path, "change", {"id": "next", "kind": "batch"}, expected_revision=10**1000
+        )
+
+
+@pytest.mark.parametrize("value", [10**1000, -(10**1000), True, 1.5])
+def test_numeric_pr_identity_mismatch_invalidates_prior_green(tmp_path: Path, value: Any) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["pull_request"] = value
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    assert review_session.packet(tmp_path, "change")["thread_reports"] is None
+
+
+@pytest.mark.parametrize("value", [10**1000, -(10**1000), True, 1.5])
+def test_numeric_observation_revision_retains_integer_contract(tmp_path: Path, value: Any) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    state = review_session.load(tmp_path, "change")
+    state["observation_revision"] = value
+    state["revision"] = value
+    review_session.write_state(review_session.state_path(tmp_path, "change"), state)
+    if type(value) is int and value >= 0:
+        assert review_session.load(tmp_path, "change")["revision"] == value
+    else:
+        assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_oversized_measurement_cli_is_structured_incomplete(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    event_path = tmp_path / ".changecost" / "oversized.json"
+    event_path.write_text(
+        json.dumps({"id": "large", "kind": "active_minutes", "minutes": 10**1000})
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        ["review-session", "record", "change", "--root", str(tmp_path), "--json", str(event_path)],
+    )
+    assert review_session.main() == 1
+    assert json.loads(capsys.readouterr().out)["action"] == "incomplete"

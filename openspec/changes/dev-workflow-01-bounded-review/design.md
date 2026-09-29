@@ -56,6 +56,8 @@ mutation, or hostile-runner integrity guarantee.
    summation, never the previously rounded total. Overflow becomes a controlled
    rejection before persistence; malformed history requires recovery. No tolerance
    widens a budget and unmeasured usage remains unknown.
+   Integer counters retain exact nonnegative values; floating measurement conversion
+   overflow is a controlled validation error, including during replay.
 8. Bind the exact repository, selected PR, head, expected target ref/SHA and input epoch. Preserve exact
    REST reviewer identities. Normalize meaningful observation content and replay
    cached monitor classifications from the raw receipt; transport or shape failures

@@ -20,6 +20,9 @@
 - Bind review evidence to explicit PR target and comparison bases, preserve their
   original contract, and require fresh evidence after atomic context adoption.
 
+- Validate integer counters exactly and reject oversized floating measurements
+  through controlled ingestion/recovery errors instead of tracebacks.
+
 - Sum review budget extensions, active time and measured usage from original
   components; reject overflowing aggregates without losing finite limits or history.
 

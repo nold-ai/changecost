@@ -32,6 +32,9 @@ Exact-limit completion is allowed only when no family investigation remains.
 Fractional extensions and elapsed measurements use the same canonical summation
 rule. Overflow rejects updates atomically and malformed histories require recovery;
 unknown usage stays unknown.
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
 Resolved threads need explicit reviewer-evidence coverage of stable thread/comment
 identities and content; new/edited reports invalidate it. Local unresolved findings
 and remote unresolved status remain independent blockers.

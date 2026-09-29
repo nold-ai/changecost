@@ -87,6 +87,9 @@ requires fresh passing evidence before completion.
 Completion also requires explicit measured active time; a missing measurement is
 unknown. Fractional budgets, time and usage retain finite canonical totals from
 original measurements; overflowing updates are rejected without granting unlimited allowance.
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
 Latest changes-requested reviews block readiness even without inline threads.
 Canonical event replay checks saved decisions against their history. Exact repository,
 PR and reviewer identities prevent unrelated evidence from satisfying the session.

@@ -383,3 +383,19 @@ identities and malformed nested state, and retain correction and investigation c
 - **WHEN** GitHub supplies lowercase check conclusions, commit statuses, or outdated unresolved threads
 - **THEN** each source contributes to the completion decision
 - **AND** subprocess timeouts and invalid pagination cursors produce incomplete evidence
+
+### Requirement: Numeric validation preserves integer semantics
+Integer-only counters and identities SHALL be validated exactly without conversion
+to floating point. Negative values and booleans SHALL remain invalid. Measurements
+requiring floating-point representation SHALL reject conversion overflow as a
+controlled validation error, before persistence.
+
+#### Scenario: Oversized JSON measurement
+- **WHEN** an event contains an integer too large for a floating measurement
+- **THEN** recording SHALL reject it atomically and corrupted persisted history
+  SHALL return incomplete recovery rather than an uncaught exception.
+
+#### Scenario: Large exact integer counter
+- **WHEN** an approved extension supplies a nonnegative integer batch count
+- **THEN** recording and replay SHALL preserve the exact integer without imposing
+  an incidental floating-point range limit.

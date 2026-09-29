@@ -87,6 +87,9 @@ verification of GitHub resolver permissions. An exhausted budget permits exact-l
 completion only when no remaining family investigation is required. Minute grants,
 active time and measured usage sum original components canonically; overflow rejects
 the update atomically. Unmeasured usage remains unknown and batch counts stay integers.
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
 Keep each observation's explicit `_input_epoch` captured before collection. Direct
 ingestion never supplies the current generation for missing metadata; absent,
 malformed or stale epochs persist as incomplete evidence, including the first generation.
