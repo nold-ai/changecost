@@ -1,26 +1,26 @@
 {
   "CONTRIBUTING.md": {
-    "reason": "Reviewed future-cutoff and revision-presentation fixes: contributor setup, locked dependencies, required test/build gates and GitHub-only native assurance are unchanged. Behavioral details and regression evidence are updated in contracts, CLI docs, changelog and TDD.",
-    "digest": "98089d606149459a7acd616fe85a0ec78c81868b2d07f30fa5425c86923f3a85"
+    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
+    "digest": "58061d8bdba62be98d410fcdc2e9894540c7a41f1e225261b80e32596c9e2d35"
   },
   "README.md": {
-    "reason": "Reviewed future-cutoff rejection and predecessor-ordered inspection: the README capability summary, setup, project phase and dependency guidance remain accurate; detailed historical-eligibility and output-order guarantees are documented in docs/contracts.md and docs/cli.md.",
-    "digest": "98089d606149459a7acd616fe85a0ec78c81868b2d07f30fa5425c86923f3a85"
+    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
+    "digest": "58061d8bdba62be98d410fcdc2e9894540c7a41f1e225261b80e32596c9e2d35"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed historical-eligibility and inspection correctness fixes: mandatory local gates, TDD, exact staged freshness and GitHub native-assurance policy are unchanged. The retained receipt records both reproduced PR findings and related-family investigation.",
-    "digest": "98089d606149459a7acd616fe85a0ec78c81868b2d07f30fa5425c86923f3a85"
+    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
+    "digest": "58061d8bdba62be98d410fcdc2e9894540c7a41f1e225261b80e32596c9e2d35"
   },
   "docs/commands.md": {
-    "reason": "Reviewed cutoff/history behavior corrections: Typer commands, flags and help signatures are unchanged; the generated command reference must still pass deterministic regeneration checks.",
-    "digest": "15b3385eea056214fc41aa6a7b7ea4fc0352845854d914e076badbc3f25adfe7"
+    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
+    "digest": "a1e304e9e17499f5e039969612a4050c7d286510118e7788b4f134e0631c52a3"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed future-cutoff and revision-order regressions: the existing gate guide already requires the new scoped tests, full suite, distribution proof and GitHub-only native reports. Gate definitions and execution policy did not change.",
-    "digest": "98089d606149459a7acd616fe85a0ec78c81868b2d07f30fa5425c86923f3a85"
+    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
+    "digest": "58061d8bdba62be98d410fcdc2e9894540c7a41f1e225261b80e32596c9e2d35"
   },
   "llms.txt": {
-    "reason": "Reviewed cutoff and revision-history fixes: existing CLI/contracts index entries still point to the updated behavioral documentation; public capabilities, document links and command inventory are unchanged. Deterministic index checks remain required.",
-    "digest": "15b3385eea056214fc41aa6a7b7ea4fc0352845854d914e076badbc3f25adfe7"
+    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
+    "digest": "a1e304e9e17499f5e039969612a4050c7d286510118e7788b4f134e0631c52a3"
   }
 }

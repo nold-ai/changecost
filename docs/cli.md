@@ -51,3 +51,8 @@ A busy store reports a retryable error; wait for the other writer and repeat the
 same request. Conflicting attribution must be resolved explicitly, not retried with
 guessed identities. For recovery, use the consistent backup procedure in
 [contracts](contracts.md#transactions-revisions-and-historical-limits).
+
+Oversized observation or cutoff sequences are invalid portable input: imports exit
+2 without a traceback or rejected payload values, and preserve existing stores.
+Local transaction-sequence exhaustion also fails before new records are inserted;
+retrying an already committed operation remains valid.

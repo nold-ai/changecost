@@ -121,3 +121,39 @@ def test_supplied_empty_binding_mode_is_rejected_without_writes(tmp_path):
     )
     assert result.exit_code != 0
     assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize("existing", [False, True])
+@pytest.mark.parametrize("field", ["source", "observation"])
+def test_oversized_import_sequence_has_controlled_atomic_error(tmp_path, existing, field):
+    from datetime import UTC, datetime
+
+    from changecost.operations import register_change
+    from changecost.store import Store
+
+    source = Store(tmp_path / "source.sqlite", clock=lambda: datetime(2026, 9, 29, tzinfo=UTC))
+    register_change(source, "repo", "PRIVATE_SENTINEL")
+    data = source.export_bundle().model_dump(mode="json", by_alias=True)
+    target = data["source"] if field == "source" else data["observations"][0]
+    target["sequence"] = 2**100
+    artifact = tmp_path / "bad-sequence.json"
+    artifact.write_text(json.dumps(data))
+    if existing:
+        assert (
+            invoke(
+                tmp_path,
+                "bind",
+                "--register-change",
+                "--repository-id",
+                "repo",
+                "--change-id",
+                "existing",
+            ).exit_code
+            == 0
+        )
+    db = tmp_path / "db.sqlite"
+    before = db.read_bytes() if existing else None
+    result = invoke(tmp_path, "bind", "--import-artifact", str(artifact))
+    assert result.exit_code == 2
+    assert "Traceback" not in result.output and "PRIVATE_SENTINEL" not in result.output
+    assert db.read_bytes() == before if existing else not db.exists()

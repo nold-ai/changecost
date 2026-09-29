@@ -265,3 +265,61 @@ unchanged. No command flags, portable schema or financial algorithms changed.
 Both corrections require independent frozen-tree verification and fresh GitHub
 native assurance before the PR findings can be resolved; those later run/commit
 identities belong in the retained workflow handoff and PR evidence.
+
+## PR25 sequence boundary correction (2026-09-29)
+
+Current reviewed base before this correction: `efa6e82ea77c3293b613cd1f31be17984590e832`; comparison main `cb6ff3b2e218466c8633463928e7c94b1cf31b22`.
+Codex thread `PRRT_kwDOUu9-oc6nMD4_` showed that accepted oversized observation
+sequences escaped SQLite binding as OverflowError. The collected family includes
+source/Quote cutoffs, copied models and local sequence allocation, but does not cap
+JSON-only evidence ordinals or Quote sample counts. The current maintainer request
+authorized one additional batch (7 to 8); the 180-minute total and prior counters
+remain unchanged.
+
+Spec scenarios preceded tests and implementation. Initial focused red evidence:
+`sequence-red.log` records 19 failed/1 passed; oversized imports were accepted or
+raised uncontrolled overflow and exhausted allocation escaped ContractError. A
+separate typed-import test refinement records 8 failures in
+`sequence-typed-error-red.log` before mapping model revalidation errors to the
+existing controlled ContractError boundary. After adding actual nested Quote and
+import-allocation cases, the exact final regression tests were run against a
+temporary copy of the unchanged HEAD package (PYTHONPATH pointing to copied src,
+pytest pythonpath override empty): `sequence-final-baseline-red.log` records
+21 failed/2 passed, confirming the full matrix detects the original defect without
+mutating the checkout. Maximum portable roundtrip and JSON sample-count controls
+pass on that baseline. All logs are ignored under the current workflow receipt.
+
+Passing evidence: `sequence-focused.log` has 103 tests passed; the full Python
+3.13.14 suite has 798 tests plus four subtests passed in 56.76 seconds
+(`sequence-full-py313.log`). Ruff formatting/lint and BasedPyright pass. The fix
+adds two field ceilings, a shared insertion guard only for new local records, and
+a controlled model-copy import error translation. Tests preserve exact maximum
+values, maximum retries and observation-only imports, reject MAX+1 and 2**100,
+check fresh/existing store atomicity, and require CLI exit 2 without private payload
+echo. Existing store complexity/style advisories are unchanged by these small
+branches; no analyzer or threshold is weakened.
+
+Independent frozen defect and quality/documentation review, Python 3.11 evidence,
+complete staged checks, and new-head GitHub Linux native assurance remain required
+before publication/resolution. Local SpecFact capsules are not run under the
+maintainer's GitHub-only capsule policy. Historical CI results do not establish
+this unpublished correction. Roll back the scoped sequence changes if necessary
+while retaining this evidence and all session history; no migration, new provider,
+economic algorithm, merge or release is included.
+
+### Same-batch independent diagnostic discovery
+
+Before publication, independent review found a copied wrong-typed value could emit
+a Pydantic serialization warning containing private input before strict validation
+rejected it. This falls under the existing no-rejected-value diagnostic contract.
+The source/observation/Quote-cutoff import matrix and copied record/RunRef write
+boundaries produced 8 genuine failures in `sequence-warning-red.log`.
+The minimum fix suppresses serialization warnings at those three revalidation
+boundaries; strict validation still runs and public errors remain sanitized.
+`sequence-warning-green.log` records 111 focused tests passing, including fresh
+and existing-store atomicity and warning/stderr capture. Ruff/formatting pass.
+The earlier 798-test full-suite measurement above describes the first frozen tree;
+independent full-suite verification must cover this revised tree before publication.
+This discovery remains within correction batch eight; it starts no ninth batch
+and resets neither elapsed time nor history. No arbitrary exception-representation
+redesign or broader privacy classifier is introduced.

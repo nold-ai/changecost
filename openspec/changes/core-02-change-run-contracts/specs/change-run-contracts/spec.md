@@ -419,3 +419,30 @@ continue to exclude local databases, exported evidence and review artifacts.
 - **GIVEN** a synthetic secret or prompt sentinel in an undeclared nested field
 - **WHEN** import fails validation and package archives are inspected
 - **THEN** neither stored records, diagnostics nor package contents contain that sentinel; the error identifies the validation boundary without echoing untrusted field names or values.
+
+#### Scenario: Copied model fails revalidation without warning disclosure
+
+- **GIVEN** a copied bundle, record or Run reference containing a wrong-typed private sentinel
+- **WHEN** a public import or write boundary serializes it for strict revalidation
+- **THEN** rejection emits neither serializer warnings nor sentinel-bearing public diagnostics, and leaves fresh or existing stores unchanged.
+
+### Requirement: Portable sequence storage range
+
+Observation sequences SHALL be strict integers from 1 through 2**63−1; Cutoff
+sequences, including bundle sources and embedded Quote cutoffs, SHALL be strict
+integers from 0 through 2**63−1. Revalidation before import SHALL reject values
+outside that range without publishing a fresh store or changing an existing store.
+Local allocation beyond the maximum SHALL raise a controlled contract error before
+inserting new records. A retry or observation-only import requiring no new local
+sequence SHALL remain valid at the maximum. JSON-only ordinals and sample counts
+do not acquire this SQLite storage bound.
+
+#### Scenario: Oversized portable sequence
+- **GIVEN** an artifact or copied model with sequence 2**63 or 2**100
+- **WHEN** imported through the library or CLI
+- **THEN** validation fails, the CLI exits 2 without traceback/payload echo, and no store changes are published.
+
+#### Scenario: Last local transaction sequence
+- **GIVEN** a store at sequence 2**63−2
+- **WHEN** a new record is committed
+- **THEN** its sequence is exactly 2**63−1; a subsequent new record is rejected atomically, while identical retries and observation-only imports remain valid.

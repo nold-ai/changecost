@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from changecost.models import Component, Features, RunRef
+from changecost.models import Component, Features, Quote, RunRef
 from changecost.serialization import ContractError, dumps_bundle, loads_bundle
 
 TIME = "2026-09-29T08:00:00Z"
@@ -191,3 +191,78 @@ def test_unsupported_schema_has_safe_specific_diagnostic(where):
     with pytest.raises(ContractError, match="schema") as exc:
         loads_bundle(json.dumps(value))
     assert "PRIVATE" not in str(exc.value)
+
+
+@pytest.mark.parametrize("field", ["source", "observation", "quote"])
+@pytest.mark.parametrize("sequence", [2**63, 2**100])
+def test_portable_sequence_range(field, sequence):
+    data = payload()
+    if field == "source":
+        data["source"]["sequence"] = sequence
+    elif field == "observation":
+        data["observations"] = [
+            {
+                "reference": {"kind": "change", "record_id": "c1"},
+                "store_id": "source",
+                "available_at": TIME,
+                "sequence": sequence,
+            }
+        ]
+    else:
+        data["records"].append(sequence_quote(sequence))
+    with pytest.raises(ContractError):
+        loads_bundle(json.dumps(data))
+
+
+def sequence_quote(sequence):
+    component = {
+        "economic_kind": "monetary",
+        "unit": "USD",
+        "basis": "billed",
+        "currency": "USD",
+        "amount": None,
+    }
+    return {
+        "schema": "changecost/v1",
+        "kind": "quote",
+        "record_id": "q",
+        "origin_store_id": "source",
+        "recorded_at": TIME,
+        "effective_at": TIME,
+        "change": {"kind": "change", "record_id": "c1"},
+        "state": "unpriced",
+        "p50": component,
+        "p90": component,
+        "reason": "unavailable",
+        "sample_count": 2**100,
+        "cohort": "repository",
+        "algorithm_version": "future",
+        "inputs": [],
+        "cutoff": {"store_id": "source", "at": TIME, "sequence": sequence},
+    }
+
+
+def test_maximum_nested_cutoff_preserves_unbounded_json_sample_count():
+    data = payload()
+    data["records"].append(sequence_quote(2**63 - 1))
+    bundle = loads_bundle(json.dumps(data))
+    assert isinstance(bundle.records[1], Quote)
+    assert bundle.records[1].sample_count == 2**100
+    assert bundle.records[1].cutoff.sequence == 2**63 - 1
+    assert loads_bundle(dumps_bundle(bundle)) == bundle
+
+
+def test_maximum_sequence_portable_roundtrip():
+    data = payload()
+    data["source"]["sequence"] = 2**63 - 1
+    data["observations"] = [
+        {
+            "reference": {"kind": "change", "record_id": "c1"},
+            "store_id": "source",
+            "available_at": TIME,
+            "sequence": 2**63 - 1,
+        }
+    ]
+    bundle = loads_bundle(json.dumps(data))
+    assert loads_bundle(dumps_bundle(bundle)) == bundle
+    assert bundle.observations[0].sequence == bundle.source.sequence == 2**63 - 1

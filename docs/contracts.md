@@ -121,11 +121,22 @@ distinct destination history and cannot substitute for backup. Only schema 1 is
 supported; newer schemas are rejected without mutation, with no automatic downgrade.
 No upgrade from an older product schema exists yet.
 
+Observation transaction sequences are strict integers from 1 through `2**63 - 1`;
+Cutoff sequences (including bundle sources and Quote cutoffs) allow 0 through that
+same maximum. These bounds match SQLite storage. Invalid imports, including copied
+models that bypassed initial validation, fail before store publication or mutation.
+Local sequence exhaustion rejects new records with a controlled contract error;
+identical retries and observation-only imports remain valid without allocating a
+new local sequence. JSON-only evidence ordinals and Quote sample counts retain
+their nonnegative integer contract without this storage ceiling.
+
 ## Privacy and compatibility
 
 Use synthetic, minimal identifiers/reasons; do not put secrets into allowed strings.
 Prompt/transcript/raw-payload fields are absent and rejected. Diagnostics suppress
 untrusted field names as well as values, because either can contain private text.
+Copied models are strictly revalidated at import/write boundaries without emitting
+serializer warnings containing their rejected fields.
 This is an allowlist, not a content classifier. Imported data never executes URLs,
 paths or instructions. Databases, exports and review artifacts stay outside packages.
 Keep package version `0.1.0.dev0`; contract versioning is independent. An incompatible

@@ -46,6 +46,8 @@ def amount(value: object) -> str | None:
     return value
 
 
+MAX_SEQUENCE = 2**63 - 1
+
 Identifier = Annotated[str, BeforeValidator(identifier)]
 Timestamp = Annotated[datetime, BeforeValidator(timestamp)]
 Amount = Annotated[str | None, BeforeValidator(amount)]
@@ -83,7 +85,7 @@ class RunRef(Model):
 class Cutoff(Model):
     store_id: Identifier
     at: Timestamp
-    sequence: Annotated[int, Field(strict=True, ge=0)]
+    sequence: Annotated[int, Field(strict=True, ge=0, le=MAX_SEQUENCE)]
 
 
 class Features(Model):
@@ -313,7 +315,7 @@ class Observation(Model):
     reference: RecordRef
     store_id: Identifier
     available_at: Timestamp
-    sequence: Annotated[int, Field(strict=True, ge=1)]
+    sequence: Annotated[int, Field(strict=True, ge=1, le=MAX_SEQUENCE)]
 
 
 class Bundle(Model):

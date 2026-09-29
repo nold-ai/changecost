@@ -677,3 +677,175 @@ def test_inspection_orders_each_revision_chain_by_predecessor(store, kind):
         "m-latest",
     ]
     assert store.export_bundle() == before
+
+
+@pytest.mark.parametrize("existing", [False, True])
+@pytest.mark.parametrize("field", ["source", "observation"])
+@pytest.mark.parametrize("sequence", [2**63, 2**100])
+def test_sequence_model_copy_revalidated_atomically(store, tmp_path, existing, field, sequence):
+    source = Store(tmp_path / "source.sqlite", clock=lambda: NOW)
+    register_change(source, "repo", "incoming")
+    bundle = source.export_bundle()
+    if existing:
+        initialized(store)
+    before = store.export_bundle() if existing else None
+    if field == "source":
+        bundle = bundle.model_copy(
+            update={"source": bundle.source.model_copy(update={"sequence": sequence})}
+        )
+    else:
+        observation = bundle.observations[0].model_copy(update={"sequence": sequence})
+        bundle = bundle.model_copy(update={"observations": [observation]})
+    with pytest.raises(ContractError):
+        store.import_bundle(bundle)
+    assert store.export_bundle() == before if existing else not store.path.exists()
+
+
+@pytest.mark.parametrize("operation", ["register", "import"])
+def test_local_sequence_exhaustion_preserves_retries_and_observation_imports(
+    store, tmp_path, operation
+):
+    import sqlite3
+
+    register_change(store, "repo", "initial")
+    with sqlite3.connect(store.path) as connection:
+        connection.execute("UPDATE metadata SET sequence=?", (2**63 - 2,))
+    last = register_change(store, "repo", "last")
+    before = store.export_bundle()
+    assert before.source.sequence == 2**63 - 1
+    assert register_change(store, "repo", "last") == last
+    store.import_bundle(before)
+    assert store.export_bundle() == before
+    incoming = Store(tmp_path / "incoming.sqlite", clock=lambda: NOW)
+    register_change(incoming, "repo", "overflow")
+    with pytest.raises(ContractError, match="sequence"):
+        if operation == "register":
+            register_change(store, "repo", "overflow")
+        else:
+            store.import_bundle(incoming.export_bundle())
+    assert store.export_bundle() == before
+    foreign = Store(tmp_path / "foreign.sqlite", clock=lambda: NOW)
+    foreign.import_bundle(before)
+    # All records already exist: imported availability needs no local allocation.
+    store.import_bundle(foreign.export_bundle())
+    assert store.export_bundle().source.sequence == 2**63 - 1
+    assert any(o.store_id != before.source.store_id for o in store.export_bundle().observations)
+
+
+def test_maximum_imported_observation_stays_exact(store, tmp_path):
+    source = Store(tmp_path / "source.sqlite", clock=lambda: NOW)
+    register_change(source, "repo", "incoming")
+    bundle = source.export_bundle()
+    observation = bundle.observations[0].model_copy(update={"sequence": 2**63 - 1})
+    store.import_bundle(bundle.model_copy(update={"observations": [observation]}))
+    exported = store.export_bundle()
+    assert observation in exported.observations
+    assert loads_bundle(dumps_bundle(exported)) == exported
+
+
+def test_copied_nested_cutoff_is_revalidated_before_store_creation(store):
+    from changecost.models import Bundle, Component, Cutoff, Quote
+
+    component = Component(
+        economic_kind="monetary", unit="USD", basis="billed", currency="USD", amount=None
+    )
+    cutoff = Cutoff(store_id="source", at=NOW, sequence=1)
+    quote = Quote(
+        record_id="q",
+        origin_store_id="source",
+        recorded_at=NOW,
+        effective_at=NOW,
+        change=RecordRef(kind="change", record_id="c"),
+        state="unpriced",
+        p50=component,
+        p90=component,
+        reason="unavailable",
+        sample_count=0,
+        cohort="repository",
+        algorithm_version="future",
+        cutoff=cutoff,
+        inputs=[],
+    )
+    invalid = quote.model_copy(
+        update={"cutoff": quote.cutoff.model_copy(update={"sequence": 2**100})}
+    )
+    bundle = Bundle(source=cutoff, records=[]).model_copy(update={"records": [invalid]})
+    with pytest.raises(ContractError, match="invalid portable"):
+        store.import_bundle(bundle)
+    assert not store.path.exists()
+
+
+@pytest.mark.parametrize("field", ["source", "observation", "quote"])
+@pytest.mark.parametrize("existing", [False, True])
+def test_copied_import_has_no_warning_disclosure(store, tmp_path, capsys, field, existing):
+    import warnings
+
+    from changecost.models import Component, Quote
+
+    source = Store(tmp_path / "source.sqlite", clock=lambda: NOW)
+    change = register_change(source, "repo", "incoming")
+    bundle = source.export_bundle()
+    if field == "source":
+        bundle = bundle.model_copy(
+            update={"source": bundle.source.model_copy(update={"sequence": "PRIVATE_SENTINEL"})}
+        )
+    elif field == "observation":
+        observation = bundle.observations[0].model_copy(update={"sequence": "PRIVATE_SENTINEL"})
+        bundle = bundle.model_copy(update={"observations": [observation]})
+    else:
+        component = Component(
+            economic_kind="monetary", unit="USD", basis="billed", currency="USD", amount=None
+        )
+        quote = Quote(
+            record_id="q",
+            origin_store_id=bundle.source.store_id,
+            recorded_at=NOW,
+            effective_at=NOW,
+            change=reference(change),
+            state="unpriced",
+            p50=component,
+            p90=component,
+            reason="unknown",
+            sample_count=0,
+            cohort="repository",
+            algorithm_version="future",
+            cutoff=bundle.source,
+            inputs=[],
+        )
+        invalid = quote.model_copy(
+            update={"cutoff": quote.cutoff.model_copy(update={"sequence": "PRIVATE_SENTINEL"})}
+        )
+        bundle = bundle.model_copy(update={"records": [change, invalid]})
+    if existing:
+        initialized(store)
+    before = store.path.read_bytes() if existing else None
+    with warnings.catch_warnings(record=True) as emitted:
+        warnings.simplefilter("always")
+        with pytest.raises(ContractError) as error:
+            store.import_bundle(bundle)
+    assert not emitted
+    assert "PRIVATE_SENTINEL" not in str(error.value) + capsys.readouterr().err
+    assert store.path.read_bytes() == before if existing else not store.path.exists()
+
+
+@pytest.mark.parametrize("operation", ["apply", "register_run"])
+def test_copied_write_has_no_warning_disclosure(store, tmp_path, capsys, operation):
+    import warnings
+
+    from changecost.models import Change
+
+    template = Store(tmp_path / "template.sqlite", clock=lambda: NOW)
+    original = register_change(template, "repo", "incoming")
+    assert isinstance(original, Change)
+    invalid = original.model_copy(update={"recorded_at": "PRIVATE_SENTINEL"})
+    invalid_ref = RUN.model_copy(update={"provider": ["PRIVATE_SENTINEL"]})
+    with warnings.catch_warnings(record=True) as emitted:
+        warnings.simplefilter("always")
+        with pytest.raises(ValueError) as error:
+            if operation == "apply":
+                store.apply(lambda _records, _store_id, _now: ([invalid], None))
+            else:
+                register_run(store, invalid_ref, "c")
+    assert not emitted
+    assert "PRIVATE_SENTINEL" not in str(error.value) + capsys.readouterr().err
+    assert not store.path.exists()

@@ -14,9 +14,10 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 
 from changecost.models import (
+    MAX_SEQUENCE,
     Bundle,
     Change,
     Cutoff,
@@ -323,7 +324,7 @@ class Store:
             store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
             now = timestamp(self.clock())
             additions, result = operation(records, store_id, now)
-            additions = [ADAPTER.validate_python(r.model_dump()) for r in additions]
+            additions = [ADAPTER.validate_python(r.model_dump(warnings=False)) for r in additions]
             merged = dict(records)
             for record in additions:
                 ref = key(reference(record))
@@ -337,6 +338,8 @@ class Store:
             return result
 
     def insert(self, connection, records, sequence: int, now: datetime, last_at: str | None):
+        if sequence > MAX_SEQUENCE:
+            raise ContractError("local transaction sequence exhausted")
         if last_at is not None and now < timestamp(last_at):
             raise ContractError("clock moved backwards")
         for record in records:
@@ -355,7 +358,10 @@ class Store:
 
     def import_bundle(self, bundle: Bundle) -> None:
         # Revalidate even model_copy inputs; model_copy intentionally bypasses Pydantic validation.
-        bundle = Bundle.model_validate(bundle.model_dump())
+        try:
+            bundle = Bundle.model_validate(bundle.model_dump(warnings=False))
+        except ValidationError as exc:
+            raise ContractError("invalid portable record fields or values") from exc
         with self.transaction() as connection:
             self.import_into(connection, bundle)
 

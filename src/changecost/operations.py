@@ -96,7 +96,7 @@ def register_run(
     store: Store, ref: RunRef, change_id: str, work_start: datetime | None = None
 ) -> Run:
     # Revalidate model_copy callers as well as ordinary validated CLI input.
-    ref = RunRef.model_validate(ref.model_dump())
+    ref = RunRef.model_validate(ref.model_dump(warnings=False))
 
     def operation(records, store_id, now):
         change = change_in(records, ref.repository_id, change_id)
