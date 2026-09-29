@@ -858,3 +858,10 @@ Previous-head CI 36460181540 passed all ten native analyzers and 168 tests on bo
 Python versions, with 284 individually dispositioned advisory findings. That
 run does not certify this Make correction; independent verification and fresh
 hosted CI remain required. The three genuine host/loader findings stay open.
+
+## Accepted delivery and archive evidence — 2026-09-29
+
+The [task closure](tasks.md#closure-reconciliation--2026-09-29-europeberlin)
+records final hosted run 36462266628, exact head, merge and four explicit
+maintainer risk dispositions. Earlier pending-review statements remain historical.
+Archival changes documentation only; no new product TDD is claimed.

@@ -50,9 +50,9 @@
     "description": "recorded changes; no release is implied."
   },
   {
-    "title": "Python foundation plan",
-    "path": "openspec/changes/core-01-python-foundation/design.md",
-    "description": "foundation contract, implementation decisions and remaining verification."
+    "title": "Archived Python foundation",
+    "path": "openspec/changes/archive/2026-09-29-core-01-python-foundation/design.md",
+    "description": "delivered foundation design, historical verification and accepted limitations."
   },
   {
     "title": "Source feasibility",
@@ -93,5 +93,30 @@
     "title": "Research evidence",
     "path": "openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md",
     "description": "scenario review, checks and unresolved source inspection."
+  },
+  {
+    "title": "Python foundation specification",
+    "path": "openspec/specs/python-foundation/spec.md",
+    "description": "Accepted behavior synchronized from the merged implementation."
+  },
+  {
+    "title": "Bounded review specification",
+    "path": "openspec/specs/bounded-review-session/spec.md",
+    "description": "Accepted behavior synchronized from the merged implementation."
+  },
+  {
+    "title": "Core-02 contracts preparation",
+    "path": "openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md",
+    "description": "Contract preparation, archive results and prerequisite evidence; implementation evidence is recorded separately."
+  },
+  {
+    "title": "Offline CLI",
+    "path": "docs/cli.md",
+    "description": "Synthetic registration, lifecycle, inspection and portable replay examples."
+  },
+  {
+    "title": "Contracts v1",
+    "path": "docs/contracts.md",
+    "description": "Exact field semantics, immutable revisions, local history and recovery limits."
   }
 ]

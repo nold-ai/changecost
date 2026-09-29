@@ -4,11 +4,51 @@
 
 Implemented command surface:
 
+- `changecost --db`
 - `changecost --help`
 - `changecost --version`
+- `changecost bind`
+- `changecost bind --change-id`
+- `changecost bind --change-shape`
+- `changecost bind --evidence-id`
+- `changecost bind --execution-profile`
+- `changecost bind --help`
+- `changecost bind --import-artifact`
+- `changecost bind --provider`
+- `changecost bind --register-change`
+- `changecost bind --register-run`
+- `changecost bind --repository-id`
+- `changecost bind --run-id`
+- `changecost bind --surface`
+- `changecost bind --trajectory`
+- `changecost bind --work-start`
+- `changecost explain`
+- `changecost explain --change-id`
+- `changecost explain --export-artifact`
+- `changecost explain --help`
+- `changecost explain --provider`
+- `changecost explain --record-id`
+- `changecost explain --record-kind`
+- `changecost explain --repository-id`
+- `changecost explain --run-id`
+- `changecost explain --surface`
+- `changecost settle`
+- `changecost settle --change-id`
+- `changecost settle --correct-interval`
+- `changecost settle --correct-outcome`
+- `changecost settle --help`
+- `changecost settle --outcome`
+- `changecost settle --provider`
+- `changecost settle --reason`
+- `changecost settle --repository-id`
+- `changecost settle --run-id`
+- `changecost settle --run-outcome`
+- `changecost settle --surface`
+- `changecost settle --work-end`
+- `changecost settle --work-start`
 
 Help and version succeed offline. Bare or unknown commands exit nonzero.
 No database, configuration or evidence files are created by these invocations.
 
-`quote`, `bind`, `settle`, `check` and `explain` remain planning references;
-they are not implemented product commands.
+`bind` registers/maps/imports; `settle` declares lifecycle only;
+`explain` inspects/exports. `quote`, `check` and economic reconciliation remain planned.

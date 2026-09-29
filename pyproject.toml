@@ -11,7 +11,10 @@ requires-python = ">=3.11"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 classifiers = ["Private :: Do Not Upload"]
-dependencies = ["typer>=0.16,<1"]
+dependencies = [
+    "pydantic>=2,<3",
+    "typer>=0.16,<1",
+]
 
 [project.scripts]
 changecost = "changecost.cli:main"

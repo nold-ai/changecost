@@ -68,22 +68,25 @@ SHALL require an explicit reasoned correction; invalid updates SHALL be atomic.
 
 - **GIVEN** new attributed evidence before a known work start
 - **WHEN** a corrected start is submitted with the interval-correction flag and reason
-- **THEN** a new interval revision is appended and coverage is reevaluated, preserving the original interval for earlier cutoffs.
+- **THEN** a new interval revision is appended and downstream coverage evaluation receives the new reference, preserving the original interval for earlier cutoffs without computing financial reconciliation in this change.
 
 ### Requirement: Store-local historical availability
 
 Every record, revision and relationship SHALL retain immutable first-successful-commit
-availability in its destination store separately from origin provenance. Imports SHALL
+availability and local transaction ordering in its destination store separately from
+origin provenance. Imports SHALL
 NOT backdate local availability and identical reimports SHALL preserve it. Historical
 selection SHALL require every selected dependency to be locally available by cutoff.
 Imported Quotes SHALL retain origin context without claiming destination replay of
-history that was unavailable there.
+history that was unavailable there. A captured local cutoff SHALL include a committed
+snapshot boundary; wall time alone SHALL NOT admit a transaction committed after
+that boundary. Unprovable historical membership SHALL return replay_unavailable.
 
 #### Scenario: Backdated portable evidence
 
 - **GIVEN** December evidence, mappings, outcomes and settlement revisions first imported into a destination in February
 - **WHEN** a January quote cutoff is evaluated there
-- **THEN** none is eligible despite earlier origin recorded/effective times, and reimport does not change February availability.
+- **THEN** the core eligibility check excludes all of them despite earlier origin recorded/effective times, and reimport does not change February availability; no quote algorithm is required.
 
 #### Scenario: Imported quote cannot recreate unavailable history
 
@@ -134,9 +137,11 @@ The system SHALL bind runs to changes only through explicit, namespaced identifi
 
 ### Requirement: Complete run references
 
-The system SHALL use the full structured RunRef (repository_id, provider, surface,
+The system SHALL resolve the full structured RunRef (repository_id, provider, surface,
 run_id) for identity and every Run reference, including portable mappings, command
-selectors, outcomes and settlement coverage. Bare or incomplete selectors SHALL fail
+selectors, outcomes and settlement coverage. A typed Run RecordRef may name a
+unique immutable Run record containing that full tuple; it SHALL NOT resolve a
+bare provider run_id or infer a missing namespace. Bare or incomplete selectors SHALL fail
 without mutation; source-evidence namespace SHALL NOT substitute for the target RunRef.
 
 #### Scenario: Replay colliding raw run identifiers
@@ -245,4 +250,199 @@ The system SHALL reject invalid or conflicting writes atomically and preserve lo
 
 - **GIVEN** two writers propose different changes for the same run
 - **WHEN** both commit attempts finish
-- **THEN** only one valid binding exists and the other reports a conflict.
+- **THEN** at most one assignment commits; the loser reports a conflict or retryable busy error without partial writes. Retrying after the winner commits reports the conflict.
+
+### Requirement: Strict portable input boundary
+
+The system SHALL reject duplicate JSON members, unknown schema/kind/fields at any
+level, nonfinite values, numeric or boolean economic amounts and timezone-naive
+or numeric timestamps before committing records. Amounts SHALL be finite decimal
+strings or null and preserve exact value/scale through storage and export. Identities
+SHALL be nonblank and exact; only documented feature fields are normalized. Portable
+input SHALL be treated as data and SHALL NOT execute URLs, paths or instructions.
+
+#### Scenario: Duplicate and coercible input
+
+- **GIVEN** an otherwise valid bundle containing a repeated amount key, a numeric amount, NaN, an unknown nested field or a naive timestamp
+- **WHEN** each malformed variant is imported
+- **THEN** it fails without persisting any record or silently selecting/coercing a value.
+
+#### Scenario: Exact storage beyond floating precision
+
+- **GIVEN** amount "0.12345678901234567890123456789" and an aware timestamp with a nonzero UTC offset
+- **WHEN** the record is stored, the process restarts and the record is exported
+- **THEN** the decimal value/scale is unchanged and the timestamp denotes the same instant in UTC.
+
+#### Scenario: Preserve opaque identities
+
+- **GIVEN** two valid identifiers that differ in case and another that is blank
+- **WHEN** they are validated
+- **THEN** the distinct identifiers remain distinct, while the blank identifier is rejected without guessing or trimming it into another identity.
+
+### Requirement: Explicit offline portable operations
+
+The system SHALL provide atomic local artifact import through bind and record
+inspection/export through explain without adding a command family. Mutually
+exclusive modes, incomplete selectors and unsupported operations SHALL fail clearly.
+Help, version, invalid invocation and read-only inspection SHALL NOT initialize a
+store. Export SHALL use a consistent committed snapshot and SHALL NOT overwrite an
+existing output file or leave a partial final artifact after failure.
+
+#### Scenario: Import and inspect without a provider
+
+- **GIVEN** a synthetic v1 bundle containing a Change, an unbound Run, a source-evidence reference and explicit relationships in arbitrary order
+- **WHEN** bind imports the bundle, explain inspects it and exports it, and a fresh store imports that export twice
+- **THEN** all references resolve with exact identities/history, the repeat is a no-op and no provider, network or SpecFact runtime is used.
+
+#### Scenario: Invalid operation is read-only
+
+- **GIVEN** no local database
+- **WHEN** help/version, conflicting registration/import modes, incomplete selectors or inspection of the missing store are requested
+- **THEN** help/version succeed, invalid operations fail and no configuration/database/evidence files are created.
+
+#### Scenario: Inspect revisions in predecessor order
+
+- **GIVEN** a Change or Run with correction chains whose record IDs sort opposite to predecessor order and whose declaration timestamps are equal
+- **WHEN** explain returns lifecycle and settlement history
+- **THEN** each chain is grouped by record kind and ordered from its original declaration to its latest revision using previous references, without changing stored records.
+
+#### Scenario: Export failure preserves data
+
+- **GIVEN** an existing output file or a simulated output failure during export
+- **WHEN** explain exports the store
+- **THEN** the original file/database is unchanged and no partial final artifact is exposed.
+
+### Requirement: Lifecycle and algorithm separation
+
+Core lifecycle operations SHALL record explicit outcomes and work intervals without
+computing settlements or quotes. Quote and Settlement records SHALL be structurally
+validated and preserved, including their input references, unknown reasons and
+scope; accepting imported claims SHALL NOT certify local financial completeness or
+provider support. Bare settlement computation, quote and budget checks SHALL remain
+non-success until their respective capabilities are delivered.
+
+#### Scenario: Outcome-only settlement command
+
+- **GIVEN** a registered Run with no imported financial evidence
+- **WHEN** settle records its terminal outcome, then a computation-only settlement request is attempted
+- **THEN** the outcome is persisted, its cost remains unknown, and the unimplemented computation fails explicitly.
+
+#### Scenario: Imported claims retain their provenance
+
+- **GIVEN** a structurally valid foreign Settlement or mapping labeled reconciled or verified_provider
+- **WHEN** it is imported and inspected
+- **THEN** its origin claim remains visible, but import does not approve the source profile, relabel manual evidence, or establish locally verified completeness.
+
+### Requirement: Atomic reference and revision integrity
+
+All portable references SHALL resolve within existing records or the same complete
+bundle. Revisions SHALL preserve their subject and form an acyclic predecessor chain.
+Conflicting duplicate identities, missing predecessors and cross-repository
+run-to-change bindings SHALL reject the entire write. Identical retries SHALL
+preserve original timestamps, revisions and first local availability, including
+a retry after the original response was lost or the Change became terminal.
+
+#### Scenario: Invalid revision graph
+
+- **GIVEN** an artifact with a missing predecessor, cyclic correction references or a predecessor for a different subject
+- **WHEN** it is imported
+- **THEN** the complete write fails without adding records or consuming visible revision history.
+
+#### Scenario: Replay after response loss and terminal outcome
+
+- **GIVEN** a successful Run registration whose response was lost and a Change later marked accepted
+- **WHEN** the identical registration is retried
+- **THEN** the original record/binding is returned unchanged; a genuinely new Run against that terminal Change still fails.
+
+#### Scenario: Cross-repository binding
+
+- **GIVEN** a Run in repository A and a Change in repository B
+- **WHEN** bind attempts the run-to-change relationship
+- **THEN** it rejects the relationship atomically rather than attributing across repositories.
+
+### Requirement: Historical visibility is committed and local
+
+Historical eligibility SHALL require the locally committed snapshot boundary plus
+all recorded/effective/availability constraints for every dependency. Origin
+availability and transaction sequences SHALL NOT replace destination knowledge.
+Unsafe backward-clock writes SHALL fail explicitly rather than backdate history.
+A cutoff later than the current local snapshot SHALL be unavailable; it cannot
+establish already-observed historical membership.
+
+#### Scenario: Transaction spans a cutoff
+
+- **GIVEN** a writer begins before a reader captures a cutoff but commits after that reader's snapshot
+- **WHEN** the captured cutoff is replayed after commit
+- **THEN** the new records are excluded despite a pre-cutoff transaction timestamp; a time-only cutoff without sufficient evidence returns replay_unavailable.
+
+#### Scenario: Future cutoff cannot claim observed history
+
+- **GIVEN** an imported Quote naming the destination store and an existing sequence but a cutoff later than the current snapshot
+- **WHEN** explain evaluates inputs with future effective times
+- **THEN** replay is unavailable and inspection leaves the store unchanged, even if those inputs would satisfy the claimed future time.
+
+#### Scenario: Clock moves backwards
+
+- **GIVEN** committed history whose local availability is later than the current wall clock
+- **WHEN** a new historical write would backdate that history
+- **THEN** it fails with a clock diagnostic and leaves the store unchanged.
+
+### Requirement: Recoverable local persistence failures
+
+Registration, bindings, imports, revisions and migrations SHALL commit all-or-nothing.
+Busy/failed commits SHALL leave no partial writes and allow a safe retry. A newer
+unsupported store schema SHALL fail without mutation; a failed migration SHALL
+preserve the prior usable schema and data. A consistent database backup SHALL retain
+store identity/history; portable import SHALL retain its distinct destination semantics.
+
+#### Scenario: Commit and migration failure
+
+- **GIVEN** an injected failure before commit or within a schema migration
+- **WHEN** the operation is retried after reopening the store
+- **THEN** no partial earlier operation exists, the prior schema/data remains usable, and a successful retry creates one result.
+
+#### Scenario: Future schema and backup recovery
+
+- **GIVEN** a store with a newer unsupported schema and a separate compatible consistent backup
+- **WHEN** the newer store is opened, then the backup is restored to a separate path
+- **THEN** opening the newer store fails unchanged, while the backup retains its original store identity and historical availability.
+
+### Requirement: Allowlisted private data handling
+
+Portable records SHALL retain only the declared economic/identity/provenance fields.
+Prompt text, transcripts, credentials and raw provider payloads SHALL be rejected,
+not silently retained in extras, logs or validation diagnostics. Distributions SHALL
+continue to exclude local databases, exported evidence and review artifacts.
+
+#### Scenario: Sensitive unknown field
+
+- **GIVEN** a synthetic secret or prompt sentinel in an undeclared nested field
+- **WHEN** import fails validation and package archives are inspected
+- **THEN** neither stored records, diagnostics nor package contents contain that sentinel; the error identifies the validation boundary without echoing untrusted field names or values.
+
+#### Scenario: Copied model fails revalidation without warning disclosure
+
+- **GIVEN** a copied bundle, record or Run reference containing a wrong-typed private sentinel
+- **WHEN** a public import or write boundary serializes it for strict revalidation
+- **THEN** rejection emits neither serializer warnings nor sentinel-bearing public diagnostics, and leaves fresh or existing stores unchanged.
+
+### Requirement: Portable sequence storage range
+
+Observation sequences SHALL be strict integers from 1 through 2**63−1; Cutoff
+sequences, including bundle sources and embedded Quote cutoffs, SHALL be strict
+integers from 0 through 2**63−1. Revalidation before import SHALL reject values
+outside that range without publishing a fresh store or changing an existing store.
+Local allocation beyond the maximum SHALL raise a controlled contract error before
+inserting new records. A retry or observation-only import requiring no new local
+sequence SHALL remain valid at the maximum. JSON-only ordinals and sample counts
+do not acquire this SQLite storage bound.
+
+#### Scenario: Oversized portable sequence
+- **GIVEN** an artifact or copied model with sequence 2**63 or 2**100
+- **WHEN** imported through the library or CLI
+- **THEN** validation fails, the CLI exits 2 without traceback/payload echo, and no store changes are published.
+
+#### Scenario: Last local transaction sequence
+- **GIVEN** a store at sequence 2**63−2
+- **WHEN** a new record is committed
+- **THEN** its sequence is exactly 2**63−1; a subsequent new record is rejected atomically, while identical retries and observation-only imports remain valid.

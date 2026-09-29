@@ -1,19 +1,23 @@
 schema: spec-driven
 
 context: |
+  Core-02 implementation was authorized on 2026-09-29 and is under verification.
+  Offline contracts, bind, lifecycle-only settle and explain are implemented locally.
+  No provider adapter, quote computation or financial reconciliation is delivered.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
   cost estimates and settlement for AI-assisted software changes.
   Phase: pilot planning / To-Validate; private; Apache-2.0; no releases.
-  Authorized delivery: nine OpenSpec changes and linked GitHub backlog only.
+  Initial authorization: nine OpenSpec plans and linked GitHub backlog.
   Subsequent authorization on 2026-09-28: implement source-feasibility research,
   extend it to Codex/Claude Code metrics, and inspect existing local artifacts.
   Enterprise Cursor/Copilot projections are also authorized comparison evidence.
   V2 adds reported message counters and synthetic examples, not verified native imports.
   Local metadata provides partial evidence. Work OTel is reported globally disabled;
   custom session-log hook output is the next source to inspect, not OTel enablement.
-  Product implementation and live telemetry collection require a separate request.
-  Foundation implementation separately authorized on 2026-09-28; other product
-  changes and live collection remain separately gated.
+  Additional product implementation and live telemetry collection require a separate request.
+  Foundation merged in PR #22 on 2026-09-28; bounded-review workflow merged in
+  PR #24 on 2026-09-29. Both are archived with synchronized main specs. Core-02
+  contracts/lifecycle implementation is under verification; other implementation remains gated.
   Selected defaults: Python 3.11+, Typer, Pydantic, SQLite, Decimal; uv/Hatchling,
   pytest, Ruff, BasedPyright. Personal Cursor/Copilot IDE and CLI use is the pilot.
   Plan quote, bind, settle, check, explain and changecost/v1 portable artifacts.
@@ -32,9 +36,11 @@ context: |
   with actual TDD_EVIDENCE.md. Pure docs/scaffold changes need relevant checks only.
   Current gate: make check with explicit BASE_REF and an intended-file manifest
   for untracked inputs. Foundation adds format/lint/type/test, package, docs,
-  generated-index, metadata, workflow and dependency gates. Full review assurance
-  remains incomplete on the current macOS/Docker environment; missing/skipped
-  analyzers are failures, not passes. See TDD_EVIDENCE.md for actual results.
+  generated-index, metadata, workflow and dependency gates. Final hosted Linux
+  assurance passed for both delivered changes; accepted foundation verifier risks
+  and unvalidated reviewer calibration remain documented. The current macOS
+  controller cannot run capsules; new behavior still needs fresh Linux assurance.
+  Missing/skipped analyzers are failures, not passes. See archived TDD evidence.
   Advisory budget CI never waives repository quality gates; publishing/deployment
   remains out of scope.
   Prefer clear names, KISS, YAGNI, DRY, and proportionate SOLID; no speculative layers.

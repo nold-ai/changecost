@@ -607,3 +607,10 @@ strict OpenSpec pass. Final logs are `.changecost/batch21-full.txt`,
 `.changecost/batch21-types.txt`. Fresh native Linux/provider results remain required
 after publication; prior counters, legacy recovery and unknown historical time/usage
 remain preserved without a reset or savings claim.
+
+## Accepted delivery and archive evidence — 2026-09-29
+
+See [task closure](tasks.md#closure-reconciliation--2026-09-29-europeberlin)
+for the final Linux run and merge. PR #24 retains exact-head code/security/
+CodeRabbit reports. The unvalidated calibration and incompatible historical
+receipt remain limitations; no new runtime tests or measurements are invented.

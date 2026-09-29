@@ -1,12 +1,13 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**. All nine changes are authored
-for review. Source-feasibility research is now partly implemented under separate
-maintainer authorization; its task list records the remaining evidence work.
-Other implementation and live pilot collection require a subsequent request.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-09-29**.
+The Python foundation and supplemental bounded-review workflow are delivered and
+archived. Source-feasibility research is partly implemented; its remaining inspection
+tasks keep it active despite closed #9. Core-02 (#11) implementation is authorized and under local verification;
+other product implementation and live collection require a subsequent request.
 
 Supplemental contributor workflow: [#23](https://github.com/nold-ai/changecost/issues/23)
-tracks `dev-workflow-01-bounded-review`, a development-only control for retaining
+tracks the delivered/archived [dev-workflow-01-bounded-review](changes/archive/2026-09-29-dev-workflow-01-bounded-review/proposal.md), a development-only control for retaining
 review context and bounding correction loops. It is a sub-issue of [#6](https://github.com/nold-ai/changecost/issues/6), has no pilot dependency edge, and does not
 change the nine-change product delivery order.
 
@@ -31,7 +32,7 @@ change the nine-change product delivery order.
 | Change / proposal | Story | Feature | Implementation prerequisites |
 | --- | --- | --- | --- |
 | [pilot-01-source-feasibility](changes/pilot-01-source-feasibility/proposal.md) | [#9](https://github.com/nold-ai/changecost/issues/9) | [#5](https://github.com/nold-ai/changecost/issues/5) | None |
-| [core-01-python-foundation](changes/core-01-python-foundation/proposal.md) | [#10](https://github.com/nold-ai/changecost/issues/10) | [#6](https://github.com/nold-ai/changecost/issues/6) | None |
+| [core-01-python-foundation](changes/archive/2026-09-29-core-01-python-foundation/proposal.md) | [#10](https://github.com/nold-ai/changecost/issues/10) | [#6](https://github.com/nold-ai/changecost/issues/6) | None |
 | [core-02-change-run-contracts](changes/core-02-change-run-contracts/proposal.md) | [#11](https://github.com/nold-ai/changecost/issues/11) | [#6](https://github.com/nold-ai/changecost/issues/6) | [#10](https://github.com/nold-ai/changecost/issues/10) `core-01-python-foundation` |
 | [settlement-01-reconciliation](changes/settlement-01-reconciliation/proposal.md) | [#12](https://github.com/nold-ai/changecost/issues/12) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#11](https://github.com/nold-ai/changecost/issues/11) `core-02-change-run-contracts` |
 | [provider-01-copilot-import](changes/provider-01-copilot-import/proposal.md) | [#13](https://github.com/nold-ai/changecost/issues/13) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
@@ -94,14 +95,24 @@ changelog/version coherence and workflow validation. These are prerequisites for
 the implementation chain, not deferred to product budget reporting. The later
 `workflow-01-advisory-ci` reuses those gates for its CLI examples and job summary;
 only budget policy is advisory. This clarification changes no dependency edges.
-The local foundation branch now includes package and repository validators;
-full analyzer assurance and remote CI remain incomplete.
-Foundation preparation was rechecked after #21 against main `141b9b3` on
-2026-09-28; #10 remains open/Todo with no blocked-by relationship. Its current task
-list and implementation evidence distinguish local completion from pending review. See its [preparation evidence](changes/core-01-python-foundation/design.md#preparation-evidence).
-The maintainer authorized implementation and carrying the prepared files into its
-later final PR. The combined branch remains unpublished; #10 will receive the real
-PR link after the subsequent verification/promotion stages.
+The foundation merged in [PR #22](https://github.com/nold-ai/changecost/pull/22)
+on 2026-09-28; #10 is closed. Final hosted checks and the maintainer's four explicit
+accepted-risk dispositions are recorded in its
+[archived tasks](changes/archive/2026-09-29-core-01-python-foundation/tasks.md).
+The bounded-review helper merged in [PR #24](https://github.com/nold-ai/changecost/pull/24)
+on 2026-09-29; #23 is closed. Its optional calibration remains unvalidated/not adopted,
+and its legacy receipt limitations remain documented. Neither archive claims those
+limitations were remediated.
+
+Both changes were archived with OpenSpec CLI 1.13.2 on 2026-09-29, synchronizing
+[python-foundation](specs/python-foundation/spec.md) and
+[bounded-review-session](specs/bounded-review-session/spec.md) into main specs.
+Eight active changes remain. The next implementation dependency is **core-02 (#11)**:
+its native prerequisite #10 is satisfied, while reconciliation #12 still depends on
+#11. The contracts [preparation evidence](changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md)
+records current code, research, validation and remaining implementation gates.
+The implementation remains local/unpublished until all required verification gates pass.
+See [implementation evidence](changes/core-02-change-run-contracts/TDD_EVIDENCE.md).
 
 Provider-specific mappings remain blocked until feasibility records inspected source
 profiles. Completing feasibility with an unavailable capability does not authorize
@@ -120,7 +131,7 @@ cache, release infrastructure or runtime framework is introduced.
 
 ## Delivery checks and rollback
 
-Required planning checks: strict validation of all nine changes, complete artifacts,
+Required planning checks: strict validation of all active changes and main specs, complete artifacts,
 Given/When/Then scenario coverage, accurate task status with unfinished tasks unchecked,
 valid relative links, acyclic graph,
 and GitHub readback of all 14 native types, parents, dependencies, labels, private project

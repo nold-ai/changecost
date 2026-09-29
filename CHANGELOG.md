@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+- Reject out-of-range SQLite transaction sequences in portable observations and
+  cutoffs; report controlled, atomic import/allocation failures while preserving
+  maximum-sequence retries and observation-only imports. Suppress serializer
+  warnings containing rejected copied-model input at strict write boundaries.
+
+- Clarify the synchronized bounded-review spec: exact-budget completion requires
+  all evidence and obligations; valid sessions with pending work or exceeded limits
+  require replanning, while incomplete-state recovery retains precedence.
+
+- Reject future historical cutoffs and display inspected correction chains in
+  predecessor order, preserving read-only replay and lifecycle history.
+
+- Record completed Core-02 pre-promotion matrix/native assurance and the opening
+  of implementation PR #25. Keep fresh PR-head review and implementation acceptance
+  explicit; Core-02 remains unarchived until acceptance.
+
+- Group lifecycle operation fields into an immutable declaration request and
+  separate interval merging from correction checks. Preserve CLI flags, portable
+  records, retry idempotency and atomic outcome/interval updates while resolving
+  the native Radon complexity and parameter-count blockers.
+
+- Archive the delivered Python foundation and bounded-review changes through the
+  OpenSpec CLI, synchronize their accepted specs, and retain accepted verifier and
+  unvalidated calibration limitations. Keep incomplete source feasibility active.
+- Prepare core-02 contracts against fresh main and the delivered specs: define
+  strict portable input, exact storage, lifecycle-only commands, atomic reference
+  and migration failure handling, and committed historical visibility. No runtime
+  implementation or provider support is added.
+
+
 - Require explicit collection-time observation epochs at ingestion rather than
   relabeling unbound snapshots with the current generation.
 
@@ -170,3 +200,11 @@
 - Plan nine pilot changes and the private GitHub Epic/Feature/User Story backlog;
   codify source feasibility, exact economic units, chronological evaluation and
   uv/Hatchling foundation requirements. Product implementation remains deferred.
+
+### Core-02 offline contracts (under verification)
+
+- Add strict v1 records with exact decimal strings, destination-local history and
+  atomic SQLite persistence; retain imported producer claims without certification.
+- Add explicit bind registration/mapping/import, lifecycle-only settle, and explain
+  inspection/export. Provider imports, estimation and reconciliation remain planned.
+- Keep the unreleased package version at 0.1.0.dev0.

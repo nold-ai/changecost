@@ -355,42 +355,42 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-01-python-foundation/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-09-29-core-01-python-foundation/TDD_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-01-python-foundation/TDD_EVIDENCE.md"
+        "openspec/changes/archive/2026-09-29-core-01-python-foundation/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-01-python-foundation/design.md",
+      "path": "openspec/changes/archive/2026-09-29-core-01-python-foundation/design.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-01-python-foundation/design.md"
+        "openspec/changes/archive/2026-09-29-core-01-python-foundation/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-01-python-foundation/proposal.md",
+      "path": "openspec/changes/archive/2026-09-29-core-01-python-foundation/proposal.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-01-python-foundation/proposal.md"
+        "openspec/changes/archive/2026-09-29-core-01-python-foundation/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-01-python-foundation/specs/python-foundation/spec.md",
+      "path": "openspec/changes/archive/2026-09-29-core-01-python-foundation/specs/python-foundation/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-01-python-foundation/specs/python-foundation/spec.md"
+        "openspec/changes/archive/2026-09-29-core-01-python-foundation/specs/python-foundation/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-01-python-foundation/tasks.md",
+      "path": "openspec/changes/archive/2026-09-29-core-01-python-foundation/tasks.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-01-python-foundation/tasks.md"
+        "openspec/changes/archive/2026-09-29-core-01-python-foundation/tasks.md"
       ],
       "kind": "manual"
     },
@@ -667,42 +667,91 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-01-bounded-review/proposal.md",
+      "path": "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/proposal.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/dev-workflow-01-bounded-review/proposal.md"
+        "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-01-bounded-review/design.md",
+      "path": "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/design.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/dev-workflow-01-bounded-review/design.md"
+        "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-01-bounded-review/tasks.md",
+      "path": "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/tasks.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/dev-workflow-01-bounded-review/tasks.md"
+        "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/tasks.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-01-bounded-review/specs/bounded-review-session/spec.md",
+      "path": "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/specs/bounded-review-session/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/dev-workflow-01-bounded-review/specs/bounded-review-session/spec.md"
+        "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/specs/bounded-review-session/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-01-bounded-review/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/TDD_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/dev-workflow-01-bounded-review/TDD_EVIDENCE.md"
+        "openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/python-foundation/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/specs/python-foundation/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/bounded-review-session/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/specs/bounded-review-session/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/cli.md",
+      "owner": "core-contracts",
+      "sources": [
+        "src/changecost/cli.py",
+        "src/changecost/operations.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/contracts.md",
+      "owner": "core-contracts",
+      "sources": [
+        "src/changecost/*.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/core-02-change-run-contracts/TDD_EVIDENCE.md",
+      "owner": "core-contracts",
+      "sources": [
+        "openspec/changes/core-02-change-run-contracts/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     }

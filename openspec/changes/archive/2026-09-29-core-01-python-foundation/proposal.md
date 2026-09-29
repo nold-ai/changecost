@@ -51,7 +51,7 @@ source-feasibility research. Its remaining provider evidence gaps do not block
 this independent foundation or authorize provider imports.
 
 Dependencies are implementation prerequisites; planning can proceed together.
-See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
+See [change order](../../../CHANGE_ORDER.md) and [source assessment](../../../../docs/research/pilot-source-assessment.md).
 
 ## Decisions and uncertainty
 
