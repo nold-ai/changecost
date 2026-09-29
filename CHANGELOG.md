@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Record completed Core-02 pre-promotion matrix/native assurance and the opening
+  of implementation PR #25. Keep fresh PR-head review and implementation acceptance
+  explicit; Core-02 remains unarchived until acceptance.
+
 - Group lifecycle operation fields into an immutable declaration request and
   separate interval merging from correction checks. Preserve CLI flags, portable
   records, retry idempotency and atomic outcome/interval updates while resolving

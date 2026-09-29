@@ -1,7 +1,9 @@
 # Tasks
 
 Prepared on 2026-09-29 against fresh main and the archived foundation/review specs.
-Implementation is in progress. Preparation probes are not product TDD. See
+Implementation and pre-promotion verification are complete at `fae72f330b2e8187521f2ed176b7bc0118f3575f`.
+[PR #25](https://github.com/nold-ai/changecost/pull/25) is open for current-head review
+and acceptance. Preparation probes are not product TDD. See
 [preparation evidence](PREPARATION_EVIDENCE.md) and [implementation evidence](TDD_EVIDENCE.md).
 
 ## 1. Scope and prerequisite recovery
@@ -30,6 +32,12 @@ Implementation is in progress. Preparation probes are not product TDD. See
 
 ## 5. Verification and handoff
 
-- [ ] 5.1 Run selected strict OpenSpec validation and make check with an explicit fresh comparison base and intended-file manifest; obtain actual supported-Linux full analyzer assurance, scoped independent reviews and all required checks without treating local missing analyzers as passing.
+- [x] 5.1 Run selected strict OpenSpec validation and make check with an explicit fresh comparison base and intended-file manifest; obtain actual supported-Linux full analyzer assurance, scoped independent reviews and all required checks without treating local missing analyzers as passing.
 - [x] 5.2 Reconcile every scenario with actual TDD_EVIDENCE.md commands/results, verify scope/non-goals, docs/index/package versions and issue links/relationships, and record unresolved evidence honestly. Do not mark provider support, reconciliation or estimation delivered.
-- [ ] 5.3 Verify the final staged snapshot, commit/push through the verification stage, and open the focused implementation PR when requested; retain rollback/backup guidance and archive only after implementation acceptance.
+- [x] 5.3 Verify the final staged snapshot, commit/push through the verification stage, and open the focused implementation PR when requested; retain rollback/backup guidance and archive only after implementation acceptance.
+
+Promotion checkpoint, 2026-09-29 (Europe/Berlin): GitHub run 36558317437 and both
+native reports certify the cited implementation commit. The reviewed branch was
+committed/pushed and ready PR #25 opened against main; fresh PR-head checks and
+Codex/CodeRabbit review remain pending. Core-02 is intentionally not archived until
+implementation acceptance. No merge, issue closure or release is claimed.

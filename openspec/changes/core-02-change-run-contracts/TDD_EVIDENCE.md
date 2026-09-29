@@ -210,3 +210,28 @@ is not product-defect TDD evidence. The actual failing-before evidence for this
 maintainability correction is the native Radon report above. All 39 focused store
 and CLI tests pass after the refactor. Final matrix tests, independent review and
 current-commit native CI evidence are recorded in the workflow handoff and issue.
+
+
+## Promotion checkpoint — 2026-09-29 (Europe/Berlin)
+
+Implementation commit `fae72f330b2e8187521f2ed176b7bc0118f3575f` passed
+[GitHub run 36558317437](https://github.com/nold-ai/changecost/actions/runs/36558317437)
+on Python 3.11.15 and 3.13.14. Each native report proves all ten analyzers ran/PASS,
+zero blockers, assurance PASS and exit 0 (`PASS_WITH_ADVISORY`). The 823 warnings
+and 17 informational findings per report remain disclosed maintenance advisories;
+no analyzer threshold or policy was weakened. Both full 154-file digests match
+`bcb0320a3d90c2fe8c0c01685e901ed486a74b88982ae026b089c69f8eeb9dba`.
+Local full suites passed 770 tests plus four subtests on each interpreter, and
+both explicit-base and default-HEAD staged gates passed before the normal commit.
+Independent final reviews found no remaining defects; retained workflow evidence
+binds the reviewed manifest to that commit.
+
+Fresh main and remote feature reads at promotion still identify main
+`cb6ff3b2e218466c8633463928e7c94b1cf31b22` and the implementation commit above.
+The maintainer explicitly requested the promotion/review workflow. Ready
+[PR #25](https://github.com/nold-ai/changecost/pull/25) was created against main;
+its initial head/base/body/draft status were read back. Tasks 5.1 and 5.3 now record
+that completed verification/publication checkpoint. This documentation follow-up
+requires its own scoped checks and review before commit; earlier CI does not
+certify a later head. Current PR-head CI, Codex/CodeRabbit review and implementation
+acceptance remain pending. Issue #11 stays open and Core-02 stays unarchived.
