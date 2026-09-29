@@ -157,3 +157,19 @@ accepted-append branch now unconditionally requires a persisted export before ch
 its relations. Both faulty targets are rejected and repaired traces pass. This is an
 additional variant of the still-open history finding/correction set, not a new runtime
 defect or review batch. `history-absence-red.txt` retains the red proof.
+
+## Packet review-context family investigation
+
+Native4138893867 advisory-context deletion and the independently reproduced adjacent
+evidence-definition drift prompted a fourth actual correction set. Spec-first tests
+for findings deletion/replacement, seven definition fields and required/optional
+removals returned **11 failed, 19 deselected** before repair (`context-red.txt`).
+Minimal stateless old/new deltas now broaden semantic changes without interpreting
+advisory strings as authoritative dispositions. Execution refresh/order changes remain
+narrow-eligible; required nonpass remains incomplete; session findings remain intact.
+`context-green.txt` retains affected-suite results, with pinned Pylint4.0.7/Radon6.0.1
+error checks and full types separately retained. No second ledger or runtime edit.
+
+Prior cbce547 Linux jobs both passed; this later input needs independent family closure
+and fresh committed-head checks. Five recorded batches/max6 retain the earlier
+administrative overcount, four actual correction sets and unchanged90minute allowance.

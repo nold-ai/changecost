@@ -237,3 +237,128 @@ def test_matching_previous_packet_preserves_narrow_review(packet):
     result = validator()(root, data, copy.deepcopy(data))
     assert result["evidence_status"] == "current"
     assert not result["broader_review_required"]
+
+
+@pytest.mark.parametrize("current", [[], ["replacement"]])
+def test_prior_advisory_context_remains_inspectable(packet, current):
+    root, data = packet
+    prior = copy.deepcopy(data)
+    prior["known_findings"] = ["earlier concern"]
+    data["known_findings"] = current
+    result = validator()(root, data, prior)
+    assert result["evidence_status"] == "current"
+    assert result["broader_review_required"]
+    assert result["context_changes"]["known_findings"] == {
+        "previous": ["earlier concern"],
+        "current": current,
+    }
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("command", "different command"),
+        ("tool", "different analyzer"),
+        ("version", "10"),
+        ("required", False),
+        ("applicable", False),
+        ("rationale", "changed applicability"),
+        ("id", "renamed"),
+    ],
+)
+def test_evidence_definition_changes_require_broader_review(packet, field, value):
+    root, data = packet
+    extra = copy.deepcopy(data["evidence"][0])
+    extra.update(id="optional", required=False, rationale="diagnostic")
+    data["evidence"].append(extra)
+    prior = copy.deepcopy(data)
+    extra[field] = value
+    # Demotion uses a formerly required second analyzer while retaining the first.
+    prior["evidence"][1]["required"] = field == "required"
+    result = validator()(root, data, prior)
+    assert result["evidence_status"] == "current"
+    assert result["broader_review_required"]
+    assert (
+        result["context_changes"]["evidence_definitions"]["optional"]["previous"]["command"]
+        == prior["evidence"][1]["command"]
+    )
+
+
+@pytest.mark.parametrize("required", [True, False])
+def test_removed_evidence_definition_remains_inspectable(packet, required):
+    root, data = packet
+    prior = copy.deepcopy(data)
+    extra = copy.deepcopy(data["evidence"][0])
+    extra.update(id="removed", required=required, outcome="pass" if required else "unavailable")
+    prior["evidence"].append(extra)
+    result = validator()(root, data, prior)
+    assert result["evidence_status"] == "current"
+    assert result["broader_review_required"]
+    change = result["context_changes"]["evidence_definitions"]["removed"]
+    assert change["previous"]["required"] is required
+    assert change["current"] is None
+
+
+def test_same_definitions_execution_refresh_stays_narrow(packet):
+    root, data = packet
+    extra = copy.deepcopy(data["evidence"][0])
+    extra.update(id="optional", required=False)
+    data["evidence"].append(extra)
+    data["known_findings"] = ["second", "first"]
+    prior = copy.deepcopy(data)
+    prior["known_findings"].reverse()
+    prior["evidence"].reverse()
+    prior["evidence"][0].update(
+        outcome="unavailable", binding={}, report="old.json", report_sha256="0" * 64
+    )
+    result = validator()(root, data, prior)
+    assert result["evidence_status"] == "current"
+    assert not result["broader_review_required"]
+    assert result["context_changes"] == {}
+    data["evidence"][0]["outcome"] = "fail"
+    assert validator()(root, data, prior)["evidence_status"] == "incomplete"
+
+
+def test_advisory_changes_do_not_clear_session_findings(packet):
+    root, data = packet
+    review_session.record(root, "pilot", dict(id="open-finding", kind="finding", family="history"))
+    prior = copy.deepcopy(data)
+    prior["known_findings"] = ["advisory history note"]
+    before = review_session.packet(root, "pilot")["unresolved_findings"]
+    result = validator()(root, data, prior)
+    assert result["session_findings"] == before
+    assert review_session.packet(root, "pilot")["unresolved_findings"] == before
+    assert result["context_changes"]["known_findings"]["previous"] == prior["known_findings"]
+
+
+def test_added_evidence_definition_is_inspectable(packet):
+    root, data = packet
+    prior = copy.deepcopy(data)
+    extra = copy.deepcopy(data["evidence"][0])
+    extra.update(id="additional", required=False)
+    data["evidence"].append(extra)
+    result = validator()(root, data, prior)
+    assert result["evidence_status"] == "current"
+    assert result["broader_review_required"]
+    change = result["context_changes"]["evidence_definitions"]["additional"]
+    assert change["previous"] is None
+    assert change["current"] == {
+        "command": "pytest",
+        "tool": "pytest",
+        "version": "9",
+        "required": False,
+        "applicable": True,
+        "rationale": "",
+    }
+
+
+@pytest.mark.parametrize("duplicate_prior", [False, True])
+def test_duplicate_evidence_ids_cannot_collapse_policy(packet, duplicate_prior):
+    root, data = packet
+    prior = copy.deepcopy(data)
+    target = prior if duplicate_prior else data
+    target["evidence"].append(copy.deepcopy(target["evidence"][0]))
+    result = validator()(root, data, prior)
+    assert result["evidence_status"] == "incomplete"
+    assert result["broader_review_required"]
+    assert "unique evidence identities" in result["errors"][0]

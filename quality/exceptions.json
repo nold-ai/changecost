@@ -1,23 +1,23 @@
 {
   "CONTRIBUTING.md": {
-    "reason": "Reviewed test-only complete persisted-history oracle and selected import controls: setup, dependencies, gate commands and contributor workflow are unchanged. Behavioral guide/spec and pilot/TDD receipts describe the strengthened bounded assertions and exclusions. Product runtime and CLI are unchanged.",
-    "digest": "90a71f5d0e7101eb4e722228ea2f030ad391edbe2a464217108b7dc49f4791c7"
+    "reason": "Reviewed stateless advisory/evidence-policy context preservation in the contributor packet: setup, dependencies, gate commands and overall workflow are unchanged. Detailed new output/semantic broadening is updated in the behavioral guide/spec, with investigation proof in pilot/TDD. No runtime or authoritative-session behavior change.",
+    "digest": "1851cd268a22d2e4f4fecc50d57f7cb46ea17d1d1cdb77281c287a6fa6ca3382"
   },
   "README.md": {
-    "reason": "Reviewed test-only complete persisted-history oracle and selected import controls: setup, dependencies, gate commands and contributor workflow are unchanged. Behavioral guide/spec and pilot/TDD receipts describe the strengthened bounded assertions and exclusions. Product runtime and CLI are unchanged.",
-    "digest": "90a71f5d0e7101eb4e722228ea2f030ad391edbe2a464217108b7dc49f4791c7"
+    "reason": "Reviewed stateless advisory/evidence-policy context preservation in the contributor packet: setup, dependencies, gate commands and overall workflow are unchanged. Detailed new output/semantic broadening is updated in the behavioral guide/spec, with investigation proof in pilot/TDD. No runtime or authoritative-session behavior change.",
+    "digest": "1851cd268a22d2e4f4fecc50d57f7cb46ea17d1d1cdb77281c287a6fa6ca3382"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed test-only complete persisted-history oracle and selected import controls: setup, dependencies, gate commands and contributor workflow are unchanged. Behavioral guide/spec and pilot/TDD receipts describe the strengthened bounded assertions and exclusions. Product runtime and CLI are unchanged.",
-    "digest": "90a71f5d0e7101eb4e722228ea2f030ad391edbe2a464217108b7dc49f4791c7"
+    "reason": "Reviewed stateless advisory/evidence-policy context preservation in the contributor packet: setup, dependencies, gate commands and overall workflow are unchanged. Detailed new output/semantic broadening is updated in the behavioral guide/spec, with investigation proof in pilot/TDD. No runtime or authoritative-session behavior change.",
+    "digest": "1851cd268a22d2e4f4fecc50d57f7cb46ea17d1d1cdb77281c287a6fa6ca3382"
   },
   "docs/commands.md": {
     "reason": "Reviewed behavioral-evidence contributor helper, guide links and workflow skill bodies: public product CLI signatures and skill metadata are unchanged. Generated command reference is byte-identical after index regeneration; the new contributor command is documented in its guide. Current generated-output verification remains mandatory.",
     "digest": "5ac63ae54e908b62c504452a336e0b67c602e65a3429c35f23d651697d9bb426"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed test-only complete persisted-history oracle and selected import controls: setup, dependencies, gate commands and contributor workflow are unchanged. Behavioral guide/spec and pilot/TDD receipts describe the strengthened bounded assertions and exclusions. Product runtime and CLI are unchanged.",
-    "digest": "90a71f5d0e7101eb4e722228ea2f030ad391edbe2a464217108b7dc49f4791c7"
+    "reason": "Reviewed stateless advisory/evidence-policy context preservation in the contributor packet: setup, dependencies, gate commands and overall workflow are unchanged. Detailed new output/semantic broadening is updated in the behavioral guide/spec, with investigation proof in pilot/TDD. No runtime or authoritative-session behavior change.",
+    "digest": "1851cd268a22d2e4f4fecc50d57f7cb46ea17d1d1cdb77281c287a6fa6ca3382"
   },
   "llms.txt": {
     "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",

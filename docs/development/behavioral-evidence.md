@@ -163,3 +163,11 @@ Token categories, turns, correction batches, design ambiguities, genuine defects
 seeded detections and wall minutes have distinct units. Missing costs stay unknown;
 one pilot cannot establish causal savings. Rollback reverts these contributor files
 while retaining ignored evidence/session history and existing user stores.
+
+A follow-up also compares advisory `known_findings` and analyzer definitions keyed by
+ID (command, tool, version, required, applicable, rationale). Changed definitions or
+advisory lists require broader review and appear in `context_changes` with previous
+and current values; added/removed definitions have an explicit null counterpart.
+These advisory strings never resolve authoritative session findings. Outcome, binding
+and report path/hash refresh alone do not broaden unchanged policy, but required
+current evidence must still pass. List ordering alone does not change these contexts.

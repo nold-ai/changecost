@@ -194,3 +194,36 @@ sequence allocation is not required by this oracle.
 Changing clocks within a trace, concurrent writers, generalized merge imports and
 observation-only imports remain outside this bounded pilot. Append-only assumptions
 SHALL NOT be applied to those excluded import operations.
+
+### Requirement: Follow-up packets preserve inspectable review context
+
+The packet comparison SHALL expose changed advisory known-findings lists and changed
+analyzer definitions with both previous and current values, requiring broader review
+when they differ. Definitions SHALL be keyed by evidence ID and include command,
+tool, version, required, applicable and rationale; additions/removals SHALL retain
+the available descriptor and an explicit absent counterpart. These advisory strings
+SHALL NOT decide authoritative finding dispositions or create another review ledger.
+Execution outcome, binding and report path/digest refresh alone SHALL NOT require
+broader review when the evidence remains current and definitions are unchanged.
+
+#### Scenario: Advisory context disappears or is replaced
+
+- **GIVEN** a same-change prior packet with known findings
+- **WHEN** a follow-up removes or replaces that context
+- **THEN** the result exposes both lists and requires broader review while retaining
+  the existing review-session finding obligations unchanged.
+
+#### Scenario: Evidence policy changes while current reports pass
+
+- **GIVEN** a same-change prior packet with analyzer definitions
+- **WHEN** evidence is removed, added, demoted or its command/tool/version/applicability/
+  rationale changes
+- **THEN** the result exposes old/new definitions for changed IDs and requires broader
+  review even if remaining required evidence passes.
+
+#### Scenario: Same policy receives fresh execution evidence
+
+- **GIVEN** unchanged analyzer definitions and advisory findings
+- **WHEN** outcomes, binding or report bytes/path are refreshed with valid current evidence
+- **THEN** these execution changes alone do not require broader review, while current
+  required non-passing evidence still returns incomplete.

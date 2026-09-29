@@ -105,6 +105,26 @@ def check_evidence(root: Path, packet: Packet, binding: dict) -> tuple[list[str]
     return passed, errors
 
 
+def context_changes(packet: Packet, previous: Packet | None) -> dict[str, Any]:
+    if previous is None:
+        return {}
+    changes: dict[str, Any] = {}
+    before, after = sorted(previous.known_findings), sorted(packet.known_findings)
+    if before != after:
+        changes["known_findings"] = dict(previous=before, current=after)
+    fields = {"command", "tool", "version", "required", "applicable", "rationale"}
+    old = {e.id: e.model_dump(include=fields) for e in previous.evidence}
+    new = {e.id: e.model_dump(include=fields) for e in packet.evidence}
+    definitions = {
+        key: dict(previous=old.get(key), current=new.get(key))
+        for key in sorted(old.keys() | new.keys())
+        if old.get(key) != new.get(key)
+    }
+    if definitions:
+        changes["evidence_definitions"] = definitions
+    return changes
+
+
 def impact(packet: Packet, previous: Packet | None, actual: dict[str, str], uncovered: set[str]):
     before = previous.inputs if previous else packet.inputs
     changes = {
@@ -125,11 +145,13 @@ def impact(packet: Packet, previous: Packet | None, actual: dict[str, str], unco
                 "input_roles",
             )
         )
+    context = context_changes(packet, previous)
     return dict(
+        context_changes=context,
         changed_inputs=sorted(changes | uncovered),
         affected_invariants=sorted({x for d in affected for x in d.invariants}),
         affected_assumptions=sorted({x for d in affected for x in d.assumptions}),
-        broader_review_required=broad,
+        broader_review_required=broad or bool(context),
     )
 
 

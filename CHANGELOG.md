@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve prior advisory findings and analyzer policy definitions in follow-up packet
+  context; require broader review for semantic changes while allowing fresh executions.
+
 - Check complete persisted observations and source boundaries in the bounded lifecycle
   oracle, including accepted appends and fresh destination imports.
 

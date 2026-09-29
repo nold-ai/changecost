@@ -226,3 +226,25 @@ finding: fresh/existing successful-write-then-delete faults skipped append check
 Both new controls failed before repair; accepted appends now require persisted storage
 unconditionally. This additional closure iteration remains in the third correction
 set and reinforces the observed maintenance/review overhead.
+
+## Follow-up context preservation investigation
+
+Codex next found P2 `4138893867` on cbce547: a same-change packet could drop prior
+advisory findings and still permit narrow review. Independent family investigation
+also reproduced evidence-policy drift: removing/demoting an obligation or changing
+its analyzer definition remained narrow while current evidence passed. These are
+two semantic tooling defects (eight total), not each test row counted separately.
+Authoritative review-session dispositions were never bypassed; the defect lost
+advisory reviewer context. The fourth actual correction set preserves old/new changed
+findings and evidence descriptors in a stateless `context_changes` result and requires
+broader review. Definitions include ID, command/tool/version and applicability policy;
+execution outcome/report/binding refresh is deliberately separate.
+
+Eleven regressions failed before repair. Positive checks preserve narrow review for
+fresh same-policy executions and ordering changes, keep required non-passing evidence
+incomplete, expose added definitions and retain unresolved session findings. Both
+Linux jobs passed on cbce547 before this later repair; new-head gates remain required.
+Five recorded batches include the earlier administrative overcount; max6/90minutes
+was explicitly authorized without resetting history. No lower recurring review cost
+has been established: this pilot added maintenance work and repeatedly needed both
+independent local and native review to discover defects in its own assurance tooling.
