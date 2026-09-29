@@ -488,3 +488,21 @@ policy, not a claim about GitHub's native merge rules.
 #### Scenario: Optional neutral conclusion
 - **WHEN** all required checks succeed and an optional check concludes neutral
 - **THEN** that optional neutral result SHALL not independently block completion.
+
+### Requirement: Collection verifies bounded cross-surface consistency
+Each observation SHALL collect all paginated check, status, review, PR-comment and
+thread/comment surfaces twice under one existing deadline. Both passes SHALL retain
+initial/final PR metadata checks. Only matching meaningful projections SHALL be
+accepted, returning the second observation; drift, malformed data or second-pass
+failure SHALL replace prior green evidence with incomplete monitoring.
+
+#### Scenario: Report or gate changes during collection
+- **WHEN** meaningful content, lifecycle state, freshness timestamps or PR identity
+  differs between the two complete passes
+- **THEN** the observation SHALL be rejected without a stabilization retry loop.
+
+#### Scenario: Stable observations and limitations
+- **WHEN** both passes agree apart from excluded transport metadata or page grouping
+- **THEN** the second observation MAY be accepted with existing reviewer chronology.
+- **AND** sequential APIs SHALL NOT be described as atomic or as detecting unobserved
+  changes that revert between reads or occur after the final observation.

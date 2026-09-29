@@ -164,6 +164,10 @@ Minute extensions and measured time/usage use finite canonical sums of original
 event components, preserving exact budget boundaries across retries and restarts.
 Overflow fails closed; do not round limits or reset history to recover.
 
+Remote collection makes exactly two complete paginated passes under one deadline
+and accepts only matching meaningful evidence, returning the second observation.
+Drift or second-pass failure invalidates prior green monitoring. This bounded check
+is not an atomic API snapshot and cannot detect reverted or post-final-read changes.
 Contract-required completed checks must conclude `success`; `neutral` cannot prove
 required validation ran. Optional neutral checks retain their nonblocking policy.
 This repository assurance rule is stricter than GitHub's native merge eligibility.

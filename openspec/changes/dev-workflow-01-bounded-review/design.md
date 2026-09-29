@@ -158,3 +158,12 @@ checks must succeed. Optional neutral checks remain allowed, and other failures 
 pending states retain existing behavior. Same-name success cannot hide a neutral
 required result on another page; this change does not introduce run supersession.
 The rule expresses repository positive assurance, not GitHub native merge semantics.
+
+Collection uses exactly two full paginated passes, each retaining initial/final PR
+metadata guards, within the same outer deadline. Validated semantic projections
+must match before returning the second pass. Existing review chronology is retained;
+page grouping and excluded avatar/reaction/URL noise do not alter the projection.
+No stabilization loop or deadline reset is added. Drift, partial pagination or
+second-pass API/shape failure becomes incomplete evidence and replaces prior green.
+Sequential reads provide bounded observation consistency, not authenticated atomic
+snapshots; unobserved changes that revert or occur after final reads remain possible.

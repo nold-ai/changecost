@@ -1174,6 +1174,16 @@ def current_report_receipts(state: dict[str, Any]) -> dict[str, str] | None:
 
 
 def gh_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
+    first = collect_remote_snapshot(repository, pull_request)
+    validate_snapshot(first)
+    second = collect_remote_snapshot(repository, pull_request)
+    validate_snapshot(second)
+    if semantic_snapshot(first) != semantic_snapshot(second):
+        raise ValueError("remote evidence changed between collection passes")
+    return second
+
+
+def collect_remote_snapshot(repository: str, pull_request: int) -> dict[str, Any]:
     endpoints = {
         "checks": f"repos/{repository}/commits/{{head}}/check-runs?per_page=100",
         "statuses": f"repos/{repository}/commits/{{head}}/status?per_page=100",

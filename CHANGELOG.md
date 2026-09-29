@@ -20,6 +20,9 @@
 - Bind review evidence to explicit PR target and comparison bases, preserve their
   original contract, and require fresh evidence after atomic context adoption.
 
+- Verify two complete remote evidence collections under one deadline before
+  accepting stable report/gate state; fail closed on drift or second-pass errors.
+
 - Require positive success from contract-required completed checks while retaining
   optional neutral behavior and existing pending/failure handling.
 

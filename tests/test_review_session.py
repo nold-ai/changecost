@@ -530,19 +530,23 @@ def test_snapshot_reads_each_paginated_review_source(monkeypatch: pytest.MonkeyP
                 "requested_reviewers": [],
             }
             if not paginate
-            else [{"page": endpoint}]
+            else []
         )
 
     monkeypatch.setattr(review_session, "gh_json", fake_gh)
     monkeypatch.setattr(
         review_session,
         "gh_review_threads",
-        lambda repository, pull_request: [{"id": "thread-1", "isResolved": False}],
+        lambda repository, pull_request: [
+            {"id": "thread-1", "isResolved": False, "isOutdated": False, "comments": []}
+        ],
     )
     snapshot = review_session.gh_snapshot("nold-ai/changecost", 22)
     assert snapshot["head"] == TEST_HEAD
-    assert len([call for call in calls if call[1]]) == 4
-    assert snapshot["threads"] == [{"id": "thread-1", "isResolved": False}]
+    assert len([call for call in calls if call[1]]) == 8
+    assert snapshot["threads"] == [
+        {"id": "thread-1", "isResolved": False, "isOutdated": False, "comments": []}
+    ]
 
 
 def test_review_threads_and_comments_paginate(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -2105,6 +2109,7 @@ def test_request_order_during_collection_is_not_drift(monkeypatch: pytest.Monkey
             [{"login": "a"}, {"login": "b"}],
             [{"login": "b", "avatar_url": "changed"}, {"login": "a"}],
         )
+        * 2
     )
 
     def api(endpoint: str, *, paginate: bool = False) -> Any:
@@ -3582,3 +3587,157 @@ def test_uncompleted_checks_never_become_positive(tmp_path: Path, status: str) -
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] != "complete"
     assert review_session.load(tmp_path, "change")["monitor"]["pending"]
+
+
+def mock_collection_passes(
+    monkeypatch: pytest.MonkeyPatch, snapshots: list[dict[str, Any]]
+) -> list[int]:
+    reads = [0]
+
+    def selected() -> dict[str, Any]:
+        return snapshots[min((max(reads[0], 1) - 1) // 2, len(snapshots) - 1)]
+
+    def api(endpoint: str, **kwargs: Any) -> Any:
+        if endpoint.endswith("/pulls/24"):
+            reads[0] += 1
+            snap = selected()
+            return {
+                "head": {"sha": snap["head"]},
+                "base": snap["pr_base"],
+                "requested_reviewers": snap["requested_reviewers"],
+            }
+        snap = selected()
+        for suffix, field in [
+            ("check-runs?per_page=100", "checks"),
+            ("status?per_page=100", "statuses"),
+            ("reviews?per_page=100", "reviews"),
+            ("comments?per_page=100", "comments"),
+        ]:
+            if endpoint.endswith(suffix):
+                return snap[field]
+        raise AssertionError(endpoint)
+
+    monkeypatch.setattr(review_session, "gh_json", api)
+    monkeypatch.setattr(review_session, "gh_review_threads", lambda *args: selected()["threads"])
+    return reads
+
+
+@pytest.mark.parametrize("surface", ["checks", "statuses", "reviews", "comments", "threads"])
+def test_remote_collection_rejects_between_pass_surface_drift(
+    monkeypatch: pytest.MonkeyPatch, surface: str
+) -> None:
+    first = complete_snapshot()
+    second = json.loads(json.dumps(first))
+    if surface == "checks":
+        second[surface][0]["check_runs"][0]["conclusion"] = "failure"
+    elif surface == "statuses":
+        second[surface] = [{"statuses": [{"context": "other", "state": "pending"}]}]
+    elif surface == "reviews":
+        second[surface][0][0]["body"] = "new finding"
+    elif surface == "comments":
+        second[surface] = [[{"id": 1, "body": "new finding"}]]
+    else:
+        second[surface] = [
+            {
+                "id": "thread",
+                "isResolved": False,
+                "isOutdated": False,
+                "comments": [{"id": "comment", "body": "new finding"}],
+            }
+        ]
+    mock_collection_passes(monkeypatch, [first, second])
+    with pytest.raises(ValueError):
+        review_session.gh_snapshot("nold-ai/changecost", 24)
+
+
+@pytest.mark.parametrize(
+    "surface,field,value",
+    [
+        ("check", "status", "in_progress"),
+        ("check", "started_at", "2000-01-01T00:00:00Z"),
+        ("status", "state", "failure"),
+        ("status", "created_at", "2000-01-01T00:00:00Z"),
+        ("review", "state", "CHANGES_REQUESTED"),
+        ("review", "commit_id", "a" * 40),
+        ("review", "submitted_at", "2000-01-01T00:00:00Z"),
+        ("thread", "isResolved", False),
+        ("thread", "isOutdated", True),
+    ],
+)
+def test_verification_pass_preserves_lifecycle_and_freshness(
+    monkeypatch: pytest.MonkeyPatch, surface: str, field: str, value: Any
+) -> None:
+    first = reviewed_thread_snapshot()
+    first["statuses"] = [
+        {"statuses": [{"context": "ci", "state": "success", "created_at": "2099-01-01T00:00:00Z"}]}
+    ]
+    second = json.loads(json.dumps(first))
+    items = {
+        "check": second["checks"][0]["check_runs"][0],
+        "status": second["statuses"][0]["statuses"][0],
+        "review": second["reviews"][0][0],
+        "thread": second["threads"][0],
+    }
+    items[surface][field] = value
+    snapshots = iter([first, second])
+    monkeypatch.setattr(review_session, "collect_remote_snapshot", lambda *args: next(snapshots))
+    with pytest.raises(ValueError, match="changed"):
+        review_session.gh_snapshot("nold-ai/changecost", 24)
+
+
+def test_consistent_passes_return_second_with_harmless_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    first = complete_snapshot()
+    first["comments"] = [[{"id": 1, "body": "one"}, {"id": 2, "body": "two"}]]
+    second = json.loads(json.dumps(first))
+    second["comments"] = [[second["comments"][0][0]], [second["comments"][0][1]]]
+    second["reviews"][0][0]["user"]["avatar_url"] = "new"
+    second["comments"][0][0]["reactions"] = {"+1": 1}
+    snapshots = iter([first, second])
+    monkeypatch.setattr(review_session, "collect_remote_snapshot", lambda *args: next(snapshots))
+    assert review_session.gh_snapshot("nold-ai/changecost", 24) is second
+
+
+@pytest.mark.parametrize("failure", ["api", "malformed", "timeout"])
+def test_second_pass_failure_replaces_prior_green(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    calls = [0]
+
+    def collect(*args: Any) -> Any:
+        calls[0] += 1
+        if calls[0] == 1:
+            return complete_snapshot()
+        if failure == "malformed":
+            return {"errors": ["partial pages"]}
+        if failure == "timeout":
+            raise subprocess.TimeoutExpired("gh", 1)
+        raise RuntimeError("API failure")
+
+    monkeypatch.setattr(review_session, "collect_remote_snapshot", collect)
+    observed = review_session.collect_snapshot(tmp_path, "change", "nold-ai/changecost", 24, 100)
+    review_session.record_monitor_snapshot(tmp_path, "change", observed)
+    assert calls == [2]
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    assert review_session.packet(tmp_path, "change")["report_receipts"] is None
+
+
+def test_two_passes_share_one_decreasing_request_deadline(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    ticks = iter([100, 110])
+    monkeypatch.setattr(review_session.time, "monotonic", lambda: next(ticks))
+    timeouts = []
+
+    def collect(*args: Any) -> Any:
+        timeouts.append(review_session.request_timeout())
+        return complete_snapshot()
+
+    monkeypatch.setattr(review_session, "collect_remote_snapshot", collect)
+    observed = review_session.collect_snapshot(tmp_path, "change", "nold-ai/changecost", 24, 150)
+    assert timeouts == [50, 40]
+    assert "errors" not in observed

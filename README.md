@@ -90,6 +90,10 @@ original measurements; overflowing updates are rejected without granting unlimit
 Every refresh validates current changed-path coverage. Changing authorized paths
 requires an explicitly referenced approved scope manifest; packets retain both
 the original contract and recaptured current manifest.
+Remote collection makes exactly two complete paginated passes under one deadline
+and accepts only matching meaningful evidence, returning the second observation.
+Drift or second-pass failure invalidates prior green monitoring. This bounded check
+is not an atomic API snapshot and cannot detect reverted or post-final-read changes.
 Contract-required completed checks must conclude `success`; `neutral` cannot prove
 required validation ran. Optional neutral checks retain their nonblocking policy.
 This repository assurance rule is stricter than GitHub's native merge eligibility.

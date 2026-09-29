@@ -580,3 +580,30 @@ metadata and strict OpenSpec pass. Final logs are `.changecost/batch20-full.txt`
 `.changecost/batch20-types.txt`. Fresh native Linux/provider results remain required
 after publication; historical counters, recovery limitations and unknown time/usage
 remain retained without a reset or claimed savings.
+
+## Bounded cross-surface collection consistency
+
+On 2026-09-29 (Europe/Berlin), five failures reproduced check/status/review/comment/
+thread changes being missed after their first collection (`.changecost/batch21-red.txt`).
+The collector now makes exactly two complete passes, validates both and compares
+existing meaningful projections before returning the second. Each pass retains
+all pagination and initial/final metadata guards; one outer request deadline covers
+both passes. No ordering refactor, stabilization retry or schema change is added.
+
+Tests cover surface content and lifecycle changes, freshness timestamps, stable
+page regrouping and excluded transport metadata, second-pass API/malformed/timeout
+errors replacing prior green, and decreasing request allowance across both passes.
+The prior pagination fixture now supplies valid complete shapes and asserts eight
+paginated REST reads instead of four; request-order controls supply all four PR
+metadata reads. Sequential observations cannot guarantee atomicity, detect unseen
+changes that revert between reads, or prevent changes after the last observation.
+
+Final verification passes 695 repository tests plus four subtests under an empty
+Git template, including all 527 helper cases. Coverage measures 982/1033 helper
+statements (95% rounded); maximum complexity is 10 and native KISS findings are
+empty. Ruff/formatting, BasedPyright, docs against HEAD/main, index, metadata and
+strict OpenSpec pass. Final logs are `.changecost/batch21-full.txt`,
+`.changecost/batch21-focused.txt`, `.changecost/batch21-coverage.txt` and
+`.changecost/batch21-types.txt`. Fresh native Linux/provider results remain required
+after publication; prior counters, legacy recovery and unknown historical time/usage
+remain preserved without a reset or savings claim.
