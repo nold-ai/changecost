@@ -214,3 +214,15 @@ not a claim about UUID generation. A local RadonCC16 result on assert_append pro
 extracting unchanged prior-history assertions; pinned error checks then passed.
 No new runtime behavior, generalized import scope, ledger or correction batch was added.
 This sixth actual correction set is seventh recorded event/max8 with history retained.
+
+## Independent export envelope/scalar anchors
+
+Native4139247160 and adjacent copied-export probes produced **5failed** controls
+before repair (`envelope-red.txt`): wrong schema, source boolean/float, observation
+boolean/float. The independent envelope guard anchors schema and exact sequence
+integer/ranges before history/partition/payload relations, including fresh import and
+reimport. Valid endpoints and invalid adjacent range values complement those faults.
+The affected suites pass88tests (`envelope-green.txt`); full types, pinned Pylint/Radon
+error checks and scoped style/docs/staged checks are retained separately. No production
+schema validator supplies the expected result. This is seventh actual correction set,
+eighth recorded batch/max9, preserving sticky REPLAN and all previous evidence.

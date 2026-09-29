@@ -970,5 +970,17 @@
     "prior_head_linux": "d620602 both required jobs passed",
     "new_head_gates": "pending",
     "usage_snapshot_unchanged": true
+  },
+  "later_envelope_appendix": {
+    "finding": "native4139247160",
+    "unique_semantic_findings_total": 12,
+    "actual_correction_sets": 7,
+    "recorded_batches": 8,
+    "authorized_max_batches": 9,
+    "public_export_fault_variants": 5,
+    "prior_head_linux": "e08c276 both required jobs passed",
+    "new_head_gates": "pending",
+    "coordinator_status": "replan; history retained",
+    "usage_snapshot_unchanged": true
   }
 }

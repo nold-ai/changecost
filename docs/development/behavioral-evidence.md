@@ -197,3 +197,9 @@ multiplicity. Local uniqueness/coverage/clock/boundary checks remain, and destin
 identity cannot alias an original observer. Lifecycle source identity matches its
 pre-call fixture even on first creation. These controls still exclude generalized
 imports and the opaque identity-generation algorithm.
+
+Every consumed non-absent export also anchors the literal `changecost/v1` envelope.
+Source sequence is an exact integer (not bool/float) in0..2**63-1; observations use
+exact integers in1..2**63-1. These small independent checks precede comparisons and
+cover before/after, fresh import and reimport exports. They do not call the production
+model validator or expand the pilot into arbitrary hostile-object testing.

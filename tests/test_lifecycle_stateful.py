@@ -161,7 +161,26 @@ def assert_append(before, after):
     assert_observations(after, new_records, NOW)
 
 
+def assert_export_envelope(bundle):
+    assert bundle.schema_version == "changecost/v1", "export envelope schema"
+    assert type(bundle.source.sequence) is int and 0 <= bundle.source.sequence <= 2**63 - 1, (
+        "export envelope source sequence"
+    )
+    for observation in bundle.observations:
+        assert type(observation.sequence) is int and 1 <= observation.sequence <= 2**63 - 1, (
+            "export envelope observation sequence"
+        )
+
+
+def checked_export(store):
+    bundle = store.export_bundle()
+    assert_export_envelope(bundle)
+    return bundle
+
+
 def assert_fresh_import(origin, destination, clock):
+    assert_export_envelope(origin)
+    assert_export_envelope(destination)
     assert destination.schema_version == origin.schema_version, "import preserves schema"
     assert destination.records == origin.records, "import preserves records"
     assert canonical_observations(foreign_observations(destination)) == canonical_observations(
@@ -188,7 +207,7 @@ def operation_accepted(store, action, operation, step):
 
 
 def apply_checked(store, model, action, operation, payloads, step):
-    before = store.export_bundle() if store.path.exists() else None
+    before = checked_export(store) if store.path.exists() else None
     previous_model = deepcopy(model)
     action = deepcopy(action)
     expected = model.attempt(action)
@@ -196,7 +215,7 @@ def apply_checked(store, model, action, operation, payloads, step):
         payloads.advance(previous_model, model, action, step)
     accepted = operation_accepted(store, action, operation, step)
     assert accepted == expected, "acceptance matches scenario model"
-    after = store.export_bundle() if store.path.exists() else None
+    after = checked_export(store) if store.path.exists() else None
     if not expected:
         assert after == before, "rejected operation must preserve full history"
     elif model == previous_model:
@@ -361,12 +380,12 @@ def test_chronology_fault_then_repair_and_later_import(tmp_path):
         chronology_trace(SequenceBlindStore, tmp_path / "fault.sqlite")
     source = chronology_trace(Store, tmp_path / "source.sqlite")
     destination = Store(tmp_path / "destination.sqlite", clock=lambda: NOW + timedelta(days=30))
-    bundle = source.export_bundle()
+    bundle = checked_export(source)
     destination.import_bundle(bundle)
-    before = destination.export_bundle()
+    before = checked_export(destination)
     assert_fresh_import(bundle, before, NOW + timedelta(days=30))
     destination.import_bundle(bundle)
-    assert destination.export_bundle() == before, "reimport preserves destination history"
+    assert checked_export(destination) == before, "reimport preserves destination history"
     for record in bundle.records:
         ref = RecordRef(kind=record.kind, record_id=record.record_id)
         assert not destination.eligible(ref, bundle.source), (
@@ -585,3 +604,88 @@ def test_initial_append_source_matches_allocation_fixture(tmp_path):
     with pytest.raises(AssertionError, match="source identity matches pre-call fixture"):
         trace(tmp_path / "fault.sqlite", [Action("change")], faulty)
     trace(tmp_path / "repaired.sqlite", [Action("change")])
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        pytest.param(
+            lambda b: b.model_copy(update={"schema_version": "changecost/v2"}), id="schema"
+        ),
+        pytest.param(
+            lambda b: b.model_copy(
+                update={"source": b.source.model_copy(update={"sequence": True})}
+            ),
+            id="source-bool",
+        ),
+        pytest.param(
+            lambda b: b.model_copy(
+                update={
+                    "source": b.source.model_copy(update={"sequence": float(b.source.sequence)})
+                }
+            ),
+            id="source-float",
+        ),
+        pytest.param(
+            lambda b: b.model_copy(
+                update={
+                    "observations": [
+                        o.model_copy(update={"sequence": True}) for o in b.observations
+                    ]
+                }
+            ),
+            id="observation-bool",
+        ),
+        pytest.param(
+            lambda b: b.model_copy(
+                update={
+                    "observations": [
+                        o.model_copy(update={"sequence": float(o.sequence)}) for o in b.observations
+                    ]
+                }
+            ),
+            id="observation-float",
+        ),
+    ],
+)
+def test_public_export_envelope_fault_then_repair(tmp_path, fault):
+    export = Store.export_bundle
+
+    def faulty(store):
+        return fault(export(store))
+
+    with (
+        patch.object(Store, "export_bundle", faulty),
+        pytest.raises(AssertionError, match="export envelope"),
+    ):
+        trace(tmp_path / "fault.sqlite", [Action("change")])
+    trace(tmp_path / "repaired.sqlite", [Action("change")])
+
+
+@pytest.mark.parametrize("source,observation", [(0, 1), (2**63 - 1, 2**63 - 1)])
+def test_envelope_integer_range_boundaries(tmp_path, source, observation):
+    bundle = trace(tmp_path / "source.sqlite", [Action("change")]).export_bundle()
+    boundary = bundle.model_copy(
+        update={
+            "source": bundle.source.model_copy(update={"sequence": source}),
+            "observations": [
+                o.model_copy(update={"sequence": observation}) for o in bundle.observations
+            ],
+        }
+    )
+    assert_export_envelope(boundary)
+
+
+@pytest.mark.parametrize("source,observation", [(-1, 1), (2**63, 1), (1, 0), (1, 2**63)])
+def test_envelope_out_of_range_sequences_rejected(tmp_path, source, observation):
+    bundle = trace(tmp_path / "source.sqlite", [Action("change")]).export_bundle()
+    invalid = bundle.model_copy(
+        update={
+            "source": bundle.source.model_copy(update={"sequence": source}),
+            "observations": [
+                o.model_copy(update={"sequence": observation}) for o in bundle.observations
+            ],
+        }
+    )
+    with pytest.raises(AssertionError, match="export envelope"):
+        assert_export_envelope(invalid)

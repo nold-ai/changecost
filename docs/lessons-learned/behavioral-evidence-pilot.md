@@ -296,3 +296,21 @@ The mode omission predates this pilot. This latest provenance record is separate
 that ten-row artifact. The continuing omissions show that local field patches and
 passing generated traces did not establish complete transition/representation coverage.
 Both d620602 Linux jobs passed before this later repair; new-head proof remains required.
+
+## Export envelope correction
+
+Native P2 4139247160 on e08c276 exposed another initially unanchored invariant: first
+append could accept a consistently wrong Bundle schema. Independent adjacent probes
+showed copied public exports with boolean/float source or observation sequences could
+pass numerical comparisons. Five public-export faults failed the new controls before
+repair. An independent literal/schema and strict integer/range guard now runs on
+consumed before/after and fresh-import/reimport exports; existing full payload,
+partition, source identity and history relations remain. Valid range endpoints and
+invalid neighboring values are checked separately. No product runtime bug is claimed.
+
+This is one root-cause record with scalar variants: twelve semantic assurance records,
+seventh actual correction set, eight recorded batch events/max9 with the unchanged
+90-minute allowance. Sticky coordinator REPLAN remains an accepted negative pilot
+result, separately from the CodeRabbit clean-summary/REST-record gap. Prior e08c276
+Linux checks passed but cannot validate this later envelope repair. Review churn was
+not eliminated; final costs include these repeated closure/remote-validation cycles.

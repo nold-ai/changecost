@@ -289,3 +289,20 @@ old-local observation checks SHALL remain.
 The lifecycle source identity SHALL match the already established pre-call allocation
 fixture even on first creation; before/after stability alone is insufficient when no
 previous store exists. This does not test the opaque ID allocation algorithm.
+
+### Requirement: Every consumed export anchors its schema and sequence scalars
+
+Each non-absent export consumed by the bounded oracle, including before/after states
+and fresh-import origin/destination, SHALL declare schema `changecost/v1`.
+Source sequence SHALL have exact integer type (excluding boolean/float) and range
+0 through 2**63-1. Every observation sequence SHALL have exact integer type and range
+1 through 2**63-1. These independent envelope checks SHALL precede existing payload,
+partition/history and relational checks, without calling production schema validators.
+
+#### Scenario: Copied public exports retain numerically equal invalid scalar types
+
+- **GIVEN** real public exports wrapped with a wrong schema, boolean/float source
+  sequence or boolean/float observation sequence
+- **WHEN** the same selected lifecycle trace consumes them
+- **THEN** the oracle rejects each faulty envelope and accepts the repaired export,
+  rather than treating numerical equality or historical consistency as schema proof.

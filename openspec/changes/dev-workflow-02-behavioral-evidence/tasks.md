@@ -33,6 +33,8 @@
 
 - [x] 4.8 Conserve exact foreign observation partitions and initial fixture source identity for selected append/fresh-import transitions; retain complete local obligations and prove actual fabricated-provenance faults.
 
+- [x] 4.9 Anchor consumed Bundle schema and strict source/observation sequence envelopes independently, with faulty public-export copies and range-boundary controls.
+
 ## 5. Final integration and handoff
 
 - [ ] 5.1 Run strict OpenSpec validation and complete make check with explicit BASE_REF and intended-file manifest, plus the final staged-snapshot checks; obtain actual supported-Linux capsule evidence and resolve/justify findings without treating unavailable analyzers as passing.

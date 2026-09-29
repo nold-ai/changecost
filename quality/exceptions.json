@@ -1,14 +1,14 @@
 {
   "CONTRIBUTING.md": {
-    "reason": "Reviewed test-only exact foreign observation conservation and initial fixture source consistency: setup/dependencies/gate commands and workflow are unchanged. Behavioral guide/spec and pilot/TDD describe the selected partitions, proof and limits; production APIs remain unchanged.",
+    "reason": "Reviewed test-only literal export schema and strict sequence envelope guards: setup/dependencies/gate commands/workflow are unchanged. Behavioral guide/spec and pilot/TDD document consumed snapshot coverage, copied-export controls and bounded exclusions; runtime APIs remain unchanged.",
     "digest": "20a875bf86f789ec01e172c642c0c753586d05b87088f2149190c228dfd9ecd9"
   },
   "README.md": {
-    "reason": "Reviewed test-only exact foreign observation conservation and initial fixture source consistency: setup/dependencies/gate commands and workflow are unchanged. Behavioral guide/spec and pilot/TDD describe the selected partitions, proof and limits; production APIs remain unchanged.",
+    "reason": "Reviewed test-only literal export schema and strict sequence envelope guards: setup/dependencies/gate commands/workflow are unchanged. Behavioral guide/spec and pilot/TDD document consumed snapshot coverage, copied-export controls and bounded exclusions; runtime APIs remain unchanged.",
     "digest": "20a875bf86f789ec01e172c642c0c753586d05b87088f2149190c228dfd9ecd9"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed test-only exact foreign observation conservation and initial fixture source consistency: setup/dependencies/gate commands and workflow are unchanged. Behavioral guide/spec and pilot/TDD describe the selected partitions, proof and limits; production APIs remain unchanged.",
+    "reason": "Reviewed test-only literal export schema and strict sequence envelope guards: setup/dependencies/gate commands/workflow are unchanged. Behavioral guide/spec and pilot/TDD document consumed snapshot coverage, copied-export controls and bounded exclusions; runtime APIs remain unchanged.",
     "digest": "20a875bf86f789ec01e172c642c0c753586d05b87088f2149190c228dfd9ecd9"
   },
   "docs/commands.md": {
@@ -16,7 +16,7 @@
     "digest": "5ac63ae54e908b62c504452a336e0b67c602e65a3429c35f23d651697d9bb426"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed test-only exact foreign observation conservation and initial fixture source consistency: setup/dependencies/gate commands and workflow are unchanged. Behavioral guide/spec and pilot/TDD describe the selected partitions, proof and limits; production APIs remain unchanged.",
+    "reason": "Reviewed test-only literal export schema and strict sequence envelope guards: setup/dependencies/gate commands/workflow are unchanged. Behavioral guide/spec and pilot/TDD document consumed snapshot coverage, copied-export controls and bounded exclusions; runtime APIs remain unchanged.",
     "digest": "20a875bf86f789ec01e172c642c0c753586d05b87088f2149190c228dfd9ecd9"
   },
   "llms.txt": {

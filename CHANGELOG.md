@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Anchor bounded export schema and strict integer sequence envelopes before comparing
+  persisted lifecycle payloads, provenance and history.
+
 - Conserve exact foreign observation provenance in bounded append/import tests and
   verify the initial source identity against its pre-call allocation fixture.
 
