@@ -267,3 +267,25 @@ typed references, exact timestamps, optional fields, provenance and correction r
   timestamp precision, provenance, optional value or reason
 - **THEN** exact payload multiset comparison fails and the unchanged repaired operation
   passes, without deriving expectations from the altered records.
+
+### Requirement: Selected transitions conserve complete observation partitions
+
+Accepted lifecycle append SHALL preserve the exact complete foreign-observation
+multiset from before the operation (empty for a fresh store). Fresh selected import
+SHALL produce a foreign-observation multiset exactly equal to every input observation,
+with a destination identity distinct from the input observation identities. Equality
+SHALL preserve every field and multiplicity, not merely subset membership. Existing
+local identity uniqueness, one-observation-per-record, clock/boundary and immutable
+old-local observation checks SHALL remain.
+
+#### Scenario: Invented foreign provenance cannot pass append or fresh import
+
+- **GIVEN** the selected real SQLite append/import transition and valid original evidence
+- **WHEN** a faulty target adds a valid unique observation for an existing record under
+  an unrelated third-party store identity
+- **THEN** exact partition equality rejects it and the unchanged repaired transition
+  passes, without extending the pilot to generalized merge imports.
+
+The lifecycle source identity SHALL match the already established pre-call allocation
+fixture even on first creation; before/after stability alone is insufficient when no
+previous store exists. This does not test the opaque ID allocation algorithm.

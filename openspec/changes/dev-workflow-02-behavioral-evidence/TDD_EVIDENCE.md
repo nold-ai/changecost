@@ -201,3 +201,16 @@ passed. Audit was not applicable to unchanged locked dependencies. The only aggr
 limitation was required capsule analysis unsupported on this macOS controller. Pinned
 local Pylint/Radon error checks passed after complexity extraction; they do not replace
 the mandatory current-head Linux capsule.
+
+## Exact foreign observation/source partition
+
+Native4139150511 family investigation reproduced invented foreign observations on
+append and fresh import, plus first-source substitution. Spec-first fault controls
+returned **3failed** before repair (`partition-red.txt`); exact partition/source checks
+then passed77combined cases (`partition-green.txt`). Canonical sorted lists preserve
+all observation fields/multiplicity; fresh import foreign evidence equals original
+input exactly and local obligations remain. Fixed source identity is fixture consistency,
+not a claim about UUID generation. A local RadonCC16 result on assert_append prompted
+extracting unchanged prior-history assertions; pinned error checks then passed.
+No new runtime behavior, generalized import scope, ledger or correction batch was added.
+This sixth actual correction set is seventh recorded event/max8 with history retained.

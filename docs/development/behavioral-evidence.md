@@ -189,3 +189,11 @@ Finite literal fixture IDs and test-only store/record UUID allocation seams make
 pre-call expectations possible. UUID/stable-ID algorithm correctness is outside this
 control; real public transition decisions and SQLite writes are still exercised.
 No expected payload is learned from an export, operation return or production helper.
+
+Observation provenance uses exact partitions: lifecycle append conserves the complete
+foreign-observation multiset (empty on fresh creation); fresh import's foreign
+multiset equals all input observations. Canonical lists preserve every field and
+multiplicity. Local uniqueness/coverage/clock/boundary checks remain, and destination
+identity cannot alias an original observer. Lifecycle source identity matches its
+pre-call fixture even on first creation. These controls still exclude generalized
+imports and the opaque identity-generation algorithm.

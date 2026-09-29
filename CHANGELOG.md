@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Conserve exact foreign observation provenance in bounded append/import tests and
+  verify the initial source identity against its pre-call allocation fixture.
+
 - Bind declared review inputs to executable mode and index state, preserving raw
   report hashes; compare full pre-call expected lifecycle payloads and cardinality.
 

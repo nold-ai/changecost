@@ -127,18 +127,35 @@ def assert_observations(bundle, new_records, clock):
             )
 
 
+def canonical_observations(observations):
+    return sorted(json.dumps(o.model_dump(mode="json"), sort_keys=True) for o in observations)
+
+
+def foreign_observations(bundle):
+    return [o for o in bundle.observations if o.store_id != bundle.source.store_id]
+
+
+def assert_prior_history(before, after):
+    assert after.schema_version == before.schema_version, "schema must remain stable"
+    assert after.source.store_id == before.source.store_id, "source identity must remain stable"
+    assert all(r in after.records for r in before.records), "history must be immutable"
+    assert all(o in after.observations for o in before.observations), (
+        "observations must be immutable"
+    )
+
+
 def assert_append(before, after):
+    assert after.source.store_id == STORE_ID, "source identity matches pre-call fixture"
+    old_foreign = [] if before is None else foreign_observations(before)
+    assert canonical_observations(foreign_observations(after)) == canonical_observations(
+        old_foreign
+    ), "foreign observation partition must be preserved"
     assert after.source.at == NOW, "source uses operation clock"
     previous_sequence = 0 if before is None else before.source.sequence
     assert after.source.sequence > previous_sequence, "append advances committed boundary"
     old_records = [] if before is None else before.records
     if before is not None:
-        assert after.schema_version == before.schema_version, "schema must remain stable"
-        assert after.source.store_id == before.source.store_id, "source identity must remain stable"
-        assert all(r in after.records for r in before.records), "history must be immutable"
-        assert all(o in after.observations for o in before.observations), (
-            "observations must be immutable"
-        )
+        assert_prior_history(before, after)
     new_records = [r for r in after.records if r not in old_records]
     assert new_records, "accepted append adds records"
     assert_observations(after, new_records, NOW)
@@ -147,12 +164,13 @@ def assert_append(before, after):
 def assert_fresh_import(origin, destination, clock):
     assert destination.schema_version == origin.schema_version, "import preserves schema"
     assert destination.records == origin.records, "import preserves records"
-    assert all(o in destination.observations for o in origin.observations), (
-        "import preserves foreign observations"
-    )
-    assert destination.source.store_id != origin.source.store_id, (
-        "destination has distinct identity"
-    )
+    assert canonical_observations(foreign_observations(destination)) == canonical_observations(
+        origin.observations
+    ), "foreign observation partition must equal input"
+    assert destination.source.store_id not in {
+        origin.source.store_id,
+        *(o.store_id for o in origin.observations),
+    }, "destination has distinct identity"
     assert destination.source.at == clock, "destination uses import clock"
     assert destination.source.sequence > 0, "destination has committed boundary"
     assert_observations(destination, destination.records, clock)
@@ -521,5 +539,49 @@ def test_extra_change_fault_then_repair(tmp_path):
             )
 
     with pytest.raises(AssertionError, match="complete payload multiset"):
+        trace(tmp_path / "fault.sqlite", [Action("change")], faulty)
+    trace(tmp_path / "repaired.sqlite", [Action("change")])
+
+
+def invent_foreign_observation(store):
+    with store.connect() as connection:
+        connection.execute(
+            "INSERT INTO observations SELECT kind,id,'fabricated-third-store',available_at,"
+            "sequence FROM records WHERE kind='change'"
+        )
+
+
+def test_append_cannot_invent_foreign_provenance(tmp_path):
+    def faulty(store, action):
+        execute(store, action)
+        if action.kind == "run":
+            invent_foreign_observation(store)
+
+    actions = [Action("change"), Action("run")]
+    with pytest.raises(AssertionError, match="foreign observation partition"):
+        trace(tmp_path / "fault.sqlite", actions, faulty)
+    trace(tmp_path / "repaired.sqlite", actions)
+
+
+def test_import_cannot_invent_foreign_provenance(tmp_path):
+    origin = trace(tmp_path / "source.sqlite", [Action("change")]).export_bundle()
+    clock = NOW + timedelta(days=30)
+    destination = Store(tmp_path / "fault.sqlite", clock=lambda: clock)
+    destination.import_bundle(origin)
+    invent_foreign_observation(destination)
+    with pytest.raises(AssertionError, match="foreign observation partition"):
+        assert_fresh_import(origin, destination.export_bundle(), clock)
+    repaired = Store(tmp_path / "repaired.sqlite", clock=lambda: clock)
+    repaired.import_bundle(origin)
+    assert_fresh_import(origin, repaired.export_bundle(), clock)
+
+
+def test_initial_append_source_matches_allocation_fixture(tmp_path):
+    def faulty(store, action):
+        execute(store, action)
+        with store.connect() as connection:
+            connection.execute("UPDATE metadata SET store_id='fabricated-source'")
+
+    with pytest.raises(AssertionError, match="source identity matches pre-call fixture"):
         trace(tmp_path / "fault.sqlite", [Action("change")], faulty)
     trace(tmp_path / "repaired.sqlite", [Action("change")])

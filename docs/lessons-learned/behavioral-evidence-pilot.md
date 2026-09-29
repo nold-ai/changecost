@@ -277,3 +277,22 @@ with six recorded batch events/max7 preserving the administrative overcount and
 no production runtime defect or lower recurring review cost has been demonstrated.
 Both prior9420bcc Linux jobs passed, but later identity inputs require new validation.
 The raw pre-commit token snapshot remains fixed; final ignored capture covers this work.
+
+## Exact provenance partition correction
+
+Native P2 4139150511 on d620602 found that subset preservation accepted fabricated
+third-party observations during fresh import. Independent investigation reproduced
+the same root omission on accepted append and an initial source-identity substitution.
+Three actual SQLite controls failed before repair. Foreign observations now conserve
+exact full-field multisets; fresh destination identity cannot alias original observers,
+and initial lifecycle source identity matches its pre-call allocation fixture. Existing
+local coverage/uniqueness/time/boundary checks remain. This is one root-family record
+with adjacent variants: eleven semantic defects total, sixth actual correction set,
+seven recorded events/max8 with the original90minute limit and history preserved.
+
+The prior ten-record retrospective maps mechanisms to first frozen source; it is a
+source-lineage analysis, not a claim all later mutants were replayed on that snapshot.
+The mode omission predates this pilot. This latest provenance record is separate from
+that ten-row artifact. The continuing omissions show that local field patches and
+passing generated traces did not establish complete transition/representation coverage.
+Both d620602 Linux jobs passed before this later repair; new-head proof remains required.

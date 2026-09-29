@@ -31,6 +31,8 @@
 
 - [x] 4.7 Bind declared input mode/index identity in the existing capture and packet, and compare independently precomputed complete payloads/cardinality with selected actual faulty/repaired records.
 
+- [x] 4.8 Conserve exact foreign observation partitions and initial fixture source identity for selected append/fresh-import transitions; retain complete local obligations and prove actual fabricated-provenance faults.
+
 ## 5. Final integration and handoff
 
 - [ ] 5.1 Run strict OpenSpec validation and complete make check with explicit BASE_REF and intended-file manifest, plus the final staged-snapshot checks; obtain actual supported-Linux capsule evidence and resolve/justify findings without treating unavailable analyzers as passing.
