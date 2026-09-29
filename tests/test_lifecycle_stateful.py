@@ -103,6 +103,59 @@ def minutes(value):
     return None if value is None else int((value - NOW).total_seconds() / 60)
 
 
+def record_key(record):
+    return record.kind, record.record_id
+
+
+def assert_observations(bundle, new_records, clock):
+    identities = [
+        (o.reference.kind, o.reference.record_id, o.store_id) for o in bundle.observations
+    ]
+    assert len(identities) == len(set(identities)), "observation identities must be unique"
+    local = [o for o in bundle.observations if o.store_id == bundle.source.store_id]
+    assert {record_key(o.reference) for o in local} == {record_key(r) for r in bundle.records}, (
+        "local observations must cover stored records"
+    )
+    new_keys = {record_key(r) for r in new_records}
+    for observation in local:
+        if record_key(observation.reference) in new_keys:
+            assert observation.available_at == clock, "new availability uses operation clock"
+            assert observation.sequence == bundle.source.sequence, (
+                "new availability uses source boundary"
+            )
+
+
+def assert_append(before, after):
+    assert after.source.at == NOW, "source uses operation clock"
+    previous_sequence = 0 if before is None else before.source.sequence
+    assert after.source.sequence > previous_sequence, "append advances committed boundary"
+    old_records = [] if before is None else before.records
+    if before is not None:
+        assert after.schema_version == before.schema_version, "schema must remain stable"
+        assert after.source.store_id == before.source.store_id, "source identity must remain stable"
+        assert all(r in after.records for r in before.records), "history must be immutable"
+        assert all(o in after.observations for o in before.observations), (
+            "observations must be immutable"
+        )
+    new_records = [r for r in after.records if r not in old_records]
+    assert new_records, "accepted append adds records"
+    assert_observations(after, new_records, NOW)
+
+
+def assert_fresh_import(origin, destination, clock):
+    assert destination.schema_version == origin.schema_version, "import preserves schema"
+    assert destination.records == origin.records, "import preserves records"
+    assert all(o in destination.observations for o in origin.observations), (
+        "import preserves foreign observations"
+    )
+    assert destination.source.store_id != origin.source.store_id, (
+        "destination has distinct identity"
+    )
+    assert destination.source.at == clock, "destination uses import clock"
+    assert destination.source.sequence > 0, "destination has committed boundary"
+    assert_observations(destination, destination.records, clock)
+
+
 def apply_checked(store, model, action, operation=execute):
     before = store.export_bundle() if store.path.exists() else None
     previous_model = deepcopy(model)
@@ -118,8 +171,9 @@ def apply_checked(store, model, action, operation=execute):
         assert after == before, "rejected operation must preserve full history"
     elif model == previous_model:
         assert after == before, "accepted no-op must preserve full history"
-    if before is not None and after is not None:
-        assert all(r in after.records for r in before.records), "history must be immutable"
+    else:
+        assert after is not None, "accepted append must persist store"
+        assert_append(before, after)
     if after is not None:
         assert projection(store) == model, "persisted state matches scenario model"
 
@@ -270,6 +324,7 @@ def test_chronology_fault_then_repair_and_later_import(tmp_path):
     bundle = source.export_bundle()
     destination.import_bundle(bundle)
     before = destination.export_bundle()
+    assert_fresh_import(bundle, before, NOW + timedelta(days=30))
     destination.import_bundle(bundle)
     assert destination.export_bundle() == before, "reimport preserves destination history"
     for record in bundle.records:
@@ -306,4 +361,77 @@ def test_retry_metadata_fault_then_repair(tmp_path, operation):
     actions = [Action("change"), Action("change")]
     with pytest.raises(AssertionError, match="accepted no-op must preserve full history"):
         trace(tmp_path / "fault.sqlite", actions, operation)
+    trace(tmp_path / "repaired.sqlite", actions)
+
+
+@pytest.mark.parametrize(
+    "sql",
+    [
+        pytest.param(
+            "UPDATE records SET available_at='2026-09-28T10:00:00+00:00' WHERE kind='change'",
+            id="old-time",
+        ),
+        pytest.param("UPDATE records SET sequence=99 WHERE kind='change'", id="old-sequence"),
+        pytest.param("UPDATE metadata SET store_id='replaced-store'", id="source-identity"),
+        pytest.param("UPDATE metadata SET sequence=sequence+1", id="source-boundary"),
+        pytest.param(
+            "UPDATE records SET available_at='2026-09-28T10:00:00+00:00' WHERE kind!='change'",
+            id="new-time",
+        ),
+        pytest.param("UPDATE records SET sequence=1 WHERE kind!='change'", id="new-boundary"),
+    ],
+)
+def test_append_history_fault_then_repair(tmp_path, sql):
+    def faulty(store, action):
+        execute(store, action)
+        if action.kind == "run":
+            with store.connect() as connection:
+                connection.execute(sql)
+
+    actions = [Action("change"), Action("run")]
+    with pytest.raises(AssertionError):
+        trace(tmp_path / "fault.sqlite", actions, faulty)
+    trace(tmp_path / "repaired.sqlite", actions)
+
+
+@pytest.mark.parametrize(
+    "sql",
+    [
+        pytest.param(
+            "UPDATE observations SET available_at='2026-09-28T10:00:00+00:00'", id="foreign-history"
+        ),
+        pytest.param(
+            "UPDATE records SET available_at='2026-09-28T10:00:00+00:00'", id="destination-clock"
+        ),
+    ],
+)
+def test_import_history_fault_then_repair(tmp_path, sql):
+    origin = trace(tmp_path / "source.sqlite", [Action("change"), Action("run")]).export_bundle()
+    clock = NOW + timedelta(days=30)
+    for name, fault in [("fault", True), ("repaired", False)]:
+        destination = Store(tmp_path / f"{name}.sqlite", clock=lambda: clock)
+        destination.import_bundle(origin)
+        if fault:
+            with destination.connect() as connection:
+                connection.execute(sql)
+            with pytest.raises(AssertionError):
+                assert_fresh_import(origin, destination.export_bundle(), clock)
+        else:
+            assert_fresh_import(origin, destination.export_bundle(), clock)
+
+
+def test_rejected_fresh_store_remains_absent(tmp_path):
+    store = trace(tmp_path / "absent.sqlite", [Action("run")])
+    assert not store.path.exists()
+
+
+@pytest.mark.parametrize("actions", [[Action("change")], [Action("change"), Action("run")]])
+def test_successful_append_cannot_remove_store(tmp_path, actions):
+    def faulty(store, action):
+        execute(store, action)
+        if action == actions[-1]:
+            store.path.unlink()
+
+    with pytest.raises(AssertionError, match="accepted append must persist store"):
+        trace(tmp_path / "fault.sqlite", actions, faulty)
     trace(tmp_path / "repaired.sqlite", actions)

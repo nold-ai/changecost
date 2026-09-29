@@ -917,5 +917,21 @@
     "local_affected_tests_passed": 34,
     "new_head_remote_status": "pending",
     "usage_snapshot_unchanged": true
+  },
+  "later_history_appendix": {
+    "finding": "native4138783179",
+    "unique_semantic_findings_total": 6,
+    "quality_integration_blockers_total": 3,
+    "actual_correction_sets": 3,
+    "recorded_batches": 4,
+    "authorized_max_batches": 5,
+    "fault_variants": {
+      "append": 6,
+      "fresh_import": 2
+    },
+    "seeded_families": 4,
+    "prior_head_linux": "3258615 both required jobs passed",
+    "new_head_gates": "pending",
+    "usage_snapshot_unchanged": true
   }
 }

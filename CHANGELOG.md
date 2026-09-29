@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Check complete persisted observations and source boundaries in the bounded lifecycle
+  oracle, including accepted appends and fresh destination imports.
+
 - Require broad initial behavioral review and reject foreign-change comparison packets;
   preserve lifecycle oracle assertions while making its tests analyzable by Linux gates.
 

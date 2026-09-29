@@ -17,7 +17,11 @@ expected transitions from the accepted Core-02 scenarios. Its adapter calls publ
 registration/declaration operations and real temporary SQLite stores. After every
 operation it compares acceptance, logical histories and persisted state, checks
 append-only records, and requires an unchanged full export after rejection or an
-accepted operation that leaves the independent model unchanged.
+accepted operation that leaves the independent model unchanged. Accepted appends
+also preserve old observations and source identity, advance the source boundary, and
+require complete unique local observations at the fixed clock/shared new boundary.
+Fresh import retains foreign evidence while establishing coherent local observations;
+source and destination sequences need not be equal.
 The writer inspected production APIs and some implementation before authoring it;
 helper independence is not independent human authorship. Independent review and
 fault controls address, but do not eliminate, correlated mistakes.
@@ -28,7 +32,8 @@ Generation includes registration replay/conflict, terminal Change registration,
 reasoned outcome/interval corrections and combined-operation rollback. Separate
 chronology tests exercise equal wall times, local sequence cutoffs, later destination
 import and unchanged reimport. This is bounded evidence, not exhaustive exploration.
-Concurrency, economic contracts, arbitrary graph topology and all possible integer,
+Changing clocks inside a trace, generalized merge/observation-only imports,
+concurrency, economic contracts, arbitrary graph topology and all possible integer,
 timestamp, filesystem and serialization boundaries are outside this model.
 
 Four synthetic controls deliberately alter the exercised target while retaining the
@@ -36,9 +41,9 @@ same oracle, projection and trace:
 
 | Family | Fault at the real boundary | Detector |
 | --- | --- | --- |
-| Retry/history | Rewrite a stored feature, increment sequence, or backdate availability after real retry | Accepted no-op must preserve the complete export |
+| Retry/history | Rewrite persisted history/source/availability after retry or append | No-op full export equality; append old evidence preservation and coherent new observations |
 | Combined transaction | Persist the outcome before a real invalid interval declaration | Rejected operation must preserve the full export |
-| Chronology | Call real eligibility with the current sequence instead of captured sequence | Later equal-time transaction must be excluded |
+| Chronology | Ignore captured sequence or corrupt fresh-import foreign/local observations | Historical cutoff exclusion and preserved/coherent import evidence |
 | Representation | Retry a rejected naive timestamp after silently adding UTC | Acceptance must match the scenario model |
 
 The naive-timestamp control selects one representation boundary. It does not establish

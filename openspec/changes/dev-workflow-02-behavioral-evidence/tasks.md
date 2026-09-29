@@ -25,6 +25,8 @@
 
 - [x] 4.4 Correct independently confirmed native baseline-provenance gaps and Linux test-tooling blockers with red/green regressions, retaining exact prior identity and the independent oracle; record later results separately from fixed telemetry.
 
+- [x] 4.5 Investigate the recurring accepted-append history family, specify complete bounded Bundle transition obligations, and prove six append/two selected import faulty/repaired controls without expanding runtime scope.
+
 ## 5. Final integration and handoff
 
 - [ ] 5.1 Run strict OpenSpec validation and complete make check with explicit BASE_REF and intended-file manifest, plus the final staged-snapshot checks; obtain actual supported-Linux capsule evidence and resolve/justify findings without treating unavailable analyzers as passing.

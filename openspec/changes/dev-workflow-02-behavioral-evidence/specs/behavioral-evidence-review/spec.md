@@ -161,3 +161,36 @@ provenance remains required; this tool does not authenticate review history.
 - **WHEN** only covered inputs differ
 - **THEN** the tool retains the affected invariant/assumption summary and existing
   final-gate obligations without requiring broader review solely because a prior exists.
+
+### Requirement: Bounded transitions preserve complete persisted evidence
+
+The fixed-clock lifecycle oracle SHALL check the selected Bundle schema, source,
+records and observations independently of production decision helpers. Rejected and
+accepted model-no-op operations SHALL preserve the entire exported bundle, including
+an absent fresh store. Accepted lifecycle appends SHALL preserve source identity and
+schema, use the injected operation clock, advance beyond the previous committed
+sequence, preserve every old record and observation, and produce exactly one local
+observation per record with unique observation identities. All newly added local
+observations SHALL share the new committed sequence and operation clock. Contiguous
+sequence allocation is not required by this oracle.
+
+#### Scenario: Accepted append mutates history or its availability boundary
+
+- **GIVEN** a fixed-clock store with an existing change and a new accepted run
+- **WHEN** a faulty operation rewrites old observation time/sequence, source identity,
+  source sequence alone, or the new observations' time/sequence
+- **THEN** the unchanged oracle and action trace detect the fault and the repaired
+  production operation passes all complete-evidence checks.
+
+#### Scenario: Fresh import retains origin evidence and coherent destination evidence
+
+- **GIVEN** the selected chronology bundle imported into a fresh later-clock store
+- **WHEN** the destination export is checked
+- **THEN** records and all foreign observations are preserved, destination identity is
+  distinct, its source time equals the injected clock, and exactly one new local
+  observation per imported record uses that clock and the shared destination sequence.
+- **AND** identical reimport preserves the entire destination export.
+
+Changing clocks within a trace, concurrent writers, generalized merge imports and
+observation-only imports remain outside this bounded pilot. Append-only assumptions
+SHALL NOT be applied to those excluded import operations.

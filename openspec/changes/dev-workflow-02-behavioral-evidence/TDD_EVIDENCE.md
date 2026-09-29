@@ -129,3 +129,31 @@ All counters/history remain: three recorded batches overcount two actual correct
 sets because orchestration counted review phases. The bounded extension to four
 recorded batches retains the original 90-minute allowance. Targeted independent
 closure and final committed-head Linux/native reviews remain mandatory.
+
+## Recurring accepted-append history investigation
+
+Native P2 4138783179 triggered independent family investigation and spec-first
+complete bounded transition obligations. Six actual SQLite append faults were
+undetected before repair: `uv run --locked pytest tests/test_lifecycle_stateful.py
+-k append_history -q` returned **6 failed, 15 deselected** (exit1). They alter old
+observation time/sequence, source identity/boundary, or new observation time/boundary.
+The repaired checks preserve all old observations, stable source identity/schema,
+fixed source clock and coherent unique complete local observations at a strictly
+later shared boundary. No contiguous +1 rule is assumed. Two fresh-import controls
+corrupt actual foreign observations/local availability, then verify repaired targets.
+An explicit rejected fresh-store case preserves absence. Existing no-op and identical
+reimport full-export controls remain. Logs are `history-matrix-red.txt` and
+`history-matrix-green.txt` under ignored `.changecost/behavioral-evidence/`.
+
+The earlier head3258615 passed both Linux quality jobs (run36636593121); later inputs
+remain unverified by that result. Independent closure/new-head gates are pending.
+This is the third actual correction set/fourth recorded batch, with authorized
+max5/90minutes retaining all earlier history and orchestration accounting error.
+
+The first family closure exposed a remaining conditional bypass: absent storage after
+a successful append skipped persistence checks. Fresh/existing-store real-operation
+then-delete variants both failed the detector before the guard (**2 failed**). The
+accepted-append branch now unconditionally requires a persisted export before checking
+its relations. Both faulty targets are rejected and repaired traces pass. This is an
+additional variant of the still-open history finding/correction set, not a new runtime
+defect or review batch. `history-absence-red.txt` retains the red proof.

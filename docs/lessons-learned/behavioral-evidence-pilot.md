@@ -190,3 +190,39 @@ and quality repairs. The earlier recorded 5.7516 minutes is only the two local r
 intervals' conservative wall upper bound; native wait time and inference billing are
 not silently treated as zero. The usage snapshot remains unchanged and excludes this
 appendix's later work. Updated head gates/reviews and final ignored telemetry are pending.
+
+## Recurring history gap and third correction set
+
+The next native Codex review of `3258615fcd21a7a3c149560aa4747f6ba63d0f5d`
+found P2 `4138783179`: accepted appends still omitted persisted observation history.
+The first no-op repair was too narrow. Independent family investigation demonstrated
+six real SQLite faults on the same change/run trace: old availability time, old
+sequence, source identity, source-only sequence increment, new availability time,
+and new availability sequence. All six passed the old oracle and therefore failed
+the sensitivity tests. This is the sixth unique semantic defect in the new assurance
+tooling, not six runtime defects. It reinforces the cost of maintaining an oracle.
+
+The bounded repair covers Bundle schema/source/records/observations for rejection,
+model no-op, lifecycle append, fresh selected import and identical reimport. It uses
+strictly later boundaries and shared new-observation consistency, not an unsupported
+contiguous-allocation assumption. Six append variants now reject faulty targets and
+accept repaired targets; two selected import variants cover foreign preservation and
+local-clock coherence. The four original fault families remain unchanged. An explicit
+fresh-store rejection test checks absence preservation. Concurrency, changing clocks
+inside a trace, generalized merge imports and observation-only imports remain excluded.
+
+Both required Linux jobs passed on 3258615, demonstrating the earlier three capsule
+quality repairs. That prior-head success does not validate the later history repair.
+The new candidate requires independent family closure and fresh committed-head gates.
+Totals are now six semantic tooling/test defects, three separate quality/integration
+blockers, two prevented design ambiguities and three actual correction sets. Four
+batch events remain in the ledger; a narrow maximum-five extension preserves the
+prior orchestration overcount and the unchanged 90-minute allowance. The recurring
+family was explicitly investigated before repair; no history was reset. No runtime
+bug discovery, causal efficiency gain or billed savings has been demonstrated.
+
+Family closure also caught an absent-store conditional bypass within that same open
+finding: fresh/existing successful-write-then-delete faults skipped append checks.
+Both new controls failed before repair; accepted appends now require persisted storage
+unconditionally. This additional closure iteration remains in the third correction
+set and reinforces the observed maintenance/review overhead.
