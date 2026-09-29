@@ -116,6 +116,9 @@ uv run --locked python -m quality.behavioral_evidence .changecost/behavioral-pac
 ```
 
 Exit 0 means the packet's declared required evidence is current, not PR completion.
+Without a prior packet, initial current evidence still requires broader review. A prior
+packet from another change is rejected as incomplete; valid same-change history may
+support narrow delta review. Prior review provenance is a human responsibility.
 The output retains the authoritative session status and findings. Missing/changed
 reports, input drift, stale binding, uncovered changes or non-passing required analyzers
 produce exit 1/incomplete. Optional not-applicable evidence needs an explicit rationale;

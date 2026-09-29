@@ -154,3 +154,39 @@ already exceed the historical foundation and bounded-workflow pre-PR observation
 while remaining below Core-02's pre-PR total. Scope and timing differ, so this neither
 proves failure nor demonstrates savings. The evidence supports useful bounded defect
 detection with material setup/review overhead, not replacing independent review.
+
+## Native review and Linux feedback after the fixed usage cutoff
+
+Published head `a6641177e113fb46c4eb14631dbfee45031d3803` received two further
+Codex P2 findings: a packet without a previous packet incorrectly permitted narrow
+review, and a previous packet for a different change could supply the comparison
+baseline. Both are accepted tooling defects in review-baseline provenance. The first
+local review covered current input binding but missed baseline existence and identity.
+The revised spec requires broad review without a baseline, rejects a foreign change ID
+exactly, and preserves a valid same-change delta. Two regression cases failed before
+repair; the matching-baseline positive case passed. The repaired combined suite passes
+34 tests. This brings actual unique semantic findings to five, across two correction
+sets; no production runtime defect was found. CodeRabbit's native current-head summary
+was clean; its missing REST review record is a status-adapter limitation, not evidence
+that the native review did not run.
+
+Both required Linux jobs on that head failed with the same three additional quality
+blockers: projection cyclomatic complexity 18, a test mutation dispatcher nesting
+seven levels, and an unresolved test-helper import. The mandatory SpecFact capsule
+therefore supplied useful integration/maintainability feedback, distinct from the
+non-capsule import invocation failures and empty sidecar evidence above. The repair
+extracts predecessor traversal without changing assertions, uses named mutation
+parameters, and makes tests an explicit package. Pylint 4.0.7 and Radon 6.0.1 plus the
+installed Radon policy mapper report no affected-file error after repair; local
+Pylint first lacked pytest in its isolated environment, then passed the error check
+after that dependency was supplied. Full Linux capsule verification on the new
+committed head is still required; local reproduction is not a capsule pass.
+
+The ledger preserves three recorded batches, but orchestration overcounted review
+phases: clean targeted closure and monitoring do not create correction sets. There
+are two actual correction sets. A narrow extension to four recorded batches preserves
+all prior events and the 90-minute limit, covering these validated native findings
+and quality repairs. The earlier recorded 5.7516 minutes is only the two local review
+intervals' conservative wall upper bound; native wait time and inference billing are
+not silently treated as zero. The usage snapshot remains unchanged and excludes this
+appendix's later work. Updated head gates/reviews and final ignored telemetry are pending.

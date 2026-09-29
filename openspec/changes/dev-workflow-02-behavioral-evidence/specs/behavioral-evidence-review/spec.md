@@ -133,3 +133,31 @@ The existing review budget/replanning protocol SHALL remain authoritative.
 - **WHEN** the pilot reaches its decision point
 - **THEN** it records a replan/incomplete outcome and retains counters and evidence;
   rollback removes the added contributor tooling without changing stored user data.
+
+### Requirement: Reused review baseline belongs to the selected change
+
+An initial packet without a prior reviewed packet SHALL require broader review even
+when its declared evidence is current. A supplied prior packet SHALL identify the
+same change as the current packet; a foreign change SHALL yield controlled incomplete
+evidence and require broader review. A valid same-change prior packet SHALL retain
+the existing delta and affected-assumption behavior. Human review of prior-packet
+provenance remains required; this tool does not authenticate review history.
+
+#### Scenario: Initial current evidence has no reviewed baseline
+
+- **GIVEN** a current complete evidence packet and no prior packet
+- **WHEN** the contributor validates it
+- **THEN** evidence can be current while broader review is explicitly required.
+
+#### Scenario: Foreign prior packet cannot authorize narrow review
+
+- **GIVEN** a structurally valid prior packet for a different change with matching maps
+- **WHEN** it is supplied as the comparison baseline
+- **THEN** validation is incomplete and requires broader review instead of reusing it.
+
+#### Scenario: Matching reviewed baseline retains narrow delta review
+
+- **GIVEN** a valid prior packet for the same change with unchanged intent and mappings
+- **WHEN** only covered inputs differ
+- **THEN** the tool retains the affected invariant/assumption summary and existing
+  final-gate obligations without requiring broader review solely because a prior exists.

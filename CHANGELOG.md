@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Require broad initial behavioral review and reject foreign-change comparison packets;
+  preserve lifecycle oracle assertions while making its tests analyzable by Linux gates.
+
 - Add a contributor behavioral-evidence packet validator and bounded independent
   SQLite lifecycle controls, with delta-review guidance and measured pilot evidence.
 

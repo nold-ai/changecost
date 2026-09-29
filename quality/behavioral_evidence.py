@@ -111,7 +111,7 @@ def impact(packet: Packet, previous: Packet | None, actual: dict[str, str], unco
         name for name in before.keys() | actual.keys() if before.get(name) != actual.get(name)
     }
     affected = [packet.dependencies[name] for name in changes if name in packet.dependencies]
-    broad = bool(uncovered or changes - packet.dependencies.keys())
+    broad = previous is None or bool(uncovered or changes - packet.dependencies.keys())
     if previous:
         broad |= any(
             getattr(packet, field) != getattr(previous, field)
@@ -141,6 +141,8 @@ def validate_packet(root: Path, value: Any, previous: Any = None) -> dict[str, A
     try:
         packet = validate_structure(value)
         prior = validate_structure(previous) if previous is not None else None
+        if prior is not None and prior.change_id != packet.change_id:
+            raise ValueError("previous packet must identify the same change")
         session = review_session.packet(root, packet.change_id)
         binding = session["binding"]
         actual = {name: review_session.file_fingerprint(root, name) for name in packet.inputs}

@@ -104,3 +104,28 @@ The pilot telemetry is frozen at 2026-09-29T21:32:11.834840Z, excluding later re
 finalization, commits, pushes and remote review; later measurements remain separate.
 Main was refreshed before publication and remains the recorded base. Final task 5
 items stay unchecked until the remote/staged obligations actually complete.
+
+## Native baseline provenance and Linux quality correction
+
+Native Codex findings `4138609283` and `4138609294` were independently reproduced
+and accepted. New spec scenarios precede the implementation: missing prior requires
+broad review; foreign change identity returns controlled incomplete; valid same-change
+comparison remains current/narrow. Packet regression command
+`uv run --locked pytest tests/test_behavioral_evidence.py -q` produced **2 failed,
+17 passed** before repair; combined packet/lifecycle suite produced **34 passed**
+afterward. Native logs are `native-baseline-red.txt`, `native-baseline-green.txt` and
+`native-refactor-green.txt` in ignored `.changecost/behavioral-evidence/`.
+
+Both Linux quality jobs on a664117 failed with three blocking findings in the new
+tests: Radon projection CC18; radon-kiss dispatcher nesting7; Pylint E0401 unresolved
+behavioral_model. Minimal extraction/named callables/explicit test package retain the
+same oracle, mutation IDs, predecessor assertions and full-history comparisons.
+Affected files now have maximum Radon CC14 and CC6; the exact installed Radon mapper
+reports no errors. Pylint4.0.7 reports no errors with project/test dependencies present
+in the isolated local tool environment. Its initial missing pytest result is setup
+feedback, not a project defect. Full types pass. No waiver or runtime edit is used.
+
+All counters/history remain: three recorded batches overcount two actual correction
+sets because orchestration counted review phases. The bounded extension to four
+recorded batches retains the original 90-minute allowance. Targeted independent
+closure and final committed-head Linux/native reviews remain mandatory.

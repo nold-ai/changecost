@@ -7,13 +7,13 @@ from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from behavioral_model import Action, Model
 from pydantic import ValidationError
 
 from changecost.models import RecordRef, RunRef
 from changecost.operations import LifecycleDeclaration, declare, register_change, register_run
 from changecost.serialization import ContractError
 from changecost.store import Store
+from tests.behavioral_model import Action, Model
 
 NOW = datetime(2026, 9, 29, 10, tzinfo=UTC)
 SEEDS = tuple(range(8))
@@ -74,24 +74,29 @@ def projection(store):
         elif record.kind == "run":
             model.runs[record.ref.run_id] = minutes(record.observed_start)
     for kind in ("outcome", "interval"):
-        remaining = [r for r in records if r.kind == kind]
-        visited = set()
-        while remaining:
-            ready = [r for r in remaining if r.previous is None or r.previous.record_id in visited]
-            assert ready, "history predecessor chain is broken"
-            for record in ready:
-                if kind == "outcome":
-                    model.outcomes.setdefault(names[record.subject.record_id], []).append(
-                        record.outcome
-                    )
-                else:
-                    model.intervals.setdefault(record.run.run_id, []).append(
-                        (minutes(record.start), minutes(record.end))
-                    )
-                visited.add(record.record_id)
-                remaining.remove(record)
+        for record in history_order(records, kind):
+            if kind == "outcome":
+                model.outcomes.setdefault(names[record.subject.record_id], []).append(
+                    record.outcome
+                )
+            else:
+                model.intervals.setdefault(record.run.run_id, []).append(
+                    (minutes(record.start), minutes(record.end))
+                )
     assert sum(r.kind == "run_binding" for r in records) == len(model.runs), "run binding count"
     return model
+
+
+def history_order(records, kind):
+    remaining = [r for r in records if r.kind == kind]
+    visited = set()
+    while remaining:
+        ready = [r for r in remaining if r.previous is None or r.previous.record_id in visited]
+        assert ready, "history predecessor chain is broken"
+        for record in ready:
+            yield record
+            visited.add(record.record_id)
+            remaining.remove(record)
 
 
 def minutes(value):

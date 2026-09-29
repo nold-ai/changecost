@@ -105,36 +105,33 @@ def test_current_packet_preserves_session_obligations(packet):
 
 
 @pytest.mark.parametrize(
-    "mutation",
+    "mutate",
     [
-        "source",
-        "report",
-        "missing_report",
-        "missing_role",
-        "unmapped",
-        "skipped",
-        "unbound",
-        "not_applicable",
+        pytest.param(lambda root, data: (root / "input.py").write_text("changed\n"), id="source"),
+        pytest.param(
+            lambda root, data: (root / ".changecost/report.json").write_text("replaced\n"),
+            id="report",
+        ),
+        pytest.param(
+            lambda root, data: (root / ".changecost/report.json").unlink(), id="missing_report"
+        ),
+        pytest.param(lambda root, data: data["input_roles"].pop("oracle"), id="missing_role"),
+        pytest.param(lambda root, data: data.update(dependencies={}), id="unmapped"),
+        pytest.param(
+            lambda root, data: data["evidence"][0].update(outcome="skipped"), id="skipped"
+        ),
+        pytest.param(lambda root, data: data["evidence"][0].update(binding={}), id="unbound"),
+        pytest.param(
+            lambda root, data: data["evidence"][0].update(
+                applicable=False, rationale="not supported"
+            ),
+            id="not_applicable",
+        ),
     ],
 )
-def test_changed_or_unusable_evidence_cannot_pass(packet, mutation):
+def test_changed_or_unusable_evidence_cannot_pass(packet, mutate):
     root, data = packet
-    if mutation == "source":
-        (root / "input.py").write_text("changed\n")
-    elif mutation == "report":
-        (root / ".changecost/report.json").write_text("replaced\n")
-    elif mutation == "missing_report":
-        (root / ".changecost/report.json").unlink()
-    elif mutation == "missing_role":
-        data["input_roles"].pop("oracle")
-    elif mutation == "unmapped":
-        data["dependencies"] = {}
-    elif mutation == "skipped":
-        data["evidence"][0]["outcome"] = "skipped"
-    elif mutation == "unbound":
-        data["evidence"][0]["binding"] = {}
-    else:
-        data["evidence"][0].update(applicable=False, rationale="not supported")
+    mutate(root, data)
     assert validator()(root, data)["evidence_status"] == "incomplete"
 
 
@@ -216,3 +213,27 @@ def test_ignored_packet_only_oracle_cannot_rebind_old_evidence(packet):
     (root / name).write_text("changed oracle\n")
     data["inputs"][name] = review_session.file_fingerprint(root, name)
     assert validator()(root, data)["evidence_status"] == "incomplete"
+
+
+def test_initial_current_packet_requires_broad_review(packet):
+    root, data = packet
+    result = validator()(root, data)
+    assert result["evidence_status"] == "current"
+    assert result["broader_review_required"]
+
+
+def test_foreign_previous_packet_cannot_authorize_narrow_review(packet):
+    root, data = packet
+    previous = copy.deepcopy(data)
+    previous["change_id"] = "different-change"
+    result = validator()(root, data, previous)
+    assert result["evidence_status"] == "incomplete"
+    assert result["broader_review_required"]
+    assert any("same change" in error for error in result["errors"])
+
+
+def test_matching_previous_packet_preserves_narrow_review(packet):
+    root, data = packet
+    result = validator()(root, data, copy.deepcopy(data))
+    assert result["evidence_status"] == "current"
+    assert not result["broader_review_required"]

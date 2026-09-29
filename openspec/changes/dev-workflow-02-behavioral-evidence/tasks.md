@@ -23,6 +23,8 @@
 - [x] 4.2 Update ownership/source mappings, curated index, generated llms.txt and Unreleased changelog; verify real missing/stale/repaired documentation/index controls and local/CI invocation parity using existing gate tests, without a version bump.
 - [x] 4.3 Dogfood independent review and corrections with the packet and existing counters; publish an empirical pilot report with token categories, turns, batches, drift, pre-PR findings, escapes, minutes and unknown costs, distinguishing seeded detections from actual defects and historical context from causal claims.
 
+- [x] 4.4 Correct independently confirmed native baseline-provenance gaps and Linux test-tooling blockers with red/green regressions, retaining exact prior identity and the independent oracle; record later results separately from fixed telemetry.
+
 ## 5. Final integration and handoff
 
 - [ ] 5.1 Run strict OpenSpec validation and complete make check with explicit BASE_REF and intended-file manifest, plus the final staged-snapshot checks; obtain actual supported-Linux capsule evidence and resolve/justify findings without treating unavailable analyzers as passing.
