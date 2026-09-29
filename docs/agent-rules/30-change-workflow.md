@@ -123,7 +123,7 @@ Only a genuinely new session uses
 Existing sessions use `status`, then `packet` when recovery or replanning is
 required. A missing or incompatible receipt must not reset counters, including
 after moving to another worktree. Preserve schema-1 history as recovery evidence;
-do not synthesize prior measurements into a new schema-6 allowance. Schema-1/2/3/4/5
+do not synthesize prior measurements into a new schema-7 allowance. Schema-1/2/3/4/5/6
 receipts remain recovery evidence; new required initial-scope facts are not invented.
 
 The complete JSON contract has this shape (replace example SHAs, file fingerprint,
@@ -164,6 +164,12 @@ Minute extensions and measured time/usage use finite canonical sums of original
 event components, preserving exact budget boundaries across retries and restarts.
 Overflow fails closed; do not round limits or reset history to recover.
 
+Input binding includes every declared path, even ignored files or explicit absence.
+Existing declared content outside the index prevents clean completion; unrelated
+ignored artifacts remain excluded. Remote positive evidence must also postdate
+initialization, because its earlier base context cannot be attested. This may
+require rerunning valid same-base checks; exact timestamp comparison has no rounding
+allowance for coarse provider timestamps. Objections remain blocking regardless of age.
 Integer counters retain exact nonnegative values without floating conversion;
 unrepresentable floating measurements reject atomically with controlled recovery
 for malformed persisted history.

@@ -20,6 +20,9 @@
 - Bind review evidence to explicit PR target and comparison bases, preserve their
   original contract, and require fresh evidence after atomic context adoption.
 
+- Bind declared ignored paths and require fresh remote positives from initial
+  context creation; preserve negative evidence and explicit receipt recovery.
+
 - Revalidate scope on every head refresh and require explicit approved manifest
   references for changed path authorization; preserve original and current scope.
 

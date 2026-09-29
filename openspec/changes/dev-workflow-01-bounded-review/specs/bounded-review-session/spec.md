@@ -128,7 +128,7 @@ semantic changes. Nonrequired requests are informational; no team expansion is i
 Initial and adopted base IDs SHALL identify commit objects exactly. Annotated-tag
 object IDs SHALL be rejected without silently replacing caller-supplied identities.
 
-Schema-6 contracts SHALL name an expected PR base ref/SHA independently from the
+Schema-7 contracts SHALL name an expected PR base ref/SHA independently from the
 immutable comparison commit. Current comparison/base context SHALL be replayed
 separately and exposed in packets. Explicit atomic adoption through advance_head
 SHALL verify local commits and capture provenance without rewriting original scope,
@@ -167,7 +167,7 @@ one full commit-ID validation rule supporting hexadecimal SHA-1 and SHA-256 IDs.
 
 ### Requirement: Usable initial scope and effective reviewer objections
 
-Schema-6 initialization SHALL require typed, nonblank scope and exact identities,
+Schema-7 initialization SHALL require typed, nonblank scope and exact identities,
 full commit IDs and a safe path-to-SHA256 manifest using `<absent>` for planned
 absent paths. It SHALL verify the initial base and actual manifest, including
 changed/index/untracked paths, and preserve captured facts for filesystem-free
@@ -424,3 +424,33 @@ the immutable initial contract. An ordinary refresh SHALL preserve authorized ke
 - **THEN** replay SHALL validate captured scope facts without filesystem access and
   concurrent changes SHALL reject before persistence. Older receipts without these
   required facts SHALL require recovery without resetting counters.
+
+### Requirement: Every declared path participates in input binding
+Input capture SHALL require the current authorized keyset and bind each declared
+path's fingerprint or explicit absence even when Git ignores it. Existing declared
+content outside the index SHALL prevent clean published completion; planned absent
+paths and tracked paths matching ignore patterns SHALL remain supported. Unrelated
+ignored artifacts SHALL remain outside the declared-input binding.
+
+#### Scenario: Ignored declared content changes
+- **WHEN** an ignored declared file is created, edited or deleted after capture
+- **THEN** status SHALL invalidate previous evidence and consistency reads during
+  initialization or refresh SHALL detect such concurrent changes.
+
+#### Scenario: Scope approval adds ignored intent
+- **WHEN** an advance explicitly selects an approved manifest with an ignored path
+- **THEN** both consistency reads SHALL use the selected new keyset and preserve
+  explicit absence/content identity; prior receipts require recovery without reset.
+
+### Requirement: Initial context requires fresh remote positives
+The validated genesis creation timestamp SHALL establish the initial remote
+freshness floor. Required positive checks, statuses and reviews SHALL be at or
+after that floor; prior results cannot attest their original base context.
+Ordinary refreshes and retries SHALL retain the floor, while explicit base adoption
+SHALL update it. This conservative rule may require repeating valid same-base work.
+
+#### Scenario: Old same-head evidence at initialization
+- **WHEN** an initial session observes old, missing or invalid positive timestamps
+- **THEN** it SHALL remain pending even if the PR head/base envelope matches.
+- **AND** old objections and failed/pending evidence SHALL continue to block rather
+  than being removed by the positive freshness filter.

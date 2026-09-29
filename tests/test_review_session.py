@@ -96,13 +96,29 @@ def complete_snapshot(epoch: str = "input-generation:0") -> dict[str, Any]:
         "head": TEST_HEAD,
         "pr_base": {"ref": "main", "sha": TEST_HEAD},
         "checks": [
-            {"check_runs": [{"name": "ci", "status": "completed", "conclusion": "success"}]}
+            {
+                "check_runs": [
+                    {
+                        "name": "ci",
+                        "status": "completed",
+                        "conclusion": "success",
+                        "started_at": "2099-01-01T00:00:00Z",
+                    }
+                ]
+            }
         ],
         "statuses": [{"statuses": []}],
         "comments": [[]],
         "threads": [],
         "reviews": [
-            [{"commit_id": TEST_HEAD, "state": "APPROVED", "user": {"login": "reviewer-a"}}]
+            [
+                {
+                    "commit_id": TEST_HEAD,
+                    "state": "APPROVED",
+                    "user": {"login": "reviewer-a"},
+                    "submitted_at": "2099-01-01T00:00:00Z",
+                }
+            ]
         ],
     }
 
@@ -179,7 +195,13 @@ def test_conflicting_duplicate_event_rejected(tmp_path: Path) -> None:
 def test_real_rest_states(tmp_path: Path, source: str, item: dict[str, str], action: str) -> None:
     review_session.initialize(tmp_path, "change", contract())
     snapshot = complete_snapshot()
-    snapshot[source] = [{"check_runs" if source == "checks" else "statuses": [item]}]
+    snapshot[source] = [
+        {
+            "check_runs" if source == "checks" else "statuses": [
+                {**item, "started_at": "2099-01-01T00:00:00Z", "created_at": "2099-01-01T00:00:00Z"}
+            ]
+        }
+    ]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.status(tmp_path, "change")["action"] == action
 
@@ -850,7 +872,13 @@ def test_latest_reviewer_state_controls_completion(
     snapshot = complete_snapshot()
     snapshot["reviews"] = [
         [
-            {"id": index + 1, "commit_id": TEST_HEAD, "user": {"login": login}, "state": state}
+            {
+                "id": index + 1,
+                "commit_id": TEST_HEAD,
+                "user": {"login": login},
+                "state": state,
+                "submitted_at": "2099-01-01T00:00:00Z",
+            }
             for index, state in enumerate(states)
         ]
     ]
@@ -948,7 +976,12 @@ def test_review_supersession_spans_pages_and_ignores_old_head(tmp_path: Path) ->
             }
         ],
         [
-            {"commit_id": TEST_HEAD, "user": {"login": "reviewer-a[bot]"}, "state": "APPROVED"},
+            {
+                "commit_id": TEST_HEAD,
+                "user": {"login": "reviewer-a[bot]"},
+                "state": "APPROVED",
+                "submitted_at": "2099-01-01T00:00:00Z",
+            },
             {
                 "commit_id": "old",
                 "user": {"login": "reviewer-a[bot]"},
@@ -1713,6 +1746,8 @@ def test_base_adoption_retains_history_and_rejects_stale_local_payload(tmp_path:
     assert packet["binding"]["pr_base"] == state["pr_base"]
     snapshot = complete_snapshot("input-generation:1")
     snapshot["pr_base"] = state["pr_base"]
+    snapshot["checks"][0]["check_runs"][0].pop("started_at")
+    snapshot["reviews"][0][0].pop("submitted_at")
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.load(tmp_path, "change")["monitor"]["pending"]
     snapshot["checks"][0]["check_runs"][0]["started_at"] = "2099-01-01T00:00:00Z"
@@ -3113,3 +3148,199 @@ def test_adopted_comparison_base_controls_refreshed_scope(tmp_path: Path) -> Non
     assert state["provenance"][-1]["scope"]["changed_paths"] == []
     assert state["comparison_base"] == head
     assert state["contract"] == original
+
+
+@pytest.mark.parametrize("initial,mutation", [(False, "create"), (True, "edit"), (True, "delete")])
+def test_declared_ignored_files_invalidate_input_binding(
+    tmp_path: Path, initial: bool, mutation: str
+) -> None:
+    path = tmp_path / ".changecost" / "declared.txt"
+    path.parent.mkdir(exist_ok=True)
+    if initial:
+        path.write_text("original")
+    scope = contract()
+    assert isinstance(scope["intended_files"], dict)
+    scope["intended_files"][".changecost/declared.txt"] = review_session.file_fingerprint(
+        tmp_path, ".changecost/declared.txt"
+    )
+    state = review_session.initialize(tmp_path, "change", scope)
+    assert state["inputs"]["clean"] is not initial
+    if mutation == "delete":
+        path.unlink()
+    else:
+        path.write_text("<deleted>" if mutation == "create" else "changed")
+    result = review_session.status(tmp_path, "change")
+    assert result["action"] == "incomplete"
+    assert "inputs changed" in result["reason"]
+
+
+@pytest.mark.parametrize("ignore_source", ["info", "global", "negated", "tracked"])
+def test_declared_binding_respects_ignore_sources_without_hiding_content(
+    tmp_path: Path, ignore_source: str
+) -> None:
+    name = "input.txt" if ignore_source == "tracked" else "declared.txt"
+    ignore = tmp_path / ".git" / ("global-ignore" if ignore_source == "global" else "info/exclude")
+    ignore.write_text(name + "\n" + ("!" + name + "\n" if ignore_source == "negated" else ""))
+    if ignore_source == "global":
+        subprocess.run(
+            ["git", "-C", str(tmp_path), "config", "core.excludesFile", str(ignore)], check=True
+        )
+    path = tmp_path / name
+    path.write_text("initial\n")
+    scope = contract()
+    assert isinstance(scope["intended_files"], dict)
+    scope["intended_files"][name] = review_session.file_fingerprint(tmp_path, name)
+    state = review_session.initialize(tmp_path, "change", scope)
+    assert state["inputs"]["clean"] is (ignore_source == "tracked")
+    path.write_text("changed\n")
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_approved_ignored_path_uses_new_binding_keys(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    manifest = fixture_manifest()
+    manifest[".changecost/approved.txt"] = "<absent>"
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "approve",
+            "kind": "scope_decision",
+            "decision": "approved",
+            "intended_files": manifest,
+        },
+    )
+    state = review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "refresh",
+            "kind": "advance_head",
+            "head": TEST_HEAD,
+            "scope_decision_id": "approve",
+        },
+    )
+    assert state["inputs"]["clean"]
+    (tmp_path / ".changecost" / "unrelated.txt").write_text("evidence output")
+    assert review_session.status(tmp_path, "change")["action"] == "continue"
+    (tmp_path / ".changecost" / "approved.txt").write_text("materialized")
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+def test_ignored_declared_race_during_refresh_rejects_atomically(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    scope = contract()
+    assert isinstance(scope["intended_files"], dict)
+    scope["intended_files"][".changecost/racing.txt"] = "<absent>"
+    review_session.initialize(tmp_path, "change", scope)
+    capture = review_session.capture_initial_scope
+
+    def race(*args: Any) -> Any:
+        result = capture(*args)
+        (tmp_path / ".changecost" / "racing.txt").write_text("created during capture")
+        return result
+
+    monkeypatch.setattr(review_session, "capture_initial_scope", race)
+    path = review_session.state_path(tmp_path, "change")
+    before = path.read_bytes()
+    with pytest.raises(review_session.ConflictError):
+        review_session.record(
+            tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+        )
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("field", ["checks", "statuses", "reviews"])
+@pytest.mark.parametrize("timestamp", [None, "2000-01-01T00:00:00Z", "bad", "2026-01-01T00:00:00"])
+def test_initial_context_requires_timestamped_fresh_positives(
+    tmp_path: Path, field: str, timestamp: Any
+) -> None:
+    scope = contract()
+    scope["required_statuses"] = ["status-ci"]
+    review_session.initialize(tmp_path, "change", scope)
+    state = review_session.load(tmp_path, "change")
+    snapshot = complete_snapshot()
+    snapshot["checks"][0]["check_runs"][0]["started_at"] = state["genesis"]["created_at"]
+    snapshot["reviews"][0][0]["submitted_at"] = state["genesis"]["created_at"]
+    snapshot["statuses"] = [
+        {
+            "statuses": [
+                {
+                    "context": "status-ci",
+                    "state": "success",
+                    "created_at": state["genesis"]["created_at"],
+                }
+            ]
+        }
+    ]
+    entries = {
+        "checks": (snapshot["checks"][0]["check_runs"][0], "started_at"),
+        "statuses": (snapshot["statuses"][0]["statuses"][0], "created_at"),
+        "reviews": (snapshot["reviews"][0][0], "submitted_at"),
+    }
+    item, key = entries[field]
+    item[key] = timestamp
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] != "continue"
+    assert review_session.load(tmp_path, "change")["monitor"]["pending"]
+
+
+def test_initial_freshness_floor_retains_identity_across_refreshes(tmp_path: Path) -> None:
+    original = contract()
+    state = review_session.initialize(tmp_path, "change", original)
+    floor = state["genesis"]["created_at"]
+    assert state["context_since"] == floor
+    event = {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+    state = review_session.record(tmp_path, "change", event)
+    assert state["context_since"] == floor
+    assert review_session.record(tmp_path, "change", event) == state
+    assert review_session.initialize(tmp_path, "change", original) == state
+    assert review_session.load(tmp_path, "change")["context_since"] == floor
+    snapshot = complete_snapshot("input-generation:1")
+    snapshot["checks"][0]["check_runs"][0]["started_at"] = floor
+    snapshot["reviews"][0][0]["submitted_at"] = floor
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert not review_session.load(tmp_path, "change")["monitor"]["pending"]
+
+
+@pytest.mark.parametrize(
+    "timestamp,expected",
+    [
+        ("2026-09-29T01:00:00.123456Z", True),
+        ("2026-09-29T03:00:00.123456+02:00", True),
+        ("2026-09-29T01:00:00Z", False),
+        ("2026-09-29T01:00:00.123457Z", True),
+    ],
+)
+def test_initial_timestamp_boundary_is_exact_and_timezone_aware(
+    timestamp: str, expected: bool
+) -> None:
+    assert review_session.timestamp_after(timestamp, "2026-09-29T01:00:00.123456+00:00") is expected
+
+
+@pytest.mark.parametrize("kind", ["symlink", "directory", "unreadable"])
+def test_declared_ignored_nonregular_or_unreadable_is_incomplete(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, kind: str
+) -> None:
+    name = ".changecost/special"
+    scope = contract()
+    assert isinstance(scope["intended_files"], dict)
+    scope["intended_files"][name] = "<absent>"
+    review_session.initialize(tmp_path, "change", scope)
+    path = tmp_path / name
+    if kind == "symlink":
+        path.symlink_to("missing-target")
+    elif kind == "directory":
+        path.mkdir()
+    else:
+        path.write_text("unreadable")
+        read = Path.read_bytes
+
+        def denied(selected: Path) -> bytes:
+            if selected == path:
+                raise PermissionError("fixture unreadable")
+            return read(selected)
+
+        monkeypatch.setattr(Path, "read_bytes", denied)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"

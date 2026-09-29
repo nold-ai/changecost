@@ -479,3 +479,39 @@ HEAD/main, index, metadata and strict OpenSpec pass. Final logs are
 Fresh supported-Linux and provider checks remain required after publication.
 Legacy receipt recovery and unknown historical active-time/usage limits remain;
 this change neither grants a new allowance nor claims review savings.
+
+## Declared input binding and initial remote freshness
+
+On 2026-09-29 (Europe/Berlin), three ignored-declared-file regressions failed before
+implementation (`.changecost/batch18-red.txt`), and twelve old/missing/malformed
+initial positive-timestamp cases failed (`.changecost/batch18-freshness-red.txt`).
+A further unreadable-path case failed while dangling-symlink/directory cases already
+passed (`.changecost/batch18-readability-red.txt`). The read failure now becomes a
+controlled incomplete result rather than an uncaught exception.
+
+Schema 7 requires declared keys at every input capture. Explicit fingerprints or
+absence join the Git/index digest; existing declared content outside the index
+prevents clean completion even when ignored. Unrelated ignored output remains
+excluded. Tests cover creation/edit/deletion, local/global ignore rules, negation,
+tracked paths matching ignore, approved new keys, consistency races and nonregular
+or unreadable paths. Earlier receipt binding semantics require explicit recovery.
+
+The initial remote freshness floor now derives from validated immutable genesis
+time. Ordinary refreshes and retries retain it; explicit base adoption updates it.
+Exact timezone-aware comparisons accept equal/new timestamps and reject earlier,
+missing, malformed or naive timestamps. Positive fixtures now carry timestamps;
+the adoption missing-evidence case explicitly removes them to retain its original
+intent. Objections/failures remain independent blockers. Valid pre-init same-base
+work and coarse earlier same-second timestamps may conservatively require reruns;
+this is contextual evidence, not authenticated runner execution.
+
+Final verification passes 455 focused tests and 623 full tests plus four subtests.
+Coverage measures 949/1002 statements (95% rounded); maximum complexity is 10 and
+native KISS findings are empty. Ruff/formatting, BasedPyright, docs against
+HEAD/main, index, metadata and strict OpenSpec pass. Final logs are
+`.changecost/batch18-coverage-test.txt`, `.changecost/batch18-full.txt`,
+`.changecost/batch18-coverage.txt` and `.changecost/batch18-types.txt`.
+The batch18-focused.txt log precedes the three final path-readability cases;
+the coverage run includes them. Supported-Linux/provider evidence remains required
+for the published head. Legacy recovery, retained counters and unknown historical
+time/usage remain explicit; no fresh allowance or savings claim is introduced.

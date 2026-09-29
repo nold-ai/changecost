@@ -128,7 +128,7 @@ the required GitHub reviewer logins, nonempty `required_checks` names and explic
 declared review policy; do not infer protected-branch settings from them. Missing
 declared checks or statuses leave the session pending even when API pages are empty.
 Name the exact repository and REST reviewer logins, including `[bot]`. The first
-PR selection becomes immutable. Schema-6 canonical replay reconciles all derived
+PR selection becomes immutable. Schema-7 canonical replay reconciles all derived
 fields with original events and separately captured time/input facts. Minute budgets,
 active time and measured usage use finite canonical sums of their original components;
 overflow rejects the update without changing the receipt. Batch counts remain integers,
@@ -140,6 +140,12 @@ deletion or hostile tampering. See the
 Every refresh validates current changed-path coverage. Changing authorized paths
 requires an explicitly referenced approved scope manifest; packets retain both
 the original contract and recaptured current manifest.
+Input binding includes every declared path, even ignored files or explicit absence.
+Existing declared content outside the index prevents clean completion; unrelated
+ignored artifacts remain excluded. Remote positive evidence must also postdate
+initialization, because its earlier base context cannot be attested. This may
+require rerunning valid same-base checks; exact timestamp comparison has no rounding
+allowance for coarse provider timestamps. Objections remain blocking regardless of age.
 Integer counters retain exact nonnegative values without floating conversion;
 unrepresentable floating measurements reject atomically with controlled recovery
 for malformed persisted history.
@@ -148,7 +154,7 @@ path-to-SHA256 fingerprints against actual inputs. `<absent>` explicitly permits
 future planned files. Cover all changed, staged and untracked paths while allowing
 unchanged intended files. Captured initial scope facts remain immutable through
 head refreshes and are validated without filesystem access during replay. Existing
-schema-1/2/3/4/5 receipts require recovery rather than synthesized migration.
+schema-1/2/3/4/5/6 receipts require recovery rather than synthesized migration.
 Contract and refresh paths use one full hexadecimal commit-ID rule for 40-character
 SHA-1 and 64-character SHA-256 repositories. Shape validation does not replace
 checking the actual Git head; pure replay retains the same identity rule.
@@ -239,7 +245,7 @@ the observation. Order, duplicates and avatar changes are semantically quiet.
 Nonrequired requests remain informational; team membership is not expanded.
 Cancellation only restores still-qualifying evidence and cannot override rejection,
 head/base freshness or budget limits. Older snapshots missing request data become
-incomplete under schema 6; no new session allowance is created.
+incomplete under schema 7; no new session allowance is created.
 Input epochs use `input-generation:N`, starting at zero and advancing only for
 recorded `advance_head` events. Caller IDs, ordinary events, monitor revisions and
 exact retries cannot change or collide with that generation. Positive monitoring

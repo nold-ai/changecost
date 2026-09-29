@@ -21,7 +21,7 @@ from typing import Any
 
 from quality import repository
 
-SCHEMA_VERSION = 6
+SCHEMA_VERSION = 7
 DEFAULT_BATCHES = 3
 DEFAULT_MINUTES = 90
 WAIT_LIMIT_MINUTES = 30
@@ -54,11 +54,11 @@ def initialize(root: Path, change_id: str, contract: dict[str, Any]) -> dict[str
             "schema_version": SCHEMA_VERSION,
             "change_id": change_id,
             "contract": copy.deepcopy(contract),
-            "inputs": capture_inputs(root, contract["head"]),
+            "inputs": capture_inputs(root, contract["head"], contract["intended_files"]),
             "initial_scope": capture_initial_scope(root, contract),
             "created_at": datetime.now(UTC).isoformat(),
         }
-        if genesis["inputs"] != capture_inputs(root, contract["head"]):
+        if genesis["inputs"] != capture_inputs(root, contract["head"], contract["intended_files"]):
             raise ConflictError("inputs changed during initialization")
         state = replay(genesis, [], [], None, 0)
         write_state(marker, genesis)
@@ -77,7 +77,7 @@ def initial_state(genesis: dict[str, Any]) -> dict[str, Any]:
         "reviewed_manifest": copy.deepcopy(contract["intended_files"]),
         "comparison_base": contract["base"],
         "pr_base": copy.deepcopy(contract["pr_base"]),
-        "context_since": None,
+        "context_since": genesis["created_at"],
         "inputs": copy.deepcopy(genesis["inputs"]),
         "budget": {"batches": DEFAULT_BATCHES, "minutes": DEFAULT_MINUTES},
         "batches": 0,
@@ -321,7 +321,10 @@ def file_fingerprint(root: Path, name: str) -> str:
         return "<absent>"
     if not path.is_file():
         raise ValueError("intended path is not a regular file")
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError as error:
+        raise ValueError(f"cannot read intended path: {name}") from error
 
 
 def validate_initial_scope(contract: dict[str, Any], facts: Any) -> None:
@@ -353,7 +356,7 @@ def validate_gate_contract(contract: dict[str, Any]) -> None:
         raise ValueError("required_checks must name at least one expected CI check")
 
 
-def capture_inputs(root: Path, expected_head: str) -> dict[str, Any]:
+def capture_inputs(root: Path, expected_head: str, declared: Any) -> dict[str, Any]:
     validate_index_flags(root)
     head = repository.git(root, "rev-parse", "HEAD").decode().strip()
     if head != expected_head:
@@ -361,8 +364,16 @@ def capture_inputs(root: Path, expected_head: str) -> dict[str, Any]:
     names = repository.git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
     files = set(names.decode().split("\0")) - {""}
     index = repository.git(root, "ls-files", "--stage", "-z")
-    fingerprint = repository.digest(root, files).encode() + b"\0" + index
-    clean = not repository.git(root, "status", "--porcelain", "--untracked-files=all")
+    fingerprints = {name: file_fingerprint(root, name) for name in declared}
+    manifest = json.dumps(fingerprints, sort_keys=True).encode()
+    fingerprint = repository.digest(root, files).encode() + b"\0" + index + b"\0" + manifest
+    tracked = {record.partition(b"\t")[2].decode() for record in index.split(b"\0") if record}
+    untracked_declared = any(
+        name not in tracked and value != "<absent>" for name, value in fingerprints.items()
+    )
+    clean = not untracked_declared and not repository.git(
+        root, "status", "--porcelain", "--untracked-files=all"
+    )
     return {"head": head, "digest": hashlib.sha256(fingerprint).hexdigest(), "clean": clean}
 
 
@@ -528,13 +539,14 @@ def capture_event_facts(
 ) -> None:
     if event["kind"] != "advance_head":
         return
-    provenance["inputs"] = capture_inputs(root, event["head"])
     scope = refresh_scope_contract(state, event)
+    declared = scope["intended_files"]
+    provenance["inputs"] = capture_inputs(root, event["head"], declared)
     scope["intended_files"] = {
         name: file_fingerprint(root, name) for name in scope["intended_files"]
     }
     provenance["scope"] = capture_initial_scope(root, scope)
-    if provenance["inputs"] != capture_inputs(root, event["head"]):
+    if provenance["inputs"] != capture_inputs(root, event["head"], declared):
         raise ConflictError("inputs changed during scope refresh")
     if validate_adoption(event):
         verified_commit(root, event["comparison_base"])
@@ -771,7 +783,10 @@ def status(root: Path, change_id: str) -> dict[str, Any]:
 
 def status_from_state(root: Path, state: dict[str, Any]) -> dict[str, Any]:
     try:
-        if capture_inputs(root, state["reviewed_head"]) != state["inputs"]:
+        if (
+            capture_inputs(root, state["reviewed_head"], state["reviewed_manifest"])
+            != state["inputs"]
+        ):
             raise ValueError(
                 "reviewed repository inputs changed; recovery or explicit head advancement required"
             )
@@ -1453,13 +1468,13 @@ def freshness_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> lis
     for items, identity, timestamp, required in groups:
         fresh = {item[identity] for item in items if timestamp_after(item.get(timestamp), since)}
         pending.extend(
-            f"fresh evidence required after base adoption: {name}"
+            f"fresh evidence required for current review context: {name}"
             for name in contract[required]
             if name not in fresh
         )
     fresh_reviewers = fresh_reviewer_names(snapshot, since)
     pending.extend(
-        f"fresh reviewer evidence required after base adoption: {name}"
+        f"fresh reviewer evidence required for current review context: {name}"
         for name in contract["required_reviewers"]
         if name not in fresh_reviewers
     )
