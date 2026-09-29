@@ -584,14 +584,33 @@ def add_active_minutes(
     state["timing_measurements"].append(
         {"event_id": event["id"], "minutes": minutes, "recorded_at": provenance["recorded_at"]}
     )
-    state["active_minutes"] = math.fsum(item["minutes"] for item in state["timing_measurements"])
+    state["active_minutes"] = finite_sum([item["minutes"] for item in state["timing_measurements"]])
+
+
+def finite_sum(components: list[float]) -> float:
+    try:
+        total = math.fsum(components)
+    except OverflowError as error:
+        raise ValueError("numeric aggregate exceeds finite range") from error
+    validate_nonnegative(total, "numeric aggregate")
+    return total
+
+
+def event_components(state: dict[str, Any], kind: str, key: str) -> list[float]:
+    return [event[key] for event in state["events"] if event["kind"] == kind and key in event]
 
 
 def add_extension(state: dict[str, Any], event: dict[str, Any]) -> None:
     if not event.get("approved_by"):
         raise ValueError("budget extension requires approved_by")
     state["budget"]["batches"] += integer(event.get("batches", 0), "extension batches")
-    state["budget"]["minutes"] += number(event, "minutes", 0)
+    state["budget"]["minutes"] = finite_sum(
+        [
+            DEFAULT_MINUTES,
+            *event_components(state, "extension", "minutes"),
+            number(event, "minutes", 0),
+        ]
+    )
 
 
 def add_finding(state: dict[str, Any], event: dict[str, Any]) -> None:
@@ -660,8 +679,7 @@ def add_usage(state: dict[str, Any], event: dict[str, Any]) -> None:
     for key in ("cached_input", "uncached_input", "output", "cost"):
         if key in event:
             value = number(event, key)
-            prior = state["usage"][key]
-            state["usage"][key] = value if prior is None else prior + value
+            state["usage"][key] = finite_sum([*event_components(state, "usage", key), value])
 
 
 def set_phase(state: dict[str, Any], event: dict[str, Any]) -> None:

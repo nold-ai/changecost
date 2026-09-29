@@ -129,7 +129,10 @@ declared review policy; do not infer protected-branch settings from them. Missin
 declared checks or statuses leave the session pending even when API pages are empty.
 Name the exact repository and REST reviewer logins, including `[bot]`. The first
 PR selection becomes immutable. Schema-5 canonical replay reconciles all derived
-fields with original events and separately captured time/input facts. Preserve the
+fields with original events and separately captured time/input facts. Minute budgets,
+active time and measured usage use finite canonical sums of their original components;
+overflow rejects the update without changing the receipt. Batch counts remain integers,
+and unmeasured usage remains unknown. Preserve the
 genesis marker and state together; lost or incompatible history requires recovery,
 not another allowance. The marker detects state-file loss, not full-directory
 deletion or hostile tampering. See the

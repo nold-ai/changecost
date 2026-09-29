@@ -29,6 +29,9 @@ Packet status and evidence must describe one loaded revision; the watcher uses
 that same packet for changed-output exit decisions. Required event strings reject
 blank/Unicode-whitespace-only values, including budget-extension approvers.
 Exact-limit completion is allowed only when no family investigation remains.
+Fractional extensions and elapsed measurements use the same canonical summation
+rule. Overflow rejects updates atomically and malformed histories require recovery;
+unknown usage stays unknown.
 Resolved threads need explicit reviewer-evidence coverage of stable thread/comment
 identities and content; new/edited reports invalidate it. Local unresolved findings
 and remote unresolved status remain independent blockers.

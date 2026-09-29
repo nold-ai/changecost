@@ -393,3 +393,29 @@ HEAD/main, index, metadata and strict OpenSpec pass. Final logs are
 The earlier batch14-focused.txt records an intermediate fixture-adjustment failure,
 not final verification. Current-head Linux/provider evidence remains pending
 publication; history and recovery limitations are preserved without a new allowance.
+
+## Finite canonical numeric aggregates
+
+On 2026-09-29 (Europe/Berlin), six failing cases reproduced both fractional
+extension rounding directions and overflowing budget, elapsed-time and usage
+aggregates (`.changecost/batch15-red.txt`). Minute budgets now sum the default and
+all original extension components; active time and measured usage use the same
+finite canonical summation guard. Overflow becomes a controlled rejection before
+persistence, and malformed replayed history remains recovery-required. Integer
+batch counts, unknown usage and exact retry identities are preserved without an
+epsilon or synthesized allowance.
+
+The matrix covers exact-limit completion versus further work, below/exact/above
+boundaries in active/paused/complete phases, interleaved events, reload, same-head
+refresh, zero and batch-only grants, duplicate ingestion with the original
+revision, all usage categories, atomic overflow rejection and malformed-history
+status. Final verification passes 388 focused tests and 556 full tests plus four
+subtests. Coverage measures 909/962 statements (94% rounded); maximum complexity
+is 10 and native KISS findings are empty. Ruff/formatting, BasedPyright, docs
+against HEAD/main, index, metadata and strict OpenSpec pass. Final logs are
+`.changecost/batch15-coverage-test.txt`, `.changecost/batch15-full.txt`,
+`.changecost/batch15-coverage.txt` and `.changecost/batch15-types.txt`.
+The batch15-focused.txt log predates the final three boundary cases; the coverage
+run includes them. Current-head Linux/provider evidence remains required after
+publication; the preserved legacy receipt remains recovery-required, and prior
+counters and unknown historical measurements are not reset.

@@ -2622,3 +2622,157 @@ def test_collection_error_without_epoch_replaces_prior_green(
     assert "API unavailable" in state["monitor"]["errors"]
     assert review_session.packet(tmp_path, "change")["status"]["action"] == "incomplete"
     assert review_session.packet(tmp_path, "change")["thread_reports"] is None
+
+
+@pytest.mark.parametrize("count,minutes,expected", [(3, 0.1, 90.3), (5, 0.2, 91.0)])
+def test_fractional_budget_and_elapsed_time_share_exact_boundary(
+    tmp_path: Path, count: int, minutes: float, expected: float
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    review_session.record(
+        tmp_path, "change", {"id": "base-time", "kind": "active_minutes", "minutes": 90}
+    )
+    for index in range(count):
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": f"grant-{index}",
+                "kind": "extension",
+                "approved_by": "maintainer",
+                "minutes": minutes,
+            },
+        )
+        review_session.record(
+            tmp_path,
+            "change",
+            {"id": f"time-{index}", "kind": "active_minutes", "minutes": minutes},
+        )
+    complete_session(tmp_path)
+    state = review_session.load(tmp_path, "change")
+    assert state["budget"]["minutes"] == state["active_minutes"] == expected
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    review_session.record(
+        tmp_path, "change", {"id": "continue", "kind": "phase", "phase": "active"}
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "replan"
+
+
+@pytest.mark.parametrize(
+    "kind,key",
+    [
+        ("extension", "minutes"),
+        ("active_minutes", "minutes"),
+        ("usage", "cost"),
+        ("usage", "cached_input"),
+    ],
+)
+def test_aggregate_overflow_rejects_atomically_and_replay_fails_closed(
+    tmp_path: Path, kind: str, key: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    first = {"id": "first", "kind": kind, key: 1e308}
+    if kind == "extension":
+        first["approved_by"] = "maintainer"
+    state = review_session.record(tmp_path, "change", first)
+    path = review_session.state_path(tmp_path, "change")
+    original = path.read_bytes()
+    second = {**first, "id": "second"}
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", second)
+    assert path.read_bytes() == original
+    assert review_session.load(tmp_path, "change") == state
+    state["events"].append(second)
+    state["provenance"].append({"event_id": "second", "recorded_at": "2026-09-29T00:00:00Z"})
+    review_session.write_state(path, state)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+
+
+@pytest.mark.parametrize("key", ["cached_input", "uncached_input", "output", "cost"])
+def test_usage_components_remain_canonical_across_retries_and_reload(
+    tmp_path: Path, key: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for index in range(3):
+        event = {"id": f"usage-{index}", "kind": "usage", key: 0.1}
+        before = review_session.load(tmp_path, "change")["revision"]
+        state = review_session.record(tmp_path, "change", event, expected_revision=before)
+        assert review_session.record(tmp_path, "change", event, expected_revision=before) == state
+        review_session.record(
+            tmp_path, "change", {"id": f"phase-{index}", "kind": "phase", "phase": "active"}
+        )
+    usage = review_session.load(tmp_path, "change")["usage"]
+    assert usage[key] == 0.30000000000000004
+    assert all(value is None for name, value in usage.items() if name != key)
+
+
+def test_canonical_extensions_retain_integer_batches_and_original_retry(tmp_path: Path) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for index in range(3):
+        event = {
+            "id": f"extension-{index}",
+            "kind": "extension",
+            "approved_by": "maintainer",
+            "minutes": 0.1,
+            "batches": 1,
+        }
+        before = review_session.load(tmp_path, "change")["revision"]
+        state = review_session.record(tmp_path, "change", event, expected_revision=before)
+        assert review_session.record(tmp_path, "change", event, expected_revision=before) == state
+        review_session.record(
+            tmp_path, "change", {"id": f"usage-{index}", "kind": "usage", "cost": 0}
+        )
+    state = review_session.load(tmp_path, "change")
+    assert state["budget"] == {"batches": 6, "minutes": 90.3}
+    assert type(state["budget"]["batches"]) is int
+    assert len(state["events"]) == 6
+
+
+@pytest.mark.parametrize("components", [[float("inf")], [float("nan")], [1e308, 1e308]])
+def test_finite_sum_rejects_nonfinite_aggregates(components: list[float]) -> None:
+    with pytest.raises(ValueError):
+        review_session.finite_sum(components)
+
+
+@pytest.mark.parametrize("phase", ["active", "paused", "complete"])
+def test_fractional_budget_decisions_survive_refresh_and_zero_grants(
+    tmp_path: Path, phase: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for index in range(5):
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": f"grant-{index}",
+                "kind": "extension",
+                "minutes": 0.2,
+                "approved_by": "maintainer",
+            },
+        )
+    for event in [
+        {"id": "zero", "kind": "extension", "minutes": 0, "approved_by": "maintainer"},
+        {"id": "batch-only", "kind": "extension", "batches": 1, "approved_by": "maintainer"},
+        {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD},
+    ]:
+        review_session.record(tmp_path, "change", event)
+    review_session.record_monitor_snapshot(
+        tmp_path, "change", complete_snapshot("input-generation:1")
+    )
+    complete_session(tmp_path)
+    # Restore the explicit current monitor after the initial-generation helper.
+    review_session.record_monitor_snapshot(
+        tmp_path, "change", complete_snapshot("input-generation:1")
+    )
+    state = review_session.load(tmp_path, "change")
+    assert state["budget"] == {"batches": 4, "minutes": 91.0}
+    state["phase"] = phase
+    for minutes in [90.9, 91.0, 91.1]:
+        state["active_minutes"] = minutes
+        action = review_session.decision(state)[0]
+        if phase == "complete":
+            assert action == ("complete" if minutes <= 91 else "replan")
+        elif minutes >= 91:
+            assert action == "replan"
+        else:
+            assert action in {"continue", "wait"}

@@ -51,7 +51,11 @@ mutation, or hostile-runner integrity guarantee.
    linked to immutable event IDs. Missing measurements differ from measured zero;
    completion requires an explicit measurement after the latest input refresh.
    Timestamps document receipt provenance and do not infer active time from wall
-   time. Duplicate ingestion retains the original timestamp and counter.
+   time. Duplicate ingestion retains the original timestamp and counter. Minute grants,
+   active measurements and usage sum original components with finite canonical
+   summation, never the previously rounded total. Overflow becomes a controlled
+   rejection before persistence; malformed history requires recovery. No tolerance
+   widens a budget and unmeasured usage remains unknown.
 8. Bind the exact repository, selected PR, head, expected target ref/SHA and input epoch. Preserve exact
    REST reviewer identities. Normalize meaningful observation content and replay
    cached monitor classifications from the raw receipt; transport or shape failures

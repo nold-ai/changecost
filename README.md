@@ -85,7 +85,9 @@ The session names expected CI checks and commit statuses explicitly and binds
 evidence to Git HEAD, working files and staged blobs/modes. Refreshing that binding
 requires fresh passing evidence before completion.
 Completion also requires explicit measured active time; a missing measurement is
-unknown. Latest changes-requested reviews block readiness even without inline threads.
+unknown. Fractional budgets, time and usage retain finite canonical totals from
+original measurements; overflowing updates are rejected without granting unlimited allowance.
+Latest changes-requested reviews block readiness even without inline threads.
 Canonical event replay checks saved decisions against their history. Exact repository,
 PR and reviewer identities prevent unrelated evidence from satisfying the session.
 Initialize only genuinely new sessions; recover existing missing receipts without

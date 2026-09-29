@@ -20,6 +20,9 @@
 - Bind review evidence to explicit PR target and comparison bases, preserve their
   original contract, and require fresh evidence after atomic context adoption.
 
+- Sum review budget extensions, active time and measured usage from original
+  components; reject overflowing aggregates without losing finite limits or history.
+
 - Emit local review terminal decisions despite quiet remote polls, recheck budgets
   at watcher deadlines and validate full commit identities consistently on refresh.
 

@@ -7,6 +7,23 @@ loops deliberately while retaining the context needed for a later decision.
 
 ## ADDED Requirements
 
+### Requirement: Numeric aggregates preserve finite canonical totals
+
+Active time, granted minute budgets and measured usage SHALL be summed canonically
+from their original recorded components. Batch counts remain integers; unmeasured
+usage remains unknown. Aggregation overflow or nonfinite totals SHALL reject atomic
+updates and require recovery for malformed persisted history, never create infinite
+allowance. No epsilon may add review allowance.
+
+#### Scenario: Fractional grants exactly match measured activity
+- **WHEN** fractional extensions and measured components sum to the same limit
+- **THEN** genuine completion at that limit succeeds
+- **AND** additional review activity replans at exhaustion, regardless of rounding direction.
+
+#### Scenario: Finite components overflow their aggregate
+- **WHEN** recorded components cannot produce a finite total
+- **THEN** the write fails without changing the receipt and replay/status fail closed.
+
 ### Requirement: Observation epochs are captured before collection
 
 Every positive observation SHALL carry an explicit collection-time input epoch.
