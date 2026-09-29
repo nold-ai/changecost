@@ -28,6 +28,8 @@
 - [Core-02 contracts preparation](openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md): Contract preparation, archive results and prerequisite evidence; implementation evidence is recorded separately.
 - [Offline CLI](docs/cli.md): Synthetic registration, lifecycle, inspection and portable replay examples.
 - [Contracts v1](docs/contracts.md): Exact field semantics, immutable revisions, local history and recovery limits.
+- [Behavioral evidence review](docs/development/behavioral-evidence.md): Bounded lifecycle controls and content-bound review packets; no completion authority.
+- [Behavioral evidence pilot](docs/lessons-learned/behavioral-evidence-pilot.md): Measured experiment status, tool coverage and limitations.
 
 ## Local skills
 

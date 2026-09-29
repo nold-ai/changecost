@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add a contributor behavioral-evidence packet validator and bounded independent
+  SQLite lifecycle controls, with delta-review guidance and measured pilot evidence.
+
 - Reject out-of-range SQLite transaction sequences in portable observations and
   cutoffs; report controlled, atomic import/allocation failures while preserving
   maximum-sequence retries and observation-only imports. Suppress serializer

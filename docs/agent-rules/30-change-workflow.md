@@ -281,3 +281,13 @@ Pattern inspected on 2026-09-28 (Europe/Berlin): `specfact-cli-modules` at
 `docs/agent-rules/70-release-commit-and-docs.md` (metadata consistency).
 ChangeCost currently generates only its foundation help/version surface; economic
 commands remain unimplemented.
+
+## Behavioral evidence and follow-up review
+
+The [behavioral evidence pilot](../development/behavioral-evidence.md) adds a read-only
+packet check alongside this existing session. Bind actual reports and the specification,
+oracle, generator and configuration to inputs captured before each check. Review stable
+intent once, then provide the actual delta, affected invariant/assumption mappings and
+unresolved findings. Unknown dependencies, changed scope/entrypoints/trust boundaries
+require broader review; an old packet cannot waive current-head final gates or reset
+review budgets. Seeded faults are detector controls, not defects found in runtime.

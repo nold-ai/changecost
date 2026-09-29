@@ -107,3 +107,15 @@ next stage is in another session. Keep the existing specs/tasks as the work plan
 Finish with `$changecost-verify <id>` as the next stage. Do not commit/push, create
 a PR or launch promotion merely because implementation finished unless the user
 already requested those subsequent stages as well.
+
+## Behavioral evidence pilot
+
+Use the [behavioral evidence guide](../../../docs/development/behavioral-evidence.md)
+for the selected pilot: retain stable intent, independently inspected invariant and
+dependency mappings, specification/oracle/generator/configuration fingerprints and
+native report digests. Capture the existing review-session binding before executing
+checks; provide the first reviewer the complete packet and later reviewers the actual
+delta plus affected assumptions and unresolved findings. New/unknown inputs, changed
+entrypoints or trust boundaries require renewed broad review. Missing, stale, skipped
+or unbound required evidence stays incomplete. Preserve existing counters and final
+current-head quality/independent/external-review gates; the packet grants no completion.

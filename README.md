@@ -162,3 +162,6 @@ privacy, dependency evidence and all required review analyzers; incomplete capsu
 results remain failures. A native advisory-success verdict is accepted only with
 complete passing analyzer evidence and a zero exit code. See the [gate guide](docs/development/quality-gates.md)
 for the pinned analyzer composition and hosted-runner trust boundary.
+
+Contributor review can use the [behavioral evidence pilot](docs/development/behavioral-evidence.md) for bounded
+lifecycle controls and content-bound delta review. Final required gates remain mandatory.

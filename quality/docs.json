@@ -754,6 +754,72 @@
         "openspec/changes/core-02-change-run-contracts/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
+    },
+    {
+      "path": "docs/development/behavioral-evidence.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "quality/behavioral_evidence.py",
+        "tests/behavioral_model.py",
+        "tests/test_lifecycle_stateful.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/lessons-learned/behavioral-evidence-pilot.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "docs/lessons-learned/behavioral-evidence-pilot.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/PREPARATION_EVIDENCE.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "openspec/changes/dev-workflow-02-behavioral-evidence/PREPARATION_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/TDD_EVIDENCE.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "openspec/changes/dev-workflow-02-behavioral-evidence/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/design.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "openspec/changes/dev-workflow-02-behavioral-evidence/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/proposal.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "openspec/changes/dev-workflow-02-behavioral-evidence/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/specs/behavioral-evidence-review/spec.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "openspec/changes/dev-workflow-02-behavioral-evidence/specs/behavioral-evidence-review/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/tasks.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "openspec/changes/dev-workflow-02-behavioral-evidence/tasks.md"
+      ],
+      "kind": "manual"
     }
   ],
   "immutable": {
