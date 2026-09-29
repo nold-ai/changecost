@@ -6,11 +6,16 @@ ChangeCost is an early NOLD AI project exploring how to quote the cost of an
 agentic software change, reconcile its actual provider-reported cost, and use
 that history to improve future estimates.
 
-**Status: unreleased CLI foundation / pilot To-Validate.** The local package now
-provides offline `changecost --help` and `changecost --version`. Cost estimation,
-provider imports, binding and settlement remain planned in
-[the pilot backlog](openspec/CHANGE_ORDER.md). Live collection requires a separate
-request. This repository remains private.
+**Status: unreleased offline contracts / pilot To-Validate.** The current branch
+implements explicit Change/Run registration, bindings, lifecycle declarations and
+portable import/export. See [CLI examples](docs/cli.md), [v1 contracts](docs/contracts.md)
+and [verification evidence](openspec/changes/core-02-change-run-contracts/TDD_EVIDENCE.md).
+Cost estimation, provider imports and economic reconciliation remain planned.
+Live collection requires a separate request. This repository remains private.
+
+The delivered [Python foundation](openspec/specs/python-foundation/spec.md) and
+[bounded review workflow](openspec/specs/bounded-review-session/spec.md) are archived
+as of 2026-09-29. Core-02 remains active until implementation acceptance.
 
 The [source-feasibility research](docs/providers/source-feasibility.md) now covers
 Copilot, Cursor, Codex and Claude Code. Local Codex/Claude metadata supplies partial
@@ -49,8 +54,8 @@ implementation. Research examples are proposals, not supported commands.
 
 Use Python 3.11+ and uv 0.12.19. The tested interpreter matrix is 3.11.15 and
 3.13.14. Hatchling builds the package; uv owns dependency resolution and the
-committed `uv.lock`. Pydantic is selected for later contracts but is not needed by
-this help/version-only runtime.
+committed `uv.lock`. Pydantic 2 validates the portable contracts; Typer exposes the offline CLI.
+SpecFact is separate contributor tooling and is absent from the runtime dependency set.
 
 ```sh
 uv sync --locked --group build

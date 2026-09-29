@@ -241,7 +241,7 @@ infrastructure or provider calls.
 None.
 
 Shared boundaries and current provider evidence are recorded in the
-[source assessment](../../../docs/research/pilot-source-assessment.md).
+[source assessment](../../../../docs/research/pilot-source-assessment.md).
 No provider-specific mapping becomes supported merely by appearing in this plan.
 
 ## Risks / Trade-offs

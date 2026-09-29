@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Archive the delivered Python foundation and bounded-review changes through the
+  OpenSpec CLI, synchronize their accepted specs, and retain accepted verifier and
+  unvalidated calibration limitations. Keep incomplete source feasibility active.
+- Prepare core-02 contracts against fresh main and the delivered specs: define
+  strict portable input, exact storage, lifecycle-only commands, atomic reference
+  and migration failure handling, and committed historical visibility. No runtime
+  implementation or provider support is added.
+
+
 - Require explicit collection-time observation epochs at ingestion rather than
   relabeling unbound snapshots with the current generation.
 
@@ -170,3 +179,11 @@
 - Plan nine pilot changes and the private GitHub Epic/Feature/User Story backlog;
   codify source feasibility, exact economic units, chronological evaluation and
   uv/Hatchling foundation requirements. Product implementation remains deferred.
+
+### Core-02 offline contracts (under verification)
+
+- Add strict v1 records with exact decimal strings, destination-local history and
+  atomic SQLite persistence; retain imported producer claims without certification.
+- Add explicit bind registration/mapping/import, lifecycle-only settle, and explain
+  inspection/export. Provider imports, estimation and reconciliation remain planned.
+- Keep the unreleased package version at 0.1.0.dev0.

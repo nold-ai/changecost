@@ -1,14 +1,6 @@
 {
-  "README.md": {
-    "reason": "The documented make test target now routes to the existing shared required tests leaf with a target-only HEAD inventory default. README setup/product scope and aggregate commands are unchanged. CONTRIBUTING.md and the development quality guide explain input arguments, developer filtering and mandatory host Make proof.",
-    "digest": "89750c2e6027366ba075a23bb791c9e6e500c70eaa609ee22da2ced5c0da2ae0"
-  },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "The agent rules already require parity of local and CI validators and genuine failure proof. Routing make test through the shared tests leaf repairs that promised contract without changing agent workflow or assurance policy. CONTRIBUTING.md and the development quality guide describe the target-only base default and mandatory external-tool proof.",
-    "digest": "89750c2e6027366ba075a23bb791c9e6e500c70eaa609ee22da2ced5c0da2ae0"
-  },
-  "docs/commands.md": {
-    "reason": "Canonical contributor review receipts change development tooling and skill bodies, not the public changecost help/version command tree or skill frontmatter. Regeneration confirms docs/commands.md remains exact; the updated shared workflow and development quality guide document the helper contract and recovery behavior.",
-    "digest": "6d3ee7fa6ab8339985abe417b6f4ced70af8cffb4c4825c0d7bc72b6d37cac3b"
+    "reason": "Core-02 adds offline runtime records and locked Pydantic. The existing rules already mandate scoped runtime tests, installed distributions, dependency checks and full Linux analyzers; the assurance policy is unchanged. The quality guide and implementation evidence explain the extended package proof and current platform blocker.",
+    "digest": "9b253d4c464a4f328abcfdc1ba93d1cb7c1a18be659c45a292a6131f4e8d5437"
   }
 }

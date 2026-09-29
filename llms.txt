@@ -1,6 +1,6 @@
 # ChangeCost
 
-> Private, unreleased CLI foundation. Provider operations remain planned.
+> Private, unreleased offline contracts and lifecycle CLI. Provider operations remain planned.
 
 ## Project and evidence
 
@@ -14,7 +14,7 @@
 - [OpenSpec configuration](openspec/config.yaml): current context and artifact requirements.
 - [Change order](openspec/CHANGE_ORDER.md): pending changes, issue links and prerequisites.
 - [Changelog](CHANGELOG.md): recorded changes; no release is implied.
-- [Python foundation plan](openspec/changes/core-01-python-foundation/design.md): foundation contract, implementation decisions and remaining verification.
+- [Archived Python foundation](openspec/changes/archive/2026-09-29-core-01-python-foundation/design.md): delivered foundation design, historical verification and accepted limitations.
 - [Source feasibility](docs/providers/source-feasibility.md): capability matrix, current limits and work-side evidence checklist.
 - [Codex and Claude Code metrics](docs/providers/codex-claude-metrics.md): documented interfaces and authorized local metadata observations; no approved adapters.
 - [Cursor local metrics](docs/providers/cursor-local-metrics.md): Basic-account identity/context observations; consumption and billing remain unverified.
@@ -23,6 +23,11 @@
 - [Enterprise v2 review](docs/providers/enterprise-v2-schema-review.md): reported message counters, synthetic arithmetic, encoding discrepancies and unchanged hook evidence gaps.
 - [Fixture contract](docs/providers/fixtures.md): allowlists, synthetic cases and relationship-preserving transformations.
 - [Research evidence](openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md): scenario review, checks and unresolved source inspection.
+- [Python foundation specification](openspec/specs/python-foundation/spec.md): Accepted behavior synchronized from the merged implementation.
+- [Bounded review specification](openspec/specs/bounded-review-session/spec.md): Accepted behavior synchronized from the merged implementation.
+- [Core-02 contracts preparation](openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md): Contract preparation, archive results and prerequisite evidence; implementation evidence is recorded separately.
+- [Offline CLI](docs/cli.md): Synthetic registration, lifecycle, inspection and portable replay examples.
+- [Contracts v1](docs/contracts.md): Exact field semantics, immutable revisions, local history and recovery limits.
 
 ## Local skills
 

@@ -1,13 +1,13 @@
 # Tasks
 
 Implementation was authorized on 2026-09-28. Checked tasks have local evidence in
-[TDD_EVIDENCE.md](TDD_EVIDENCE.md). Full analyzer assurance and remote CI/PR work
-remain pending; live collection is not authorized.
+[TDD_EVIDENCE.md](TDD_EVIDENCE.md). The final hosted checks, accepted-risk dispositions and merge now complete the
+remaining tasks; see the dated closure below. Live collection is not authorized.
 
 ## 1. Scope and prerequisites
 
 - [x] 1.1 Refresh main and reconcile this preparation by change identity using the shared workflow; start the separately authorized implementation on a focused branch, read proposal/design/spec and verify Git status preserves unrelated work.
-- [ ] 1.2 Confirm #10 remains pending with no prerequisite edges; recheck [preparation evidence](design.md#preparation-evidence), choose exact compatible tool pins/Python matrix and verify a supported SpecFact review setup before claiming behavior gates complete.
+- [x] 1.2 Confirm #10 remains pending with no prerequisite edges; recheck [preparation evidence](design.md#preparation-evidence), choose exact compatible tool pins/Python matrix and verify a supported SpecFact review setup before claiming behavior gates complete.
 
 ## 2. Package and environment
 
@@ -18,7 +18,7 @@ remain pending; live collection is not authorized.
 ## 3. Development quality
 
 - [x] 3.1 Configure Ruff, BasedPyright and pytest, then run deliberate failure probes; verify gates detect actual defects before removing probes.
-- [ ] 3.2 Update make targets, hooks and pinned CI setup; verify local and CI run the same checks on Python 3.11 and the chosen additional supported version.
+- [x] 3.2 Update make targets, hooks and pinned CI setup; verify local and CI run the same checks on Python 3.11 and the chosen additional supported version.
 - [x] 3.3 Document uv versus Hatchling responsibilities and review runtime setup; verify actual SpecFact tool/module versions and analyzer coverage are recorded without fabricated passes.
 - [x] 3.4 Derive failing ownership/consistency fixtures for new unmapped docs, orphaned source mappings, broken links/anchors and reused no-doc-change rationales; implement a small ownership map/checker and verify repaired fixtures pass while original research hashes remain unchanged; cover maintained OpenSpec/skill files, rename/delete cases and non-self-referential rationale digests, and document the map/rationale format.
 - [x] 3.5 Write failing stale/missing/duplicate llms and command/skill inventory tests; implement deterministic offline generation from local canonical sources plus a read-only check mode, migrate the index, and verify repeat generation is byte-stable without publishing planned commands; document generator inputs and regeneration/check commands.
@@ -28,9 +28,9 @@ remain pending; live collection is not authorized.
 
 ## 4. Integration and handoff
 
-- [ ] 4.1 Run applicable repository gates and `openspec validate core-01-python-foundation --strict --no-interactive`; verify all relevant checks pass, docs ownership/changelog/version/generated-index evidence matches the final contents, and unavailable tooling is reported explicitly.
-- [ ] 4.2 Record actual failing-before/passing-after commands, timestamps and results in TDD_EVIDENCE.md throughout implementation, then run fresh SpecFact review on the final contents; verify scope, versions and analyzer availability, resolving findings or documenting narrow exceptions. Preparation checks do not count as product TDD.
-- [ ] 4.3 Open a focused PR with docs, verification, limits and rollback; verify reciprocal proposal/issue links and native hierarchy/dependencies, and archive only after implementation is accepted.
+- [x] 4.1 Run applicable repository gates and `openspec validate core-01-python-foundation --strict --no-interactive`; verify all relevant checks pass, docs ownership/changelog/version/generated-index evidence matches the final contents, and unavailable tooling is reported explicitly.
+- [x] 4.2 Record actual failing-before/passing-after commands, timestamps and results in TDD_EVIDENCE.md throughout implementation, then run fresh SpecFact review on the final contents; verify scope, versions and analyzer availability, resolving findings or documenting narrow exceptions. Preparation checks do not count as product TDD.
+- [x] 4.3 Open a focused PR with docs, verification, limits and rollback; verify reciprocal proposal/issue links and native hierarchy/dependencies, and archive only after implementation is accepted.
 
 ## Outstanding validation
 
@@ -61,3 +61,25 @@ Run 36437520340 at `d48b830` then passed the full aggregate on both Python versi
 including all ten required native analyzers. Additional job-permission and checkout
 correctness findings are being corrected and require fresh current-head checks;
 open review scope questions still prevent marking integration complete.
+
+## Closure reconciliation — 2026-09-29 (Europe/Berlin)
+
+The outstanding-validation entries above are historical checkpoints, superseded
+for delivery status by [PR #22](https://github.com/nold-ai/changecost/pull/22),
+merged 2026-09-28 at 20:51:55 Europe/Berlin. Final head
+`c70ebcf71308213bf1d44ef7303561a8a8047f3f` passed both Python 3.11.15/3.13.14
+quality jobs in [run 36462266628](https://github.com/nold-ai/changecost/actions/runs/36462266628),
+including the ten native analyzers, 168 tests plus four subtests and host proofs.
+The reviewed pins, local/CI wiring and final verification satisfy tasks 1.2, 3.2,
+4.1 and 4.2; maintainer merge and closed #10 satisfy delivery/acceptance in 4.3.
+
+The four genuine host/controller/loader findings were explicitly accepted as-is
+by the maintainer at 20:49 Europe/Berlin on 2026-09-28: dispositions
+[external tool](https://github.com/nold-ai/changecost/pull/22#discussion_r4125859889),
+[controller/output](https://github.com/nold-ai/changecost/pull/22#discussion_r4125860309),
+[loader](https://github.com/nold-ai/changecost/pull/22#discussion_r4125860747), and
+[Make controller](https://github.com/nold-ai/changecost/pull/22#discussion_r4125861231).
+All review threads were resolved when read on 2026-09-29. This records accepted
+risk, not remediation, reviewer withdrawal or hostile-PR integrity. macOS capsule
+execution remains unsupported; the cited Linux evidence supplies that assurance.
+Archival syncs the delivered contract; no runtime change or new waiver is made.

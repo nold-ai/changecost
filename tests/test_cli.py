@@ -62,9 +62,83 @@ class CliContract(unittest.TestCase):
                         self.assertEqual(result.stdout.strip(), version("changecost"))
                     if args == ["--help"]:
                         self.assertIn("--version", result.stdout)
-                        self.assertNotIn("settle", result.stdout)
+                        for command in ("bind", "settle", "explain"):
+                            self.assertIn(command, result.stdout)
                     self.assertEqual(list(home.iterdir()), [])
                     self.assertEqual(list(work.iterdir()), [])
+            self.prove_contract_roundtrip(entrypoint, work, env)
+
+    def prove_contract_roundtrip(self, entrypoint, work, env):
+        """Exercise the installed distribution without source imports or network."""
+
+        def invoke(db, *args):
+            result = subprocess.run(
+                [entrypoint, "--db", str(work / db), *args],
+                cwd=work,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            return result.stdout
+
+        invoke(
+            "source.sqlite",
+            "bind",
+            "--register-change",
+            "--repository-id",
+            "demo",
+            "--change-id",
+            "c",
+        )
+        invoke(
+            "source.sqlite",
+            "bind",
+            "--register-run",
+            "--repository-id",
+            "demo",
+            "--change-id",
+            "c",
+            "--provider",
+            "synthetic",
+            "--surface",
+            "cli",
+            "--run-id",
+            "r",
+        )
+        invoke(
+            "source.sqlite",
+            "settle",
+            "--repository-id",
+            "demo",
+            "--provider",
+            "synthetic",
+            "--surface",
+            "cli",
+            "--run-id",
+            "r",
+            "--run-outcome",
+            "failed",
+        )
+        invoke("source.sqlite", "explain", "--export-artifact", str(work / "bundle.json"))
+        for _ in range(2):
+            invoke("destination.sqlite", "bind", "--import-artifact", str(work / "bundle.json"))
+        result = invoke(
+            "destination.sqlite",
+            "explain",
+            "--repository-id",
+            "demo",
+            "--provider",
+            "synthetic",
+            "--surface",
+            "cli",
+            "--run-id",
+            "r",
+        )
+        import json
+
+        self.assertEqual(json.loads(result)["revisions"][0]["outcome"], "failed")
 
 
 if __name__ == "__main__":

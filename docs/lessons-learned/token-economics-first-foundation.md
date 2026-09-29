@@ -3,7 +3,9 @@
 **ChangeCost · First Python foundation · 28 September 2026**  
 Evidence snapshot: **19:50 Europe/Berlin**. The snapshot's measurements remain
 historical. This change implements the bounded-session recommendations; the
-supported-Linux preflight and reviewer calibration remain pending.
+supported-Linux preflight subsequently passed in merged PR #24. Reviewer
+calibration remains unvalidated/not adopted; the historical measurements below
+are unchanged. See the [archived closure](../../openspec/changes/archive/2026-09-29-dev-workflow-01-bounded-review/tasks.md).
 
 ChangeCost aims to make the cost of a software change understandable. Its first
 foundation exposed why that matters: a small runtime change can accumulate a large

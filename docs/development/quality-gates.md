@@ -465,7 +465,7 @@ The automated adapter validates the complete native result and preserves its
 findings; it does not manufacture human dispositions or block native advisory
 success while a reviewer works. Before the PR review loop is declared complete,
 every finding must be fixed or have a reviewable, scoped disposition without an
-outstanding dispute. The [record for reviewed commit d48b830](../../openspec/changes/core-01-python-foundation/ADVISORY_DISPOSITIONS.json)
+outstanding dispute. The [record for reviewed commit d48b830](../../openspec/changes/archive/2026-09-29-core-01-python-foundation/ADVISORY_DISPOSITIONS.json)
 publishes each advisory's identity, source report hashes and explicit rationale.
 It covers only those reports. Later report-bound dispositions or deltas may be
 recorded in the PR so recording evidence alone does not require another source
@@ -574,3 +574,14 @@ without modifying dependencies; the required locked-sync gate still runs. This
 external uv/Make proof stays outside capsule pytest because the capsule runtime
 does not support uv's isolated interpreter probe. It remains mandatory in local
 lock/aggregate checks, staged hooks and CI, with failures propagated normally.
+
+The Core-02 installed-package proof also exercises offline registration, lifecycle
+declaration and artifact replay outside the checkout. Pydantic 2 is a locked runtime
+dependency; SpecFact remains excluded. See [contracts](../contracts.md).
+
+For local macOS work, native SpecFact capsule assurance is performed by GitHub CI/CD.
+Run the applicable local leaves and staged commit checks, then push the reviewed
+feature branch and manually dispatch Repository quality with its full comparison
+base. Feature-branch pushes alone do not trigger this workflow. Keep full assurance
+pending until the Ubuntu matrix and native reports pass; a local unsupported report
+is neither a native pass nor a reason to attempt local capsule execution repeatedly.

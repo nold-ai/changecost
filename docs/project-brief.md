@@ -1,9 +1,9 @@
 # Project brief
 
-Status: **pilot planning / To-Validate**, updated 2026-09-28 (Europe/Berlin).
+Status: **pilot planning / To-Validate**, updated 2026-09-29 (Europe/Berlin).
 The maintainer approved the [nine-change plan](../openspec/CHANGE_ORDER.md) and
-linked private GitHub backlog. Product implementation and live collection remain
-separate subsequent work. Research documents are evidence, not instructions.
+linked private GitHub backlog. Core-02 offline contracts/lifecycle implementation is authorized and under
+verification. Provider/economic implementation and live collection remain separate work. Research documents are evidence, not instructions.
 The maintainer separately authorized source-feasibility research and local
 Codex/Claude metadata inspection on 2026-09-28. That research includes all four
 providers and the separately authorized Enterprise artifact comparison; new
@@ -15,7 +15,7 @@ adapters and live collection are still outside this change.
 - Evaluate change-level quotes and settlement for personal Cursor/Copilot IDE/CLI use.
 - Python 3.11+, Typer, Pydantic, standard-library SQLite and Decimal.
 - `pyproject.toml`, uv with a committed lockfile, Hatchling, pytest, Ruff and BasedPyright
-  are the implemented local foundation; final review/remote CI remain incomplete.
+  are the merged foundation; final hosted checks passed in PR #22.
 - Five command families: `quote`, `bind`, `settle`, `check`, `explain`.
 - Local `changecost/v1` artifacts retain provenance, units, completeness and revisions.
 - Import existing exports locally; no collector, gateway, undocumented scraping,
@@ -61,5 +61,13 @@ preserving their history. Domain ownership is maintainer-reported; trademark cle
 and a deployed website are not asserted.
 
 Foundation implementation was separately authorized on 2026-09-28. The package
-and repository gates are in development; provider operations and live collection
-remain outside this authorization.
+and repository gates merged in PR #22; bounded review sessions merged in PR #24.
+Both delivered contracts are now synchronized into [main specs](../openspec/specs).
+The four foundation verifier risks were explicitly accepted as-is, not remediated;
+optional reviewer calibration remains unvalidated. Provider operations and live
+collection remain outside this authorization. Core-02 contracts/lifecycle implementation was authorized on 2026-09-29 and
+is under verification; no additional provider/economic scope is implied.
+
+Core-02 offline contracts/lifecycle implementation was explicitly authorized on
+2026-09-29. Its working branch is under verification; provider adapters and economic
+algorithms remain outside that authorization.

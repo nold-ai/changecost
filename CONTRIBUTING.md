@@ -1,8 +1,8 @@
 # Contributing to ChangeCost
 
-ChangeCost has an unreleased CLI foundation; economic operations remain in the
+ChangeCost has unreleased offline contracts and lifecycle commands; economic operations remain in the
 [approved backlog](openspec/CHANGE_ORDER.md). The maintainer authorized foundation
-implementation on 2026-09-28. Other product work and live collection require a
+implementation on 2026-09-28 and Core-02 implementation on 2026-09-29. Other product work and live collection require a
 subsequent request; research does not expand that authorization.
 
 ## Workflow
@@ -249,3 +249,8 @@ collection hook, and its changed content requires full review.
 leaf defaults its inventory baseline to HEAD; explicit `BASE_REF` and `MANIFEST`
 are honored and validated. The aggregate still requires its explicit comparison
 base. Use direct `uv run --locked pytest ...` for optional developer filtering.
+
+Core-02 runtime changes use Pydantic 2 and explicit SQLite transactions. See
+[contracts](docs/contracts.md) and [offline command examples](docs/cli.md). The
+installed-distribution proof exercises registration, outcomes and portable replay
+with networking blocked; it does not approve any provider integration.
