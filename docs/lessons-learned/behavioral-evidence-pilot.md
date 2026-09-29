@@ -375,3 +375,21 @@ finite scenarios, generalized-import/concurrency exclusions, and unchanged clock
 limits. The initial token snapshot is immutable; final ignored effort artifacts include
 subsequent repairs, orchestration, reviews, experiments and waiting. Actual billed cost,
 external review-provider inference and CI billing are unavailable, not zero.
+
+## Late escape after the documentation closeout
+
+Native P2 4139466668 on documentation head d7b799e found an optional not_applicable
+outcome could omit rationale while claiming applicable=true. This pre-existing packet
+policy omission escaped previous reviews; the intended final publication was not final.
+The spec-first matrix produced4 failures/4 passes before the minimal guard. Missing,
+empty and whitespace rationale now fail, as does the contradictory true/not_applicable
+pair even with rationale. Optional false/pass with rationale remains supported and
+required nonpassing analyzers remain incomplete. Focused packet verification passes55
+cases. This is the thirteenth semantic assurance record, eighth actual correction set,
+and ninth recorded batch event/max9; no counters or history were reset. Any further
+finding requires explicit review/replanning before another correction set.
+
+The earlier code-head proof remains valid only at its named SHA. This repair needs
+fresh exact-head Linux/native evidence. Task5.3 remains open; no automatic merge-ready
+claim or runtime bug claim follows from the repaired packet guard. The repeated late
+escape is additional evidence against claiming reduced review churn from this pilot.

@@ -97,8 +97,10 @@ def check_evidence(root: Path, packet: Packet, binding: dict) -> tuple[list[str]
             problems.append("stale evidence binding")
         if item.required and (not item.applicable or item.outcome != "pass"):
             problems.append("required analyzer did not explicitly pass")
-        if not item.applicable and not item.rationale.strip():
+        if (not item.applicable or item.outcome == "not_applicable") and not item.rationale.strip():
             problems.append("not-applicable evidence needs rationale")
+        if item.applicable and item.outcome == "not_applicable":
+            problems.append("not-applicable outcome contradicts applicability")
         errors.extend(f"{item.id}: {problem}" for problem in problems)
         if item.required and not problems:
             passed.append(item.id)

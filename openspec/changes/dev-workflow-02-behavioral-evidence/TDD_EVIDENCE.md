@@ -248,3 +248,14 @@ non-selective drift comparison while preserving failed invocation history and im
 initial telemetry. API return values remain outside this persisted-state oracle;
 existing store API tests remain complementary. Final effort capture occurs after
 final-head validation and explicitly excludes its own unfinished response.
+
+## Late applicability consistency repair
+
+Native4139466668 at d7b799e was independently reproduced. Spec preceded tests:
+true/false applicability × missing/empty/whitespace/nonblank rationale gave4failed,
+4passed before guard (`applicability-red.txt`). The minimal existing check now requires
+rationale for either non-applicability signal and rejects true/not_applicable;55packet
+tests pass (`applicability-green.txt`), including required nonpass and optional advisory
+positives. Existing false/pass+rationale semantics remain unchanged. This is recorded
+batch9/max9, actual correction set8, semantic record13. Earlier closeout proof is not
+relabelled as this new head; exact-head final evidence is retained separately.

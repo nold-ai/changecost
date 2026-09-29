@@ -1,23 +1,23 @@
 {
   "CONTRIBUTING.md": {
-    "reason": "Reviewed test-only literal export schema and strict sequence envelope guards: setup/dependencies/gate commands/workflow are unchanged. Behavioral guide/spec and pilot/TDD document consumed snapshot coverage, copied-export controls and bounded exclusions; runtime APIs remain unchanged.",
-    "digest": "20a875bf86f789ec01e172c642c0c753586d05b87088f2149190c228dfd9ecd9"
+    "reason": "Reviewed bounded packet applicability/rationale consistency repair: setup, dependencies, gate commands and workflow remain unchanged. Behavioral guide/spec and pilot/TDD describe the corrected evidence policy and late escape; runtime APIs are unchanged.",
+    "digest": "3df484d94c6b65a8635409f6973414f78c2c1868309ffbdcf6a68379a16feb98"
   },
   "README.md": {
-    "reason": "Reviewed test-only literal export schema and strict sequence envelope guards: setup/dependencies/gate commands/workflow are unchanged. Behavioral guide/spec and pilot/TDD document consumed snapshot coverage, copied-export controls and bounded exclusions; runtime APIs remain unchanged.",
-    "digest": "20a875bf86f789ec01e172c642c0c753586d05b87088f2149190c228dfd9ecd9"
+    "reason": "Reviewed bounded packet applicability/rationale consistency repair: setup, dependencies, gate commands and workflow remain unchanged. Behavioral guide/spec and pilot/TDD describe the corrected evidence policy and late escape; runtime APIs are unchanged.",
+    "digest": "3df484d94c6b65a8635409f6973414f78c2c1868309ffbdcf6a68379a16feb98"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed test-only literal export schema and strict sequence envelope guards: setup/dependencies/gate commands/workflow are unchanged. Behavioral guide/spec and pilot/TDD document consumed snapshot coverage, copied-export controls and bounded exclusions; runtime APIs remain unchanged.",
-    "digest": "20a875bf86f789ec01e172c642c0c753586d05b87088f2149190c228dfd9ecd9"
+    "reason": "Reviewed bounded packet applicability/rationale consistency repair: setup, dependencies, gate commands and workflow remain unchanged. Behavioral guide/spec and pilot/TDD describe the corrected evidence policy and late escape; runtime APIs are unchanged.",
+    "digest": "3df484d94c6b65a8635409f6973414f78c2c1868309ffbdcf6a68379a16feb98"
   },
   "docs/commands.md": {
     "reason": "Reviewed behavioral-evidence contributor helper, guide links and workflow skill bodies: public product CLI signatures and skill metadata are unchanged. Generated command reference is byte-identical after index regeneration; the new contributor command is documented in its guide. Current generated-output verification remains mandatory.",
     "digest": "5ac63ae54e908b62c504452a336e0b67c602e65a3429c35f23d651697d9bb426"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed test-only literal export schema and strict sequence envelope guards: setup/dependencies/gate commands/workflow are unchanged. Behavioral guide/spec and pilot/TDD document consumed snapshot coverage, copied-export controls and bounded exclusions; runtime APIs remain unchanged.",
-    "digest": "20a875bf86f789ec01e172c642c0c753586d05b87088f2149190c228dfd9ecd9"
+    "reason": "Reviewed bounded packet applicability/rationale consistency repair: setup, dependencies, gate commands and workflow remain unchanged. Behavioral guide/spec and pilot/TDD describe the corrected evidence policy and late escape; runtime APIs are unchanged.",
+    "digest": "3df484d94c6b65a8635409f6973414f78c2c1868309ffbdcf6a68379a16feb98"
   },
   "llms.txt": {
     "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",

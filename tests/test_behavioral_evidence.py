@@ -392,3 +392,39 @@ def test_input_identity_delta_survives_unchanged_working_bytes(packet, mutation)
     assert result["changed_inputs"] == ["input.py"]
     assert result["affected_assumptions"] == ["clock"]
     assert result["affected_invariants"] == ["history"]
+
+
+@pytest.mark.parametrize("applicable", [True, False])
+@pytest.mark.parametrize("rationale", [None, "", "   ", "outside selected platform"])
+def test_not_applicable_outcome_requires_consistent_rationale(packet, applicable, rationale):
+    root, data = packet
+    item = copy.deepcopy(data["evidence"][0])
+    item.update(id="optional", required=False, applicable=applicable, outcome="not_applicable")
+    if rationale is None:
+        item.pop("rationale")
+    else:
+        item["rationale"] = rationale
+    data["evidence"].append(item)
+    result = validator()(root, data)
+    valid = not applicable and bool(rationale and rationale.strip())
+    assert result["evidence_status"] == ("current" if valid else "incomplete")
+    if not valid:
+        assert any("not-applicable" in error for error in result["errors"])
+
+
+@pytest.mark.parametrize("outcome", ["fail", "skipped", "unavailable", "unknown", "not_applicable"])
+def test_required_nonpass_remains_incomplete(packet, outcome):
+    root, data = packet
+    data["evidence"][0].update(outcome=outcome, rationale="analyzer report")
+    result = validator()(root, data)
+    assert result["evidence_status"] == "incomplete"
+    assert any("required analyzer did not explicitly pass" in error for error in result["errors"])
+
+
+@pytest.mark.parametrize("outcome", ["fail", "skipped", "unavailable", "unknown"])
+def test_optional_applicable_nonpass_remains_advisory(packet, outcome):
+    root, data = packet
+    item = copy.deepcopy(data["evidence"][0])
+    item.update(id="optional", required=False, outcome=outcome)
+    data["evidence"].append(item)
+    assert validator()(root, data)["evidence_status"] == "current"

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Reject contradictory or unexplained not-applicable behavioral evidence while
+  preserving required analyzer failure and optional advisory semantics.
+
 - Record behavioral-evidence pilot validation, successful SpecFact inventory, and
   remaining coordinator and bounded-oracle limitations without claiming savings.
 

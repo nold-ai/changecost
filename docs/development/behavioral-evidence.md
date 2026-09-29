@@ -218,3 +218,8 @@ The completed pilot exposed a coordinator limitation: historical family-escape
 summary evidence also does not necessarily produce the REST review record its monitor
 requires. Preserve those outcomes; do not reset history, fabricate a passing monitor,
 or describe manually verified checks as automatic coordinator completion.
+
+Not-applicable evidence requires a nonblank rationale whether indicated by the
+applicability flag or outcome. An applicable=true/not_applicable outcome contradicts
+itself and is incomplete even with rationale. Optional applicable=false/pass with a
+rationale remains permitted; required analyzers must still be applicable and pass.

@@ -1013,5 +1013,17 @@
     "drift": "hash-bound baseline/fault/restored reports semantically equal after list sorting; absolute/relative path lookup mismatch; no demonstrated selectivity",
     "scope": "older isolated source snapshot, not final runtime head",
     "api_return_equality": "excluded; existing store tests complementary"
+  },
+  "late_applicability_escape": {
+    "finding": "native4139466668",
+    "origin_head": "d7b799ef64508e631e380e1fcc3d820f3deb03c9",
+    "semantic_records_total": 13,
+    "actual_correction_sets": 8,
+    "recorded_batch_events": 9,
+    "max_batches": 9,
+    "red": "4 failed/4 passed",
+    "focused_green": 55,
+    "current_head_native_validation": "pending separate exact-head receipt",
+    "initial_usage_snapshot_unchanged": true
   }
 }

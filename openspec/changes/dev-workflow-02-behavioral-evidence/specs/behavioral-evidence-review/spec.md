@@ -306,3 +306,18 @@ partition/history and relational checks, without calling production schema valid
 - **WHEN** the same selected lifecycle trace consumes them
 - **THEN** the oracle rejects each faulty envelope and accepts the repaired export,
   rather than treating numerical equality or historical consistency as schema proof.
+
+### Requirement: Not-applicable evidence has consistent context and rationale
+
+Evidence SHALL provide a nonblank rationale when applicable is false or its outcome
+is not_applicable. Outcome not_applicable SHALL NOT claim applicable true. Required
+analyzers SHALL still explicitly pass with applicable true; optional applicable
+nonpassing outcomes remain advisory. Existing applicable false/pass evidence with a
+rationale remains permitted as optional contextual evidence.
+
+#### Scenario: Optional not-applicable outcome cannot bypass its rationale
+
+- **GIVEN** a bound packet with passing required evidence and an optional not_applicable result
+- **WHEN** applicability is true, or the rationale is missing/empty/whitespace
+- **THEN** validation reports incomplete; applicable false with a nonblank rationale
+  remains current, without relaxing required analyzer failures.
