@@ -37,5 +37,6 @@
 
 ## 5. Final integration and handoff
 
-- [ ] 5.1 Run strict OpenSpec validation and complete make check with explicit BASE_REF and intended-file manifest, plus the final staged-snapshot checks; obtain actual supported-Linux capsule evidence and resolve/justify findings without treating unavailable analyzers as passing.
-- [ ] 5.2 Obtain fresh independent review-agent and CodeRabbit/current-head external review evidence, iterate within the retained review allowance, and create/update the focused PR after coordinator verification; read back issue links/metadata and report actual outcome, limitations and rollback without merging or deploying.
+- [x] 5.1 Run strict OpenSpec validation and complete make check with explicit BASE_REF and intended-file manifest, plus the final staged-snapshot checks; obtain actual supported-Linux capsule evidence and resolve/justify findings without treating unavailable analyzers as passing.
+- [x] 5.2 Execute independent review-agent and CodeRabbit review, obtain native current-code-head review and Linux evidence, iterate with retained history, and publish/read back the focused PR. Verified code head `6c97e45bfa06647ab3adbb3b31cc4b41bc2061ba`; see the closeout receipt in TDD_EVIDENCE.md.
+- [ ] 5.3 Automatic coordinator completion remains unmet: the authoritative session retains historical family-escape `REPLAN`, and native clean summaries are not represented as the REST review records required by its monitor. Manual verification does not satisfy or waive that automatic condition. This is an accepted negative pilot outcome, not automatic merge readiness; PR remains open and unmerged.

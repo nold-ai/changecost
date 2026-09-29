@@ -982,5 +982,36 @@
     "new_head_gates": "pending",
     "coordinator_status": "replan; history retained",
     "usage_snapshot_unchanged": true
+  },
+  "code_closeout": {
+    "verified_code_head": "6c97e45bfa06647ab3adbb3b31cc4b41bc2061ba",
+    "proof_cutoff": "2026-09-29T23:43:04Z",
+    "linux_run": 36645470663,
+    "python_versions": [
+      "3.11.15",
+      "3.13.14"
+    ],
+    "tests_each": 898,
+    "native_codex": "completed with no new findings",
+    "native_coderabbit": "explicit current-head coverage; no actionable comments",
+    "semantic_records": 12,
+    "actual_correction_sets": 7,
+    "recorded_batch_events": 8,
+    "max_batches": 9,
+    "quality_integration_blockers": 3,
+    "prevented_design_ambiguities": 2,
+    "coordinator": "REPLAN; automatic completion unmet",
+    "native_rest_limitation": "clean summaries do not establish required REST review records",
+    "final_documentation_head_validation": "separate ignored receipt required",
+    "initial_usage_snapshot_unchanged": true,
+    "runtime_bugs_found": 0,
+    "causal_savings": "not established"
+  },
+  "specfact_followup": {
+    "import": "succeeded: 8 features, 10 initial stories; earlier attempts invocation failures",
+    "contracts": "11 artifacts loaded; store.py only; no recognized contracts; displayed zero not test coverage",
+    "drift": "hash-bound baseline/fault/restored reports semantically equal after list sorting; absolute/relative path lookup mismatch; no demonstrated selectivity",
+    "scope": "older isolated source snapshot, not final runtime head",
+    "api_return_equality": "excluded; existing store tests complementary"
   }
 }

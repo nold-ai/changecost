@@ -203,3 +203,18 @@ Source sequence is an exact integer (not bool/float) in0..2**63-1; observations 
 exact integers in1..2**63-1. These small independent checks precede comparisons and
 cover before/after, fresh import and reimport exports. They do not call the production
 model validator or expand the pilot into arbitrary hostile-object testing.
+
+## Observed pilot boundary
+
+This oracle checks acceptance and persisted state/history, including the exported
+payload and provenance envelope. It does not compare API return values. Existing
+`tests/test_store.py` registration return/retry equality tests remain complementary
+required coverage; a wrapper with a wrong return and unchanged state is outside this
+oracle's claims. The pilot also excludes generalized imports, concurrency, and clocks
+advancing within a generated trace.
+
+The completed pilot exposed a coordinator limitation: historical family-escape
+`REPLAN` remains sticky after explicit investigation and verified repairs. Native clean
+summary evidence also does not necessarily produce the REST review record its monitor
+requires. Preserve those outcomes; do not reset history, fabricate a passing monitor,
+or describe manually verified checks as automatic coordinator completion.

@@ -1,6 +1,6 @@
 # Behavioral evidence pilot
 
-**Status: local review complete; remote validation pending, 2026-09-29 (Europe/Berlin).** The bounded model
+**Initial fixed snapshot: local review complete; remote validation pending at that cutoff.** The bounded model
 and packet checks run, and all four selected faulty/repaired controls detect their
 intended violation. Initial and targeted independent review are complete; external current-head review
 and supported-Linux gates remain pending. This snapshot establishes detector sensitivity, not general cost savings.
@@ -34,9 +34,9 @@ remain ignored; they are not copied into this document.
 
 | Experiment | Observed outcome | What it establishes |
 | --- | --- | --- |
-| SpecFact code import | Three bounded invocation forms rejected option ordering (exits 1/2), including the displayed explicit and canonical forms | Import unavailable for this run; no valid inventory baseline |
+| Initial SpecFact code import | Three bounded invocation forms rejected option ordering (exits 1/2), including the displayed explicit and canonical forms | Import unavailable for this run; no valid inventory baseline |
 | Contract inventory | Missing bundle, exit 1 | No inspected contract coverage; not a code defect |
-| Drift baseline/fault/repaired | Exit 0 and empty drift output without a valid imported baseline | Unbound status only; cannot evaluate fault sensitivity |
+| Initial unbound drift attempts | Exit 0 and empty drift output without a valid imported baseline | Unbound status only; cannot evaluate fault sensitivity |
 | Pure-Python sidecar | Exit 0; zero routes, zero contracts, no generated harness | No bound lifecycle analysis |
 | Repro | Initial output-path setup failure; corrected run failed host tools; explicit PATH ran Ruff but type checking lacked snapshot dependencies and CrossHair launch failed | Incomplete environment/integration evidence; no lifecycle pytest assurance |
 | Explicit CrossHair 0.0.107 wrapper | Actual `store.available` fault produced `observed_by(1, 0)` counterexample; repaired predicate confirmed all paths | Selected pure sequence predicate, with both integers constrained to 0–100; no SQLite/public lifecycle coverage |
@@ -314,3 +314,64 @@ seventh actual correction set, eight recorded batch events/max9 with the unchang
 result, separately from the CodeRabbit clean-summary/REST-record gap. Prior e08c276
 Linux checks passed but cannot validate this later envelope repair. Review churn was
 not eliminated; final costs include these repeated closure/remote-validation cycles.
+
+## Code-candidate closeout (2026-09-30, Europe/Berlin)
+
+At 2026-09-30 01:43:04 CEST, code candidate
+`6c97e45bfa06647ab3adbb3b31cc4b41bc2061ba` had both required Linux jobs passing
+(run 36645470663), each with 898 tests and all 11 strict OpenSpec items. Native Codex
+completed without new findings at 01:34:34 CEST; CodeRabbit explicitly covered this
+head without actionable comments at 01:43:04 CEST. CodeRabbit had automatically
+paused after repeated commits despite a SUCCESS check; one authorized resume command
+restored review. A green status alone did not establish current-head coverage.
+
+Twelve semantic assurance defects were recorded, including one proactively identified
+adjacent evidence-policy gap, across seven actual correction sets. Eight recorded
+batch events include an earlier orchestration accounting error; counters/history were
+preserved and the explicit allowance reached nine batches, with 90 minutes unchanged.
+Three separate Linux quality/integration blockers and two prevented design ambiguities
+are not additional runtime bugs. Four seeded fault families and their many variants
+measure selected sensitivity, not twelve production failures. No runtime bug was found.
+
+The retained session still reports historical family-escape REPLAN. Native clean
+summaries are also not equivalent to the monitor's expected REST review records.
+Manual current-head proof is verified, but automatic coordinator completion remains
+unmet and visible in task 5.3. The PR stays open and unmerged. The documentation-only
+closeout receives another required exact-head validation; its final receipt and full
+usage capture are ignored artifacts, avoiding a tracked-status/commit loop.
+
+The first ten-record source retrospective maps the mechanisms to the first frozen
+candidate; it does not claim replay of every later mutant on that old source. Subsequent
+provenance-partition and envelope findings are separate records. Repeated independent
+review found omissions that earlier local closures missed. This pilot added substantial
+implementation and maintenance effort; it does not demonstrate reduced review churn
+or causal token, cost, or time savings. Setup cost and recurring marginal verification
+cost have not been separated experimentally.
+
+### Corrected SpecFact follow-up
+
+The earlier option-bearing import attempts above are historical invocation failures,
+not evidence that import is unavailable generally. One source-verified minimal invocation
+with SpecFact CLI 0.55.4/codebase 0.41.16 succeeded in 7.61 seconds: 8 features and
+10 initial stories. Defaults included enrichment and test exclusions; this is inventory,
+not behavioral proof. Valid contracts analysis loaded 11 artifacts but selected only
+`src/changecost/store.py`, finding no recognized beartype/icontract/CrossHair contracts.
+Its displayed 0.0 coverage is hardcoded tool output, not measured test coverage.
+
+An isolated copy matched all three declared source-tracking hashes before a valid
+baseline/chronology-fault/restored drift comparison. All three reports were semantically equal after sorting list order (raw JSON order differed):
+six added files, three modified files, six story gaps, zero contract violations.
+Source inspection found absolute lookup paths compared with relative stored hash keys.
+The unchanged baseline therefore produced false-positive modifications and the selected
+fault had no demonstrated selectivity. This comparison is inconclusive for semantic
+detection; native output and unchanged bundle metadata were retained. The independent
+CrossHair predicate result and scanner-health sentinels keep their narrower claims.
+The mandatory Linux SpecFact capsule did find three useful quality/integration issues;
+that result must not be conflated with the empty non-capsule sidecar harness.
+
+The oracle covers acceptance and persisted state/history, not API return-value equality.
+Existing store API return/retry tests remain complementary. Authorship correlation,
+finite scenarios, generalized-import/concurrency exclusions, and unchanged clocks remain
+limits. The initial token snapshot is immutable; final ignored effort artifacts include
+subsequent repairs, orchestration, reviews, experiments and waiting. Actual billed cost,
+external review-provider inference and CI billing are unavailable, not zero.

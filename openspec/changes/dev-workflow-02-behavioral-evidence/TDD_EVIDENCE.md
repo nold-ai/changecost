@@ -226,3 +226,25 @@ The affected suites pass88tests (`envelope-green.txt`); full types, pinned Pylin
 error checks and scoped style/docs/staged checks are retained separately. No production
 schema validator supplies the expected result. This is seventh actual correction set,
 eighth recorded batch/max9, preserving sticky REPLAN and all previous evidence.
+
+## Finite documentation closeout
+
+Verified code SHA `6c97e45bfa06647ab3adbb3b31cc4b41bc2061ba` passed both required Linux jobs in
+run36645470663 (898 tests each, all11 strict OpenSpec items); Codex completed clean
+at2026-09-29T23:34:34.935845Z and CodeRabbit explicitly covered this SHA with no
+actionable comments at23:43:04Z. Fresh origin/main remained999cb8f after fetch.
+The current documentation commit still requires its own native/Linux proof, retained
+in the final ignored receipt without another tracked status update.
+
+Task5.2 records completed execution/manual assessment. The separate open task5.3
+preserves unmet automatic coordinator completion: historical family-escape REPLAN
+and the native-summary/REST-review mismatch are accepted negative pilot results,
+not waivers or fabricated passing checks. Full source evidence is retained in the
+ignored input-identity closure and remote snapshots. PR27 remains open/unmerged;
+issue26 metadata/parent/dependencies remain governed and unchanged.
+
+The pilot report corrects the later successful minimal SpecFact import and valid but
+non-selective drift comparison while preserving failed invocation history and immutable
+initial telemetry. API return values remain outside this persisted-state oracle;
+existing store API tests remain complementary. Final effort capture occurs after
+final-head validation and explicitly excludes its own unfinished response.

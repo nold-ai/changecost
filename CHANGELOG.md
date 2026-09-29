@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Record behavioral-evidence pilot validation, successful SpecFact inventory, and
+  remaining coordinator and bounded-oracle limitations without claiming savings.
+
 - Anchor bounded export schema and strict integer sequence envelopes before comparing
   persisted lifecycle payloads, provenance and history.
 
