@@ -42,6 +42,19 @@ Preserve existing authorization and unrelated work.
 
 ## Delegate three bounded lanes
 
+Before dispatching another review or correction batch, read
+`python -m quality.review_session status <change-id>`. `replan` and `incomplete`
+require a compact packet and a maintainer decision; `investigate` requires a
+family-wide invariant review before another targeted repair. Record the complete
+frozen scope, findings, evidence and active time in the local session record.
+One batch is one collected finding set followed by fixes and verification, not one
+commit. A fresh conversation or head does not reset its allowance.
+Use `init <change-id> --json <contract.json>` only for genuinely new sessions,
+following the complete shared-workflow example; lost or incompatible receipts
+require recovery. Investigate the first genuine escape after correction; another
+escape after that investigation requires replanning. A non-finding is not an
+escape, but fixing a genuine recurrence does not erase its history.
+
 Give each subagent the checkout/snapshot, selected change, complete scope manifest,
 base/HEAD SHAs, fingerprints, applicable rules, and a compact output contract:
 commands and outcomes, actionable findings with paths/lines, missing evidence,

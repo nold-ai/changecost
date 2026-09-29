@@ -2,6 +2,69 @@
 
 ## Unreleased
 
+- Require explicit collection-time observation epochs at ingestion rather than
+  relabeling unbound snapshots with the current generation.
+
+- Make exhausted budgets override remaining family investigation, and require local
+  reviewer coverage of current remote thread reports before resolved threads can pass.
+
+- Derive handoff and watcher decisions from one receipt revision and reject blank
+  semantic event strings without normalizing valid caller identities.
+
+- Separate input generations from caller event IDs and atomically allocate unused
+  automatic PR-binding identities without rewriting history or resetting budgets.
+
+- Keep required reviewer re-requests pending and validate normalized requested-user
+  identities throughout snapshot collection, classification and change detection.
+
+- Bind review evidence to explicit PR target and comparison bases, preserve their
+  original contract, and require fresh evidence after atomic context adoption.
+
+- Verify two complete remote evidence collections under one deadline before
+  accepting stable report/gate state; fail closed on drift or second-pass errors.
+
+- Require positive success from contract-required completed checks while retaining
+  optional neutral behavior and existing pending/failure handling.
+
+- Cover top-level reviews and PR comments in explicit local adjudication receipts;
+  make ignore-rule fixtures independent of optional Git template directories.
+
+- Bind declared ignored paths and require fresh remote positives from initial
+  context creation; preserve negative evidence and explicit receipt recovery.
+
+- Revalidate scope on every head refresh and require explicit approved manifest
+  references for changed path authorization; preserve original and current scope.
+
+- Validate integer counters exactly and reject oversized floating measurements
+  through controlled ingestion/recovery errors instead of tracebacks.
+
+- Sum review budget extensions, active time and measured usage from original
+  components; reject overflowing aggregates without losing finite limits or history.
+
+- Emit local review terminal decisions despite quiet remote polls, recheck budgets
+  at watcher deadlines and validate full commit identities consistently on refresh.
+
+- Validate initial review scope against real Git/file facts, retain effective
+  reviewer objections across later comments, and reduce the fractional-boundary
+  regression's input volume without weakening its failure proof.
+
+- Reconcile review receipts from canonical event history, bind exact PR/reviewer
+  identities, preserve genuine family chronology and bound watcher collection
+  deadlines; distinguish new-session initialization from recovery.
+
+- Require explicit active-time measurements for review completion, honor latest
+  reviewer rejections, and parse complete slurped GitHub pagination responses.
+
+- Repair review-session lifecycle decisions for real GitHub status values, retained
+  escape history, current Git input binding, explicit evidence categories and
+  recoverable scope decisions; reject malformed state and incomplete monitoring.
+
+- Add durable, bounded review-session decisions and read-only changed-state PR
+  monitoring so recurring finding families, incomplete evidence and exhausted
+  review budgets trigger investigation or replanning instead of endless fixes.
+- Preserve first-foundation token-economics lessons and document a measured,
+  advisory-only cross-family reviewer calibration pilot.
+
 - Route `make test` through the same required tests leaf as the aggregate, with
   real host failure/repair proof and preserved explicit input validation.
 - Select canonical pyproject pytest configuration for required tests and require

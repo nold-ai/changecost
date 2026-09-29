@@ -4,12 +4,13 @@
 
 ## Project and evidence
 
+- [First-foundation token economics lessons](docs/lessons-learned/token-economics-first-foundation.md): Measured review-loop observations and proposed workflow experiment.
 - [README](README.md): project status and current setup commands.
 - [Project brief](docs/project-brief.md): selected direction, evidence gates and limits.
 - [Agent instructions](AGENTS.md): entry point and project boundary.
 - [Agent rules](docs/agent-rules/INDEX.md): load only rules applicable to the task.
 - [Contributing](CONTRIBUTING.md): workflow and invocation examples.
-- [Change workflow](docs/agent-rules/30-change-workflow.md): freshness, stash recovery and delegation.
+- [Change workflow](docs/agent-rules/30-change-workflow.md): freshness, verified scope, visible review checkpoints and canonical recovery.
 - [OpenSpec configuration](openspec/config.yaml): current context and artifact requirements.
 - [Change order](openspec/CHANGE_ORDER.md): pending changes, issue links and prerequisites.
 - [Changelog](CHANGELOG.md): recorded changes; no release is implied.

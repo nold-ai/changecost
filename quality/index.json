@@ -1,5 +1,10 @@
 [
   {
+    "title": "First-foundation token economics lessons",
+    "path": "docs/lessons-learned/token-economics-first-foundation.md",
+    "description": "Measured review-loop observations and proposed workflow experiment."
+  },
+  {
     "title": "README",
     "path": "README.md",
     "description": "project status and current setup commands."
@@ -27,7 +32,7 @@
   {
     "title": "Change workflow",
     "path": "docs/agent-rules/30-change-workflow.md",
-    "description": "freshness, stash recovery and delegation."
+    "description": "freshness, verified scope, visible review checkpoints and canonical recovery."
   },
   {
     "title": "OpenSpec configuration",

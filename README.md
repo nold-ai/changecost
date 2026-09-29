@@ -79,6 +79,63 @@ implemented behavior. [OpenSpec artifacts](openspec/CHANGE_ORDER.md) are future
 contracts until their tasks and evidence establish delivery. See
 [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) for the four-stage
 workflow; implementation does not itself commit, publish, merge or deploy.
+For changes with review/fix work, retain an ignored bounded session receipt so
+repeated findings and exhausted review budgets trigger investigation or replanning.
+The session names expected CI checks and commit statuses explicitly and binds
+evidence to Git HEAD, working files and staged blobs/modes. Refreshing that binding
+requires fresh passing evidence before completion.
+Completion also requires explicit measured active time; a missing measurement is
+unknown. Fractional budgets, time and usage retain finite canonical totals from
+original measurements; overflowing updates are rejected without granting unlimited allowance.
+Every refresh validates current changed-path coverage. Changing authorized paths
+requires an explicitly referenced approved scope manifest; packets retain both
+the original contract and recaptured current manifest.
+Remote collection makes exactly two complete paginated passes under one deadline
+and accepts only matching meaningful evidence, returning the second observation.
+Drift or second-pass failure invalidates prior green monitoring. This bounded check
+is not an atomic API snapshot and cannot detect reverted or post-final-read changes.
+Contract-required completed checks must conclude `success`; `neutral` cannot prove
+required validation ran. Optional neutral checks retain their nonblocking policy.
+This repository assurance rule is stricter than GitHub's native merge eligibility.
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
+Input binding includes every declared path, even ignored files or explicit absence.
+Existing declared content outside the index prevents clean completion; unrelated
+ignored artifacts remain excluded. Remote positive evidence must also postdate
+initialization, because its earlier base context cannot be attested. This may
+require rerunning valid same-base checks; exact timestamp comparison has no rounding
+allowance for coarse provider timestamps. Objections remain blocking regardless of age.
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
+Latest changes-requested reviews block readiness even without inline threads.
+Canonical event replay checks saved decisions against their history. Exact repository,
+PR and reviewer identities prevent unrelated evidence from satisfying the session.
+Initialize only genuinely new sessions; recover existing missing receipts without
+resetting counters. Published completion requires clean inputs.
+Initial scope uses verified commit IDs and real file hashes (or `<absent>` for
+planned files). Effective reviewer objections remain blocking until approval or
+dismissal of the original rejecting review, rather than disappearing on a comment.
+Watcher completion/replanning output remains visible even without a GitHub change;
+local budget changes take precedence over a no-progress timeout.
+Expected PR target ref/SHA is separate from the comparison commit. Retargeting or
+base advancement requires explicit adoption and fresh local/remote evidence, even
+with unchanged HEAD; schema-8 receipts preserve the original contract and counters.
+Input generations are independent of caller event IDs; automatic PR binding chooses
+an unused identity atomically, retaining existing finding/scope references.
+Renewed requests to required reviewers block completion even with a prior approval;
+missing or changing request metadata cannot retain a green result.
+Handoff status, evidence and watcher exit decisions use one receipt revision.
+Required event text rejects whitespace-only values without rewriting valid identities.
+Resolved remote reports require explicit local reviewer coverage of current thread
+content; resolution alone does not adjudicate a finding. Budget exhaustion overrides
+remaining investigation even when all other completion evidence passes.
+Observations must retain their collection-time input epoch; missing or stale metadata
+replaces earlier green evidence with incomplete status instead of being relabeled.
 
 ## Community and license
 

@@ -42,6 +42,94 @@ state between sessions. A stash is local, not a backup on GitHub. A planning PR
 does not close an implementation issue. The promotion stage reports missing bot
 reviews or required checks as incomplete, not as a green review.
 
+For implementation/review work, initialize the bounded local review receipt with
+`python -m quality.review_session init <change-id> --json <contract.json>`. It
+keeps the complete scope, finding families and counters across chats and commits.
+Use initialization only for a genuinely new session; recover lost or incompatible
+receipts. Schema 8 replays original events with separately captured timestamps and
+Git inputs, checking all cached decisions against that history. A durable genesis
+marker detects a missing state file; preserve the entire ignored directory because
+this local recovery guard is not a backup or a tamper-proof store.
+The contract must name `required_checks` (nonempty), `required_statuses` (explicit,
+possibly empty), and required reviewers. Missing declared results block completion.
+It also names the exact repository; the first PR selection is retained. Reviewer
+logins match REST identities exactly, including `[bot]`. See the complete
+[contract example](docs/agent-rules/30-change-workflow.md#bounded-review-contract).
+An `advance_head` event refreshes the Git HEAD, working-content and staged-index
+binding. Supply both `comparison_base` and `pr_base` to explicitly adopt a changed
+PR target. Schema-8 evidence events include the full binding captured before the
+check; remote positive results must postdate base adoption. This retains history
+and does not establish hostile-runner authenticity. The refresh preserves counters;
+passing evidence from before that refresh
+remains historical and cannot establish completion of the new inputs.
+Record measured `active_minutes` explicitly after each input refresh, including an
+actual measured zero when appropriate. The helper retains UTC receipt timestamps
+without estimating activity from elapsed wall time. Latest current-head reviewer
+rejections block completion; pending/dismissed results cannot reuse old approvals.
+An effective changes-requested objection survives later comments, pending reviews
+and dismissal of a different review. A later approval clears it; dismissal of the
+original rejection is recognized from the complete fresh snapshot.
+An outstanding request to a required reviewer keeps completion pending despite a
+prior approval. Request metadata is validated at both collection reads; cancellation
+does not replace approval or other current-context evidence.
+Epochs derive from the count of recorded refreshes, not caller IDs. Automatic PR
+binding selects an unused identity under the session lock. Preserve original IDs;
+incompatible prior receipts require recovery without restarting the allowance.
+Packets derive status and contents from one loaded receipt while still checking
+actual input drift. Changed watcher output and exit decisions use that same packet.
+Required event text, including extension approval identity, must contain non-whitespace
+text; valid exact IDs and references are never trimmed or normalized.
+Before recording passing reviewer evidence, explicitly adjudicate all current fetched
+reports and supply their packet `report_receipts` mapping as `reviewed_reports`.
+New or edited report content invalidates coverage; unresolved threads and local
+findings still block independently. This is a trusted operator assertion, not
+verification of GitHub resolver permissions. An exhausted budget permits exact-limit
+completion only when no remaining family investigation is required. Minute grants,
+active time and measured usage sum original components canonically; overflow rejects
+the update atomically. Unmeasured usage remains unknown and batch counts stay integers.
+Every refresh validates current changed-path coverage. Changing authorized paths
+requires an explicitly referenced approved scope manifest; packets retain both
+the original contract and recaptured current manifest.
+Remote collection makes exactly two complete paginated passes under one deadline
+and accepts only matching meaningful evidence, returning the second observation.
+Drift or second-pass failure invalidates prior green monitoring. This bounded check
+is not an atomic API snapshot and cannot detect reverted or post-final-read changes.
+Contract-required completed checks must conclude `success`; `neutral` cannot prove
+required validation ran. Optional neutral checks retain their nonblocking policy.
+This repository assurance rule is stricter than GitHub's native merge eligibility.
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
+Input binding includes every declared path, even ignored files or explicit absence.
+Existing declared content outside the index prevents clean completion; unrelated
+ignored artifacts remain excluded. Remote positive evidence must also postdate
+initialization, because its earlier base context cannot be attested. This may
+require rerunning valid same-base checks; exact timestamp comparison has no rounding
+allowance for coarse provider timestamps. Objections remain blocking regardless of age.
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
+Keep each observation's explicit `_input_epoch` captured before collection. Direct
+ingestion never supplies the current generation for missing metadata; absent,
+malformed or stale epochs persist as incomplete evidence, including the first generation.
+Initialization verifies typed scope, full commit IDs and a path/SHA256 manifest
+against actual initial inputs; `<absent>` represents an intended future file.
+Changed, staged and untracked paths must be included. Captured initial facts remain
+immutable through head refreshes; incompatible older schemas require recovery.
+The same full hexadecimal commit-ID rule covers SHA-1 and SHA-256 repositories
+through initialization, refresh and replay. Watcher terminal decisions are emitted
+even when GitHub data is unchanged; the timeout boundary rechecks local budget
+and scope before reporting a wait.
+Dirty inputs may be reviewed locally but cannot establish published completion.
+Non-findings do not seed family escalation; genuine fixed recurrences remain in
+history. Investigate the first escape after correction and replan after a further
+escape following that investigation.
+At three correction batches, 90 active minutes, or an escaping investigated family,
+create a packet and replan rather than continue a narrow fix loop.
+
 ## Local checks
 
 Follow [README setup](README.md#work-on-the-repository). Install actionlint 1.7.12

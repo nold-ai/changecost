@@ -5,6 +5,11 @@ for review. Source-feasibility research is now partly implemented under separate
 maintainer authorization; its task list records the remaining evidence work.
 Other implementation and live pilot collection require a subsequent request.
 
+Supplemental contributor workflow: [#23](https://github.com/nold-ai/changecost/issues/23)
+tracks `dev-workflow-01-bounded-review`, a development-only control for retaining
+review context and bounding correction loops. It is a sub-issue of [#6](https://github.com/nold-ai/changecost/issues/6), has no pilot dependency edge, and does not
+change the nine-change product delivery order.
+
 - Epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
 - Organization project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, linked to this repository.
 - Native hierarchy: **Epic → Feature → User Story**. All 14 issues start **Todo**,

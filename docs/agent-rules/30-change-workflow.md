@@ -116,6 +116,135 @@ For restoration:
 
 ## Verification and compact delegation
 
+## Bounded review contract
+
+Only a genuinely new session uses
+`python -m quality.review_session init <change-id> --json <contract.json>`.
+Existing sessions use `status`, then `packet` when recovery or replanning is
+required. A missing or incompatible receipt must not reset counters, including
+after moving to another worktree. Preserve schema-1 history as recovery evidence;
+do not synthesize prior measurements into a new schema-8 allowance. Schema-1/2/3/4/5/6/7
+receipts remain recovery evidence; new required initial-scope facts are not invented.
+
+The complete JSON contract has this shape (replace example SHAs, file fingerprint,
+requirements, gates and exact REST reviewer identities with inspected values):
+
+```json
+{
+  "repository": "nold-ai/changecost",
+  "requirements": ["Preserve bounded review history"],
+  "acceptance_criteria": ["Applicable checks and reviewers complete"],
+  "non_goals": ["Hostile-runner integrity"],
+  "trust_boundary": "Existing contributor workflow boundary",
+  "intended_files": {"quality/review_session.py": "<sha256>"},
+  "base": "<full-base-sha>",
+  "pr_base": {"ref": "main", "sha": "<full-target-tip-sha>"},
+  "head": "<full-head-sha>",
+  "required_reviewers": ["<exact-reviewer-login>"],
+  "required_checks": ["<required-check-name>"],
+  "required_statuses": []
+}
+```
+
+Requirements and acceptance criteria are nonempty lists of nonblank strings;
+non-goals may be an explicit empty list. Trust boundary is nonblank text. Supply
+full existing commit IDs, normalized repository-relative file paths and actual
+initial SHA256 values. Use `<absent>` for an intended path not created yet. All
+initial changed, staged and untracked paths must be covered; unchanged planned
+files are allowed. Initialization verifies those facts once and captures them in
+genesis. Later replay uses captured facts, and `init` with the same original
+contract remains idempotent after `advance_head`.
+Full commit IDs use the same 40/64-character hexadecimal rule at initialization,
+head refresh and replay; the declared head must still match actual Git HEAD.
+Tracked `assume-unchanged` or `skip-worktree` flags are unsupported because they
+can hide changes from Git inspection. The helper rejects them at every input
+capture; it never clears or mutates the user's index flags.
+
+Minute extensions and measured time/usage use finite canonical sums of original
+event components, preserving exact budget boundaries across retries and restarts.
+Overflow fails closed; do not round limits or reset history to recover.
+
+Remote collection makes exactly two complete paginated passes under one deadline
+and accepts only matching meaningful evidence, returning the second observation.
+Drift or second-pass failure invalidates prior green monitoring. This bounded check
+is not an atomic API snapshot and cannot detect reverted or post-final-read changes.
+Contract-required completed checks must conclude `success`; `neutral` cannot prove
+required validation ran. Optional neutral checks retain their nonblocking policy.
+This repository assurance rule is stricter than GitHub's native merge eligibility.
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
+Input binding includes every declared path, even ignored files or explicit absence.
+Existing declared content outside the index prevents clean completion; unrelated
+ignored artifacts remain excluded. Remote positive evidence must also postdate
+initialization, because its earlier base context cannot be attested. This may
+require rerunning valid same-base checks; exact timestamp comparison has no rounding
+allowance for coarse provider timestamps. Objections remain blocking regardless of age.
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
+
+Each `advance_head` recaptures a `reviewed_manifest` and complete changed/staged/
+untracked path coverage against the effective comparison base. Normal refreshes
+retain authorized keys. To change them, first record a `scope_decision` with
+`decision: "approved"` and the complete `intended_files` mapping, then explicitly
+reference its ID in `advance_head.scope_decision_id`. Approval fingerprints retain
+intent; current fingerprints are recaptured, so planned-absent files may materialize
+and authorized content may change. No approval is adopted implicitly; explicitly
+selecting an earlier approval is permitted. The packet exposes the current manifest
+separately from the immutable original contract. Fresh review evidence is still
+required after every refresh; incompatible receipts require recovery without reset.
+
+The first `watch <change-id> --repo <owner/repo> --pr <number>` binds the PR.
+That source remains fixed across input refreshes. `advance_head` captures a new
+input epoch and invalidates prior completion evidence while retaining counters.
+Epoch strings derive from refresh generations independently of caller event IDs.
+Automatic binding chooses a deterministic unused ID under the session lock;
+existing finding and scope identities remain unchanged.
+Required event strings and supplied `supersedes` references must contain non-whitespace
+text. Preserve exact nonblank bytes; do not trim identifiers or alias family labels.
+Handoff status and contents derive from one receipt revision, with actual-input drift
+still checked; changed watcher output uses that packet's status and observation.
+Passing reviewer evidence acknowledges the packet's current `report_receipts` in
+`reviewed_reports` after explicit local triage. Remote resolution cannot substitute
+for this coverage or for dispositions of known local findings. Changed report content
+requires revalidation; exhaustion overrides any remaining family investigation.
+Every positive observation retains `_input_epoch` captured before collection.
+Ingestion must not attach the current epoch to an unbound old snapshot. Missing,
+malformed and stale epochs replace prior green monitoring with incomplete evidence.
+The initial comparison `base` and target `pr_base` remain immutable history. To
+adopt changed target context, supply both `comparison_base` and `pr_base` on an
+`advance_head` event; the packet exposes the current binding. Capture that full
+`binding` before each local review/check and supply it explicitly on its evidence
+event. Never copy a fresh binding onto an old result. After adoption, required remote
+positive results need timestamps at or after adoption; old objections still block.
+The final published inputs must be clean. Snapshots retain validated requested-user
+metadata. A renewed request to a required exact login blocks completion until absent;
+cancellation cannot create approval or override other gates. Full receipts retain canonical
+events and separate generated provenance; cached counters, decisions and monitor
+summaries must agree with replay. The genesis marker detects a lost state file,
+not deletion of the entire ignored directory or hostile tampering.
+
+Investigate the first genuine family escape after correction. A further escape
+after that investigation requires replanning. Final non-findings are excluded;
+fixing a genuine escape does not erase its chronology. Independent scope work may
+continue, but dependent work awaits an explicitly identified scope resolution.
+
+Polling ignores incidental metadata changes and caps requests, pagination and
+sleep by the remaining no-progress deadline. `--timeout-minutes 0` collects one
+snapshot with a 60-second collection cap. Missing REST reviewer submissions stay
+pending even if a provider emits only a clean summary. The coordinator may retain
+separately verified current-head provider output, but must disclose that the helper
+cannot validate that completion; silence and reactions are not proof.
+Unchanged remote evidence does not suppress local terminal decisions. A terminal
+result is emitted once, and deadline handling rereads local status before reporting
+wait so newly exhausted budgets or incomplete scope remain visible.
+
+### Delegation evidence
+
 The parent owns the selected objective and scope. Workers receive only the needed
 paths, immutable baseline/head, task, rules and output contract. One named writer
 owns edits and Git/PR mutations; readers/checkers run on a stable tree. Reuse workers

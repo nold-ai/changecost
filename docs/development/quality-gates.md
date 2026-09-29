@@ -116,7 +116,216 @@ so the real external lock proof runs unconditionally in the host lock leaf. Pyte
 checks propagation of both lock-command and probe failures. No test is marked
 skipped/xfail and no capsule runtime protection is changed.
 
-## Review and limitations
+## Bounded review sessions
+
+`python -m quality.review_session` is local contributor tooling. It stores a
+versioned, atomic session record under `.changecost/workflow/<change-id>/`; that
+directory is ignored and is not a substitute for committed specifications or test
+evidence. Initialize it with a JSON contract that records requirements, acceptance
+criteria, non-goals, trust boundary, complete input fingerprints, base, head and
+the required GitHub reviewer logins, nonempty `required_checks` names and explicit
+`required_statuses` contexts (which may be an empty list). These identities are
+declared review policy; do not infer protected-branch settings from them. Missing
+declared checks or statuses leave the session pending even when API pages are empty.
+Name the exact repository and REST reviewer logins, including `[bot]`. The first
+PR selection becomes immutable. Schema-8 canonical replay reconciles all derived
+fields with original events and separately captured time/input facts. Minute budgets,
+active time and measured usage use finite canonical sums of their original components;
+overflow rejects the update without changing the receipt. Batch counts remain integers,
+and unmeasured usage remains unknown. Preserve the
+genesis marker and state together; lost or incompatible history requires recovery,
+not another allowance. The marker detects state-file loss, not full-directory
+deletion or hostile tampering. See the
+[complete contract example](../agent-rules/30-change-workflow.md#bounded-review-contract).
+Every refresh validates current changed-path coverage. Changing authorized paths
+requires an explicitly referenced approved scope manifest; packets retain both
+the original contract and recaptured current manifest.
+Remote collection makes exactly two complete paginated passes under one deadline
+and accepts only matching meaningful evidence, returning the second observation.
+Drift or second-pass failure invalidates prior green monitoring. This bounded check
+is not an atomic API snapshot and cannot detect reverted or post-final-read changes.
+Contract-required completed checks must conclude `success`; `neutral` cannot prove
+required validation ran. Optional neutral checks retain their nonblocking policy.
+This repository assurance rule is stricter than GitHub's native merge eligibility.
+Local reviewer coverage includes every fetched thread, review body and PR comment,
+including historical and informational reports. Namespaced thread/review/comment IDs
+bind exact content without metadata noise; new, edited or removed reports require
+explicit revalidation. Bot-summary churn can therefore require another local
+attestation. Empty bodies are valid; missing or malformed identities/bodies and duplicate identities
+invalidate monitoring. Coverage never clears objections or unresolved findings.
+Input binding includes every declared path, even ignored files or explicit absence.
+Existing declared content outside the index prevents clean completion; unrelated
+ignored artifacts remain excluded. Remote positive evidence must also postdate
+initialization, because its earlier base context cannot be attested. This may
+require rerunning valid same-base checks; exact timestamp comparison has no rounding
+allowance for coarse provider timestamps. Objections remain blocking regardless of age.
+Integer counters retain exact nonnegative values without floating conversion;
+unrepresentable floating measurements reject atomically with controlled recovery
+for malformed persisted history.
+Initialization validates nonblank typed scope, full existing commits and safe
+path-to-SHA256 fingerprints against actual inputs. `<absent>` explicitly permits
+future planned files. Cover all changed, staged and untracked paths while allowing
+unchanged intended files. Captured initial scope facts remain immutable through
+head refreshes and are validated without filesystem access during replay. Existing
+schema-1/2/3/4/5/6/7 receipts require recovery rather than synthesized migration.
+Contract and refresh paths use one full hexadecimal commit-ID rule for 40-character
+SHA-1 and 64-character SHA-256 repositories. Shape validation does not replace
+checking the actual Git head; pure replay retains the same identity rule.
+Tracked assume-unchanged and skip-worktree entries are unsupported. Initialization,
+head refresh and final input/status checks reject those flags without changing the
+index, because Git's reported change set and clean state may conceal file edits.
+
+The helper reports `continue`, `wait`, `investigate`, `replan`, `incomplete` or
+`complete`. The defaults are three collected correction batches and 90 active
+minutes. A finding arriving after a family's correction requires investigation; an escape after investigation
+requires replanning. Budget extensions require an explicit maintainer identity and
+do not reset counters. The packet command preserves only compact scope, unresolved
+findings, evidence, investigations and separated cached-input, uncached-input,
+output and cost measurements. Missing measurements remain unknown.
+
+Initialization captures the real Git HEAD, tracked/untracked input contents and
+staged Git blob identities and file modes.
+`status` rejects changed inputs. Record an `advance_head` event with the new local
+commit to refresh that binding explicitly, preserve history and counters, and clear
+the previous monitor and completion phase. Prior passing evidence remains in history
+but is invalidated, including on a same-head input refresh. Missing input bindings
+or gate-identity configuration require recovery.
+Evidence events use `kind: "evidence"` with a separate `evidence_type` of `gate` or
+`reviewer`, their `head`, `result` and explicit `binding` copied from the reviewed
+packet: head, input digest, epoch, comparison base and PR base. Capture that binding
+before running the check, not when ingesting its result. A stale payload with a new
+event ID is rejected. The latest result for each category applies.
+The contract's `base` is the immutable initial comparison commit; required
+`pr_base: {"ref": "main", "sha": "<full target-tip SHA>"}` independently records
+the expected PR target. Snapshots check the target ref and SHA before and after
+collection. Retargeting or target advancement leaves evidence incomplete.
+Explicitly adopt a reviewed context through `advance_head` with both
+`comparison_base` and `pr_base`; both referenced commits must exist locally. The
+Base IDs must name commit objects exactly; annotated-tag object IDs are rejected
+rather than silently peeled into different identities. The atomic update preserves
+the original contract and counters, while creating a new
+input epoch and invalidating local evidence, timing and monitor completion even
+when HEAD is unchanged. Packets expose both original and current context.
+After adoption, required checks' `started_at`, statuses' `created_at` and positive
+reviews' `submitted_at` must be at or after the separately captured adoption time.
+Missing, invalid or older timestamps leave completion pending; existing current-head
+objections still block it. Timestamp freshness is a workflow bound, not proof that a
+remote runner actually evaluated the new merge context. SpecFact's content digest
+remains separate evidence and does not authenticate that context.
+A scope resolution names the pending event's identity in `supersedes`.
+Completion requires a complete current-head monitor snapshot as well as passing
+local evidence. Pending checks, commit statuses, reviewers and unresolved threads
+(including outdated threads) block completion. Exhausted budgets take precedence
+over waiting; a fully verified final allowed batch may complete.
+That exact-limit exception does not permit further family investigation: if an
+otherwise complete session still needs investigation, either exhausted budget
+requires replanning. Extensions must cover every exhausted budget axis.
+
+Resolved remote threads require explicit local adjudication coverage, rather than
+trusting GitHub resolution flags alone. A packet's `report_receipts` maps stable
+namespaced `thread:<id>`, `review:<id>` and `comment:<id>` identities to deterministic
+SHA256 digests of exact bodies and stable context across every collected page. After actual triage, the trusted coordinator records
+that exact map as `reviewed_reports` on its binding-qualified reviewer evidence event.
+Known local defects still require their separate finding/disposition records.
+New/edited comments, added threads, extra stale coverage IDs or changed input/base
+bindings prevent completion until revalidated. Missing coverage cannot cover any
+nonempty report set; only the no-report case permits empty coverage.
+Malformed/error observations expose no usable packet receipts. Supplied mappings
+are validated at ingestion and replay; observations never fabricate acknowledgment.
+Unresolved threads, including outdated ones, always block. Resolution/outdated flags
+are separate from report content: an unchanged report reopened then reclosed under
+the same input binding may reuse its explicit adjudication. Only observed status is
+known; no unobserved transition guarantee is made. This is local operator attestation,
+not independent verification of resolver permissions or protection from a dishonest
+operator. Authorized PR-author resolution remains supported; no role lookup is added.
+Completion also requires an `active_minutes` event with explicit finite nonnegative
+`minutes` after the latest binding refresh. Missing timing remains unknown; measured
+zero is allowed. Separate UTC recording timestamps preserve measurement provenance
+and idempotent ingestion, without inferring active time from wall-clock duration.
+For each reviewer, the effective current-head objection applies: CHANGES_REQUESTED blocks
+even without inline comments; a required reviewer with PENDING or DISMISSED cannot
+reuse an older approval. APPROVED and COMMENTED satisfy reviewer completion only.
+An earlier rejection survives later COMMENTED/PENDING rows and dismissal of a
+different review. A later APPROVED row clears it; a complete fresh snapshot can
+also show the original rejecting review itself changed to DISMISSED.
+Unknown or malformed review states make the observation incomplete rather than
+overwriting a prior rejection, for required and other reviewers alike.
+Outstanding requests to required reviewers also leave completion pending, even
+after a prior same-head approval or comment. Every snapshot requires a validated
+requested-user array with exact logins, including bot suffixes. Collection compares
+normalized requested identities at both metadata reads; additions/removals invalidate
+the observation. Order, duplicates and avatar changes are semantically quiet.
+Nonrequired requests remain informational; team membership is not expanded.
+Cancellation only restores still-qualifying evidence and cannot override rejection,
+head/base freshness or budget limits. Older snapshots missing request data become
+incomplete under schema 8; no new session allowance is created.
+Input epochs use `input-generation:N`, starting at zero and advancing only for
+recorded `advance_head` events. Caller IDs, ordinary events, monitor revisions and
+exact retries cannot change or collide with that generation. Positive monitoring
+requires the observation's explicit collection-time `_input_epoch`; direct ingestion
+does not fill missing metadata. Missing/null/malformed/stale epochs, including at
+generation zero, persist as incomplete observations and replace previous green
+evidence. The collector captures its epoch before network calls; a same-head refresh
+during collection makes that observation stale. Error observations without an epoch
+remain storable incomplete evidence and expose no usable thread receipts.
+Automatic PR binding
+selects the first unused `bind-pr`/`bind-pr:N` event ID while holding the same session
+lock through persistence. Caller IDs are not reserved or rewritten; same-target
+binding is idempotent and conflicting targets are rejected. Preserve incompatible
+old epoch histories for recovery rather than synthesizing a new allowance.
+Packets load one receipt and derive status and body from that state while retaining
+the actual Git/input drift check. When the watcher emits a changed packet, its exit
+decision and associated snapshot come from that same packet rather than separate
+receipt reads. Later concurrent writes remain a later revision, not mixed evidence.
+Required event identities and semantic strings must contain non-whitespace text,
+including Unicode whitespace handling; supplied `supersedes` references follow the
+same rule. Valid padded or internal-space identities stay byte-for-byte exact, with
+no trimming or family-label aliasing. Replay enforces the same validation. Free-form
+GitHub comment bodies keep their separate rules and may be empty.
+
+The optional watcher uses paginated read-only `gh api --paginate --slurp` requests for current checks,
+statuses, reviews and issue comments, plus GraphQL `reviewThreads` and their
+comments to retain resolved/outdated thread state. The slurped REST result is parsed
+as one complete JSON document, not physical lines. It never pushes, replies,
+resolves a thread or requests a review. Unchanged snapshots are suppressed; API
+or GraphQL failures make the session incomplete. The helper cannot authenticate a
+hostile runner or prevent arbitrary model calls outside this workflow.
+"Read-only" describes GitHub operations, not local code isolation: invoking this
+helper executes checkout-controlled Python with the operator's privileges and
+credentials. This contributor workflow assumes trusted local code; running hostile
+PR code safely requires a separate external-verifier architecture decision.
+It polls changed nonterminal state with 15/30/60-second backoff and returns a
+`wait` handoff after at most 30 minutes without progress; that wait never resets
+the correction-batch or active-time budgets.
+Local complete/investigate/replan/incomplete decisions are emitted once even when
+the remote snapshot is unchanged. At the deadline, the watcher rereads local
+status before reporting wait; a budget exhausted during sleep returns replan.
+Incomplete retains exit status 1; other documented terminal/wait results retain 0.
+Requests and pagination share the remaining deadline; sleep is capped accordingly.
+Zero timeout means one collection with a 60-second cap. Progress hashes exclude
+incidental avatar metadata. A snapshot binds repository, PR, head, target base and input epoch;
+collection errors invalidate previous green evidence. Refreshed inputs
+cannot inherit a collection that started before their input refresh. Nested thread
+and comment fields are validated before completion; malformed optional event
+references are rejected before persistence. An exact successful event retry retains
+its result even with the original expected revision; new writes still conflict.
+Dirty local review inputs
+cannot complete publication. Final non-findings do not seed family escalation,
+but fixing a genuine recurrence preserves its escape history.
+Some providers publish a clean summary without a REST review: the helper remains
+pending. Coordinators may separately verify provider output against the current
+head, but must disclose the helper's missing evidence rather than infer approval.
+
+### Cross-family reviewer calibration
+
+`qwen3.8:27b-mlx` is a local candidate, not a validated review lane. Before an
+advisory pre-PR use, give it three concealed historical defect cases and repaired
+controls in fresh contexts. Record defect detection, actionable false positives,
+timeouts, latency and available usage units. Allow 90 seconds per case and ten
+minutes total. Adopt it only when it detects at least two defects, produces no
+actionable false positives on the repaired controls, and completes within budget.
+Failure or unavailable access leaves cross-family review unvalidated; it does not
+block promotion or trigger a provider installation campaign.
 
 Full review enables `--bug-hunt`, including the required semgrep-bugs member.
 `[tool.specfact.code-review]` declares native Git for index tests; pytest’s
