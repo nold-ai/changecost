@@ -5,6 +5,7 @@ import random
 from copy import deepcopy
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
+from unittest.mock import patch
 
 import pytest
 from pydantic import ValidationError
@@ -14,6 +15,7 @@ from changecost.operations import LifecycleDeclaration, declare, register_change
 from changecost.serialization import ContractError
 from changecost.store import Store
 from tests.behavioral_model import Action, Model
+from tests.behavioral_payloads import STORE_ID, ExpectedPayloads, allocation
 
 NOW = datetime(2026, 9, 29, 10, tzinfo=UTC)
 SEEDS = tuple(range(8))
@@ -156,15 +158,25 @@ def assert_fresh_import(origin, destination, clock):
     assert_observations(destination, destination.records, clock)
 
 
-def apply_checked(store, model, action, operation=execute):
+def operation_accepted(store, action, operation, step):
+    try:
+        with patch(
+            "changecost.operations.uuid4", side_effect=[allocation(step, i) for i in range(20)]
+        ):
+            operation(store, action)
+        return True
+    except (ContractError, ValidationError, StopIteration):
+        return False
+
+
+def apply_checked(store, model, action, operation, payloads, step):
     before = store.export_bundle() if store.path.exists() else None
     previous_model = deepcopy(model)
+    action = deepcopy(action)
     expected = model.attempt(action)
-    try:
-        operation(store, action)
-        accepted = True
-    except (ContractError, ValidationError, StopIteration):
-        accepted = False
+    if expected:
+        payloads.advance(previous_model, model, action, step)
+    accepted = operation_accepted(store, action, operation, step)
     assert accepted == expected, "acceptance matches scenario model"
     after = store.export_bundle() if store.path.exists() else None
     if not expected:
@@ -175,14 +187,24 @@ def apply_checked(store, model, action, operation=execute):
         assert after is not None, "accepted append must persist store"
         assert_append(before, after)
     if after is not None:
+        actual = [r.model_dump(mode="json", by_alias=True) for r in after.records]
+
+        def canonical(values):
+            return sorted(json.dumps(v, sort_keys=True) for v in values)
+
+        assert canonical(actual) == canonical(payloads.records), (
+            "complete payload multiset matches pre-call expectation"
+        )
         assert projection(store) == model, "persisted state matches scenario model"
 
 
 def trace(path, actions, operation=execute):
     store = Store(path, clock=lambda: NOW)
     model = Model()
-    for action in actions:
-        apply_checked(store, model, action, operation)
+    payloads = ExpectedPayloads(NOW)
+    with patch("changecost.store.uuid4", return_value=STORE_ID):
+        for step, action in enumerate(actions):
+            apply_checked(store, model, action, operation, payloads, step)
     return store
 
 
@@ -435,3 +457,69 @@ def test_successful_append_cannot_remove_store(tmp_path, actions):
     with pytest.raises(AssertionError, match="accepted append must persist store"):
         trace(tmp_path / "fault.sqlite", actions, faulty)
     trace(tmp_path / "repaired.sqlite", actions)
+
+
+@pytest.mark.parametrize(
+    "kind,field,value,actions",
+    [
+        ("change", "repository_id", "wrong", [Action("change")]),
+        ("change", "commit_ref", "unexpected", [Action("change")]),
+        ("run", "provider_session_id", "unexpected", [Action("change"), Action("run")]),
+        (
+            "run",
+            "ref",
+            {"repository_id": "wrong", "provider": "cursor", "surface": "ide", "run_id": "r0"},
+            [Action("change"), Action("run")],
+        ),
+        (
+            "run_binding",
+            "change",
+            {"kind": "change", "record_id": "wrong"},
+            [Action("change"), Action("run")],
+        ),
+        ("outcome", "reason", "invented", [Action("change"), Action("declare", "c", "accepted")]),
+        (
+            "interval",
+            "start",
+            "2026-09-29T09:00:00.000001Z",
+            [Action("change"), Action("run", start=-60)],
+        ),
+        ("interval", "method", "verified_provider", [Action("change"), Action("run", start=-60)]),
+        ("run", "effective_at", "2026-09-28T10:00:00Z", [Action("change"), Action("run")]),
+    ],
+)
+def test_exact_payload_fault_then_repair(tmp_path, kind, field, value, actions):
+    def faulty(store, action):
+        execute(store, action)
+        if action == actions[-1]:
+            with store.connect() as connection:
+                row = connection.execute(
+                    "SELECT id,payload FROM records WHERE kind=?", (kind,)
+                ).fetchone()
+                payload = json.loads(row[1])
+                payload[field] = value
+                connection.execute(
+                    "UPDATE records SET payload=? WHERE id=?", (json.dumps(payload), row[0])
+                )
+
+    with pytest.raises(AssertionError, match="complete payload multiset"):
+        trace(tmp_path / "fault.sqlite", actions, faulty)
+    trace(tmp_path / "repaired.sqlite", actions)
+
+
+def test_extra_change_fault_then_repair(tmp_path):
+    def faulty(store, action):
+        execute(store, action)
+        with store.connect() as connection:
+            row = connection.execute("SELECT payload FROM records WHERE kind='change'").fetchone()
+            payload = json.loads(row[0])
+            payload.update(record_id="extra", change_id="extra")
+            connection.execute(
+                "INSERT INTO records SELECT kind,'extra','extra',?,available_at,sequence "
+                "FROM records WHERE kind='change'",
+                (json.dumps(payload),),
+            )
+
+    with pytest.raises(AssertionError, match="complete payload multiset"):
+        trace(tmp_path / "fault.sqlite", [Action("change")], faulty)
+    trace(tmp_path / "repaired.sqlite", [Action("change")])

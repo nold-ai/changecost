@@ -63,7 +63,7 @@ def packet(tmp_path):
         assumptions={"clock": "UTC"},
         known_findings=[],
         binding=binding,
-        inputs=inputs,
+        inputs={name: review_session.input_fingerprint(tmp_path, name) for name in inputs},
         input_roles={
             "specification": ["input.py"],
             "oracle": ["input.py"],
@@ -203,7 +203,7 @@ def test_ignored_packet_only_oracle_cannot_rebind_old_evidence(packet):
     root, data = packet
     name = ".changecost/oracle.py"
     (root / name).write_text("original oracle\n")
-    data["inputs"][name] = review_session.file_fingerprint(root, name)
+    data["inputs"][name] = review_session.input_fingerprint(root, name)
     data["input_roles"]["oracle"] = [name]
     data["dependencies"][name] = dict(
         invariants=["history"], assumptions=["clock"], review_scope="oracle"
@@ -211,7 +211,7 @@ def test_ignored_packet_only_oracle_cannot_rebind_old_evidence(packet):
     # The recorded binding/report predates these changed bytes. Rehashing only the packet
     # must not turn that old execution into current evidence.
     (root / name).write_text("changed oracle\n")
-    data["inputs"][name] = review_session.file_fingerprint(root, name)
+    data["inputs"][name] = review_session.input_fingerprint(root, name)
     assert validator()(root, data)["evidence_status"] == "incomplete"
 
 
@@ -362,3 +362,33 @@ def test_duplicate_evidence_ids_cannot_collapse_policy(packet, duplicate_prior):
     assert result["evidence_status"] == "incomplete"
     assert result["broader_review_required"]
     assert "unique evidence identities" in result["errors"][0]
+
+
+@pytest.mark.parametrize("mutation", ["mode", "index_bytes", "index_mode"])
+def test_input_identity_delta_survives_unchanged_working_bytes(packet, mutation):
+    root, data = packet
+    prior = copy.deepcopy(data)
+    path = root / "input.py"
+    original = path.read_bytes()
+    if mutation == "mode":
+        path.chmod(path.stat().st_mode ^ 0o100)
+    elif mutation == "index_bytes":
+        path.write_text("staged only")
+        repository.git(root, "add", "input.py")
+        path.write_bytes(original)
+    else:
+        repository.git(root, "update-index", "--chmod=+x", "input.py")
+    assert validator()(root, data, prior)["evidence_status"] == "incomplete"
+    review_session.record(
+        root,
+        "pilot",
+        dict(id="identity-refresh", kind="advance_head", head=data["binding"]["head"]),
+    )
+    data["binding"] = review_session.packet(root, "pilot")["binding"]
+    data["evidence"][0]["binding"] = data["binding"]
+    data["inputs"]["input.py"] = review_session.input_fingerprint(root, "input.py")
+    result = validator()(root, data, prior)
+    assert result["evidence_status"] == "current"
+    assert result["changed_inputs"] == ["input.py"]
+    assert result["affected_assumptions"] == ["clock"]
+    assert result["affected_invariants"] == ["history"]

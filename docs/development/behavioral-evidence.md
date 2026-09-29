@@ -83,7 +83,7 @@ report = ".changecost/behavioral-report.txt"
 paths = set(current["reviewed_manifest"])
 roles = {
     "specification": ["openspec/changes/core-02-change-run-contracts/specs/change-run-contracts/spec.md"],
-    "oracle": ["tests/behavioral_model.py"],
+    "oracle": ["tests/behavioral_model.py", "tests/behavioral_payloads.py"],
     "generator": ["tests/test_lifecycle_stateful.py"],
     "configuration": ["pyproject.toml", "uv.lock"],
 }
@@ -93,6 +93,7 @@ paths.update(["src/changecost/operations.py", "src/changecost/store.py",
 missing = paths - current["reviewed_manifest"].keys()
 if missing:
     raise ValueError(f"Approve these paths in the session BEFORE executing checks: {sorted(missing)}")
+index = session.index_entries(session.repository.git(root, "ls-files", "--stage", "-z"))
 packet = {
     "schema_version": 1, "change_id": change,
     "intent": "Check selected lifecycle invariants before review",
@@ -101,7 +102,7 @@ packet = {
     "entrypoints": ["register_change", "register_run", "declare", "Store.eligible"],
     "assumptions": {"bounds": "Eight seeds; selected synthetic lifecycle scenarios"},
     "known_findings": [], "binding": binding,
-    "inputs": {name: session.file_fingerprint(root, name) for name in sorted(paths)},
+    "inputs": {name: session.input_fingerprint(root, name, index) for name in sorted(paths)},
     "input_roles": roles,
     "dependencies": {name: {"invariants": ["history"], "assumptions": ["bounds"],
                             "review_scope": "Inspect relevance to this lifecycle pilot"}
@@ -171,3 +172,20 @@ and current values; added/removed definitions have an explicit null counterpart.
 These advisory strings never resolve authoritative session findings. Outcome, binding
 and report path/hash refresh alone do not broaden unchanged policy, but required
 current evidence must still pass. List ordering alone does not change these contexts.
+
+Declared input fingerprints now bind raw bytes/absence, normalized user-execute mode,
+and exact stage-zero Git mode/blob or index absence. Packet comparison and existing
+session capture share this identity, parsing one index snapshot per capture rather
+than spawning Git per declared file. Unsupported index types/conflicts are rejected.
+Raw report SHA256 is unchanged. Old byte-only packets require regeneration and old
+session bindings require explicit advance; historical events/reports are not rewritten.
+Ownership, mtime and ACL metadata are outside this input identity.
+
+The logical model is supplemented by a plain complete expected-record accumulator
+prepared from copied command/fixture inputs before each call. It compares a canonical
+payload multiset and cardinality for all five selected record kinds, including full
+namespaces, typed refs, exact timestamps, reasons, provenance and null optional fields.
+Finite literal fixture IDs and test-only store/record UUID allocation seams make these
+pre-call expectations possible. UUID/stable-ID algorithm correctness is outside this
+control; real public transition decisions and SQLite writes are still exercised.
+No expected payload is learned from an export, operation return or production helper.

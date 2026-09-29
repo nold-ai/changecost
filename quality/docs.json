@@ -761,7 +761,10 @@
       "sources": [
         "quality/behavioral_evidence.py",
         "tests/behavioral_model.py",
-        "tests/test_lifecycle_stateful.py"
+        "tests/test_lifecycle_stateful.py",
+        "tests/behavioral_payloads.py",
+        "quality/review_session.py",
+        "tests/test_review_session.py"
       ],
       "kind": "manual"
     },

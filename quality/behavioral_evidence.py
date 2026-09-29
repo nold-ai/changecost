@@ -167,7 +167,10 @@ def validate_packet(root: Path, value: Any, previous: Any = None) -> dict[str, A
             raise ValueError("previous packet must identify the same change")
         session = review_session.packet(root, packet.change_id)
         binding = session["binding"]
-        actual = {name: review_session.file_fingerprint(root, name) for name in packet.inputs}
+        index = review_session.index_entries(repository.git(root, "ls-files", "--stage", "-z"))
+        actual = {
+            name: review_session.input_fingerprint(root, name, index) for name in packet.inputs
+        }
         uncovered = changed_paths(root, binding["comparison_base"]) - packet.inputs.keys()
         unbound = packet.inputs.keys() - session["reviewed_manifest"].keys()
         errors = []

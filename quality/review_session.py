@@ -327,6 +327,36 @@ def file_fingerprint(root: Path, name: str) -> str:
         raise ValueError(f"cannot read intended path: {name}") from error
 
 
+def index_entries(raw: bytes) -> dict[str, list[list[str]]]:
+    """Parse one Git index snapshot for all declared input identities."""
+    entries: dict[str, list[list[str]]] = {}
+    for record in raw.split(b"\0"):
+        if record:
+            metadata, _, name = record.partition(b"\t")
+            entries.setdefault(name.decode(), []).append(metadata.decode().split())
+    return entries
+
+
+def input_fingerprint(
+    root: Path, name: str, index: dict[str, list[list[str]]] | None = None
+) -> str:
+    """Bind declared bytes, executable mode and exact supported index identity."""
+    content = file_fingerprint(root, name)
+    path = repository.safe_path(root, name)
+    mode = (
+        None if content == "<absent>" else ("100755" if path.stat().st_mode & 0o100 else "100644")
+    )
+    if index is None:
+        index = index_entries(repository.git(root, "ls-files", "--stage", "-z"))
+    entries = index.get(name, [])
+    if len(entries) > 1 or any(
+        stage != "0" or mode not in {"100644", "100755"} for mode, _, stage in entries
+    ):
+        raise ValueError("unsupported or unmerged declared index entry")
+    value = dict(format="input-identity/v1", content=content, mode=mode, index=entries)
+    return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
+
+
 def validate_initial_scope(contract: dict[str, Any], facts: Any) -> None:
     if not isinstance(facts, dict) or facts.keys() != {
         "base",
@@ -364,12 +394,13 @@ def capture_inputs(root: Path, expected_head: str, declared: Any) -> dict[str, A
     names = repository.git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
     files = set(names.decode().split("\0")) - {""}
     index = repository.git(root, "ls-files", "--stage", "-z")
-    fingerprints = {name: file_fingerprint(root, name) for name in declared}
+    parsed_index = index_entries(index)
+    fingerprints = {name: input_fingerprint(root, name, parsed_index) for name in declared}
     manifest = json.dumps(fingerprints, sort_keys=True).encode()
     fingerprint = repository.digest(root, files).encode() + b"\0" + index + b"\0" + manifest
     tracked = {record.partition(b"\t")[2].decode() for record in index.split(b"\0") if record}
     untracked_declared = any(
-        name not in tracked and value != "<absent>" for name, value in fingerprints.items()
+        name not in tracked and file_fingerprint(root, name) != "<absent>" for name in declared
     )
     clean = not untracked_declared and not repository.git(
         root, "status", "--porcelain", "--untracked-files=all"

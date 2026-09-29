@@ -3741,3 +3741,40 @@ def test_two_passes_share_one_decreasing_request_deadline(
     observed = review_session.collect_snapshot(tmp_path, "change", "nold-ai/changecost", 24, 150)
     assert timeouts == [50, 40]
     assert "errors" not in observed
+
+
+def test_dirty_working_mode_change_invalidates_capture(tmp_path: Path) -> None:
+    path = tmp_path / "input.txt"
+    path.write_text("already dirty\n")
+    review_session.initialize(tmp_path, "change", contract())
+    path.chmod(path.stat().st_mode ^ 0o100)
+    result = review_session.status(tmp_path, "change")
+    assert result["action"] == "incomplete"
+    assert "inputs changed" in result["reason"]
+
+
+@pytest.mark.parametrize("mode,stage", [("120000", "0"), ("100644", "1")])
+def test_declared_unsupported_index_is_rejected(tmp_path: Path, mode: str, stage: str) -> None:
+    blob = review_session.repository.git(tmp_path, "rev-parse", "HEAD:input.txt").decode().strip()
+    subprocess.run(
+        ["git", "-C", str(tmp_path), "update-index", "--force-remove", "input.txt"], check=True
+    )
+    subprocess.run(
+        ["git", "-C", str(tmp_path), "update-index", "--index-info"],
+        input=f"{mode} {blob} {stage}\tinput.txt\n",
+        text=True,
+        check=True,
+    )
+    with pytest.raises(ValueError, match="unsupported or unmerged"):
+        review_session.input_fingerprint(tmp_path, "input.txt")
+
+
+def test_input_identity_ignores_mtime_and_report_hash_is_raw(tmp_path: Path) -> None:
+    path = tmp_path / "input.txt"
+    before = review_session.input_fingerprint(tmp_path, "input.txt")
+    path.touch()
+    assert review_session.input_fingerprint(tmp_path, "input.txt") == before
+    assert (
+        review_session.file_fingerprint(tmp_path, "input.txt")
+        == hashlib.sha256(path.read_bytes()).hexdigest()
+    )

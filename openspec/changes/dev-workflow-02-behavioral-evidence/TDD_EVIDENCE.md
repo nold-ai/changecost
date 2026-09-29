@@ -173,3 +173,31 @@ error checks and full types separately retained. No second ledger or runtime edi
 Prior cbce547 Linux jobs both passed; this later input needs independent family closure
 and fresh committed-head checks. Five recorded batches/max6 retain the earlier
 administrative overcount, four actual correction sets and unchanged90minute allowance.
+
+## Shared input identity and pre-call complete payloads
+
+Native4138995957/4138995965 prompted two independent family investigations and a
+combined fifth actual correction set. Dirty-baseline chmod failed the new stale-input
+regression before implementation (`input-identity-red.txt`). Mode/index-only deltas,
+unsupported index types/conflicts, mtime/no-op behavior and raw report hashes are
+covered. The first full review-session/packet run passed569tests; index parsing was
+then shared per capture to avoid per-file Git subprocess overhead. Historical event
+replay still uses captured provenance rather than recapturing old files.
+
+Ten actual SQL payload mutation/extra-record variants produced **10failed** before
+the exact oracle (`payload-red.txt`). The new plain accumulator constructs complete
+expected payloads before public calls using copied model/action values, finite literal
+IDs and deterministic UUID allocation fixtures. No observed payload/return or production
+decision helper constructs the expectation. All five record kinds and full cardinality
+are checked. Combined packet/lifecycle tests pass74cases (`combined-identity-green.txt`).
+One local Radon run flagged apply_checked CC16; extracting operation acceptance reduced
+its complexity without changing assertions. Full integration/pinned analyzers are
+recorded separately; final committed-head Linux/native evidence remains required.
+
+Combined full local gate ran2026-09-29T22:46:19.074517Z–22:47:39.464493Z
+(80.38991seconds, exit2): **884tests passed in71.92seconds**, full types zero errors,
+lock/hygiene/lint/docs/index/metadata/workflow/build and all11strict OpenSpec items
+passed. Audit was not applicable to unchanged locked dependencies. The only aggregate
+limitation was required capsule analysis unsupported on this macOS controller. Pinned
+local Pylint/Radon error checks passed after complexity extraction; they do not replace
+the mandatory current-head Linux capsule.

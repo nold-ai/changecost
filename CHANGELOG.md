@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bind declared review inputs to executable mode and index state, preserving raw
+  report hashes; compare full pre-call expected lifecycle payloads and cardinality.
+
 - Preserve prior advisory findings and analyzer policy definitions in follow-up packet
   context; require broader review for semantic changes while allowing fresh executions.
 

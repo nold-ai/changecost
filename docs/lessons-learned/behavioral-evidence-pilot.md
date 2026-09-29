@@ -248,3 +248,32 @@ Five recorded batches include the earlier administrative overcount; max6/90minut
 was explicitly authorized without resetting history. No lower recurring review cost
 has been established: this pilot added maintenance work and repeatedly needed both
 independent local and native review to discover defects in its own assurance tooling.
+
+## Input identity and full payload oracle correction
+
+Native review on9420bcc identified two more P2 defects: declared mode-only changes
+were absent from the packet delta, and the logical projection could hide extra or
+incorrectly identified payloads. Independent investigation also reproduced an index
+blob change with working bytes restored, stale dirty-baseline mode changes, and an
+unsupported staged symlink with regular working bytes. The shared declared-input
+fingerprint now binds bytes/absence, executable mode and supported stage-zero index
+identity; session capture and packets reuse it. Reports retain raw SHA256. Explicit
+refresh/regeneration replaces stale inputs without altering historical receipts.
+
+Ten selected real SQLite payload faults passed the previous oracle: wrong namespace,
+extra Change, optional-value pollution, wrong typed binding, invented reason,
+sub-minute precision, provenance and effective timestamp changes. The repaired
+accumulator derives complete plain expected records before each operation, using
+copied fixture/model input and deterministic opaque-allocation seams. It never uses
+observed records or operation returns as expected templates. All five selected kinds
+are compared by exact canonical payload multiset/cardinality. UUID/stable-ID algorithm
+correctness is deliberately excluded; existing bounded transition/history controls
+still use public behavior and real SQLite. The initial lossy projection violated the
+intended full-identity assurance; prior implementation/reviews missed that gap.
+
+This is the fifth actual correction set and two more semantic defects (ten total),
+with six recorded batch events/max7 preserving the administrative overcount and
+90-minute allowance. The extended test helper adds maintenance surface and setup cost;
+no production runtime defect or lower recurring review cost has been demonstrated.
+Both prior9420bcc Linux jobs passed, but later identity inputs require new validation.
+The raw pre-commit token snapshot remains fixed; final ignored capture covers this work.

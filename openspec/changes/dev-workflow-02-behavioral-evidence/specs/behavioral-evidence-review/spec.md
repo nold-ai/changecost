@@ -227,3 +227,43 @@ broader review when the evidence remains current and definitions are unchanged.
 - **WHEN** outcomes, binding or report bytes/path are refreshed with valid current evidence
 - **THEN** these execution changes alone do not require broader review, while current
   required non-passing evidence still returns incomplete.
+
+### Requirement: Input identity covers executable mode and index state
+
+Declared input identity SHALL bind content/absence, normalized user-execute Git mode,
+and exact stage-zero index mode/blob or absence. Packet deltas and authoritative
+session capture SHALL share this identity; report SHA256 remains a raw byte digest.
+Unsupported or unmerged index entries SHALL be rejected. Changes require explicit
+fresh capture/regeneration, without rewriting historical session events or reports.
+
+#### Scenario: Mode or staged content changes without working byte changes
+
+- **GIVEN** a declared input with identical working bytes
+- **WHEN** its executable bit or staged mode/blob changes
+- **THEN** old session evidence is stale and refreshed packet comparison identifies
+  the path and its mapped assumptions/invariants, including on an already dirty base.
+
+#### Scenario: Unsafe index type or conflict cannot become reviewed input
+
+- **GIVEN** a staged symlink or unmerged entry, even with restored regular working bytes
+- **WHEN** the input is captured or validated
+- **THEN** capture rejects it instead of following or silently omitting index identity.
+
+### Requirement: Expected payloads precede selected operation execution
+
+The independent test model SHALL derive the complete accepted record multiset and
+cardinality before invoking each selected public operation, from copied command/fixture
+inputs and its own transition state. Expected semantics SHALL NOT be learned from the
+operation return, observed export, production transition helpers or validators.
+Deterministic test-only allocation fixtures may supply opaque IDs; their allocation
+algorithm is not under test. All five selected kinds (Change, Run, RunBinding, Outcome,
+Interval) SHALL compare complete canonical payloads, including full namespaced identity,
+typed references, exact timestamps, optional fields, provenance and correction reasons.
+
+#### Scenario: Extra or semantically changed record retains a lossy projection
+
+- **GIVEN** a selected accepted lifecycle command with precomputed complete expected records
+- **WHEN** actual SQLite records contain an extra record or altered identity/reference,
+  timestamp precision, provenance, optional value or reason
+- **THEN** exact payload multiset comparison fails and the unchanged repaired operation
+  passes, without deriving expectations from the altered records.

@@ -945,5 +945,19 @@
     "prior_head_linux": "cbce547 both required jobs passed",
     "new_head_gates": "pending",
     "usage_snapshot_unchanged": true
+  },
+  "later_identity_appendix": {
+    "findings": [
+      "native4138995957",
+      "native4138995965"
+    ],
+    "unique_semantic_findings_total": 10,
+    "actual_correction_sets": 5,
+    "recorded_batches": 6,
+    "authorized_max_batches": 7,
+    "payload_fault_variants": 10,
+    "prior_head_linux": "9420bcc both required jobs passed",
+    "new_head_gates": "pending",
+    "usage_snapshot_unchanged": true
   }
 }
