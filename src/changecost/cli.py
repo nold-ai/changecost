@@ -270,7 +270,9 @@ def inspect_record(store: Store, ref: RecordRef) -> dict:
     ]
     result = {
         "record": record.model_dump(mode="json", by_alias=True),
-        "revisions": [r.model_dump(mode="json", by_alias=True) for r in revisions],
+        "revisions": [
+            r.model_dump(mode="json", by_alias=True) for r in ordered_revisions(revisions)
+        ],
         "availability": [
             o.model_dump(mode="json") for o in bundle.observations if o.reference == ref
         ],
@@ -283,6 +285,18 @@ def inspect_record(store: Store, ref: RecordRef) -> dict:
         result["replay_eligibility"] = "inputs_available" if eligible else "replay_unavailable"
         result["economic_validation"] = "not_computed"
     return result
+
+
+def ordered_revisions(revisions):
+    """Render graph-validated chains by predecessor, with a stable kind grouping."""
+    successors = {key(r.previous): r for r in revisions if r.previous is not None}
+    roots = sorted((r for r in revisions if r.previous is None), key=lambda r: r.kind)
+    ordered = []
+    for current in roots:
+        while current is not None:
+            ordered.append(current)
+            current = successors.get(key(reference(current)))
+    return ordered
 
 
 def export_file(store: Store, path: Path) -> None:

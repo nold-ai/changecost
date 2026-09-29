@@ -34,9 +34,12 @@ A request combining an outcome and invalid bounds fails atomically. Delayed outc
 entry does not extend work. The result reports `economic_status: not_computed`.
 
 `explain` returns the selected record, revision history, availability and the explicit
-producer-assertion status. Change and Run inspection requires domain selectors;
+producer-assertion status. Revisions are grouped by kind and ordered through their
+predecessor links from the original declaration to the latest correction, including
+equal timestamps and arbitrary IDs. Change and Run inspection requires domain selectors;
 other records use `--record-kind KIND --record-id ID`. Quote inspection reports input
-eligibility, never validates the producer's economic calculation. Export is a
+eligibility, never validates the producer's economic calculation. A future cutoff
+cannot establish observed history and returns replay_unavailable. Export is a
 consistent full bundle; it refuses an existing path and cleans up temporary output
 on a handled failure. Hard process termination may leave an unreferenced temporary
 file, but never a partial final artifact. Keep exports private.

@@ -1,30 +1,26 @@
 {
   "CONTRIBUTING.md": {
-    "reason": "Reviewed lifecycle request refactor: contributor setup, locked dependencies, offline distribution proof and GitHub-only capsule assurance are unchanged.",
-    "digest": "a773cc551bb85abdeb6b3be111e7786031dc0ec5dc9b9096e22f093b33c3fc85"
+    "reason": "Reviewed future-cutoff and revision-presentation fixes: contributor setup, locked dependencies, required test/build gates and GitHub-only native assurance are unchanged. Behavioral details and regression evidence are updated in contracts, CLI docs, changelog and TDD.",
+    "digest": "98089d606149459a7acd616fe85a0ec78c81868b2d07f30fa5425c86923f3a85"
   },
   "README.md": {
-    "reason": "Reviewed lifecycle request refactor: CLI capabilities, setup, project phase and runtime dependencies remain accurate; this changes only the internal operation input.",
-    "digest": "a773cc551bb85abdeb6b3be111e7786031dc0ec5dc9b9096e22f093b33c3fc85"
+    "reason": "Reviewed future-cutoff rejection and predecessor-ordered inspection: the README capability summary, setup, project phase and dependency guidance remain accurate; detailed historical-eligibility and output-order guarantees are documented in docs/contracts.md and docs/cli.md.",
+    "digest": "98089d606149459a7acd616fe85a0ec78c81868b2d07f30fa5425c86923f3a85"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed lifecycle request refactor: mandatory local gates, staged freshness and native Linux assurance policy remain unchanged. The authorized additional correction batch is recorded in the retained session receipt and TDD evidence.",
-    "digest": "a773cc551bb85abdeb6b3be111e7786031dc0ec5dc9b9096e22f093b33c3fc85"
+    "reason": "Reviewed historical-eligibility and inspection correctness fixes: mandatory local gates, TDD, exact staged freshness and GitHub native-assurance policy are unchanged. The retained receipt records both reproduced PR findings and related-family investigation.",
+    "digest": "98089d606149459a7acd616fe85a0ec78c81868b2d07f30fa5425c86923f3a85"
   },
   "docs/commands.md": {
-    "reason": "Reviewed lifecycle request refactor: Typer command signatures and generated help are unchanged; the generation check still must pass.",
-    "digest": "f02bba6481a5551dac786f3b16f1d9097d393f6515a1944de0b4fa73f31a9fb5"
+    "reason": "Reviewed cutoff/history behavior corrections: Typer commands, flags and help signatures are unchanged; the generated command reference must still pass deterministic regeneration checks.",
+    "digest": "15b3385eea056214fc41aa6a7b7ea4fc0352845854d914e076badbc3f25adfe7"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed lifecycle request refactor: all required gates and installed package proof remain unchanged, and the guide already directs macOS capsule assurance to GitHub CI/CD.",
-    "digest": "a773cc551bb85abdeb6b3be111e7786031dc0ec5dc9b9096e22f093b33c3fc85"
+    "reason": "Reviewed future-cutoff and revision-order regressions: the existing gate guide already requires the new scoped tests, full suite, distribution proof and GitHub-only native reports. Gate definitions and execution policy did not change.",
+    "digest": "98089d606149459a7acd616fe85a0ec78c81868b2d07f30fa5425c86923f3a85"
   },
   "llms.txt": {
-    "reason": "Reviewed lifecycle request refactor: entry points, document links, project phase and supported capability index remain unchanged; the generation check still must pass.",
-    "digest": "f02bba6481a5551dac786f3b16f1d9097d393f6515a1944de0b4fa73f31a9fb5"
-  },
-  "docs/cli.md": {
-    "reason": "Reviewed lifecycle request refactor against settle call sites: selector rules, flags, atomic failure, retry behavior and economic_status remain unchanged.",
-    "digest": "5e8a8315cd200be746a7b52eb61b844b5ae8ceb3cb94de18fb728136d4605c2f"
+    "reason": "Reviewed cutoff and revision-history fixes: existing CLI/contracts index entries still point to the updated behavioral documentation; public capabilities, document links and command inventory are unchanged. Deterministic index checks remain required.",
+    "digest": "15b3385eea056214fc41aa6a7b7ea4fc0352845854d914e076badbc3f25adfe7"
   }
 }

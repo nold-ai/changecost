@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Reject future historical cutoffs and display inspected correction chains in
+  predecessor order, preserving read-only replay and lifecycle history.
+
 - Record completed Core-02 pre-promotion matrix/native assurance and the opening
   of implementation PR #25. Keep fresh PR-head review and implementation acceptance
   explicit; Core-02 remains unarchived until acceptance.

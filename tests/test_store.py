@@ -595,3 +595,85 @@ def test_competing_attribution_retries_observe_winner(store):
         bind_run(Store(store.path, clock=lambda: NOW), RUN, reference(b))
     bindings = [r for r in store.records() if r.kind == "run_binding"]
     assert len(bindings) == 1 and bindings[0].change == reference(a)
+
+
+def test_future_cutoff_cannot_admit_future_effective_inputs(store):
+    from changecost.cli import inspect_record
+    from changecost.models import Change, Component, Features, Quote
+    from changecost.operations import common
+
+    registered = register_change(store, "repo", "registered")
+    source = store.export_bundle()
+    future = Change(
+        **{**common("producer", NOW, "future"), "effective_at": NOW + timedelta(days=1)},
+        repository_id="repo",
+        change_id="future",
+        features=Features(captured_at=NOW, recorded_at=NOW),
+    )
+    store.import_bundle(source.model_copy(update={"records": [future], "observations": []}))
+    cutoff = store.snapshot().model_copy(update={"at": NOW + timedelta(days=2)})
+    component = Component(economic_kind="monetary", unit="USD", basis="billed", amount=None)
+    quote = Quote(
+        **common("producer", NOW, "future-quote"),
+        change=reference(registered),
+        state="unpriced",
+        p50=component,
+        p90=component,
+        reason="unknown",
+        sample_count=0,
+        cohort="synthetic",
+        algorithm_version="synthetic",
+        cutoff=cutoff,
+        inputs=[reference(future)],
+    )
+    store.import_bundle(source.model_copy(update={"records": [quote], "observations": []}))
+    before = store.export_bundle()
+    assert not store.eligible(reference(future), cutoff)
+    assert inspect_record(store, reference(quote))["replay_eligibility"] == "replay_unavailable"
+    assert store.export_bundle() == before
+
+
+@pytest.mark.parametrize("kind", ["outcome", "interval", "settlement"])
+def test_inspection_orders_each_revision_chain_by_predecessor(store, kind):
+    from changecost.cli import inspect_record
+    from changecost.models import Interval, Outcome, Settlement
+    from changecost.operations import common
+
+    change, run = initialized(store)
+    if kind == "outcome":
+        original = Outcome(
+            **common("producer", NOW, "z-original"), subject=reference(run), outcome="failed"
+        )
+        target = reference(run)
+    elif kind == "interval":
+        original = Interval(**common("producer", NOW, "z-original"), run=run.ref, start=NOW)
+        target = reference(run)
+    else:
+        original = Settlement(
+            **common("producer", NOW, "z-original"),
+            change=reference(change),
+            components=[],
+            completeness="provisional",
+            scope="synthetic",
+            coverage=[],
+            inputs=[],
+            unknown_reasons=["unknown"],
+        )
+        target = reference(change)
+    updates = {"record_id": "a-correction", "previous": reference(original)}
+    if kind in {"outcome", "interval"}:
+        updates["reason"] = "correction"
+    second = original.model_copy(update=updates)
+    third = second.model_copy(update={"record_id": "m-latest", "previous": reference(second)})
+    bundle = store.export_bundle()
+    store.import_bundle(
+        bundle.model_copy(update={"records": [third, second, original], "observations": []})
+    )
+    before = store.export_bundle()
+    history = inspect_record(store, target)["revisions"]
+    assert [r["record_id"] for r in history if r["kind"] == kind] == [
+        "z-original",
+        "a-correction",
+        "m-latest",
+    ]
+    assert store.export_bundle() == before

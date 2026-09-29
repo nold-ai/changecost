@@ -300,6 +300,12 @@ existing output file or leave a partial final artifact after failure.
 - **WHEN** help/version, conflicting registration/import modes, incomplete selectors or inspection of the missing store are requested
 - **THEN** help/version succeed, invalid operations fail and no configuration/database/evidence files are created.
 
+#### Scenario: Inspect revisions in predecessor order
+
+- **GIVEN** a Change or Run with correction chains whose record IDs sort opposite to predecessor order and whose declaration timestamps are equal
+- **WHEN** explain returns lifecycle and settlement history
+- **THEN** each chain is grouped by record kind and ordered from its original declaration to its latest revision using previous references, without changing stored records.
+
 #### Scenario: Export failure preserves data
 
 - **GIVEN** an existing output file or a simulated output failure during export
@@ -360,12 +366,20 @@ Historical eligibility SHALL require the locally committed snapshot boundary plu
 all recorded/effective/availability constraints for every dependency. Origin
 availability and transaction sequences SHALL NOT replace destination knowledge.
 Unsafe backward-clock writes SHALL fail explicitly rather than backdate history.
+A cutoff later than the current local snapshot SHALL be unavailable; it cannot
+establish already-observed historical membership.
 
 #### Scenario: Transaction spans a cutoff
 
 - **GIVEN** a writer begins before a reader captures a cutoff but commits after that reader's snapshot
 - **WHEN** the captured cutoff is replayed after commit
 - **THEN** the new records are excluded despite a pre-cutoff transaction timestamp; a time-only cutoff without sufficient evidence returns replay_unavailable.
+
+#### Scenario: Future cutoff cannot claim observed history
+
+- **GIVEN** an imported Quote naming the destination store and an existing sequence but a cutoff later than the current snapshot
+- **WHEN** explain evaluates inputs with future effective times
+- **THEN** replay is unavailable and inspection leaves the store unchanged, even if those inputs would satisfy the claimed future time.
 
 #### Scenario: Clock moves backwards
 

@@ -436,6 +436,7 @@ class Store:
             cutoff is None
             or cutoff.store_id != bundle.source.store_id
             or cutoff.sequence > bundle.source.sequence
+            or cutoff.at > bundle.source.at
         ):
             return False
         records = {key(reference(record)): record for record in bundle.records}

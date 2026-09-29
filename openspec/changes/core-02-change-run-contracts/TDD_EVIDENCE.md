@@ -235,3 +235,33 @@ that completed verification/publication checkpoint. This documentation follow-up
 requires its own scoped checks and review before commit; earlier CI does not
 certify a later head. Current PR-head CI, Codex/CodeRabbit review and implementation
 acceptance remain pending. Issue #11 stays open and Core-02 stays unarchived.
+
+
+## PR #25 historical replay and presentation correction
+
+Codex review 5354702412 reported two reproduced P2 defects in the unchanged runtime
+at `42cc2ecafbda568da85b76c40477a3378699eb1b`: a future same-store cutoff could
+admit future-effective inputs ([cutoff finding](https://github.com/nold-ai/changecost/pull/25#discussion_r4135200791)),
+and arbitrary revision IDs could display a correction before its predecessor
+([history finding](https://github.com/nold-ai/changecost/pull/25#discussion_r4135200813)).
+The maintainer's promotion request authorizes this collected correction batch;
+prior receipt counters and the historical documentation replan signal remain retained.
+
+Spec scenarios were added before tests. The focused regression command
+`pytest -q tests/test_store.py -k 'future_cutoff_cannot or inspection_orders_each'`
+failed **4 tests** for the actual missing behaviors (`pr25-runtime-red.log`): one
+future-cutoff case and predecessor ordering for outcome, interval and settlement.
+An earlier uv invocation was blocked by local cache permissions before running
+pytest; it is not behavioral red evidence. The project interpreter then reproduced
+the four real failures. After the minimal fix, the complete contracts/store/CLI
+suite passes **79 tests** (`pr25-runtime-green.log`); Ruff and BasedPyright pass.
+
+Eligibility now rejects times later than the captured current snapshot without
+writing. Inspection groups validated chains by kind and follows previous links,
+independently of IDs or equal timestamps. Existing foreign/time-only cutoff,
+sequence, destination availability, delayed-commit, clock and reference-graph
+constraints remain intact. The new tests assert inspection leaves the full bundle
+unchanged. No command flags, portable schema or financial algorithms changed.
+Both corrections require independent frozen-tree verification and fresh GitHub
+native assurance before the PR findings can be resolved; those later run/commit
+identities belong in the retained workflow handoff and PR evidence.

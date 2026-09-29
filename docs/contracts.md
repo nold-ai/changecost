@@ -88,6 +88,10 @@ first local availability. An identical Run registration remains a no-op after it
 Change becomes terminal; genuinely new Runs require an open Change.
 
 Known interval bounds satisfy start <= end and cannot postdate declaration.
+Inspection groups revision chains by kind and follows their predecessor references
+from the original declaration to the latest revision; record-ID or timestamp sorting
+does not establish correction order.
+
 Outcome/interval changes append revisions; changing an existing outcome or known
 bound requires a correction flag and reason through the CLI. Filling a missing
 bound requires no correction. Outcomes never synthesize work times.
@@ -105,7 +109,9 @@ against sequence and availability/recorded/effective times. A writer begun befor
 but committed after the captured snapshot is excluded. This is a snapshot boundary,
 not a claim of an exact physical commit timestamp. Clock regression fails writes
 and snapshot capture; it cannot detect arbitrary external tampering or clock jumps.
-Foreign or time-only cutoffs cannot prove local replay. Importing old evidence now
+Foreign, time-only or future cutoffs cannot prove local replay. A cutoff time must
+not exceed the current committed snapshot's time, even when its store ID and
+sequence are otherwise valid. Importing old evidence now
 never reconstructs earlier destination knowledge.
 
 `Store.backup(new_path)` uses SQLite's consistent backup API and preserves identity,
