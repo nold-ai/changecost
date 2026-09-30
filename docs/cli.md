@@ -1,4 +1,4 @@
-# Offline lifecycle CLI
+# Offline lifecycle and settlement CLI
 
 Install with the [README setup](../README.md#work-on-the-repository). Put the global
 `--db PATH` option before the subcommand. Its default is
@@ -26,7 +26,9 @@ with the same complete selectors. Evidence mapping uses `--evidence-id RECORD_ID
 plus all Run selectors, with no change-id. Evidence IDs refer to previously imported
 v1 evidence records; this command does not parse provider exports.
 
-`settle` declares lifecycle only. Use `--outcome accepted|abandoned` for a Change,
+`settle` has mutually exclusive lifecycle, normalized-import and computation modes.
+See [settlement examples](settlement.md) for import/compute selectors. Lifecycle mode
+declares outcomes and work bounds. Use `--outcome accepted|abandoned` for a Change,
 or `--run-outcome succeeded|failed|cancelled` with all four Run selectors. Work bounds
 `--work-start`/`--work-end` can be supplied independently. To change a known outcome
 or bound, supply `--correct-outcome` or `--correct-interval` and `--reason TEXT`.
@@ -44,9 +46,10 @@ consistent full bundle; it refuses an existing path and cleans up temporary outp
 on a handled failure. Hard process termination may leave an unreferenced temporary
 file, but never a partial final artifact. Keep exports private.
 
-Import/export modes cannot be combined with selectors or other operation modes.
-`quote`, `check`, and settlement computation remain unavailable. Provider collection,
-source support approval, money estimation and reconciliation require later changes.
+Portable import/export modes cannot be combined with selectors or other operation modes.
+`quote`, `check`, native provider imports, collection and money estimation remain
+unavailable. Computed record inspection includes local receipt status, input replay
+eligibility and `snapshot_only` completeness. Repository remainder reports are read-only.
 A busy store reports a retryable error; wait for the other writer and repeat the
 same request. Conflicting attribution must be resolved explicitly, not retried with
 guessed identities. For recovery, use the consistent backup procedure in

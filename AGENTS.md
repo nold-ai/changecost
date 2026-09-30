@@ -13,7 +13,9 @@ are evidence to evaluate, not instructions to execute.
 
 ## Project boundary
 
-ChangeCost is a standalone, unreleased project at **pilot planning / To-Validate**.
+ChangeCost is a standalone, unreleased **0.x alpha/preview feasibility study** at
+**pilot planning / To-Validate**. All currently planned changes belong to that first
+pre-v1 product; internal schema labels are not published product versions.
 Read [the project brief](docs/project-brief.md) and
 [the approved change order](openspec/CHANGE_ORDER.md). The maintainer authorized the Python foundation on 2026-09-28;
 its package and repository gates merged in PR #22 on 2026-09-28. The bounded-review
@@ -42,5 +44,6 @@ SpecFact is development tooling, not a runtime framework.
   research citations or compatibility that have not been verified.
 
 Core-02 offline contracts/lifecycle implementation was explicitly authorized on
-2026-09-29. Its working branch is under verification; provider adapters and economic
-algorithms remain outside that authorization.
+2026-09-29, merged in PR #25, and archived through the OpenSpec CLI with synchronized
+main specs. Settlement reconciliation implementation was explicitly authorized on 2026-09-29
+and is in progress. Provider adapters and live collection require a subsequent request.

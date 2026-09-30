@@ -45,10 +45,10 @@ algorithms that later produce them.
 
 ## Dependencies
 
-- [core-01-python-foundation](../archive/2026-09-29-core-01-python-foundation/proposal.md)
+- [core-01-python-foundation](../2026-09-29-core-01-python-foundation/proposal.md)
 
 Dependencies are implementation prerequisites; planning can proceed together.
-See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
+See [change order](../../../CHANGE_ORDER.md) and [source assessment](../../../../docs/research/pilot-source-assessment.md).
 
 ## Decisions and uncertainty
 

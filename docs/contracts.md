@@ -1,9 +1,16 @@
 # Offline contracts v1
 
-ChangeCost's unreleased `changecost/v1` transport uses Pydantic 2 and SQLite schema
-1. The executable field definitions are in [models.py](../src/changecost/models.py).
-This is a local record contract, not provider verification or a financial algorithm.
-See [CLI examples](cli.md) and [implementation evidence](../openspec/changes/core-02-change-run-contracts/TDD_EVIDENCE.md).
+The package is unreleased `0.1.0.dev0`. `changecost/v1` is the current internal
+artifact schema label, not a published product 1.0 release. The planned 0.x
+feasibility changes may extend this strict schema; older checkouts may reject new
+records. The fields below describe the presently implemented checkout only.
+
+
+ChangeCost's unreleased `changecost/v1` transport uses Pydantic 2 and SQLite layout
+2. The executable field definitions are in [models.py](../src/changecost/models.py).
+Portable provenance remains a producer claim. The [local reconciler](settlement.md)
+adds exact computation and synthetic coverage without certifying provider support.
+See [CLI examples](cli.md) and [implementation evidence](../openspec/changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md).
 
 ## Wire format
 
@@ -30,17 +37,24 @@ complete tuple; bare provider run IDs never resolve a reference.
 | interval | run (RunRef), nullable start/end, method, source_refs; optional previous (Interval RecordRef), reason |
 | quote | change, state, p50, p90, sample_count, cohort, algorithm_version, cutoff, inputs; optional reason, features |
 | settlement | change, components, completeness, scope, coverage, inputs, unknown_reasons; optional previous (Settlement RecordRef) |
+| economic_evidence | evidence (core RecordRef), source (SourceLocator), component_key, component, series, lane, start/end, baseline_zero; optional replaces (SourceLocator), correction_reason |
+| source_coverage | run (RunRef), provider, surface, profile, namespace, component_key, policy_version, economic (economic_kind/unit/currency/basis), start/end, final (boolean), evidence (RecordRefs) |
+| computed_settlement | change, operation_id, ledger_id, cutoff, algorithm_version, policy_version, scope, subtotals, runs, inputs, exclusions, unknown_reasons, full_change, synthetic; optional previous (computed RecordRef) |
 
 `method` defaults to `manual`; imported `verified_provider` remains a producer's
 assertion. `source_refs` defaults to empty. No provider profile is approved by import.
 Outcomes are accepted/abandoned for Changes and succeeded/failed/cancelled for Runs.
 An absent outcome means open; a terminal outcome does not imply known cost.
-Each coverage entry names a complete RunRef, an outcome revision, an interval
+Each legacy `settlement.coverage` entry names a complete RunRef, an outcome revision, an interval
 revision and evidence references. Coverage requires each Run to be bound to its
 Settlement Change and each evidence record to that Run; these mappings participate
 in historical dependency checks. Import validates graph integrity, not economic
 completeness. Quotes and Settlements can be inspected and replayed as records;
-no estimator or reconciler runs in this capability.
+legacy imported claims do not establish a local computation receipt. New
+computed records retain a scope (repository, economic identity, nullable start/end),
+subtotals (economic identity, amount, unknown_count), complete RunRef membership,
+and exclusions (reference, reason). See [normalization and computation](settlement.md)
+for SourceLocator, temporal and correction fields. No estimator runs.
 
 Features have `version: features/v1`, captured_at/recorded_at equal to Change
 registration, and three nullable fields. ASCII whitespace is stripped and ASCII
@@ -117,9 +131,10 @@ never reconstructs earlier destination knowledge.
 `Store.backup(new_path)` uses SQLite's consistent backup API and preserves identity,
 sequence and local history. Recover into a separate path with no active writer;
 keep the original until the restored copy is checked. Portable import creates a
-distinct destination history and cannot substitute for backup. Only schema 1 is
-supported; newer schemas are rejected without mutation, with no automatic downgrade.
-No upgrade from an older product schema exists yet.
+distinct destination history and cannot substitute for backup. Only internal layout 2 is
+supported. Older/newer layouts fail unchanged; there is no automatic migration.
+Export older data using its matching checkout and import into a separate fresh
+store; preserve the original backup/checkout for original local history.
 
 Observation transaction sequences are strict integers from 1 through `2**63 - 1`;
 Cutoff sequences (including bundle sources and Quote cutoffs) allow 0 through that
@@ -139,5 +154,7 @@ Copied models are strictly revalidated at import/write boundaries without emitti
 serializer warnings containing their rejected fields.
 This is an allowlist, not a content classifier. Imported data never executes URLs,
 paths or instructions. Databases, exports and review artifacts stay outside packages.
-Keep package version `0.1.0.dev0`; contract versioning is independent. An incompatible
-wire change requires a new schema and an explicit migration policy.
+Keep package version `0.1.0.dev0`; contract versioning is independent. The internal schema develops within this first unreleased 0.x product. Older
+checkouts may reject new kinds. No public v2 or general migration programme is
+introduced. This working implementation is based on `999cb8f`; its actual tested
+state and limitations are in [settlement evidence](../openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md).

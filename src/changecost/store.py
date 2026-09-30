@@ -20,7 +20,9 @@ from changecost.models import (
     MAX_SEQUENCE,
     Bundle,
     Change,
+    ComputedSettlement,
     Cutoff,
+    EconomicEvidence,
     Evidence,
     EvidenceBinding,
     Interval,
@@ -33,6 +35,7 @@ from changecost.models import (
     RunBinding,
     RunRef,
     Settlement,
+    SourceCoverage,
     timestamp,
 )
 from changecost.serialization import ContractError
@@ -88,13 +91,20 @@ def subject(record: PortableRecord) -> Any:
         return key(record.subject)
     if isinstance(record, Interval):
         return run_key(record.run)
-    if isinstance(record, Settlement):
-        return key(record.change)
+    if isinstance(record, (Settlement, ComputedSettlement)):
+        return (
+            (key(record.change), record.ledger_id)
+            if isinstance(record, ComputedSettlement)
+            else key(record.change)
+        )
     return None
 
 
 def revision_errors(record: PortableRecord, records: dict) -> None:
-    if not isinstance(record, (Outcome, Interval, Settlement)) or record.previous is None:
+    if (
+        not isinstance(record, (Outcome, Interval, Settlement, ComputedSettlement))
+        or record.previous is None
+    ):
         return
     prior = lookup(records, record.previous, record.kind)
     if subject(prior) != subject(record):
@@ -113,6 +123,18 @@ def revision_errors(record: PortableRecord, records: dict) -> None:
 
 
 def dependencies(record: PortableRecord, records: dict, runs: dict) -> list[RecordRef]:
+    from changecost.economic_graph import computed_refs, economic_refs, source_refs
+
+    if isinstance(record, EconomicEvidence):
+        return economic_refs(record, records)
+    if isinstance(record, SourceCoverage):
+        return source_refs(record, records, runs)
+    if isinstance(record, ComputedSettlement):
+        return computed_refs(record, records, runs)
+    return core_dependencies(record, records, runs)
+
+
+def core_dependencies(record: PortableRecord, records: dict, runs: dict) -> list[RecordRef]:
     refs: list[RecordRef] = []
     if isinstance(record, (RunBinding, EvidenceBinding, Interval)):
         if run_key(record.run) not in runs:
@@ -129,7 +151,10 @@ def dependencies(record: PortableRecord, records: dict, runs: dict) -> list[Reco
         refs.append(record.subject)
     if isinstance(record, (Quote, Settlement)):
         refs.extend(record.inputs)
-    if isinstance(record, (Outcome, Interval, Settlement)) and record.previous is not None:
+    if (
+        isinstance(record, (Outcome, Interval, Settlement, ComputedSettlement))
+        and record.previous is not None
+    ):
         refs.append(record.previous)
     if isinstance(record, Settlement):
         refs.extend(coverage_refs(record, records, runs))
@@ -196,7 +221,7 @@ def validate_graph(records: dict) -> dict:
             raise ContractError("conflicting stable identity or binding")
         domains[domain] = ref_key
         validate_subject(record, records)
-        if isinstance(record, (Outcome, Interval, Settlement)):
+        if isinstance(record, (Outcome, Interval, Settlement, ComputedSettlement)):
             parent = key(record.previous) if record.previous else None
             chain_key = (record.kind, subject(record), parent)
             if chain_key in children:
@@ -206,6 +231,9 @@ def validate_graph(records: dict) -> dict:
         for ref in graph[ref_key]:
             if ref not in records:
                 raise ContractError("unknown record reference")
+    from changecost.economic_graph import validate_economics
+
+    validate_economics(records)
     reject_cycles(graph)
     return graph
 
@@ -240,6 +268,8 @@ def read_records(connection: sqlite3.Connection) -> dict:
 
 def initialize(connection: sqlite3.Connection) -> None:
     for statement in (
+        "CREATE TABLE computations(operation_id TEXT PRIMARY KEY, "
+        "request TEXT NOT NULL, record_id TEXT NOT NULL)",
         "CREATE TABLE metadata(store_id TEXT NOT NULL, sequence INTEGER NOT NULL, last_at TEXT)",
         "CREATE TABLE records(kind TEXT NOT NULL,id TEXT NOT NULL,identity TEXT NOT NULL UNIQUE,"
         "payload TEXT NOT NULL,available_at TEXT NOT NULL,sequence INTEGER NOT NULL,"
@@ -250,7 +280,7 @@ def initialize(connection: sqlite3.Connection) -> None:
     ):
         connection.execute(statement)
     connection.execute("INSERT INTO metadata VALUES (?,0,NULL)", (str(uuid4()),))
-    connection.execute("PRAGMA user_version=1")
+    connection.execute("PRAGMA user_version=2")
 
 
 class Store:
@@ -270,7 +300,7 @@ class Store:
             timeout=self.timeout,
         )
         connection.execute("PRAGMA foreign_keys=ON")
-        if connection.execute("PRAGMA user_version").fetchone()[0] != 1:
+        if connection.execute("PRAGMA user_version").fetchone()[0] != 2:
             connection.close()
             raise ContractError("unsupported store schema")
         return connection
@@ -323,7 +353,7 @@ class Store:
             records = read_records(connection)
             store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
             now = timestamp(self.clock())
-            additions, result = operation(records, store_id, now)
+            additions, result = operation(dict(records), store_id, now)
             additions = [ADAPTER.validate_python(r.model_dump(warnings=False)) for r in additions]
             merged = dict(records)
             for record in additions:
@@ -368,7 +398,19 @@ class Store:
     def import_into(self, connection, bundle: Bundle):
         records = read_records(connection)
         merged = dict(records)
+        local_ids = {row[0] for row in connection.execute("SELECT record_id FROM computations")}
+        local_ledgers = {
+            r.ledger_id
+            for r in records.values()
+            if isinstance(r, ComputedSettlement) and r.record_id in local_ids
+        }
         for record in bundle.records:
+            if (
+                isinstance(record, ComputedSettlement)
+                and record.ledger_id in local_ledgers
+                and key(reference(record)) not in records
+            ):
+                raise ContractError("portable import cannot extend a local computed ledger")
             ref = key(reference(record))
             if ref in merged and merged[ref] != record:
                 raise ContractError("conflicting record identity")

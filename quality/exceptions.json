@@ -1,30 +1,10 @@
 {
-  "CONTRIBUTING.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
-  },
-  "README.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
-  },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
-  },
-  "docs/commands.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
+    "reason": "Reviewed and retained PR #27 gate and review guidance unchanged after refreshing main. Settlement changes runtime contracts and offline CLI behavior, documented in contracts, CLI, settlement and TDD pages; it does not change gate commands, analyzer policy, Python matrix, lock/build rules or the newly adopted review-session semantics. Native Linux assurance remains pending.",
+    "digest": "12ec1b4a83885ca444474d24e9086da6f6bab558c8cc5e586eb8199ad981ae41"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
-  },
-  "llms.txt": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
-  },
-  "docs/development/behavioral-evidence.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "51520e85488a4b658b22ad20aa241d6055b2071827027aa8b1b07a27fe02f4c1"
+    "reason": "Reviewed and retained PR #27 gate and review guidance unchanged after refreshing main. Settlement changes runtime contracts and offline CLI behavior, documented in contracts, CLI, settlement and TDD pages; it does not change gate commands, analyzer policy, Python matrix, lock/build rules or the newly adopted review-session semantics. Native Linux assurance remains pending.",
+    "digest": "12ec1b4a83885ca444474d24e9086da6f6bab558c8cc5e586eb8199ad981ae41"
   }
 }

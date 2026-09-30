@@ -1,12 +1,16 @@
 schema: spec-driven
 
 context: |
-  Core-02 implementation was authorized on 2026-09-29 and is under verification.
-  Offline contracts, bind, lifecycle-only settle and explain are implemented locally.
-  No provider adapter, quote computation or financial reconciliation is delivered.
+  Core-02 merged in PR #25 on 2026-09-29 and is archived with synchronized main specs.
+  Offline contracts, bind, lifecycle-only settle and explain are delivered on main.
+  The current branch implements normalized reconciliation; verification is in progress.
+  No provider adapter or quote computation is delivered.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
   cost estimates and settlement for AI-assisted software changes.
-  Phase: pilot planning / To-Validate; private; Apache-2.0; no releases.
+  Phase: unreleased 0.x alpha/preview feasibility study; private; Apache-2.0.
+  All approved pilot changes belong to the first pre-v1 product; no version is published.
+  Keep package 0.1.0.dev0 and evolve current internal schemas without a public v2
+  compatibility programme; schema labels do not imply released product versions.
   Initial authorization: nine OpenSpec plans and linked GitHub backlog.
   Subsequent authorization on 2026-09-28: implement source-feasibility research,
   extend it to Codex/Claude Code metrics, and inspect existing local artifacts.
@@ -17,7 +21,7 @@ context: |
   Additional product implementation and live telemetry collection require a separate request.
   Foundation merged in PR #22 on 2026-09-28; bounded-review workflow merged in
   PR #24 on 2026-09-29. Both are archived with synchronized main specs. Core-02
-  contracts/lifecycle implementation is under verification; other implementation remains gated.
+  contracts/lifecycle is archived; settlement reconciliation implementation was authorized on 2026-09-29.
   Selected defaults: Python 3.11+, Typer, Pydantic, SQLite, Decimal; uv/Hatchling,
   pytest, Ruff, BasedPyright. Personal Cursor/Copilot IDE and CLI use is the pilot.
   Plan quote, bind, settle, check, explain and changecost/v1 portable artifacts.

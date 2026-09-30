@@ -42,6 +42,24 @@
 - Add a contributor behavioral-evidence packet validator and bounded independent
   SQLite lifecycle controls, with delta-review guidance and measured pilot evidence.
 
+- Implement offline normalized economic input, stable component identities, replacement
+  correction history, bounded exact subtotals, snapshot-bound operation receipts,
+  synthetic coverage and read-only repository remainder reports. Add typed internal
+  economic/coverage/computed records and reject incompatible preview stores unchanged.
+  Package remains `0.1.0.dev0`; provider support and full verification remain pending.
+
+- Archive accepted Core-02 with the full OpenSpec CLI, synchronize its 18 requirements,
+  repair links and prepare the next settlement-reconciliation change against merged code.
+- Refine settlement planning for normalized source/component identities, pending
+  correction locators, exact arithmetic, snapshot-bound revisions and explicit
+  coverage policy. Keep implementation gates explicit and evolve internal contracts
+  within the maintainer-confirmed unreleased 0.x alpha/preview feasibility study;
+  no public v2 or cross-release migration programme is introduced.
+
+- Correct the archive skill to run `openspec archive` for both spec synchronization
+  and archival. Remove agent-written merges and manual folder moves; preserve CLI
+  validation and verify results in the selected repository.
+
 - Reject out-of-range SQLite transaction sequences in portable observations and
   cutoffs; report controlled, atomic import/allocation failures while preserving
   maximum-sequence retries and observation-only imports. Suppress serializer
@@ -56,7 +74,7 @@
 
 - Record completed Core-02 pre-promotion matrix/native assurance and the opening
   of implementation PR #25. Keep fresh PR-head review and implementation acceptance
-  explicit; Core-02 remains unarchived until acceptance.
+  explicit at that historical checkpoint; Core-02 is now accepted and archived.
 
 - Group lifecycle operation fields into an immutable declaration request and
   separate interval merging from correction checks. Preserve CLI flags, portable
@@ -241,7 +259,7 @@
   codify source feasibility, exact economic units, chronological evaluation and
   uv/Hatchling foundation requirements. Product implementation remains deferred.
 
-### Core-02 offline contracts (under verification)
+### Core-02 offline contracts (merged and archived)
 
 - Add strict v1 records with exact decimal strings, destination-local history and
   atomic SQLite persistence; retain imported producer claims without certification.
