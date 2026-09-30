@@ -1059,6 +1059,27 @@ def validate_family_resolution(state: dict[str, Any], event: dict[str, Any]) -> 
         raise ValueError(
             "resolution requires current closure evidence covering every named finding"
         )
+    validate_closure_history(state, closure["id"], identities)
+
+
+def validate_closure_history(state: dict[str, Any], closure_id: str, identities: set[str]) -> None:
+    positions = {event["id"]: index for index, event in enumerate(state["events"])}
+    closure_position = positions[closure_id]
+    if any(positions[identity] >= closure_position for identity in identities):
+        raise ValueError("closure must follow the existence of every named finding")
+    later = state["events"][closure_position + 1 :]
+    if any(contradicts_closure(event, identities) for event in later):
+        raise ValueError("closure was contradicted; fresh scoped reviewer evidence required")
+
+
+def contradicts_closure(event: dict[str, Any], identities: set[str]) -> bool:
+    if event["kind"] == "disposition":
+        return event["finding_id"] in identities and event["disposition"] != "fixed"
+    if event["kind"] != "evidence" or event["evidence_type"] != "reviewer":
+        return False
+    return event["result"] in {"fail", "incomplete"} and bool(
+        identities.intersection(event.get("covers_findings", []))
+    )
 
 
 def family_decision(state: dict[str, Any]) -> tuple[str, str] | None:

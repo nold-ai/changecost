@@ -273,6 +273,12 @@ uncovered or stale claims reject. The insertion-time binding is validated during
 historical replay, so accepted closure survives later head adoption. Findings,
 dispositions, investigations and counters remain; later or unlisted escapes cannot
 inherit closure. Extending allowance alone never resolves a family.
+The referenced findings must already exist when that closure is recorded. A later
+nonfixed disposition or explicit failing/incomplete reviewer evidence covering the
+same ID invalidates that closure for a subsequent resolution until fresh closure
+follows. Unrelated events do not invalidate it. A known finding may be reviewed against
+the corrected current binding before its administrative fixed flag is recorded;
+there is no blanket requirement to record that flag before independent review.
 
 When normal REST review submission is absent, passing existing reviewer evidence may
 include `provider_completions`, for example:

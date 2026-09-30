@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Require causally valid named review closure and align promotion completion with
+  the shared risk-based provider policy, preserving administrative fixed-after-review.
+
 - Refine bounded review recovery with named verified family closure, explicit native
   code-review source adjudication, and budget-only observation under an absolute
   45-minute watch; retain all counters and independent negative gates. Consolidate

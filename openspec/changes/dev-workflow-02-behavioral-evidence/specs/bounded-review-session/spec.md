@@ -159,3 +159,12 @@ is not required, and unrelated security metadata cannot establish that associati
 - **WHEN** a normal current-head REST review exists for that provider
 - **THEN** its ordinary state and freshness rules apply; PENDING or DISMISSED cannot be overridden by native completion
 - **AND** absent REST remains eligible for explicitly adjudicated native fallback, while APPROVED/COMMENTED and negative-review rules remain unchanged.
+
+
+#### Scenario: Closure coverage is causally valid for the named finding
+
+- **GIVEN** a proposed named historical resolution and referenced passing closure evidence
+- **WHEN** any named finding did not exist before that closure, or a later nonfixed disposition or explicit failing/incomplete reviewer evidence covering that same finding intervened before resolution
+- **THEN** resolution rejects the stale causal claim until fresh closure follows the invalidation
+- **AND** a reviewer may verify a known finding against the corrected current binding before its administrative fixed disposition; fixed-before-review also remains valid
+- **AND** unrelated finding events do not invalidate coverage, while existing current-binding and genuine-fixed requirements remain mandatory.

@@ -143,8 +143,8 @@ exact next action. They do not count as a successful review loop.
 ## Completion and handoff
 
 Immediately before reporting success, reread the PR head and state. Complete only
-when the head is unchanged, applicable required checks pass, both requested bot
-reviews cover that head, and all actionable bot/human findings are verified fixed
+when the head is unchanged, applicable required checks pass, every provider required
+by the shared risk policy has reviewed that head, and all actionable bot/human findings are verified fixed
 or have an explicitly justified disposition with no outstanding dispute. Report
 remaining human approval/branch protection requirements separately; do not imply
 the PR was merged. If another actor closes or merges the PR, stop mutations and

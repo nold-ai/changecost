@@ -371,3 +371,41 @@ This is one new independent post-replan finding and one actual correction set, n
 at epoch31 before edits; it is not reused to resolve obligations on the revised input.
 Current-binding targeted closure is still required. No budget reset, runtime change,
 new review framework or broad repeat review was introduced.
+
+
+## Post-replan correction set 2: causal closure and provider policy
+
+Both b350 Linux jobs passed963 tests and11 OpenSpec items. Native reviews completed:
+Codex code summary5899441830 at12:18:24.167388Z with P2 comment5911145441;
+CodeRabbit COMMENTED review5366054363 at12:19:01Z with one outside-diff Major.
+Neither is described as clean. The watcher rejected one between-pass evidence change;
+a deliberate single fresh snapshot recovered stable current-head facts. This was
+collection friction, not a review finding or a passing receipt. The actual queued
+CodeRabbit review was reused without a duplicate manual request, although the published
+feature YAML disabled automatic review; effective service behavior remains separately
+observed. Original reports and first-publication telemetry remain immutable.
+
+Independent triage (12:21:27.851750–12:22:46.887741Z) accepted two first findings in
+one collected set: closure causal coverage and promotion-policy consistency. A blanket
+requirement for fixed flags before review was rejected: known corrected input may be
+reviewed before the administrative disposition. The approved causal matrix instead
+produced5failed/2passed before repair: future finding coverage, later accepted-exception
+or non-finding disposition, and scoped failing/incomplete review invalidate the old
+closure; both legitimate administrative orders already passed. Resolution now inspects
+existing ordered events, preserving binding checks and old informational history.
+Fresh closure after contradiction restores validity; unrelated events do not invalidate.
+The selected family/closure suite passed32 in4.75s. Types and pinned Pylint/Radon report
+no errors. The promotion skill now requires the same risk-selected providers as the
+canonical workflow; a limited wording consistency check found no residual unconditional
+two-bot completion rule. No new ledger, runtime behavior or provider parser was added.
+
+This is post-replan actual set2, cumulative recorded event12/13 with no extension;
+the two findings retain separate identities and original severities. Multiple negative
+controls are not multiple findings or a recurring family. Final staged evidence and
+independent targeted closure are required before another publication. Prior b350 checks
+remain historical; new-head full Linux/provider proof and live task5.3 remain pending.
+
+The HEAD-relative staged gate initially rejected three stale documentation fingerprints
+(quality rules, generated llms index and behavioral guide). Their existing canonical
+workflow links and scope remain accurate; content-bound rationales were refreshed after
+inspection. This is documentation-gate feedback, not another semantic review finding.

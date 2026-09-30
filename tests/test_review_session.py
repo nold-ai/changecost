@@ -3784,7 +3784,7 @@ def test_input_identity_ignores_mtime_and_report_hash_is_raw(tmp_path: Path) -> 
 
 
 # Post-replan selected coordinator obligations (O1-O6).
-def escalated_session(root: Path) -> dict[str, Any]:
+def escalated_session(root: Path, *, closure_before_fixed: bool = False) -> dict[str, Any]:
     review_session.initialize(root, "change", contract())
     events = [
         {"id": "first", "kind": "finding", "family": "inputs"},
@@ -3795,7 +3795,7 @@ def escalated_session(root: Path) -> dict[str, Any]:
         {"id": "fix-escape", "kind": "disposition", "finding_id": "escape", "disposition": "fixed"},
         {"id": "fix-later", "kind": "disposition", "finding_id": "later", "disposition": "fixed"},
     ]
-    for event in events:
+    for event in events[:-2] if closure_before_fixed else events:
         review_session.record(root, "change", event)
     complete_session(root)
     state = review_session.load(root, "change")
@@ -3813,6 +3813,9 @@ def escalated_session(root: Path) -> dict[str, Any]:
             "reviewed_reports": review_session.report_receipts(complete_snapshot()),
         },
     )
+    if closure_before_fixed:
+        for event in events[-2:]:
+            review_session.record(root, "change", event)
     return {
         "id": "resolution",
         "kind": "scope_decision",
@@ -4153,3 +4156,105 @@ def test_existing_rest_keeps_its_own_freshness(
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     acknowledge_reports(tmp_path, "adjudicated-existing-rest")
     assert review_session.status(tmp_path, "change")["action"] == expected
+
+
+def closure_event(root: Path, identity: str, result: str, covers: list[str]) -> dict[str, Any]:
+    state = review_session.load(root, "change")
+    return {
+        "id": identity,
+        "kind": "evidence",
+        "evidence_type": "reviewer",
+        "result": result,
+        "head": TEST_HEAD,
+        "binding": review_session.evidence_binding(state),
+        "covers_findings": covers,
+        "reviewed_reports": review_session.report_receipts(state["monitor"]["data"]),
+    }
+
+
+def test_resolution_rejects_future_finding_coverage(tmp_path: Path) -> None:
+    resolution = escalated_session(tmp_path)
+    covered = ["escape", "later", "future"]
+    review_session.record(tmp_path, "change", closure_event(tmp_path, "premature", "pass", covered))
+    review_session.record(
+        tmp_path, "change", {"id": "future", "kind": "finding", "family": "inputs"}
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        {"id": "fix-future", "kind": "disposition", "finding_id": "future", "disposition": "fixed"},
+    )
+    resolution.update(closure_evidence_id="premature", resolves_findings=covered)
+    with pytest.raises(ValueError, match="closure.*finding|finding.*closure"):
+        review_session.record(tmp_path, "change", resolution)
+
+
+@pytest.mark.parametrize(
+    "contradiction", ["accepted_exception", "non_finding", "fail", "incomplete"]
+)
+def test_resolution_rejects_intervening_contradiction_and_accepts_fresh_closure(
+    tmp_path: Path, contradiction: str
+) -> None:
+    resolution = escalated_session(tmp_path)
+    if contradiction in {"accepted_exception", "non_finding"}:
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "contradiction",
+                "kind": "disposition",
+                "finding_id": "later",
+                "disposition": contradiction,
+            },
+        )
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "fixed-again",
+                "kind": "disposition",
+                "finding_id": "later",
+                "disposition": "fixed",
+            },
+        )
+    else:
+        review_session.record(
+            tmp_path, "change", closure_event(tmp_path, "contradiction", contradiction, ["later"])
+        )
+        acknowledge_reports(tmp_path, "current-reports")
+    with pytest.raises(ValueError, match="closure.*contradict|contradict.*closure"):
+        review_session.record(tmp_path, "change", resolution)
+    review_session.record(
+        tmp_path, "change", closure_event(tmp_path, "fresh-closure", "pass", ["escape", "later"])
+    )
+    resolution["closure_evidence_id"] = "fresh-closure"
+    review_session.record(tmp_path, "change", resolution)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+@pytest.mark.parametrize("closure_before_fixed", [False, True])
+def test_known_closure_and_administrative_fixed_orders_are_valid(
+    tmp_path: Path, closure_before_fixed: bool
+) -> None:
+    resolution = escalated_session(tmp_path, closure_before_fixed=closure_before_fixed)
+    review_session.record(
+        tmp_path, "change", {"id": "unrelated", "kind": "finding", "family": "unrelated"}
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "unrelated-exception",
+            "kind": "disposition",
+            "finding_id": "unrelated",
+            "disposition": "accepted_exception",
+        },
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        closure_event(tmp_path, "unrelated-negative", "incomplete", ["unrelated"]),
+    )
+    acknowledge_reports(tmp_path, "current-report-coverage")
+    review_session.record(tmp_path, "change", resolution)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"

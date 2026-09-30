@@ -1,26 +1,30 @@
 {
   "CONTRIBUTING.md": {
     "reason": "Reviewed post-replan coordinator and manual risk-based review policy: product commands, setup, runtime contracts and mechanical gate commands remain unchanged. Canonical shared workflow, quality rules, four skills and behavioral guide describe the new contributor evidence and observation controls. Generated product command reference remains byte-identical.",
-    "digest": "1f56e000839d8f89be2d387f5d1619a54bab93dda04efc17f9ebb8886a8097ff"
+    "digest": "58b30c3470e8eaada9f7c8c1e8c266eda36430aa3c32d2f9a2ff0dd51181fbd2"
   },
   "README.md": {
     "reason": "Reviewed post-replan coordinator and manual risk-based review policy: product commands, setup, runtime contracts and mechanical gate commands remain unchanged. Canonical shared workflow, quality rules, four skills and behavioral guide describe the new contributor evidence and observation controls. Generated product command reference remains byte-identical.",
-    "digest": "1f56e000839d8f89be2d387f5d1619a54bab93dda04efc17f9ebb8886a8097ff"
+    "digest": "58b30c3470e8eaada9f7c8c1e8c266eda36430aa3c32d2f9a2ff0dd51181fbd2"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed bounded prior/current affected-mapping union: setup, dependencies, gate commands and broad-review/completion policy remain unchanged. Behavioral guide/spec and pilot/TDD record prior-only context retention, tests and exhausted-budget replan; runtime APIs unchanged.",
-    "digest": "4c5f6c8a15c9118d52cf28b3d2676c3355dfddb55899c39b3f28d56a700a02e3"
+    "reason": "Reviewed causal closure coverage and risk-selected promotion wording: mechanical gate commands and independent/current-head review requirements remain unchanged. The existing canonical workflow link supplies the updated causal resolution rule; the workflow, selected spec and TDD contain the changed behavior and proof.",
+    "digest": "58b30c3470e8eaada9f7c8c1e8c266eda36430aa3c32d2f9a2ff0dd51181fbd2"
   },
   "docs/commands.md": {
     "reason": "Reviewed post-replan coordinator and manual risk-based review policy: product commands, setup, runtime contracts and mechanical gate commands remain unchanged. Canonical shared workflow, quality rules, four skills and behavioral guide describe the new contributor evidence and observation controls. Generated product command reference remains byte-identical.",
-    "digest": "62de07b3bc422000ee67b6307a3ca0e84ece7eed320f93280e329d354f5cebfa"
+    "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
   },
   "docs/development/quality-gates.md": {
     "reason": "Reviewed post-replan coordinator and manual risk-based review policy: product commands, setup, runtime contracts and mechanical gate commands remain unchanged. Canonical shared workflow, quality rules, four skills and behavioral guide describe the new contributor evidence and observation controls. Generated product command reference remains byte-identical.",
-    "digest": "1f56e000839d8f89be2d387f5d1619a54bab93dda04efc17f9ebb8886a8097ff"
+    "digest": "58b30c3470e8eaada9f7c8c1e8c266eda36430aa3c32d2f9a2ff0dd51181fbd2"
   },
   "llms.txt": {
-    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
-    "digest": "a1e304e9e17499f5e039969612a4050c7d286510118e7788b4f134e0631c52a3"
+    "reason": "Reviewed causal closure coverage and risk-selected promotion wording: repository document inventory, public commands, setup and product phase are unchanged. Deterministic index generation remains byte-identical; canonical workflow/spec links expose the revised coordinator behavior.",
+    "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
+  },
+  "docs/development/behavioral-evidence.md": {
+    "reason": "Reviewed causal closure coverage and risk-selected promotion wording: packet schema, impact rules and evidence examples are unchanged. The guide already delegates authoritative completion and provider selection to the canonical shared workflow, which now explains causal closure validation. No packet behavior or product runtime changed.",
+    "digest": "4b7b4771e045f448ac94b76746bd7c2c7b93f9a78a33b83e97677d32c46fb524"
   }
 }
