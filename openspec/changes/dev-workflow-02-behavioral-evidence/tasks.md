@@ -37,6 +37,8 @@
 
 - [x] 4.10 Reject contradictory or unexplained not-applicable evidence with a spec-first applicability/rationale matrix, preserving required failures and established optional context.
 
+- [x] 4.11 Retain prior/current changed-input impact mappings with removed/added/remapped and unrelated-input controls; preserve broad-review gates and explicit exhausted-budget replan.
+
 ## 5. Final integration and handoff
 
 - [x] 5.1 Run strict OpenSpec validation and complete make check with explicit BASE_REF and intended-file manifest, plus the final staged-snapshot checks; obtain actual supported-Linux capsule evidence and resolve/justify findings without treating unavailable analyzers as passing.

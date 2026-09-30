@@ -428,3 +428,53 @@ def test_optional_applicable_nonpass_remains_advisory(packet, outcome):
     item.update(id="optional", required=False, outcome=outcome)
     data["evidence"].append(item)
     assert validator()(root, data)["evidence_status"] == "current"
+
+
+@pytest.mark.parametrize("transition", ["removed", "added", "remapped"])
+def test_changed_input_impact_unions_both_mapping_sides(packet, transition):
+    from quality.behavioral_evidence import impact, validate_structure
+
+    _, current = packet
+    previous = copy.deepcopy(current)
+    old = {"invariants": ["old", "shared"], "assumptions": ["old_clock"], "review_scope": "old"}
+    new = {"invariants": ["new", "shared"], "assumptions": ["new_clock"], "review_scope": "new"}
+    for data, mapping, digest in [(previous, old, "0" * 64), (current, new, "1" * 64)]:
+        data["inputs"]["changed.py"] = digest
+        data["dependencies"]["changed.py"] = mapping
+        data["invariants"].update({name: name for name in mapping["invariants"]})
+        data["assumptions"].update({name: name for name in mapping["assumptions"]})
+    absent = current if transition == "removed" else previous
+    if transition != "remapped":
+        absent["inputs"].pop("changed.py")
+        absent["dependencies"].pop("changed.py")
+    expected = [old] if transition == "removed" else [new] if transition == "added" else [old, new]
+    result = impact(
+        validate_structure(current), validate_structure(previous), current["inputs"], set()
+    )
+    assert result["changed_inputs"] == ["changed.py"]
+    assert result["affected_invariants"] == sorted(
+        {name for d in expected for name in d["invariants"]}
+    )
+    assert result["affected_assumptions"] == sorted(
+        {name for d in expected for name in d["assumptions"]}
+    )
+    assert result["broader_review_required"]
+
+
+def test_removed_input_keeps_prior_only_labels_in_validated_packet(packet):
+    root, current = packet
+    previous = copy.deepcopy(current)
+    previous["inputs"]["removed.py"] = "0" * 64
+    previous["invariants"]["old"] = "former invariant"
+    previous["assumptions"]["old_clock"] = "former assumption"
+    previous["dependencies"]["removed.py"] = {
+        "invariants": ["old"],
+        "assumptions": ["old_clock"],
+        "review_scope": "removed",
+    }
+    result = validator()(root, current, previous)
+    assert result["evidence_status"] == "current"
+    assert result["changed_inputs"] == ["removed.py"]
+    assert result["affected_invariants"] == ["old"]
+    assert result["affected_assumptions"] == ["old_clock"]
+    assert result["broader_review_required"]

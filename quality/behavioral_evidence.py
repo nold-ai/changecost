@@ -127,12 +127,17 @@ def context_changes(packet: Packet, previous: Packet | None) -> dict[str, Any]:
     return changes
 
 
+def affected_dependencies(packet: Packet, previous: Packet | None, changes: set[str]):
+    mappings = [packet.dependencies] + ([previous.dependencies] if previous else [])
+    return [mapping[name] for mapping in mappings for name in changes if name in mapping]
+
+
 def impact(packet: Packet, previous: Packet | None, actual: dict[str, str], uncovered: set[str]):
     before = previous.inputs if previous else packet.inputs
     changes = {
         name for name in before.keys() | actual.keys() if before.get(name) != actual.get(name)
     }
-    affected = [packet.dependencies[name] for name in changes if name in packet.dependencies]
+    affected = affected_dependencies(packet, previous, changes)
     broad = previous is None or bool(uncovered or changes - packet.dependencies.keys())
     if previous:
         broad |= any(

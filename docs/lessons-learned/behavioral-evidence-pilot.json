@@ -1025,5 +1025,19 @@
     "focused_green": 55,
     "current_head_native_validation": "pending separate exact-head receipt",
     "initial_usage_snapshot_unchanged": true
+  },
+  "removed_impact_escape": {
+    "finding": "native4139520443",
+    "origin_head": "153f6bf5840a6c1a1cd90f696b3d0fd86951f4dc",
+    "classification": "impact context loss, not gate bypass",
+    "semantic_records_total": 14,
+    "actual_correction_sets": 9,
+    "recorded_batch_events": 10,
+    "max_batches": 10,
+    "prior_exhaustion_preserved": "9/9",
+    "red": "3 failed/1 passed",
+    "focused_green": 59,
+    "current_head_native_validation": "pending separate exact-head receipt",
+    "initial_usage_snapshot_unchanged": true
   }
 }

@@ -259,3 +259,19 @@ tests pass (`applicability-green.txt`), including required nonpass and optional 
 positives. Existing false/pass+rationale semantics remain unchanged. This is recorded
 batch9/max9, actual correction set8, semantic record13. Earlier closeout proof is not
 relabelled as this new head; exact-head final evidence is retained separately.
+
+## Prior/current changed-input impact
+
+Native4139520443 was independently confirmed as missing impact context, not a broad
+review bypass. Spec-first tests produced3failed/1passed before repair;59packet cases
+pass after the small mapping-union helper. Removed old-only labels, added current labels,
+remapped unions and unchanged unrelated exclusion are covered, including a real
+validated-packet removal and existing initial/narrow controls. Reports:
+`removed-impact-red.txt`, `removed-impact-green.txt`. Explicit one-batch extension
+preserves recorded9/9 exhaustion; now10events/max10,9actualsets,14semanticrecords.
+
+Pinned Radon initially reported impactCC17; extracting unchanged affected-dependency
+collection restored the existing complexity gate without a waiver. Redundant test
+membership assertions produced type feedback and were removed because exact array
+equality already proves exclusion; these are implementation feedback, not new semantic
+findings.

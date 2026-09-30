@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Retain prior affected invariant and assumption mappings for removed or remapped
+  behavioral inputs without changing broad-review and evidence gates.
+
 - Reject contradictory or unexplained not-applicable behavioral evidence while
   preserving required analyzer failure and optional advisory semantics.
 

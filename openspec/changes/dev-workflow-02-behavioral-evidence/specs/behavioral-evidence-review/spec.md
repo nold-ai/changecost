@@ -321,3 +321,18 @@ rationale remains permitted as optional contextual evidence.
 - **WHEN** applicability is true, or the rationale is missing/empty/whitespace
 - **THEN** validation reports incomplete; applicable false with a nonblank rationale
   remains current, without relaxing required analyzer failures.
+
+### Requirement: Changed-input impact retains both sides of its mappings
+
+For the existing changed-input set, affected invariant and assumption identifiers SHALL
+be the deduplicated sorted union of previous and current dependency mappings. Removed
+inputs SHALL retain prior-only identifiers even when those declarations were removed
+from the current packet. Added inputs SHALL contribute current mappings; remapped
+changed inputs SHALL contribute both sides. Unchanged unrelated inputs SHALL NOT
+contribute. Existing broader-review and evidence gates SHALL remain unchanged.
+
+#### Scenario: Removing an input retains the semantics that it previously affected
+
+- **GIVEN** a prior input with invariant and assumption mappings absent from the follow-up
+- **WHEN** impact is computed for its removal
+- **THEN** affected identifiers retain the prior mapping and broader review remains required.

@@ -223,3 +223,9 @@ Not-applicable evidence requires a nonblank rationale whether indicated by the
 applicability flag or outcome. An applicable=true/not_applicable outcome contradicts
 itself and is incomplete even with rationale. Optional applicable=false/pass with a
 rationale remains permitted; required analyzers must still be applicable and pass.
+
+For changed inputs, affected identifiers combine both previous and current dependency
+mappings. Removed inputs retain old-only labels; additions use current labels; remapped
+changed inputs retain both. Identifiers are deduplicated/sorted, and unrelated unchanged
+inputs do not contribute. This preserves impact context without changing broad-review
+or completion gates.

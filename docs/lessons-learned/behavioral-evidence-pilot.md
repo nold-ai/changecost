@@ -393,3 +393,20 @@ The earlier code-head proof remains valid only at its named SHA. This repair nee
 fresh exact-head Linux/native evidence. Task5.3 remains open; no automatic merge-ready
 claim or runtime bug claim follows from the repaired packet guard. The repeated late
 escape is additional evidence against claiming reduced review churn from this pilot.
+
+## Removed-input impact escape and explicit replan
+
+Native P2 4139520443 on153f6bf identified loss of prior affected invariant/assumption
+labels when an input was removed. Broad review was already required, so this was
+promised impact-context loss, not a gate bypass. The recorded9/9 exhaustion was retained;
+independent triage justified one explicit extension to10 for this bounded mapping repair.
+Three regressions failed and the added-input positive passed before repair. The changed
+path set is unchanged; its prior/current mappings now contribute a deduplicated sorted
+union, including old-only labels and excluding unrelated unchanged inputs. All59 packet
+tests pass, including existing initial/narrow review controls.
+
+This is semantic record14, actual correction set9 and recorded batch10/max10. The prior
+exhaustion, orchestration overcount and all findings remain visible. No new runtime bug,
+automatic coordinator completion or review-effort savings is claimed. Earlier head
+checks are not relabelled; fresh exact-head CI/native proof remains necessary, and any
+new finding requires independent replanning rather than silent budget extension.
