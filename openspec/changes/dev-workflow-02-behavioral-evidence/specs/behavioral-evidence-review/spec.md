@@ -336,3 +336,50 @@ contribute. Existing broader-review and evidence gates SHALL remain unchanged.
 - **GIVEN** a prior input with invariant and assumption mappings absent from the follow-up
 - **WHEN** impact is computed for its removal
 - **THEN** affected identifiers retain the prior mapping and broader review remains required.
+
+
+### Requirement: Selected obligations precede implementation and bound review
+
+The workflow SHALL record selected operation/transition by representation obligations,
+their observable checks/controls and explicit exclusions before implementation. One
+independent architecture/obligation review SHALL assess this matrix; later local review
+SHALL verify affected obligations/dependencies. Codex SHALL be the default required
+independent provider after mechanical stabilization. CodeRabbit SHALL additionally be
+required for security/trust-boundary, persistence/data-loss, assurance/gate-policy
+changes or unresolved contradictory evidence. Explicit user-requested reviews override
+this default. Mechanical gates, supported-Linux capsule and final-head coverage remain
+mandatory; no generic extra full local scan or CLI CodeRabbit is required by default.
+
+#### Scenario: Routine and risk-classified change
+
+- **WHEN** preparation classifies the changed scope using the selected matrix
+- **THEN** routine scope requires Codex and a listed risk requires both Codex and CodeRabbit, with the classification retained in the review contract
+- **AND** missing selected obligations are corrected before implementation, while excluded coverage is not claimed as proven.
+
+#### Scenario: Source change after review
+
+- **WHEN** a collected fix changes source, obligations or dependencies
+- **THEN** affected evidence is invalidated and targeted closure uses fresh bound inputs; required final mechanical/provider coverage cannot reuse stale-head success.
+
+### Requirement: Published receipt owns final acceptance without rewriting milestones
+
+The existing session SHALL remain authoritative for scope, findings and history. The
+PR body SHALL be the canonical published live exact-head verification index with
+links to required check/review evidence and actual session completion. Tracked reports,
+TDD entries and task checkboxes SHALL identify their publication-time milestone, not
+claim unobserved future success. Live task acceptance SHALL name the verified head and
+may be recorded there without a receipt-only source commit; an unchanged tracked
+checkbox SHALL NOT be described as a completed OpenSpec CLI task count.
+
+#### Scenario: Final remote evidence arrives after publication
+
+- **GIVEN** an immutable tracked milestone with final completion still pending
+- **WHEN** the existing ledger actually completes on the exact verified head
+- **THEN** the writer publishes and reads back task 5.3 acceptance and its evidence in the PR receipt without changing source solely to copy that receipt
+- **AND** original negative pilot results and earlier measurement cutoffs remain unchanged.
+
+#### Scenario: Three fixed post-replan measurements
+
+- **WHEN** preparation completes, the first stable post-replan candidate is published, and final handoff occurs
+- **THEN** each boundary records available token categories, responses, elapsed units and actual correction sets versus events, separately from original pilot measurements
+- **AND** unknown costs remain unknown and no causal savings claim follows from historical ratios.

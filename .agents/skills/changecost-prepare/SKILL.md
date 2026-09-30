@@ -11,6 +11,11 @@ Read `AGENTS.md`, `openspec/config.yaml`, the project brief and
 [GitHub governance](../../../docs/agent-rules/60-github-change-governance.md).
 This stage changes planning/docs and the selected issue, not product behavior.
 
+Follow the canonical [review selection and live acceptance policy](../../../docs/agent-rules/30-change-workflow.md#review-selection-and-live-acceptance):
+one upfront obligation review, affected-scope closure, Codex by default and additional
+CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
+add a generic full local/CLI review or a receipt-only commit by default.
+
 ## Bounded review-session contract
 
 For a change expected to reach implementation, prepare a compact review contract

@@ -12,6 +12,11 @@ Read `AGENTS.md`, `openspec/config.yaml`, the project brief, change order and
 An implementation request authorizes the named change, not live provider data
 collection, unrelated backlog items, releases or deployment.
 
+Follow the canonical [review selection and live acceptance policy](../../../docs/agent-rules/30-change-workflow.md#review-selection-and-live-acceptance):
+one upfront obligation review, affected-scope closure, Codex by default and additional
+CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
+add a generic full local/CLI review or a receipt-only commit by default.
+
 ## Establish fresh, matching inputs
 
 1. Confirm the change from the request or preparation receipt. If ambiguous,

@@ -229,3 +229,12 @@ mappings. Removed inputs retain old-only labels; additions use current labels; r
 changed inputs retain both. Identifiers are deduplicated/sorted, and unrelated unchanged
 inputs do not contribute. This preserves impact context without changing broad-review
 or completion gates.
+
+## Post-replan acceptance boundary
+
+Use the [shared review policy](../agent-rules/30-change-workflow.md#review-selection-and-live-acceptance)
+for named verified historical closure and native provider source adjudication. The
+packet remains advisory; only the existing session evaluates completion. The PR body
+records exact-head live acceptance; tracked pilot reports and unchecked publication-time
+milestones remain historical without creating another receipt-only source commit.
+Original f6dd negative results and fixed telemetry are retained separately.

@@ -275,3 +275,99 @@ collection restored the existing complexity gate without a waiver. Redundant tes
 membership assertions produced type feedback and were removed because exact array
 equality already proves exclusion; these are implementation feedback, not new semantic
 findings.
+
+
+## Post-replan phase: preparation only, 2026-09-30
+
+The maintainer authorized revising this same change/issue26/PR27. Everything above is
+historical evidence; the f6ddbe48 original pilot report/receipt/measurement remains
+unchanged. New behavioral obligations are O1-O8 in design.md and the bounded-review
+session delta. No post-replan red/green implementation result is claimed yet.
+
+Observed starting session: revision103, 10 recorded batch events (9 actual sets),
+15.67495325 partial recorded active minutes, budget10/90. Authorized ceilings are
+13 batches and105.67495325 active minutes, preserving history. Runtime/coordinator
+implementation follows independent architecture review of the selected matrix.
+
+Final live acceptance belongs in the existing ledger and canonical PR-body exact-head
+receipt. Task5.3 is a publication-time unchecked snapshot until that external acceptance
+is actually recorded; its final live satisfaction must name the verified SHA and must
+not be confused with a completed tracked OpenSpec checkbox count. No tracked update is
+required solely to copy remote receipts into this milestone.
+
+## Post-replan coordinator implementation controls
+
+Upfront O1–O8 architecture approval completed 2026-09-30T11:23:44.258624Z;
+planning handoff completed 11:24:47.427530Z. The original f6dd final-effort and
+verification bytes are preserved in ignored post-replan/original-f6dd with baseline
+SHA256 receipt. Post-replan measurement starts at the separate human implementation
+task 11:12:35.448Z, with fixed preparation capture at approval; it does not overwrite
+the original pilot report or claim savings.
+
+Before implementation, `pytest tests/test_review_session.py -q -k
+'named_family_resolution or native_completion or exhaustion_blocks_new or
+watch_default_is_absolute'` produced 18 failed/531 deselected. Seventeen failures
+were missing behavioral acceptance/rejection; omitted watch timeout initially failed
+at the absent interface. After implementation the same selection passed18/531 in
+2.41s. These are planned controls, not new independent review findings.
+
+Existing compatibility initially passed547/549: two watcher fixtures expected continued
+waiting after reports were ready for adjudication. Their pending/deadline setup was
+updated to retain the original intended assertions under the explicit new handoff.
+The full coordinator suite then passed568 in74.92s. Additional negative controls
+cover provider author/content changes, absent sources, check failure/pending/missing,
+requested/negative review, unresolved thread/local finding, input drift, retained-source
+replay and simultaneous budget/family escalation. An author-change control caught
+incidental-metadata normalization during implementation; only explicitly adjudicated
+native sources now add author identity to meaningful progress, preserving old receipt
+replay. Further durable-claim controls produced2failed before insertion-time actual
+input validation, then passed with the selected native/deadline cases (14passed).
+
+Pinned Pylint4.0.7 reported no errors. Early type checking found two optional-receipt
+accesses, repaired by explicit validation. Installed SpecFact Radon6.0.1 mapping found
+a nested test mutation dispatcher; named data-driven mutations retained every label
+and repaired it. The selected mapper then reported no errors (advisory complexity
+warnings remain). No threshold/waiver or CI matrix was changed. Ruff and types pass.
+Exact logs are ignored `.changecost/behavioral-evidence/post-replan/`; subsequent
+aggregate, immutable closure and live exact-head results are separate receipts.
+Initial implementation is not a correction batch. Historical10events and partial
+15.67495325 recorded minutes remain, with authorized cumulative ceilings13 and
+105.67495325; old family obligations are not resolved until independent verified closure.
+
+
+The integrated local candidate `make check BASE_REF=999cb8f960785fe4ac0434d41a0892beca933191
+MANIFEST=.changecost/behavioral-evidence/post-replan/manifest.txt` ran at
+11:50:01.099643–11:51:41.671661Z (100.5715 seconds). It passed958 tests in91.26s,
+all11 strict OpenSpec items and the other local leaves. Aggregate exit2 remains
+**incomplete** because every required signed capsule analyzer reports
+`unsupported_controller_platform` on this macOS host. Supported current-head Linux
+is still required. This is not a full assurance pass. Later small handoff-label and
+documentation consistency edits receive affected checks and staged verification;
+the exact frozen receipt records final bytes. Task7.2/7.3 and live5.3 remain open.
+
+
+A final watch compatibility control observed a false repeated handoff for an already
+adjudicated incomplete native source (1failed); unchanged covered reports now remain
+pending until their source changes. This retains human code-review adjudication and
+avoids inferring completion/readiness from an old provider author's mere presence.
+No new review finding or correction set is counted. The final focused/staged receipts
+include this control; the earlier958-test aggregate describes its actual earlier input.
+
+
+## Post-replan correction set 1: native fallback / REST precedence
+
+Independent O1–O8 closure (11:57:29.908295–12:00:35.357427Z, conservative185.449132s)
+collected one P2: native completion overrode present current-head REST PENDING or
+DISMISSED. Both real temporary-session controls acknowledged every current report
+and incorrectly reached COMPLETE before repair (2failed,571deselected). The minimal
+repair permits fallback only when that provider has no current-head REST result;
+normal REST state and freshness, negative reviews, requests and all other gates remain.
+The selected native/REST suite passed61 before adding the explicit stale/fresh REST
+positive boundary. Types and pinned Pylint pass. Exact command receipts/logs are
+`post-replan/rest-precedence-*`; final staged/freeze receipts bind the final controls.
+
+This is one new independent post-replan finding and one actual correction set, now
+11 retained recorded events out of13. Scoped historical closure evidence was captured
+at epoch31 before edits; it is not reused to resolve obligations on the revised input.
+Current-binding targeted closure is still required. No budget reset, runtime change,
+new review framework or broad repeat review was introduced.

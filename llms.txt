@@ -10,7 +10,7 @@
 - [Agent instructions](AGENTS.md): entry point and project boundary.
 - [Agent rules](docs/agent-rules/INDEX.md): load only rules applicable to the task.
 - [Contributing](CONTRIBUTING.md): workflow and invocation examples.
-- [Change workflow](docs/agent-rules/30-change-workflow.md): freshness, verified scope, visible review checkpoints and canonical recovery.
+- [Change workflow](docs/agent-rules/30-change-workflow.md): Canonical staged workflow, risk-based review selection, verified family/native evidence recovery and live exact-head acceptance.
 - [OpenSpec configuration](openspec/config.yaml): current context and artifact requirements.
 - [Change order](openspec/CHANGE_ORDER.md): pending changes, issue links and prerequisites.
 - [Changelog](CHANGELOG.md): recorded changes; no release is implied.

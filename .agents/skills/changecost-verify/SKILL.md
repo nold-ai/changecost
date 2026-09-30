@@ -15,6 +15,11 @@ Use the [shared workflow](../../../docs/agent-rules/30-change-workflow.md) for
 main freshness, branch ownership, prepared artifacts, and saved-state recovery.
 Preserve existing authorization and unrelated work.
 
+Follow the canonical [review selection and live acceptance policy](../../../docs/agent-rules/30-change-workflow.md#review-selection-and-live-acceptance):
+one upfront obligation review, affected-scope closure, Codex by default and additional
+CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
+add a generic full local/CLI review or a receipt-only commit by default.
+
 ## Freeze the intended result
 
 - Confirm the selected change, owned paths/hunks, feature branch, upstream, and
@@ -40,7 +45,7 @@ Preserve existing authorization and unrelated work.
   in an isolated snapshot; any fixes must be inspected, incorporated by the sole
   writer, and checked again against a new fingerprint.
 
-## Delegate three bounded lanes
+## Verify selected obligations
 
 Before dispatching another review or correction batch, read
 `python -m quality.review_session status <change-id>`. `replan` and `incomplete`
@@ -55,7 +60,7 @@ require recovery. Investigate the first genuine escape after correction; another
 escape after that investigation requires replanning. A non-finding is not an
 escape, but fixing a genuine recurrence does not erase its history.
 
-Give each subagent the checkout/snapshot, selected change, complete scope manifest,
+When using independent workers for the selected obligations, give each the checkout/snapshot, selected change, complete scope manifest,
 base/HEAD SHAs, fingerprints, applicable rules, and a compact output contract:
 commands and outcomes, actionable findings with paths/lines, missing evidence,
 and the reviewed fingerprint. Store large logs locally in `.changecost/` or
@@ -81,7 +86,7 @@ report that limitation; a coordinator's own review is not independent review.
    `/Users/dom/.codex/skills/.system/review-agent/SKILL.md`. If unavailable, search
    available skill locations once; if still absent, disclose that and use the
    user's supplied review-agent contract below as an explicit fallback. Inspect
-   the entire intended diff and enough surrounding code, tests, and call sites to
+   the selected upfront obligation matrix or affected follow-up delta and enough surrounding code, tests, and call sites to
    establish each defect. Remain read-only: no edits, commits, pushes, comments,
    or further delegation. Return every concrete, introduced, actionable defect
    affecting correctness, security, performance, or meaningful maintainability;
@@ -109,11 +114,11 @@ report that limitation; a coordinator's own review is not independent review.
 
 ## Resolve, certify, commit, push
 
-Wait for all lanes. Verify findings against evidence, then let the sole writer
+Wait for required checks and selected independent closure. Verify findings against evidence, then let the sole writer
 make the smallest sufficient corrections. Preserve clear names and proportionate
 complexity; avoid speculative abstractions. Rerun affected checks and review the
 changed scope after fixes. Any source/test/config/spec edit invalidates affected
-earlier evidence; all final lane results must cover the same intended contents.
+earlier evidence; all final required results must cover the same intended contents.
 Record final checks and scope in the change's evidence or appropriate workflow
 handoff. If recording evidence changes files, review those additions and rerun
 applicable documentation/hygiene checks before final certification.

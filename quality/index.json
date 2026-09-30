@@ -32,7 +32,7 @@
   {
     "title": "Change workflow",
     "path": "docs/agent-rules/30-change-workflow.md",
-    "description": "freshness, verified scope, visible review checkpoints and canonical recovery."
+    "description": "Canonical staged workflow, risk-based review selection, verified family/native evidence recovery and live exact-head acceptance."
   },
   {
     "title": "OpenSpec configuration",

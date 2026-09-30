@@ -87,11 +87,12 @@ HEAD is unchanged; keep the historical receipt and obtain fresh evidence.
 Missing active-time measurements block completion: record explicit measured minutes
 after the latest input refresh. An effective current-head changes-requested review is
 blocking, including top-level review bodies without inline threads. Required
-reviewers must have a latest APPROVED or COMMENTED result.
+reviewers must have a current APPROVED/COMMENTED REST result or explicitly adjudicated
+native code completion under the shared policy.
 Comments, pending submissions and dismissal of another review cannot clear that
 objection. Only a later approval or a fresh snapshot showing the original rejecting
 review dismissed can clear it.
-Use exact REST logins, including `[bot]`, and bind the repository/PR once. Schema-8
+Use exact provider logins, including `[bot]`, and bind the repository/PR once. Schema-8
 replay reconciles all cached fields; missing or incompatible history requires
 recovery, never reinitialization. Final published inputs must be clean. Exclude
 non-findings from family escalation while retaining genuine fixed recurrences.
@@ -100,36 +101,20 @@ base/head commits, including changed/staged/untracked paths. Explicit `<absent>`
 entries permit future intended files; older receipts require recovery.
 
 `packet` retains scope, unresolved findings and evidence across context windows.
-`watch` is read-only and uses REST pagination with `--slurp` for checks/statuses/reviews/comments
-and GraphQL `reviewThreads` pagination for thread resolution/outdated state and
-comments. It requires a current-head non-pending result from each contract-named
-GitHub reviewer, polls changed nonterminal state with 15/30/60-second backoff, and
-returns `wait` after 30 minutes without progress without resetting budget counters.
-It reports only meaningful GitHub changes or errors and does not make incomplete
-external evidence look complete. This workflow control does not enlarge the
-documented CI trust boundary or authenticate PR-controlled code.
-Requests, pagination and sleep consume the same remaining no-progress deadline.
-The helper stays pending when a provider emits only a clean summary without a REST
-review; retain separately verified coordinator evidence and disclose this limit.
-Local terminal results are still emitted when the remote snapshot is unchanged;
-the no-progress deadline checks current local status before reporting wait.
-Initialization, head refresh and replay share full SHA-1/SHA-256 ID validation.
+Use the canonical [review selection, recovery and observation policy](30-change-workflow.md#review-selection-and-live-acceptance).
+It defines Codex for normal PRs, risk-triggered CodeRabbit, one upfront obligation review
+and affected-scope closure, native source adjudication, named historical family resolution,
+the absolute 45-minute watch and the live PR receipt. No mechanical gate or Python matrix
+is removed. Missing tooling, stale evidence and skipped required analysis remain incomplete.
 
 ## CodeRabbit review policy
 
-[.coderabbit.yaml](../../.coderabbit.yaml) adapts the SpecFact review configuration
-for this standalone project. Automatic reviews target `main`, skip drafts and
-review subsequent pushes. The quiet profile and review instructions request only
-high/critical and medium defects (P0–P2), with concrete impact. Low-severity nits,
-grammar/Markdown lint, decorative summaries and metadata suggestions are suppressed;
-repository quality gates still run independently.
-
-The [official configuration reference](https://docs.coderabbit.ai/reference/configuration)
-and v2 schema were checked on 2026-09-28 (Europe/Berlin). They expose no native
-severity cutoff: these instructions are a review policy, not a guaranteed alert
-filter. Verify actual bot output and configuration acceptance on the PR. Automatic
-reviews may pause after five reviewed commits by default; if paused during a fix
-loop, explicitly request another review instead of treating the pause as a pass.
+[.coderabbit.yaml](../../.coderabbit.yaml) disables automatic reviews; the shared policy
+controls manual requests after mechanical stabilization. Its quiet profile requests
+only evidenced high/critical and medium defects (P0–P2); severity instructions remain
+advisory, not a guaranteed filter. Inspect all actual feedback. Existing labels/keywords,
+analyzers and other settings are unchanged. Feature-branch configuration governs the
+review; check actual service state before issuing a supported request.
 
 Knowledge context is repository-local, external integrations are disabled, and
 chat requires an organization member's mention. Automatic approval, label/reviewer

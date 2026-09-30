@@ -39,8 +39,22 @@
 
 - [x] 4.11 Retain prior/current changed-input impact mappings with removed/added/remapped and unrelated-input controls; preserve broad-review gates and explicit exhausted-budget replan.
 
-## 5. Final integration and handoff
+## 5. Original pilot integration and live completion acceptance
 
 - [x] 5.1 Run strict OpenSpec validation and complete make check with explicit BASE_REF and intended-file manifest, plus the final staged-snapshot checks; obtain actual supported-Linux capsule evidence and resolve/justify findings without treating unavailable analyzers as passing.
 - [x] 5.2 Execute independent review-agent and CodeRabbit review, obtain native current-code-head review and Linux evidence, iterate with retained history, and publish/read back the focused PR. Verified code head `6c97e45bfa06647ab3adbb3b31cc4b41bc2061ba`; see the closeout receipt in TDD_EVIDENCE.md.
-- [ ] 5.3 Automatic coordinator completion remains unmet: the authoritative session retains historical family-escape `REPLAN`, and native clean summaries are not represented as the REST review records required by its monitor. Manual verification does not satisfy or waive that automatic condition. This is an accepted negative pilot outcome, not automatic merge readiness; PR remains open and unmerged.
+- [ ] 5.3 Obtain actual exact-head completion from the repaired existing ledger and publish its acceptance in the canonical PR receipt. This checkbox is the immutable publication-time snapshot; live acceptance is recorded there with the verified SHA, without a receipt-only source commit. Original pilot automatic completion remains unmet: the authoritative session retains historical family-escape `REPLAN`, and native clean summaries are not represented as the REST review records required by its monitor. Manual verification does not satisfy or waive that automatic condition. This is an accepted negative pilot outcome, not automatic merge readiness; PR remains open and unmerged.
+
+
+## 6. Authorized post-replan preparation and recovery
+
+- [x] 6.1 Reconcile proposal/design/deltas/tasks and issue #26/PR #27 in place, independently review O1-O8, and verify strict OpenSpec validation and native hierarchy/dependency readback; preserve the original f6dd pilot evidence.
+- [x] 6.2 Derive O1-O2 failing tests, minimally extend existing approved scope decisions with exact finding IDs/current binding/verified closure reference, and verify named resolution, later-escape reopening and old-history replay; record red/green evidence and update shared workflow docs.
+- [x] 6.3 Derive O3-O4 failing tests, minimally extend existing reviewer evidence with adjudicated native source identity/digest/full SHA/kind/time, and verify every rejection plus normal REST and independent negative-gate compatibility; record red/green proof and docs.
+- [x] 6.4 Derive O5-O6 failing tests, permit explicit observation/adjudication of in-flight work without new correction authority and fix the absolute 45-minute watcher default; verify exact/over budget, repeated progress, one-shot and explicit inactivity controls, recording proof and docs.
+
+## 7. Post-replan workflow and verification
+
+- [x] 7.1 Consolidate one shared O7-O8 workflow policy with skill references, one Codex default and risk-triggered CodeRabbit, only automatic-review enabled=false, canonical PR receipt and immutable milestones; validate config/docs/index/ownership and preserve all mechanical gates.
+- [ ] 7.2 Freeze the integrated candidate, run scoped then complete/staged and supported-Linux gates, obtain required current-head Codex and CodeRabbit, and verify only affected obligations/dependencies after corrections within 13 batches / 105.67495325 minutes cumulative ceilings; record actual outcomes without preclaiming remote completion.
+- [ ] 7.3 Record the post-replan preparation/publication/final measurement boundaries separately from the original pilot, publish/read back the canonical live receipt, and evaluate task 5.3 against real ledger completion on the exact verified head; keep any unfulfilled obligation explicitly open without another tracked receipt-only update.

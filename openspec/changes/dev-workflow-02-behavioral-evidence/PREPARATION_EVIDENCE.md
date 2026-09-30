@@ -78,3 +78,31 @@ files. The implementation writer owns code/test/docs/index changes after handoff
 No new runtime dependency is planned. Confidence: high in bounded implementation
 readiness; medium in defect yield; billing benefit unknown. Rollback reverts this
 contributor change and preserves ignored receipts/evidence and existing stores.
+
+
+## Authorized in-place post-replan preparation (2026-09-30)
+
+Starting owned feature head is f6ddbe48db1df36d1054feed2cf8ae413b007ce6, clean before
+this phase. Fetch succeeded before 2026-09-30T11:14:23Z (13:14:23 Europe/Berlin),
+origin/main unchanged999cb8f960785fe4ac0434d41a0892beca933191. The initial sandbox
+fetch failed writing FETCH_HEAD; the authorized host-context retry succeeded. Primary
+settlement checkout and other worktrees remain untouched; no new branch/PR is needed.
+
+Current GitHub readback: issue26 open, User Story, parent Feature6, blocked by23closed
+and11open; PR24 merged at2026-09-29T05:40:30Z and PR25 at17:35:39Z satisfy delivered
+code prerequisites. Labels enhancement/openspec/change-proposal/architecture/QA,
+no assignees, project ChangeCost Todo retained. PR27 is open to main at f6ddbe48.
+The administrative issue11 discrepancy remains unrelated to this replan.
+
+The maintainer explicitly approved the same change's replan and implementation.
+Existing session revision104 records authorized13/105.67495325 ceilings with10batch
+history and15.67495325partialhistoricalminutes preserved; no family closure is asserted.
+Original final-effort.md/json and final-verification.json were copied byte-identically
+under ignored post-replan/original-f6dd with digests in authorization-baseline.json.
+New preparation/implementation measurements use a distinct post-replan phase.
+
+Applicable update/prepare rules and actual schema status/instructions were read.
+The existing bounded-review-session capability needs a modified delta for the changed
+family/budget/watch contract; it introduces no new capability or runtime framework.
+Architecture matrix O1-O8 must be reviewed before code. Task5.3 is deliberately still
+unchecked: actual live acceptance requires the repaired ledger and exact-head PR proof.

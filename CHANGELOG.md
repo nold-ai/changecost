@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Refine bounded review recovery with named verified family closure, explicit native
+  code-review source adjudication, and budget-only observation under an absolute
+  45-minute watch; retain all counters and independent negative gates. Consolidate
+  risk-based provider selection and publish live verification in the PR receipt.
+
 - Retain prior affected invariant and assumption mappings for removed or remapped
   behavioral inputs without changing broad-review and evidence gates.
 
