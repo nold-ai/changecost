@@ -168,3 +168,11 @@ is not required, and unrelated security metadata cannot establish that associati
 - **THEN** resolution rejects the stale causal claim until fresh closure follows the invalidation
 - **AND** a reviewer may verify a known finding against the corrected current binding before its administrative fixed disposition; fixed-before-review also remains valid
 - **AND** unrelated finding events do not invalidate coverage, while existing current-binding and genuine-fixed requirements remain mandatory.
+
+
+#### Scenario: New report hands off while gates remain pending
+
+- **GIVEN** a valid current snapshot with pending or missing CI and a new or changed unadjudicated report
+- **WHEN** the watcher collects that snapshot
+- **THEN** it hands off after that collection for independent adjudication while CI still blocks completion
+- **AND** unchanged already-adjudicated incomplete reports and check-only progress do not repeatedly hand off; negative/error/budget precedence and the absolute deadline remain.

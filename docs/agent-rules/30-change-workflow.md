@@ -244,7 +244,10 @@ requires both providers. Explicit user review requests override the default. Do 
 a generic full local review or CodeRabbit CLI scan by default. All mechanical gates,
 the supported-Linux capsule and the existing Python matrix remain mandatory.
 
-CodeRabbit automatic review is disabled only through `reviews.auto_review.enabled`.
+Disable both `reviews.auto_review.enabled` and
+`reviews.auto_review.auto_incremental_review` for explicit risk-selected review.
+The pilot observed an incremental attempt with only the first flag disabled; effective
+configuration alone does not establish hosted trigger behavior or review coverage.
 Inspect actual pending/current-head provider state and effective feature-branch config
 once before requesting a review; reuse an already-running required review. For a
 required provider use its established manual protocol: `@coderabbitai full review` for

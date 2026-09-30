@@ -383,3 +383,14 @@ checkbox SHALL NOT be described as a completed OpenSpec CLI task count.
 - **WHEN** preparation completes, the first stable post-replan candidate is published, and final handoff occurs
 - **THEN** each boundary records available token categories, responses, elapsed units and actual correction sets versus events, separately from original pilot measurements
 - **AND** unknown costs remain unknown and no causal savings claim follows from historical ratios.
+
+
+### Requirement: Required reviews use explicit provider triggers
+
+Routine review selection SHALL disable both CodeRabbit automatic initial review and automatic incremental review. Required risk-selected manual review SHALL remain available. Configuration readback SHALL be distinguished from actual review coverage.
+
+#### Scenario: Provider trigger matrix is assessed independently
+
+- **WHEN** open/reopen, subsequent push, or explicit required manual review is considered
+- **THEN** initial and incremental automatic triggers are disabled, while the manual protocol remains usable
+- **AND** actual queue behavior, quota response and exact-head completion are reported separately; local configuration checks do not prove hosted behavior.

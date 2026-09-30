@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Hand off new review reports while CI remains pending; disable automatic incremental CodeRabbit review alongside automatic initial review.
+
 - Require causally valid named review closure and align promotion completion with
   the shared risk-based provider policy, preserving administrative fixed-after-review.
 

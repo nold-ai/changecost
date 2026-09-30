@@ -55,6 +55,6 @@
 
 ## 7. Post-replan workflow and verification
 
-- [x] 7.1 Consolidate one shared O7-O8 workflow policy with skill references, one Codex default and risk-triggered CodeRabbit, only automatic-review enabled=false, canonical PR receipt and immutable milestones; validate config/docs/index/ownership and preserve all mechanical gates.
+- [x] 7.1 Consolidate one shared O7-O8 workflow policy with skill references, one Codex default and risk-triggered CodeRabbit, automatic initial and incremental review disabled after the empirical two-switch adjustment, canonical PR receipt and immutable milestones; validate config/docs/index/ownership and preserve all mechanical gates.
 - [ ] 7.2 Freeze the integrated candidate, run scoped then complete/staged and supported-Linux gates, obtain required current-head Codex and CodeRabbit, and verify only affected obligations/dependencies after corrections within 13 batches / 105.67495325 minutes cumulative ceilings; record actual outcomes without preclaiming remote completion.
 - [ ] 7.3 Record the post-replan preparation/publication/final measurement boundaries separately from the original pilot, publish/read back the canonical live receipt, and evaluate task 5.3 against real ledger completion on the exact verified head; keep any unfulfilled obligation explicitly open without another tracked receipt-only update.

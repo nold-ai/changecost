@@ -248,7 +248,8 @@ follows mechanical stabilization. CodeRabbit additionally applies to the O7 risk
 this assurance-policy change requires both. No generic extra local full scan or CLI
 CodeRabbit by default; explicit user requests override. Fresh required provider coverage
 and mechanical gates must describe the final head; narrow review is not stale-head reuse.
-Set only `.coderabbit.yaml` `reviews.auto_review.enabled` to false; existing labels and
+Set `.coderabbit.yaml` `reviews.auto_review.enabled` and
+`reviews.auto_review.auto_incremental_review` to false; existing labels and
 keyword are absent. Manual `@coderabbitai full review` requests the initial required
 review; `@coderabbitai review` requests later stable increments. Repository configuration
 does not control external Codex app automation. Official controls and command semantics
@@ -275,3 +276,17 @@ candidate publication, and final handoff. Preserve original cutoff separately; r
 cached/uncached/output tokens, responses, actual sets versus events and elapsed units.
 No billing saving is inferred. Rollback reverts the scoped contributor changes while
 retaining original and post-replan evidence; existing user stores are untouched.
+
+
+### Empirical O7 trigger adjustment (2026-09-30)
+
+The initial single-switch design was insufficient in the observed pilot: effective
+configuration reply5911495348 showed enabled=false and auto_incremental_review=true,
+yet push14b caused an8-file automatic attempt (run5af12b66-fde8-4bf8-9578-20d828f28f03).
+The service returned an included-review rate limit, not current-head coverage. Queue
+causation is not established. The approved bounded adjustment disables both controls:
+open/reopen initial triggers and push incremental triggers are disabled; explicit
+risk-required manual requests remain available. Validate configuration locally and
+read back the effective configuration, then distinguish actual queue behavior, quota
+and exact-head review completion. No permanent literal-boolean test can prove hosted
+behavior. This first O7 recurrence uses the existing final correction allowance.

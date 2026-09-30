@@ -409,3 +409,48 @@ The HEAD-relative staged gate initially rejected three stale documentation finge
 (quality rules, generated llms index and behavioral guide). Their existing canonical
 workflow links and scope remain accurate; content-bound rationales were refreshed after
 inspection. This is documentation-gate feedback, not another semantic review finding.
+
+
+## Post-replan final collected correction set3
+
+Head14b3a2e passed970 tests and11 spec items in each supported Linux job
+(run36716259084). Codex completed12:52:25.450630Z and reported the first O6 P2
+(PRRT_kwDOUu9-oc6niTOw): new top-level review feedback was delayed by pending CI.
+Independent triage12:54:03.496536–12:54:47.182715Z confirmed the actual simulated
+three-poll/60-second delay. New pending/missing-gate controls produced2failed/2passed
+before repair; the affected watcher/deadline/exhaustion suite now passes21. The minimal
+repair removes only the pending-gate filter from report handoff. CI still blocks
+completion; error/negative/budget precedence and exact receipt novelty remain. Existing
+steady-poll and deadline fixtures now explicitly acknowledge their baseline reports;
+the deadline control varies actual queued/in-progress status instead of report prose
+or ignored details URLs. The initial broader run exposed these three fixture
+assumptions; saved reruns retain that implementation feedback.
+
+CodeRabbit did not cover14b: at12:40:23Z it attempted the8-file increment and returned
+its included-review limit with29minutes until normal availability. No paid request
+was made. Configuration response5911495348 at12:40:43Z confirmed enabled=false but
+auto_incremental_review=true. This is the first O7 recurrence/acceptance gap; queue
+causation is unknown. The approved empirical plan adjustment additionally disables
+auto_incremental_review, preserving all other configuration. The bounded trigger matrix
+covers open/reopen, push, explicit required manual review and config-versus-coverage
+distinctions. Local YAML/config checks are not proof of hosted scheduling; actual
+final-head readback and required manual completion remain necessary. No permanent
+literal-boolean test or test-only publication was added.
+
+This is final post-replan actual correction set3, retained recorded event13/13; no
+extension or reset. Original pilot reports and first-publication telemetry are unchanged.
+Focused static/spec and staged checks precede one independent affected-scope closure.
+Main-relative gates cover the whole feature; HEAD-relative gates cover this correction
+and its source-bound documentation metadata independently. Subsequent current-head
+Linux/native coverage and actual ledger completion remain pending, not preclaimed.
+
+
+The first final-set closure (13:02:54.985956–13:06:17.184614Z) was not passing:
+its independent14-control selection found one budget-only observation fixture with an
+unacknowledged baseline REST report. The new handoff was correct; the fixture did not
+isolate budget-only waiting. Root authorized only acknowledging that unchanged
+baseline before exercising the existing six blocker variants. No production change,
+new finding family or correction event was introduced. The complete coordinator suite
+then passed586 tests at13:06:41.517092–13:07:53.883753Z (72.37 seconds command wall),
+including all existing watcher, deadline, budget, negative-gate and history controls.
+The revised staged snapshot still requires targeted independent closure.

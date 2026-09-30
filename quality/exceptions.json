@@ -1,30 +1,30 @@
 {
   "CONTRIBUTING.md": {
-    "reason": "Reviewed post-replan coordinator and manual risk-based review policy: product commands, setup, runtime contracts and mechanical gate commands remain unchanged. Canonical shared workflow, quality rules, four skills and behavioral guide describe the new contributor evidence and observation controls. Generated product command reference remains byte-identical.",
-    "digest": "58b30c3470e8eaada9f7c8c1e8c266eda36430aa3c32d2f9a2ff0dd51181fbd2"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
   },
   "README.md": {
-    "reason": "Reviewed post-replan coordinator and manual risk-based review policy: product commands, setup, runtime contracts and mechanical gate commands remain unchanged. Canonical shared workflow, quality rules, four skills and behavioral guide describe the new contributor evidence and observation controls. Generated product command reference remains byte-identical.",
-    "digest": "58b30c3470e8eaada9f7c8c1e8c266eda36430aa3c32d2f9a2ff0dd51181fbd2"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed causal closure coverage and risk-selected promotion wording: mechanical gate commands and independent/current-head review requirements remain unchanged. The existing canonical workflow link supplies the updated causal resolution rule; the workflow, selected spec and TDD contain the changed behavior and proof.",
-    "digest": "58b30c3470e8eaada9f7c8c1e8c266eda36430aa3c32d2f9a2ff0dd51181fbd2"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
   },
   "docs/commands.md": {
-    "reason": "Reviewed post-replan coordinator and manual risk-based review policy: product commands, setup, runtime contracts and mechanical gate commands remain unchanged. Canonical shared workflow, quality rules, four skills and behavioral guide describe the new contributor evidence and observation controls. Generated product command reference remains byte-identical.",
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
     "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed post-replan coordinator and manual risk-based review policy: product commands, setup, runtime contracts and mechanical gate commands remain unchanged. Canonical shared workflow, quality rules, four skills and behavioral guide describe the new contributor evidence and observation controls. Generated product command reference remains byte-identical.",
-    "digest": "58b30c3470e8eaada9f7c8c1e8c266eda36430aa3c32d2f9a2ff0dd51181fbd2"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
   },
   "llms.txt": {
-    "reason": "Reviewed causal closure coverage and risk-selected promotion wording: repository document inventory, public commands, setup and product phase are unchanged. Deterministic index generation remains byte-identical; canonical workflow/spec links expose the revised coordinator behavior.",
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
     "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
   },
   "docs/development/behavioral-evidence.md": {
-    "reason": "Reviewed causal closure coverage and risk-selected promotion wording: packet schema, impact rules and evidence examples are unchanged. The guide already delegates authoritative completion and provider selection to the canonical shared workflow, which now explains causal closure validation. No packet behavior or product runtime changed.",
-    "digest": "4b7b4771e045f448ac94b76746bd7c2c7b93f9a78a33b83e97677d32c46fb524"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "51520e85488a4b658b22ad20aa241d6055b2071827027aa8b1b07a27fe02f4c1"
   }
 }

@@ -1902,11 +1902,7 @@ def review_handoff(root: Path, change_id: str) -> str | None:
     if unresolved_findings(state) or "unresolved review thread" in pending:
         return "actionable findings require independent triage"
     snapshot = state["monitor"]["data"]
-    if (
-        not snapshot
-        or state["monitor"]["errors"]
-        or any(not item.startswith(("required reviewer ", "fresh reviewer ")) for item in pending)
-    ):
+    if not snapshot or state["monitor"]["errors"]:
         return None
     if reports_need_adjudication(state):
         return "current reports are ready for independent adjudication"

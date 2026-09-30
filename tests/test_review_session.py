@@ -494,6 +494,8 @@ def test_watcher_polls_after_a_changed_continue_snapshot(
         ],
     }
     snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "existing-review")
     calls: list[int] = []
     clock = [0.0]
     monkeypatch.setattr(
@@ -3965,6 +3967,7 @@ def test_watch_default_is_absolute_despite_progress(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, timeout: int | None
 ) -> None:
     review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
     clock = [0.0]
     deadlines = []
 
@@ -3973,7 +3976,9 @@ def test_watch_default_is_absolute_despite_progress(
         clock[0] += 600
         snapshot = complete_snapshot()
         snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
-        snapshot["comments"] = [[{"id": 901, "body": str(clock[0])}]]
+        snapshot["checks"][0]["check_runs"][0]["status"] = (
+            "queued" if len(deadlines) % 2 else "in_progress"
+        )
         return snapshot
 
     monkeypatch.setattr(review_session.time, "monotonic", lambda: clock[0])
@@ -3983,7 +3988,7 @@ def test_watch_default_is_absolute_despite_progress(
     monkeypatch.setattr(review_session, "collect_snapshot", collect)
     assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, timeout) == 0
     assert deadlines and max(deadlines) == 2700
-    assert len(deadlines) <= 5
+    assert len(deadlines) == 5
 
 
 @pytest.mark.parametrize(
@@ -4052,6 +4057,8 @@ def test_observe_only_is_budget_only(
         )
     else:
         review_session.initialize(tmp_path, "change", contract())
+    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    acknowledge_reports(tmp_path, "baseline-reports")
     for index in range(3):
         review_session.record(tmp_path, "change", {"id": f"batch-{index}", "kind": "batch"})
     if blocker == "finding":
@@ -4258,3 +4265,59 @@ def test_known_closure_and_administrative_fixed_orders_are_valid(
     acknowledge_reports(tmp_path, "current-report-coverage")
     review_session.record(tmp_path, "change", resolution)
     assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+@pytest.mark.parametrize("gate", ["pending", "missing"])
+def test_new_report_hands_off_before_pending_gates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, gate: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
+    if gate == "missing":
+        snapshot["checks"] = [{"check_runs": []}]
+    snapshot["comments"] = [[{"id": 902, "body": "New potentially actionable feedback"}]]
+    clock = [0.0]
+    calls: list[int] = []
+    monkeypatch.setattr(review_session.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(
+        review_session.time, "sleep", lambda seconds: clock.__setitem__(0, clock[0] + seconds)
+    )
+    monkeypatch.setattr(
+        review_session, "collect_snapshot", lambda *args: calls.append(1) or snapshot
+    )
+    assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 1) == 0
+    assert calls == [1]
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+@pytest.mark.parametrize("report", ["acknowledged-incomplete", "check-only-progress"])
+def test_pending_gates_do_not_repeat_unchanged_report_handoff(tmp_path: Path, report: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
+    if report == "acknowledged-incomplete":
+        snapshot["comments"] = [[{"id": 903, "body": "Still awaiting provider completion"}]]
+        review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+        state = review_session.load(tmp_path, "change")
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "acknowledged",
+                "kind": "evidence",
+                "evidence_type": "reviewer",
+                "result": "incomplete",
+                "head": TEST_HEAD,
+                "binding": review_session.evidence_binding(state),
+                "reviewed_reports": review_session.report_receipts(snapshot),
+            },
+        )
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.review_handoff(tmp_path, "change") is None
+    snapshot["checks"][0]["check_runs"][0]["status"] = "queued"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.review_handoff(tmp_path, "change") is None
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
