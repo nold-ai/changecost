@@ -61,6 +61,7 @@ def import_evidence(store: Store, data: object, repository_id: str) -> list[str]
 
     def operation(records, store_id, now):
         existing = {economic_key(r): r for r in records.values() if isinstance(r, EconomicEvidence)}
+        evidence_index = index_evidence(records)
         additions, selectors = [], []
         for event in batch.events:
             evidence, economic = normalized_records(event, store_id, now)
@@ -72,17 +73,7 @@ def import_evidence(store: Store, data: object, repository_id: str) -> list[str]
                     raise ContractError("conflicting normalized source semantics")
                 selectors.append(prior.evidence.record_id)
                 continue
-            evidence = next(
-                (
-                    r
-                    for r in records.values()
-                    if isinstance(r, Evidence)
-                    and r.source_key == evidence.source_key
-                    and (r.provider, r.surface, r.profile)
-                    == (evidence.provider, evidence.surface, evidence.profile)
-                ),
-                evidence,
-            )
+            evidence = evidence_index.setdefault(evidence_identity(evidence), evidence)
             if key(reference(evidence)) not in records:
                 records[key(reference(evidence))] = evidence
                 additions.append(evidence)
@@ -95,3 +86,15 @@ def import_evidence(store: Store, data: object, repository_id: str) -> list[str]
         return additions, list(dict.fromkeys(selectors))
 
     return store.apply(operation)
+
+
+def evidence_identity(record: Evidence) -> tuple:
+    return record.provider, record.surface, record.profile, record.source_key
+
+
+def index_evidence(records: dict) -> dict:
+    index = {}
+    for record in records.values():
+        if isinstance(record, Evidence):
+            index.setdefault(evidence_identity(record), record)
+    return index

@@ -85,6 +85,17 @@ Cycles, forks, incompatible economic/window/source identity and conflicting expl
 bindings reject rather than choosing by arrival order. A chain can use its existing
 explicit binding; it cannot move a charge to a different Run.
 
+A Change computation excludes correction chains explicitly attributed to other
+Runs before applying correction and temporal-lane policy. All Runs belonging to
+the requested Change remain in scope, so mixed attribution within that Change
+still blocks unsupported snapshot selection. Chains without an explicit binding
+remain potentially relevant. Repository reports continue to consider all Runs.
+
+Normalized import indexes existing Evidence identities once per transaction,
+preserving the first matching core record and updating the index for new records.
+Economic graph validation similarly indexes Evidence bindings once per validation.
+These bounds apply to these lookup steps, not to total pipeline complexity.
+
 ## Temporal and coverage policy
 
 Deltas and cumulative snapshots are never added together. Supported synthetic

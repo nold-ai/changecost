@@ -209,3 +209,36 @@ intermediate type/inference failures were corrected and are not product TDD proo
 Full post-refactor matrix, independent affected-scope closure and exact-head hosted
 analysis are recorded in the live PR/ledger once observed. Original failed native
 reports remain in the run artifacts and ignored workflow receipts.
+
+
+## Hosted Codex correction — 2026-10-01
+
+Codex review 5372816184 of PR #28 at a7dae694 reported target-Change selection
+contamination and repeated full-record scans in economic binding validation and
+normalized Evidence matching. Independent reproduction confirmed all three.
+The prior exact-head Linux runs passed mechanically; this did not establish
+absence of the subsequently reported semantic and bounded-work defects.
+
+Before implementation, `pytest -q tests/test_reconciliation.py -k
+'foreign_change_does_not or lookup_does_not'` failed all seven selected cases
+(0.17 seconds): unrelated snapshot/pending/inherited chains changed the target
+result, and counting dictionaries exceeded linear visit bounds at 20 and 40
+records. The final type-correct counting fixture bounds entries exposed by mapping values
+views. All eight final regressions were additionally run against an isolated exact
+a7dae694 source snapshot and failed (0.17 seconds), then passed against the correction.
+These deterministic checks measure the two lookup steps, not whole-pipeline
+complexity or timing. The ignored batch5-red.log preserves the actual failures.
+
+Selection now resolves inherited chain attribution before lane/correction policy
+and excludes explicit non-member chains. All target Runs and genuinely unbound
+chains remain eligible for conservative policy. Graph binding and normalized
+Evidence identity indexes are rebuilt per operation; matching preserves the first
+existing core record and extends the index within a batch. No schema, CLI, runtime
+dependency, gate threshold or release version changes are made.
+
+After correction, 146 reconciliation, settlement CLI, store and contract tests
+passed in 0.56 seconds, including an additional different-namespace pending-chain
+case, existing mixed-attribution, unbound, arbitrary core-ID and multi-component
+controls. An intermediate dependency-forwarding typo was corrected; its failing
+run remains recorded and is not cited as baseline TDD proof. Final full matrix,
+independent closure and current-head hosted review belong in the live PR receipt.

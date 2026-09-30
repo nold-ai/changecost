@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Isolate Change settlement selection from explicitly foreign correction chains
+  and index normalized Evidence identities and economic bindings per operation.
+  Preserve conservative unbound evidence and mixed attribution within the target Change.
+
 - Hand off new review reports while CI remains pending; disable automatic incremental CodeRabbit review alongside automatic initial review.
 
 - Require causally valid named review closure and align promotion completion with

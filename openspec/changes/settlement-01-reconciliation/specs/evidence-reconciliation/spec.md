@@ -337,3 +337,15 @@ amount was unknown, retaining its old unresolved revision and provenance.
 - **GIVEN** an unknown monetary amount with null currency and an explicit replacement reporting USD 0.25 for the same component
 - **WHEN** the replacement is validated and computed at a later cutoff
 - **THEN** the new revision contains USD 0.25 while the old cutoff remains unknown; replacing known USD with EUR is rejected atomically.
+
+#### Scenario: Independent Change evidence cannot alter target selection
+
+- **GIVEN** complete evidence for a target Change and explicitly bound evidence for another Change using the same source series, including snapshots, pending corrections or overlapping files
+- **WHEN** the target Change is computed
+- **THEN** the other Change's correction and lane policy does not alter the target subtotal, exclusions or completeness; inherited correction-chain bindings determine the subject, while genuinely unbound potentially relevant evidence remains conservative.
+
+#### Scenario: Bounded economic identity lookup work
+
+- **GIVEN** a valid normalized batch and an existing economic graph within the documented limits
+- **WHEN** evidence identity is matched during import or evidence bindings are checked during graph validation
+- **THEN** each operation builds its lookup index once and performs direct per-record lookups, preserving deduplication and cross-repository rejection without repeated full-record scans for these lookups.

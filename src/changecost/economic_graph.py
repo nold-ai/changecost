@@ -94,7 +94,7 @@ def require(records: dict, ref, kind: str):
     return record
 
 
-def economic_refs(record: EconomicEvidence, records: dict) -> list:
+def economic_refs(record: EconomicEvidence, records: dict, bindings: dict) -> list:
     evidence = require(records, record.evidence, "evidence")
     if not isinstance(evidence, Evidence) or (
         evidence.provider,
@@ -108,13 +108,9 @@ def economic_refs(record: EconomicEvidence, records: dict) -> list:
         evidence_id(record.source),
     ):
         raise ContractError("economic evidence identity mismatch")
-    for binding in records.values():
-        if (
-            isinstance(binding, EvidenceBinding)
-            and binding.evidence == record.evidence
-            and binding.run.repository_id != record.source.repository_id
-        ):
-            raise ContractError("cross-repository economic binding")
+    binding = bindings.get((record.evidence.kind, record.evidence.record_id))
+    if binding is not None and binding.run.repository_id != record.source.repository_id:
+        raise ContractError("cross-repository economic binding")
     return [record.evidence]
 
 

@@ -93,7 +93,7 @@ def chain_members(events: dict, leaf, edges: dict) -> tuple[list, bool]:
     return chain, True
 
 
-def effective_events(records: dict, scope: EconomicScope) -> Selection:
+def effective_events(records: dict, scope: EconomicScope, members=None) -> Selection:
     events = {
         economic_key(r): r
         for r in records.values()
@@ -109,7 +109,7 @@ def effective_events(records: dict, scope: EconomicScope) -> Selection:
         chain, resolved = chain_members(events, leaf, edges)
         if not chain_relevant(chain, resolved, scope):
             continue
-        select_chain(result, chain, resolved, bindings)
+        select_chain(result, chain, resolved, bindings, members)
     return result
 
 
@@ -179,8 +179,8 @@ def select_deltas(events, result, scope):
     return included
 
 
-def select(records: dict, scope: EconomicScope) -> Selection:
-    result = effective_events(records, scope)
+def select(records: dict, scope: EconomicScope, members=None) -> Selection:
+    result = effective_events(records, scope, members)
     series = defaultdict(list)
     for event in result.selected:
         series[(partition(event.source), event.series, event.component_key)].append(event)
@@ -235,13 +235,13 @@ def snapshot_records(connection, cutoff: Cutoff) -> dict:
 def computation_details(records, change, scope):
     from changecost.coverage import assess_coverage, supported_event
 
-    selection = select(records, scope)
     bindings = {
         tuple(r.run.model_dump().values()): r
         for r in records.values()
         if isinstance(r, RunBinding) and r.change == reference(change)
     }
     members = [bindings[k].run for k in sorted(bindings)]
+    selection = select(records, scope, set(bindings))
     selected = [e for e in selection.selected if selection.runs[key(reference(e))] in members]
     reasons, supporting = assess_coverage(records, change, members, selection, selected, scope)
     totals = subtotals(selected, scope)
@@ -365,12 +365,15 @@ def chain_relevant(chain, resolved: bool, scope: EconomicScope) -> bool:
     return any(relevant(event, scope) for event in chain)
 
 
-def select_chain(result, chain, resolved, bindings):
+def select_chain(result, chain, resolved, bindings, members):
     result.inputs.update(key(reference(r)) for r in chain)
     mappings = [bindings[key(r.evidence)] for r in chain if key(r.evidence) in bindings]
     subjects = {tuple(m.run.model_dump().values()) for m in mappings}
     if len(subjects) > 1:
         raise ContractError("replacement changes attribution subject")
+    if members is not None and subjects and subjects.isdisjoint(members):
+        return
+    result.inputs.update(key(reference(r)) for r in chain)
     if not resolved:
         result.exclude(chain, "pending_correction")
         return

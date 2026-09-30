@@ -1,34 +1,30 @@
 {
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "The native Radon/Pylint failures are corrected in product code without altering analyzer policy, thresholds, gate commands, Python matrix or review-session rules. Existing guidance remains applicable.",
-    "digest": "b16da194e28333121e1f6ca1e95b5fb8a25966c0aef91beb70b8ab20696cb7b3"
+    "reason": "Required analyzers, Python matrix, review-session budgets and provider policies are unchanged. This runtime correction does not waive required hosted validation.",
+    "digest": "bcf6e240b569e514d49398f8873cf6b0a6e8ee6b41bd2bf95c7a4024a8c9c29d"
   },
   "docs/development/quality-gates.md": {
-    "reason": "The same mandatory Linux analyzer pipeline and local/staged checks remain in force. Refactoring does not change gate behavior or accept an unsupported controller as passing.",
-    "digest": "b16da194e28333121e1f6ca1e95b5fb8a25966c0aef91beb70b8ab20696cb7b3"
+    "reason": "Gate commands, supported execution platform and analyzer thresholds are unchanged; local targeted diagnostics remain distinct from mandatory native hosted assurance.",
+    "digest": "bcf6e240b569e514d49398f8873cf6b0a6e8ee6b41bd2bf95c7a4024a8c9c29d"
   },
   "CONTRIBUTING.md": {
-    "reason": "The refactor preserves all contributor commands, stage boundaries, dependencies and acceptance policy; the hosted failure and focused correction are documented in settlement TDD evidence.",
-    "digest": "b16da194e28333121e1f6ca1e95b5fb8a25966c0aef91beb70b8ab20696cb7b3"
+    "reason": "Contributor commands, dependencies, stage boundaries and acceptance policy are unchanged; this batch corrects scoped runtime behavior and documents its exact red/green evidence.",
+    "digest": "bcf6e240b569e514d49398f8873cf6b0a6e8ee6b41bd2bf95c7a4024a8c9c29d"
   },
   "README.md": {
-    "reason": "The six-file static-quality refactor preserves the documented offline capabilities, setup, unreleased 0.x phase and pending native assurance; no usage instructions changed.",
-    "digest": "b16da194e28333121e1f6ca1e95b5fb8a25966c0aef91beb70b8ab20696cb7b3"
+    "reason": "The correction restores the documented Change-specific settlement behavior and optimizes two internal lookup steps; installation, CLI usage, offline scope and unreleased 0.x phase are unchanged. Detailed policy and red/green evidence are updated in settlement documentation and TDD evidence.",
+    "digest": "bcf6e240b569e514d49398f8873cf6b0a6e8ee6b41bd2bf95c7a4024a8c9c29d"
   },
   "docs/commands.md": {
-    "reason": "Generated CLI output is byte-identical: the static-quality refactor changes internal helper structure and typed input iteration only; all command names and options remain unchanged.",
-    "digest": "abac2254cc940ea361837d560309a73f447dcbaa5ce02604a2e36fb1d03cb198"
+    "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",
+    "digest": "751fd5a5b1c247e5f9e61bedc5c3dddc63da92448a61e18fa412d8f64f9f7584"
   },
   "llms.txt": {
-    "reason": "Generated navigation and capability descriptions are byte-identical. Existing settlement/TDD entries already point to the updated static-quality evidence; no new entrypoint or skill was added.",
-    "digest": "abac2254cc940ea361837d560309a73f447dcbaa5ce02604a2e36fb1d03cb198"
+    "reason": "Generated navigation and capability summaries are unchanged; existing settlement and TDD links cover the updated Change isolation and bounded lookup details.",
+    "digest": "751fd5a5b1c247e5f9e61bedc5c3dddc63da92448a61e18fa412d8f64f9f7584"
   },
   "docs/contracts.md": {
-    "reason": "Reviewed the extracted membership/ledger validation and result construction: field names, strict validation, transaction boundaries, local authority, timestamps, version and recovery behavior are unchanged.",
-    "digest": "c918bb8b190379b039ed75ea0a0a3ea755f872a21827aeaf17b7b2ad89ede7ca"
-  },
-  "docs/settlement.md": {
-    "reason": "Reviewed source-chain/lane/window and coverage refactors plus unchanged CLI examples: exact sums, exclusions, synthetic-only finality, retry semantics and recovery limits are preserved. TDD evidence records the native failures and focused correction.",
-    "digest": "1ce6ccb6b2e955cdcc998c1964983c82f90166d253b1483145ff7760645dd970"
+    "reason": "No serialized field, schema, reference validity, local authority, timestamp or recovery contract changes. Per-validation indexing preserves cross-repository rejection and per-import indexing preserves first matching core Evidence identity.",
+    "digest": "79eebc0384c2fff64c114eff1cb5cf6fd5a20503943c56ad0ed7f3da64355bd6"
   }
 }

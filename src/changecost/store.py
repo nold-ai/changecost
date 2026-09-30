@@ -122,11 +122,13 @@ def revision_errors(record: PortableRecord, records: dict) -> None:
             raise ContractError("interval correction requires a reason")
 
 
-def dependencies(record: PortableRecord, records: dict, runs: dict) -> list[RecordRef]:
+def dependencies(
+    record: PortableRecord, records: dict, runs: dict, bindings: dict
+) -> list[RecordRef]:
     from changecost.economic_graph import computed_refs, economic_refs, source_refs
 
     if isinstance(record, EconomicEvidence):
-        return economic_refs(record, records)
+        return economic_refs(record, records, bindings)
     if isinstance(record, SourceCoverage):
         return source_refs(record, records, runs)
     if isinstance(record, ComputedSettlement):
@@ -212,6 +214,7 @@ def validate_subject(record: PortableRecord, records: dict) -> None:
 
 def validate_graph(records: dict) -> dict:
     runs = {run_key(r.ref): r for r in records.values() if isinstance(r, Run)}
+    bindings = {key(r.evidence): r for r in records.values() if isinstance(r, EvidenceBinding)}
     domains: dict[str, tuple] = {}
     children: set[tuple] = set()
     graph = {}
@@ -227,7 +230,7 @@ def validate_graph(records: dict) -> dict:
             if chain_key in children:
                 raise ContractError("revision history forks")
             children.add(chain_key)
-        graph[ref_key] = {key(ref) for ref in dependencies(record, records, runs)}
+        graph[ref_key] = {key(ref) for ref in dependencies(record, records, runs, bindings)}
         for ref in graph[ref_key]:
             if ref not in records:
                 raise ContractError("unknown record reference")

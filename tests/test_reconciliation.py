@@ -790,3 +790,85 @@ def coverage_failure_event(failure):
     if failure == "unsupported_source":
         item = event(source={**locator(), "profile": "manual"})
     return item
+
+
+@pytest.mark.parametrize("foreign_kind", ["snapshot", "pending", "pending_namespace", "inherited"])
+def test_foreign_change_does_not_contaminate_selection(tmp_path, foreign_kind):
+    store, _, members = setup_change(tmp_path)
+    target = event("target", "0.50", lane="snapshot", end=NOW.isoformat(), baseline_zero=True)
+    target_id = import_events(store, target)[0]
+    bind_evidence(store, target_id, members[0])
+    add_coverage(store, members[0], target_id)
+    before = compute(store, "before")
+    assert before.full_change and before.subtotals[0].amount == "0.50"
+    register_change(store, "repo", "foreign")
+    other = RUN.model_copy(update={"run_id": "foreign"})
+    register_run(store, other, "foreign", work_start=START - timedelta(hours=1))
+    foreign = event(
+        "foreign",
+        "0.80",
+        lane="snapshot",
+        baseline_zero=True,
+        start=(START - timedelta(hours=1)).isoformat(),
+        end=(START - timedelta(minutes=30)).isoformat(),
+    )
+    if foreign_kind in {"pending", "pending_namespace"}:
+        foreign.update(replaces=locator("absent"), correction_reason="pending")
+        if foreign_kind == "pending_namespace":
+            foreign["source"] = {**locator("foreign"), "namespace": "other-source"}
+            foreign["replaces"] = {**locator("absent"), "namespace": "other-source"}
+    foreign_id = import_events(store, foreign)[0]
+    bind_evidence(store, foreign_id, other)
+    if foreign_kind == "inherited":
+        import_events(
+            store,
+            {
+                **foreign,
+                "source": locator("replacement"),
+                "replaces": locator("foreign"),
+                "correction_reason": "corrected",
+            },
+        )
+    after = compute(store, "after")
+    assert after.full_change and after.subtotals == before.subtotals
+    assert after.unknown_reasons == before.unknown_reasons
+    assert after.exclusions == before.exclusions
+
+
+class CountingRecords(dict):
+    visits = 0
+
+    def values(self):
+        self.visits += len(self)
+        return super().values()
+
+
+def counted_economic_records(count):
+    from changecost.models import EconomicInput
+    from changecost.normalized import normalized_records
+    from changecost.store import key
+
+    records = CountingRecords()
+    for index in range(count):
+        pair = normalized_records(EconomicInput.model_validate(event(str(index))), "origin", NOW)
+        records.update((key(reference(record)), record) for record in pair)
+    return records
+
+
+@pytest.mark.parametrize("count", [20, 40])
+def test_economic_binding_lookup_does_not_rescan_records(count):
+    from changecost.store import validate_graph
+
+    records = counted_economic_records(count)
+    validate_graph(records)
+    assert records.visits <= 20 * count
+
+
+@pytest.mark.parametrize("count", [20, 40])
+def test_normalized_identity_lookup_does_not_rescan_records(tmp_path, monkeypatch, count):
+    records = counted_economic_records(count)
+    store = Store(tmp_path / "unused")
+    monkeypatch.setattr(store, "apply", lambda operation: operation(records, "origin", NOW))
+    additions, selectors = import_events(store, *(event("new-" + str(i)) for i in range(count)))
+    assert len(additions) == 2 * count and len(selectors) == count
+    assert records.visits <= 4 * count
