@@ -833,6 +833,7 @@ def test_foreign_change_does_not_contaminate_selection(tmp_path, foreign_kind):
     assert after.full_change and after.subtotals == before.subtotals
     assert after.unknown_reasons == before.unknown_reasons
     assert after.exclusions == before.exclusions
+    assert after.inputs == before.inputs
 
 
 class CountingRecords(dict):
@@ -872,3 +873,173 @@ def test_normalized_identity_lookup_does_not_rescan_records(tmp_path, monkeypatc
     additions, selectors = import_events(store, *(event("new-" + str(i)) for i in range(count)))
     assert len(additions) == 2 * count and len(selectors) == count
     assert records.visits <= 4 * count
+
+
+def test_pending_chain_records_consulted_binding(tmp_path):
+    store, _, members = setup_change(tmp_path)
+    ident = import_events(
+        store, event("pending", replaces=locator("missing"), correction_reason="fix")
+    )[0]
+    binding = bind_evidence(store, ident, members[0])
+    result = compute(store)
+    assert "pending_correction" in result.unknown_reasons
+    assert reference(binding) in result.inputs
+
+
+@pytest.mark.parametrize("foreign", [False, True])
+def test_portable_explicit_binding_input_requires_member(tmp_path, foreign):
+    store, _, members = setup_change(tmp_path)
+    ident = import_events(store, event())[0]
+    binding = bind_evidence(store, ident, members[0])
+    result = compute(store)
+    if foreign:
+        register_change(store, "repo", "other")
+        other = RUN.model_copy(update={"run_id": "other"})
+        register_run(store, other, "other")
+        other_id = import_events(store, event("other"))[0]
+        binding = bind_evidence(store, other_id, other)
+    claim = result.model_copy(
+        update={
+            "record_id": "producer",
+            "ledger_id": "producer",
+            "inputs": [*result.inputs, reference(binding)],
+        }
+    )
+    before = store.export_bundle()
+    bundle = before.model_copy(update={"records": [claim]})
+    if foreign:
+        with pytest.raises(ContractError):
+            store.import_bundle(bundle)
+        assert store.export_bundle() == before
+    else:
+        store.import_bundle(bundle)
+        assert claim in store.records()
+
+
+class CountingRuns(list):
+    slots = 0
+
+    def __contains__(self, value):
+        self.slots += len(self)
+        return super().__contains__(value)
+
+
+@pytest.mark.parametrize("count", [10, 20])
+@pytest.mark.parametrize("computed", [False, True])
+def test_coverage_and_computed_binding_lookup_work(tmp_path, count, computed):
+    from changecost.store import key, validate_graph
+
+    store, _, members = setup_change(tmp_path, runs=count)
+    ids = import_events(store, *(event(str(i)) for i in range(count)))
+    for run, ident in zip(members, ids, strict=True):
+        bind_evidence(store, ident, run)
+        add_coverage(store, run, ident)
+    result = compute(store) if computed else None
+    records = CountingRecords((key(reference(record)), record) for record in store.records())
+    declared = CountingRuns(result.runs) if result is not None else CountingRuns()
+    if result is not None:
+        records[key(reference(result))] = result.model_copy(update={"runs": declared})
+    validate_graph(records)
+    assert records.visits <= 12 * len(records)
+    assert declared.slots <= 4 * count
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_binding_index_does_not_hide_conflicting_rows(tmp_path, reverse):
+    from changecost.store import key, validate_graph
+
+    store, _, members = setup_change(tmp_path, runs=2)
+    ident = import_events(store, event())[0]
+    original = bind_evidence(store, ident, members[0])
+    conflicting = original.model_copy(update={"record_id": "conflict", "run": members[1]})
+    rows = [*store.records(), conflicting]
+    if reverse:
+        rows.reverse()
+    records = {key(reference(record)): record for record in rows}
+    with pytest.raises(ContractError):
+        validate_graph(records)
+
+
+def test_later_foreign_binding_preserves_historical_unbound_inputs(tmp_path):
+    from changecost.models import Evidence
+    from changecost.operations import common
+
+    store, _, members = setup_change(tmp_path)
+    ids = import_events(store, event("target"), event("unbound"))
+    bind_evidence(store, ids[0], members[0])
+    add_coverage(store, members[0], ids[0])
+    plain = Evidence(
+        **common("origin", NOW, "plain"),
+        provider="synthetic",
+        surface="fixture",
+        profile="synthetic/v1",
+        identity_scope="namespaced",
+        source_key="plain",
+    )
+    store.apply(lambda records, store_id, now: ([plain], None))
+    historical = compute(store, "historical")
+    assert reference(plain) in historical.inputs and not historical.full_change
+    register_change(store, "repo", "foreign")
+    other = RUN.model_copy(update={"run_id": "foreign"})
+    register_run(store, other, "foreign")
+    for ident in (ids[1], plain.record_id):
+        bind_evidence(store, ident, other)
+    assert compute(store, "historical") == historical
+    destination = Store(tmp_path / "destination", clock=lambda: NOW)
+    destination.import_bundle(store.export_bundle())
+    assert historical in destination.records()
+
+
+class CountedMembers(set):
+    union_entries = 0
+
+    def __or__(self, other):
+        self.union_entries += len(self)
+        return super().__or__(other)
+
+
+@pytest.mark.parametrize("count", [10, 20])
+def test_outcome_subject_lookup_does_not_copy_members(tmp_path, count):
+    from changecost.economic_graph import validate_computed_subject
+    from changecost.store import key
+
+    store, _, members = setup_change(tmp_path, runs=count)
+    result = compute(store)
+    runs = [record for record in store.records() if record.kind == "run"]
+    member_keys = CountedMembers(key(reference(run)) for run in runs)
+    declared = {tuple(run.model_dump().values()) for run in members}
+    outcomes = [
+        record
+        for record in store.records()
+        if record.kind == "outcome" and record.subject.kind == "run"
+    ]
+    for outcome in outcomes:
+        validate_computed_subject(result, outcome, member_keys, declared)
+    assert member_keys.union_entries == 0
+
+
+@pytest.mark.parametrize("subject", ["change", "run", "foreign"])
+def test_computed_outcome_subject_membership_controls(tmp_path, subject):
+    from changecost.economic_graph import validate_computed_subject
+    from changecost.store import key
+
+    store, change, members = setup_change(tmp_path)
+    result = compute(store)
+    runs = [record for record in store.records() if record.kind == "run"]
+    member_keys = {key(reference(run)) for run in runs}
+    declared = {tuple(run.model_dump().values()) for run in members}
+    selected = reference(change) if subject == "change" else reference(runs[0])
+    if subject == "foreign":
+        other = register_change(store, "repo", "foreign")
+        declare(store, reference(other), LifecycleDeclaration(outcome="abandoned"))
+        selected = reference(other)
+    outcome = next(
+        record
+        for record in store.records()
+        if record.kind == "outcome" and record.subject == selected
+    )
+    if subject == "foreign":
+        with pytest.raises(ContractError, match="outcome subject"):
+            validate_computed_subject(result, outcome, member_keys, declared)
+    else:
+        validate_computed_subject(result, outcome, member_keys, declared)

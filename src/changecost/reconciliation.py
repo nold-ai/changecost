@@ -366,7 +366,6 @@ def chain_relevant(chain, resolved: bool, scope: EconomicScope) -> bool:
 
 
 def select_chain(result, chain, resolved, bindings, members):
-    result.inputs.update(key(reference(r)) for r in chain)
     mappings = [bindings[key(r.evidence)] for r in chain if key(r.evidence) in bindings]
     subjects = {tuple(m.run.model_dump().values()) for m in mappings}
     if len(subjects) > 1:
@@ -374,12 +373,12 @@ def select_chain(result, chain, resolved, bindings, members):
     if members is not None and subjects and subjects.isdisjoint(members):
         return
     result.inputs.update(key(reference(r)) for r in chain)
+    result.inputs.update(key(reference(m)) for m in mappings)
     if not resolved:
         result.exclude(chain, "pending_correction")
         return
     record = chain[0]
     result.runs[key(reference(record))] = mappings[0].run if mappings else None
-    result.inputs.update(key(reference(m)) for m in mappings)
     result.selected.append(record)
     result.exclude(chain[1:], "replaced", unresolved=False)
 

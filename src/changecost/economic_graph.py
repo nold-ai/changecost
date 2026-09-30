@@ -114,35 +114,36 @@ def economic_refs(record: EconomicEvidence, records: dict, bindings: dict) -> li
     return [record.evidence]
 
 
-def source_refs(record: SourceCoverage, records: dict, runs: dict) -> list:
+def source_refs(record: SourceCoverage, records: dict, runs: dict, bindings: dict) -> list:
     run = runs.get(tuple(record.run.model_dump().values()))
     if run is None:
         raise ContractError("unknown coverage Run")
-    bindings = {
-        r.evidence.record_id: r.run for r in records.values() if isinstance(r, EvidenceBinding)
-    }
     for ref in record.evidence:
         require(records, ref, "evidence")
-        if bindings.get(ref.record_id) != record.run:
+        binding = bindings.get((ref.kind, ref.record_id))
+        if binding is None or binding.run != record.run:
             raise ContractError("source coverage evidence subject mismatch")
     from changecost.store import reference
 
     return [reference(run), *record.evidence]
 
 
-def computed_refs(record: ComputedSettlement, records: dict, runs: dict) -> list:
+def computed_refs(
+    record: ComputedSettlement, records: dict, runs: dict, run_bindings: dict
+) -> list:
     change = require(records, record.change, "change")
     if not isinstance(change, Change) or change.repository_id != record.scope.repository_id:
         raise ContractError("computed scope mismatch")
-    members, membership_refs = computed_membership(record, records, runs, change)
+    members, membership_refs = computed_membership(record, runs, change, run_bindings)
     refs = [record.change, *record.inputs, *(e.reference for e in record.exclusions)]
     refs.extend(membership_refs)
     for exclusion in record.exclusions:
         item = require(records, exclusion.reference, "economic_evidence")
         if item.source.repository_id != record.scope.repository_id:
             raise ContractError("computed exclusion scope mismatch")
+    declared_runs = {tuple(run.model_dump().values()) for run in record.runs}
     for ref in record.inputs:
-        validate_computed_input(record, records, ref, members)
+        validate_computed_input(record, records, ref, members, declared_runs)
     if record.previous is not None:
         refs.append(record.previous)
     return refs
@@ -175,7 +176,7 @@ def validate_chain_subject(node, edges, events, bindings):
         node = edges[node]
 
 
-def validate_computed_input(record, records, ref, members):
+def validate_computed_input(record, records, ref, members, declared_runs):
     from changecost.store import key
 
     item = records.get(key(ref))
@@ -192,30 +193,35 @@ def validate_computed_input(record, records, ref, members):
     }
     if item is None or ref.kind not in allowed:
         raise ContractError("invalid computed input role")
-    validate_computed_subject(record, item, members)
+    validate_computed_subject(record, item, members, declared_runs)
 
 
-def validate_computed_subject(record, item, members):
+def validate_computed_subject(record, item, members, declared_runs):
     from changecost.store import key, reference
 
     if isinstance(item, Change) and reference(item) != record.change:
         raise ContractError("computed Change subject mismatch")
-    if isinstance(item, Outcome) and key(item.subject) not in members | {key(record.change)}:
+    if (
+        isinstance(item, Outcome)
+        and key(item.subject) not in members
+        and item.subject != record.change
+    ):
         raise ContractError("computed outcome subject mismatch")
-    if isinstance(item, (Interval, SourceCoverage, RunBinding)) and item.run not in record.runs:
+    if (
+        isinstance(item, (Interval, SourceCoverage, RunBinding, EvidenceBinding))
+        and tuple(item.run.model_dump().values()) not in declared_runs
+    ):
         raise ContractError("computed Run dependency mismatch")
-    if isinstance(item, Run) and item.ref not in record.runs:
+    if isinstance(item, Run) and tuple(item.ref.model_dump().values()) not in declared_runs:
         raise ContractError("computed Run dependency mismatch")
     if (
         isinstance(item, EconomicEvidence)
         and item.source.repository_id != record.scope.repository_id
     ):
         raise ContractError("computed economic input scope mismatch")
-    if isinstance(item, EvidenceBinding) and item.run.repository_id != record.scope.repository_id:
-        raise ContractError("computed binding scope mismatch")
 
 
-def computed_membership(record, records, runs, change):
+def computed_membership(record, runs, change, run_bindings):
     from changecost.store import key, reference
 
     members = set()
@@ -224,15 +230,8 @@ def computed_membership(record, records, runs, change):
         run = runs.get(tuple(member.model_dump().values()))
         if run is None or member.repository_id != change.repository_id:
             raise ContractError("invalid computed membership")
-        binding = next(
-            (
-                r
-                for r in records.values()
-                if isinstance(r, RunBinding) and r.run == member and r.change == record.change
-            ),
-            None,
-        )
-        if binding is None or key(reference(run)) in members:
+        binding = run_bindings.get(tuple(member.model_dump().values()))
+        if binding is None or binding.change != record.change or key(reference(run)) in members:
             raise ContractError("invalid computed membership binding")
         members.add(key(reference(run)))
         refs.extend([reference(run), reference(binding)])

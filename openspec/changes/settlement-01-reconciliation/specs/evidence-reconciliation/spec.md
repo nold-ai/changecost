@@ -349,3 +349,28 @@ amount was unknown, retaining its old unresolved revision and provenance.
 - **GIVEN** a valid normalized batch and an existing economic graph within the documented limits
 - **WHEN** evidence identity is matched during import or evidence bindings are checked during graph validation
 - **THEN** each operation builds its lookup index once and performs direct per-record lookups, preserving deduplication and cross-repository rejection without repeated full-record scans for these lookups.
+
+
+#### Scenario: Selection provenance follows retained chain decisions
+
+- **GIVEN** foreign explicitly attributed chains and a retained pending correction whose explicit binding establishes its target Run
+- **WHEN** a Change computation records immutable inputs
+- **THEN** foreign chains contribute neither inputs nor exclusions, while the retained pending chain includes the consulted binding as provenance even before its predecessor arrives.
+
+#### Scenario: Explicit mapping inputs respect declared membership
+
+- **GIVEN** a portable computed result naming an EvidenceBinding input
+- **WHEN** graph validation checks that dependency
+- **THEN** its complete RunRef belongs to the declared settlement Runs; a foreign explicit mapping fails atomically. Historical plain/economic evidence that was unbound at its cutoff remains valid when later assigned elsewhere.
+
+#### Scenario: Shared lookup indexes preserve validation boundaries
+
+- **GIVEN** multiple coverage assertions and computed membership declarations
+- **WHEN** a graph is validated
+- **THEN** EvidenceBinding and RunBinding indexes are built once per validation, and declared Run membership once per computed result; duplicate conflicting bindings remain rejected regardless of input order. These guarantees concern the lookup steps, not whole-pipeline complexity.
+
+#### Scenario: Outcome subject checks do not copy complete membership
+
+- **GIVEN** a computed result with many declared Runs and their Outcome inputs
+- **WHEN** each Outcome subject is validated
+- **THEN** its membership is checked without copying the complete member set per Outcome; the target Change and member Run Outcomes remain allowed, while a foreign subject is rejected.

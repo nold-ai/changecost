@@ -123,16 +123,16 @@ def revision_errors(record: PortableRecord, records: dict) -> None:
 
 
 def dependencies(
-    record: PortableRecord, records: dict, runs: dict, bindings: dict
+    record: PortableRecord, records: dict, runs: dict, bindings: dict, run_bindings: dict
 ) -> list[RecordRef]:
     from changecost.economic_graph import computed_refs, economic_refs, source_refs
 
     if isinstance(record, EconomicEvidence):
         return economic_refs(record, records, bindings)
     if isinstance(record, SourceCoverage):
-        return source_refs(record, records, runs)
+        return source_refs(record, records, runs, bindings)
     if isinstance(record, ComputedSettlement):
-        return computed_refs(record, records, runs)
+        return computed_refs(record, records, runs, run_bindings)
     return core_dependencies(record, records, runs)
 
 
@@ -212,9 +212,20 @@ def validate_subject(record: PortableRecord, records: dict) -> None:
     revision_errors(record, records)
 
 
+def graph_indexes(records: dict) -> tuple[dict, dict, dict]:
+    runs, evidence_bindings, run_bindings = {}, {}, {}
+    for record in records.values():
+        if isinstance(record, Run):
+            runs[run_key(record.ref)] = record
+        elif isinstance(record, EvidenceBinding):
+            evidence_bindings[key(record.evidence)] = record
+        elif isinstance(record, RunBinding):
+            run_bindings[run_key(record.run)] = record
+    return runs, evidence_bindings, run_bindings
+
+
 def validate_graph(records: dict) -> dict:
-    runs = {run_key(r.ref): r for r in records.values() if isinstance(r, Run)}
-    bindings = {key(r.evidence): r for r in records.values() if isinstance(r, EvidenceBinding)}
+    runs, bindings, run_bindings = graph_indexes(records)
     domains: dict[str, tuple] = {}
     children: set[tuple] = set()
     graph = {}
@@ -230,7 +241,9 @@ def validate_graph(records: dict) -> dict:
             if chain_key in children:
                 raise ContractError("revision history forks")
             children.add(chain_key)
-        graph[ref_key] = {key(ref) for ref in dependencies(record, records, runs, bindings)}
+        graph[ref_key] = {
+            key(ref) for ref in dependencies(record, records, runs, bindings, run_bindings)
+        }
         for ref in graph[ref_key]:
             if ref not in records:
                 raise ContractError("unknown record reference")

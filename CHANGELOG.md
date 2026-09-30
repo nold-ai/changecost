@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Preserve selected-chain input provenance, reject foreign explicit binding inputs,
+  and share coverage/computed membership indexes without reinterpreting historical
+  unbound evidence after later attribution; avoid copying full membership for each
+  Outcome subject check.
+
 - Isolate Change settlement selection from explicitly foreign correction chains
   and index normalized Evidence identities and economic bindings per operation.
   Preserve conservative unbound evidence and mixed attribution within the target Change.

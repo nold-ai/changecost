@@ -242,3 +242,62 @@ case, existing mixed-attribution, unbound, arbitrary core-ID and multi-component
 controls. An intermediate dependency-forwarding typo was corrected; its failing
 run remains recorded and is not cited as baseline TDD proof. Final full matrix,
 independent closure and current-head hosted review belong in the live PR receipt.
+
+
+## Family investigation and provenance/index correction — 2026-10-01
+
+Codex review 5372995808 of published 98d6e273 found three remaining defects:
+foreign chain inputs survived an early return, explicit EvidenceBinding inputs
+were only repository-checked, and SourceCoverage validation rebuilt bindings for
+every assertion. Independent family-wide investigation confirmed these and found
+two related paths: retained pending corrections omitted consulted mapping inputs,
+and computed membership rescanned Run bindings. It also covered repeated declared
+Run membership checks, all computed input roles, selection, normalized import and
+portable history. Earlier subtotal/exclusion-only regressions missed immutable
+provenance; this was reevaluated rather than dismissed as redundant code.
+
+Before runtime edits, the selected new/strengthened tests in
+`tests/test_reconciliation.py` produced 10 failures and four passing controls
+(0.51 seconds), recorded in batch6-red.log. They assert foreign input isolation,
+pending binding provenance, atomic explicit foreign-mapping rejection and bounded
+record-map exposure across coverage/computed membership at 10 and 20 Runs. The
+controls preserve accepted member mappings, both conflicting-binding input orders,
+and historical unbound plain/economic evidence after later foreign binding.
+
+The correction records retained event and mapping references after membership
+selection and before pending-chain return. It shares full-reference Evidence/Run
+binding indexes once per validation and a declared-Run set once per computed
+result. It checks explicit mapping membership without retroactively inferring
+historical economic attribution from newer bindings. This is a bound on these
+lookup steps, not an assertion of whole-pipeline linear complexity.
+
+After correction, 156 focused reconciliation, CLI, store and contract tests passed
+in 0.85 seconds. An intermediate signature-propagation error and local CC16
+diagnostic were fixed inside this batch; they are retained as implementation
+diagnostics, not baseline behavioral red evidence. No analyzer threshold, schema,
+CLI, dependency or unpublished 0.1.0.dev0 version changed. Fresh full matrix,
+independent family closure, supported-Linux native assurance and hosted provider
+results remain separate live PR/ledger acceptance obligations.
+
+
+## Outcome lookup replan and correction — 2026-10-01
+
+Independent review of the preceding family correction found a remaining
+`members | {change}` copy for every Outcome input: 10 and 20 Run Outcomes copied
+100 and 400 member entries. This was retained as a post-investigation escape in
+the same bounded-lookup family. The maintainer explicitly approved the concrete
+replan and continued verification; budget/history were preserved, not reset.
+
+Before this fix, `pytest -q tests/test_reconciliation.py -k
+'outcome_subject_lookup or computed_outcome_subject_membership'` produced two
+counted-work failures and three passing subject controls in 0.17 seconds. The
+minimal correction checks membership in the existing set or equality with the
+Change reference separately. The same Change/Run Outcomes remain accepted and a
+foreign Outcome remains rejected. No per-Outcome membership set is allocated.
+
+After the fix, 161 focused reconciliation, CLI, store and contract tests passed
+in 2.58 seconds; typing passed with zero errors or warnings. The preceding
+mechanical-only matrix (1,038 tests per Python version) did not certify absence
+of this defect. Fresh independent closure covering the exact named escape and
+all prior related fixes, full quality verification and new-head hosted assurance
+remain required before live acceptance. Version stays unpublished 0.1.0.dev0.

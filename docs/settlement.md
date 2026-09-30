@@ -89,11 +89,15 @@ A Change computation excludes correction chains explicitly attributed to other
 Runs before applying correction and temporal-lane policy. All Runs belonging to
 the requested Change remain in scope, so mixed attribution within that Change
 still blocks unsupported snapshot selection. Chains without an explicit binding
-remain potentially relevant. Repository reports continue to consider all Runs.
+remain potentially relevant. Foreign chains contribute neither inputs nor exclusions.
+Retained chains record consulted explicit bindings even while a correction target
+is missing. Repository reports continue to consider all Runs.
 
 Normalized import indexes existing Evidence identities once per transaction,
 preserving the first matching core record and updating the index for new records.
-Economic graph validation similarly indexes Evidence bindings once per validation.
+Economic graph validation similarly indexes Evidence and Run bindings once per
+validation and declared Run membership once per computed result. Coverage and
+computed membership validation reuse those indexes.
 These bounds apply to these lookup steps, not to total pipeline complexity.
 
 ## Temporal and coverage policy

@@ -1,30 +1,26 @@
 {
   "docs/agent-rules/50-quality-gates-and-review.md": {
     "reason": "Required analyzers, Python matrix, review-session budgets and provider policies are unchanged. This runtime correction does not waive required hosted validation.",
-    "digest": "bcf6e240b569e514d49398f8873cf6b0a6e8ee6b41bd2bf95c7a4024a8c9c29d"
+    "digest": "4596d23ca7a83e8db191fb5d0fd61af3c2dfdb04904cbcf470aa5ee9ef33cd3f"
   },
   "docs/development/quality-gates.md": {
     "reason": "Gate commands, supported execution platform and analyzer thresholds are unchanged; local targeted diagnostics remain distinct from mandatory native hosted assurance.",
-    "digest": "bcf6e240b569e514d49398f8873cf6b0a6e8ee6b41bd2bf95c7a4024a8c9c29d"
+    "digest": "4596d23ca7a83e8db191fb5d0fd61af3c2dfdb04904cbcf470aa5ee9ef33cd3f"
   },
   "CONTRIBUTING.md": {
     "reason": "Contributor commands, dependencies, stage boundaries and acceptance policy are unchanged; this batch corrects scoped runtime behavior and documents its exact red/green evidence.",
-    "digest": "bcf6e240b569e514d49398f8873cf6b0a6e8ee6b41bd2bf95c7a4024a8c9c29d"
+    "digest": "4596d23ca7a83e8db191fb5d0fd61af3c2dfdb04904cbcf470aa5ee9ef33cd3f"
   },
   "README.md": {
     "reason": "The correction restores the documented Change-specific settlement behavior and optimizes two internal lookup steps; installation, CLI usage, offline scope and unreleased 0.x phase are unchanged. Detailed policy and red/green evidence are updated in settlement documentation and TDD evidence.",
-    "digest": "bcf6e240b569e514d49398f8873cf6b0a6e8ee6b41bd2bf95c7a4024a8c9c29d"
+    "digest": "4596d23ca7a83e8db191fb5d0fd61af3c2dfdb04904cbcf470aa5ee9ef33cd3f"
   },
   "docs/commands.md": {
     "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",
-    "digest": "751fd5a5b1c247e5f9e61bedc5c3dddc63da92448a61e18fa412d8f64f9f7584"
+    "digest": "0d02e14b69dd07c2e8b96830c373e38ffba41c11ec528b872a63077862bbdd92"
   },
   "llms.txt": {
     "reason": "Generated navigation and capability summaries are unchanged; existing settlement and TDD links cover the updated Change isolation and bounded lookup details.",
-    "digest": "751fd5a5b1c247e5f9e61bedc5c3dddc63da92448a61e18fa412d8f64f9f7584"
-  },
-  "docs/contracts.md": {
-    "reason": "No serialized field, schema, reference validity, local authority, timestamp or recovery contract changes. Per-validation indexing preserves cross-repository rejection and per-import indexing preserves first matching core Evidence identity.",
-    "digest": "79eebc0384c2fff64c114eff1cb5cf6fd5a20503943c56ad0ed7f3da64355bd6"
+    "digest": "0d02e14b69dd07c2e8b96830c373e38ffba41c11ec528b872a63077862bbdd92"
   }
 }

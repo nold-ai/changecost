@@ -158,3 +158,13 @@ Keep package version `0.1.0.dev0`; contract versioning is independent. The inter
 checkouts may reject new kinds. No public v2 or general migration programme is
 introduced. This working implementation is based on `999cb8f`; its actual tested
 state and limitations are in [settlement evidence](../openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md).
+
+
+Computed-result input roles include subject checks: an explicit EvidenceBinding
+input must name one of the result's declared complete RunRefs, just like its
+interval, source coverage and Run binding inputs. A foreign mapping fails portable
+import atomically. Historical plain or economic evidence that was unbound at its
+input cutoff is not reinterpreted using a later binding elsewhere.
+
+Outcome subjects use separate member-set and Change-reference checks, preserving
+the same allowed subjects without copying complete membership for every Outcome.
