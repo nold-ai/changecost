@@ -177,3 +177,35 @@ matrix/analyzer assurance and hosted exact-head reviews remain pending. Their
 live evidence belongs in the PR body and existing review ledger, without a
 receipt-only source commit. Tasks 6.3 and 6.4 remain unchecked until their full
 acceptance obligations are established. Version remains unpublished 0.1.0.dev0.
+
+## Hosted static-quality correction — 2026-10-01
+
+The first supported-Linux matrix at commit `822243c133ecaa2c0b4c78f033ed7edeb788d6a3`
+([run 36783132528](https://github.com/nold-ai/changecost/actions/runs/36783132528))
+ran all ten required analyzers on both Python versions. Eight passed; Radon and
+Pylint failed with the same nine blocking findings. This is actual failing static
+analysis evidence, not a behavioral TDD failure or accepted native pass.
+
+Correction batch 4 separates source-chain selection, file overlap, snapshot/window
+validation, coverage membership, portable-ledger ownership and immutable result
+construction into focused functions. The source input comparison iterates the
+already-validated input object's fields rather than Pydantic class metadata. The
+coverage test cases retain their scenarios with fixture construction separated.
+The internal schemas, transaction boundaries, CLI, exact amounts and thresholds
+are unchanged. No analyzer suppressions or gate-policy changes were added.
+
+Pinned local Radon 6.0.1 reports no complexity above the configured blocking
+threshold of 15, and the affected functions have no more than seven parameters;
+immutable-result construction now uses five. Pylint 4.0.7 with strict None/opaque
+inference and pinned runtime imports reports no E/F findings in the six changed
+files. This local diagnostic run is not sealed-capsule assurance: translating the
+native blank decorator settings literally produced baseline-only context-manager
+errors absent from the hosted report, so the local run retains Pylint's standard
+context-manager recognition. Fresh hosted native results remain mandatory.
+
+After the final refactor, 159 relevant tests and four installed-CLI subtests passed
+in 4.06 seconds; Ruff/format and BasedPyright passed. Local diagnostic syntax and
+intermediate type/inference failures were corrected and are not product TDD proof.
+Full post-refactor matrix, independent affected-scope closure and exact-head hosted
+analysis are recorded in the live PR/ledger once observed. Original failed native
+reports remain in the run artifacts and ignored workflow receipts.

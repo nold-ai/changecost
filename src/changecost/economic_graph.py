@@ -135,29 +135,12 @@ def source_refs(record: SourceCoverage, records: dict, runs: dict) -> list:
 
 
 def computed_refs(record: ComputedSettlement, records: dict, runs: dict) -> list:
-    from changecost.store import key, reference
-
     change = require(records, record.change, "change")
     if not isinstance(change, Change) or change.repository_id != record.scope.repository_id:
         raise ContractError("computed scope mismatch")
-    members = set()
+    members, membership_refs = computed_membership(record, records, runs, change)
     refs = [record.change, *record.inputs, *(e.reference for e in record.exclusions)]
-    for member in record.runs:
-        run = runs.get(tuple(member.model_dump().values()))
-        if run is None or member.repository_id != change.repository_id:
-            raise ContractError("invalid computed membership")
-        binding = next(
-            (
-                r
-                for r in records.values()
-                if isinstance(r, RunBinding) and r.run == member and r.change == record.change
-            ),
-            None,
-        )
-        if binding is None or key(reference(run)) in members:
-            raise ContractError("invalid computed membership binding")
-        members.add(key(reference(run)))
-        refs.extend([reference(run), reference(binding)])
+    refs.extend(membership_refs)
     for exclusion in record.exclusions:
         item = require(records, exclusion.reference, "economic_evidence")
         if item.source.repository_id != record.scope.repository_id:
@@ -234,3 +217,27 @@ def validate_computed_subject(record, item, members):
         raise ContractError("computed economic input scope mismatch")
     if isinstance(item, EvidenceBinding) and item.run.repository_id != record.scope.repository_id:
         raise ContractError("computed binding scope mismatch")
+
+
+def computed_membership(record, records, runs, change):
+    from changecost.store import key, reference
+
+    members = set()
+    refs = []
+    for member in record.runs:
+        run = runs.get(tuple(member.model_dump().values()))
+        if run is None or member.repository_id != change.repository_id:
+            raise ContractError("invalid computed membership")
+        binding = next(
+            (
+                r
+                for r in records.values()
+                if isinstance(r, RunBinding) and r.run == member and r.change == record.change
+            ),
+            None,
+        )
+        if binding is None or key(reference(run)) in members:
+            raise ContractError("invalid computed membership binding")
+        members.add(key(reference(run)))
+        refs.extend([reference(run), reference(binding)])
+    return members, refs

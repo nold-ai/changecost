@@ -355,18 +355,7 @@ def test_coverage_failure_modes(tmp_path, failure):
     if failure == "zero_runs":
         assert not compute(store).full_change
         return
-    item = event()
-    if failure == "unknown":
-        item = event(amount=None)
-    if failure == "bounds":
-        item = event(
-            start=(START + timedelta(minutes=1)).isoformat(),
-            end=(START + timedelta(minutes=1)).isoformat(),
-        )
-    if failure == "endpoint":
-        item = event(start=NOW.isoformat(), end=NOW.isoformat())
-    if failure == "unsupported_source":
-        item = event(source={**locator(), "profile": "manual"})
+    item = coverage_failure_event(failure)
     ids = import_events(store, item)
     bind_evidence(store, ids[0], members[0])
     if failure not in {"no_coverage", "zero_duration"}:
@@ -785,3 +774,19 @@ def test_source_coverage_rejects_foreign_evidence_subject(tmp_path):
     with pytest.raises(ContractError):
         add_coverage(store, members[1], ids[0])
     assert store.export_bundle() == before
+
+
+def coverage_failure_event(failure):
+    item = event()
+    if failure == "unknown":
+        item = event(amount=None)
+    if failure == "bounds":
+        item = event(
+            start=(START + timedelta(minutes=1)).isoformat(),
+            end=(START + timedelta(minutes=1)).isoformat(),
+        )
+    if failure == "endpoint":
+        item = event(start=NOW.isoformat(), end=NOW.isoformat())
+    if failure == "unsupported_source":
+        item = event(source={**locator(), "profile": "manual"})
+    return item

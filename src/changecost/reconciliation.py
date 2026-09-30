@@ -109,19 +109,7 @@ def effective_events(records: dict, scope: EconomicScope) -> Selection:
         chain, resolved = chain_members(events, leaf, edges)
         if not chain_relevant(chain, resolved, scope):
             continue
-        result.inputs.update(key(reference(r)) for r in chain)
-        mappings = [bindings[key(r.evidence)] for r in chain if key(r.evidence) in bindings]
-        subjects = {tuple(m.run.model_dump().values()) for m in mappings}
-        if len(subjects) > 1:
-            raise ContractError("replacement changes attribution subject")
-        if not resolved:
-            result.exclude(chain, "pending_correction")
-            continue
-        record = chain[0]
-        result.runs[key(reference(record))] = mappings[0].run if mappings else None
-        result.inputs.update(key(reference(m)) for m in mappings)
-        result.selected.append(record)
-        result.exclude(chain[1:], "replaced", unresolved=False)
+        select_chain(result, chain, resolved, bindings)
     return result
 
 
@@ -139,38 +127,43 @@ def overlaps(left, right) -> bool:
 
 
 def choose_series(events: list[EconomicEvidence], result: Selection, scope: EconomicScope, records):
-    files = {e.source.file_digest for e in events if e.source.identity_scope == "file"}
-    if len(files) > 1 and any(
-        a.source.file_digest != b.source.file_digest and overlaps(a, b)
-        for a in events
-        for b in events
-    ):
+    if ambiguous_file_overlap(events):
         result.exclude(events, "dedupe_limited_overlap")
         return []
     snapshots = [e for e in events if e.lane == "snapshot"]
     if snapshots:
-        from changecost.coverage import supported_event
+        return select_snapshot(events, result, scope, records)
+    return select_deltas(events, result, scope)
 
-        if len(snapshots) != 1 or any(not supported_event(e) for e in events):
-            result.exclude(events, "unsupported_temporal_lane")
-            return []
-        snapshot = snapshots[0]
-        run = result.runs[key(reference(snapshot))]
-        from changecost.operations import latest
 
-        interval = latest(records, "interval", tuple(run.model_dump().values())) if run else None
-        exact = interval is not None and (interval.start, interval.end) == (
-            snapshot.start,
-            snapshot.end,
-        )
-        if scope.start is not None:
-            exact = exact and (scope.start, scope.end) == (snapshot.start, snapshot.end)
-        subjects = {str(result.runs[key(reference(e))]) for e in events}
-        if not snapshot.baseline_zero or not exact or len(subjects) != 1:
-            result.exclude(events, "unsupported_snapshot_window")
-            return []
-        result.exclude([e for e in events if e != snapshot], "non_authoritative_lane", False)
-        return [snapshot]
+def ambiguous_file_overlap(events) -> bool:
+    files = {e.source.file_digest for e in events if e.source.identity_scope == "file"}
+    return len(files) > 1 and any(
+        a.source.file_digest != b.source.file_digest and overlaps(a, b)
+        for a in events
+        for b in events
+    )
+
+
+def select_snapshot(events, result, scope, records):
+    snapshots = [e for e in events if e.lane == "snapshot"]
+    from changecost.coverage import supported_event
+
+    if len(snapshots) != 1 or any(not supported_event(e) for e in events):
+        result.exclude(events, "unsupported_temporal_lane")
+        return []
+    snapshot = snapshots[0]
+    run = result.runs[key(reference(snapshot))]
+    exact = exact_snapshot_window(snapshot, run, scope, records)
+    subjects = {str(result.runs[key(reference(e))]) for e in events}
+    if not snapshot.baseline_zero or not exact or len(subjects) != 1:
+        result.exclude(events, "unsupported_snapshot_window")
+        return []
+    result.exclude([e for e in events if e != snapshot], "non_authoritative_lane", False)
+    return [snapshot]
+
+
+def select_deltas(events, result, scope):
     included = []
     for event in events:
         if in_window(event, scope):
@@ -239,7 +232,7 @@ def snapshot_records(connection, cutoff: Cutoff) -> dict:
         included = narrowed
 
 
-def computation_result(records, change, scope, operation_id, cutoff, store_id, now, previous):
+def computation_details(records, change, scope):
     from changecost.coverage import assess_coverage, supported_event
 
     selection = select(records, scope)
@@ -260,14 +253,7 @@ def computation_result(records, change, scope, operation_id, cutoff, store_id, n
     inputs = selection.inputs | supporting | {key(reference(change))}
     from changecost.models import RecordRef
 
-    return ComputedSettlement(
-        **common(store_id, now),
-        change=reference(change),
-        operation_id=operation_id,
-        ledger_id=previous.ledger_id if previous else str(uuid4()),
-        cutoff=cutoff,
-        algorithm_version=ALGORITHM,
-        policy_version=POLICY,
+    return dict(
         scope=scope,
         subtotals=totals,
         runs=members,
@@ -276,7 +262,6 @@ def computation_result(records, change, scope, operation_id, cutoff, store_id, n
         unknown_reasons=sorted(reasons),
         full_change=not reasons,
         synthetic=bool(selected) and all(supported_event(e) for e in selected),
-        previous=reference(previous) if previous else None,
     )
 
 
@@ -315,8 +300,8 @@ def compute_settlement(store: Store, change_id: str, scope: EconomicScope, opera
         ]
         parents = {r.previous.record_id for r in local if r.previous is not None}
         previous = next((r for r in local if r.record_id not in parents), None)
-        result = computation_result(
-            records, change, scope, operation_id, cutoff, store_id, now, previous
+        result = make_computation(
+            computation_details(records, change, scope), change, operation_id, cutoff, previous
         )
         validate_graph({**all_records, key(reference(result)): result})
         store.insert(connection, [result], sequence + 1, now, last_at)
@@ -378,3 +363,50 @@ def chain_relevant(chain, resolved: bool, scope: EconomicScope) -> bool:
     if resolved:
         return relevant(chain[0], scope)
     return any(relevant(event, scope) for event in chain)
+
+
+def select_chain(result, chain, resolved, bindings):
+    result.inputs.update(key(reference(r)) for r in chain)
+    mappings = [bindings[key(r.evidence)] for r in chain if key(r.evidence) in bindings]
+    subjects = {tuple(m.run.model_dump().values()) for m in mappings}
+    if len(subjects) > 1:
+        raise ContractError("replacement changes attribution subject")
+    if not resolved:
+        result.exclude(chain, "pending_correction")
+        return
+    record = chain[0]
+    result.runs[key(reference(record))] = mappings[0].run if mappings else None
+    result.inputs.update(key(reference(m)) for m in mappings)
+    result.selected.append(record)
+    result.exclude(chain[1:], "replaced", unresolved=False)
+
+
+def exact_snapshot_window(snapshot, run, scope, records):
+    from changecost.operations import latest
+
+    if run is None:
+        return False
+    interval = latest(records, "interval", tuple(run.model_dump().values()))
+    if interval is None:
+        return False
+    exact = (interval.start, interval.end) == (
+        snapshot.start,
+        snapshot.end,
+    )
+    if scope.start is not None:
+        exact = exact and (scope.start, scope.end) == (snapshot.start, snapshot.end)
+    return exact
+
+
+def make_computation(details, change, operation_id, cutoff, previous):
+    return ComputedSettlement(
+        **common(cutoff.store_id, cutoff.at),
+        change=reference(change),
+        operation_id=operation_id,
+        ledger_id=previous.ledger_id if previous else str(uuid4()),
+        cutoff=cutoff,
+        algorithm_version=ALGORITHM,
+        policy_version=POLICY,
+        previous=reference(previous) if previous else None,
+        **details,
+    )

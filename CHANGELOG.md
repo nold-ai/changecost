@@ -42,6 +42,10 @@
 - Add a contributor behavioral-evidence packet validator and bounded independent
   SQLite lifecycle controls, with delta-review guidance and measured pilot evidence.
 
+- Refactor settlement selection, coverage, portable-ledger validation and result
+  construction after the first hosted native review identified complexity and
+  Pydantic metadata-inference blockers; preserve runtime and wire behavior.
+
 - Implement offline normalized economic input, stable component identities, replacement
   correction history, bounded exact subtotals, snapshot-bound operation receipts,
   synthetic coverage and read-only repository remainder reports. Add typed internal

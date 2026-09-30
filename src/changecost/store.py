@@ -397,24 +397,8 @@ class Store:
 
     def import_into(self, connection, bundle: Bundle):
         records = read_records(connection)
-        merged = dict(records)
         local_ids = {row[0] for row in connection.execute("SELECT record_id FROM computations")}
-        local_ledgers = {
-            r.ledger_id
-            for r in records.values()
-            if isinstance(r, ComputedSettlement) and r.record_id in local_ids
-        }
-        for record in bundle.records:
-            if (
-                isinstance(record, ComputedSettlement)
-                and record.ledger_id in local_ledgers
-                and key(reference(record)) not in records
-            ):
-                raise ContractError("portable import cannot extend a local computed ledger")
-            ref = key(reference(record))
-            if ref in merged and merged[ref] != record:
-                raise ContractError("conflicting record identity")
-            merged[ref] = record
+        merged = merge_portable_records(records, bundle, local_ids)
         validate_graph(merged)
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
         now = timestamp(self.clock())
@@ -520,3 +504,24 @@ def available(record, observation, cutoff: Cutoff) -> bool:
         and record.recorded_at <= cutoff.at
         and record.effective_at <= cutoff.at
     )
+
+
+def merge_portable_records(records, bundle, local_ids):
+    merged = dict(records)
+    local_ledgers = {
+        r.ledger_id
+        for r in records.values()
+        if isinstance(r, ComputedSettlement) and r.record_id in local_ids
+    }
+    for record in bundle.records:
+        if (
+            isinstance(record, ComputedSettlement)
+            and record.ledger_id in local_ledgers
+            and key(reference(record)) not in records
+        ):
+            raise ContractError("portable import cannot extend a local computed ledger")
+        ref = key(reference(record))
+        if ref in merged and merged[ref] != record:
+            raise ContractError("conflicting record identity")
+        merged[ref] = record
+    return merged

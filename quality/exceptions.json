@@ -1,10 +1,34 @@
 {
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed and retained PR #27 gate and review guidance unchanged after refreshing main. Settlement changes runtime contracts and offline CLI behavior, documented in contracts, CLI, settlement and TDD pages; it does not change gate commands, analyzer policy, Python matrix, lock/build rules or the newly adopted review-session semantics. Native Linux assurance remains pending.",
-    "digest": "12ec1b4a83885ca444474d24e9086da6f6bab558c8cc5e586eb8199ad981ae41"
+    "reason": "The native Radon/Pylint failures are corrected in product code without altering analyzer policy, thresholds, gate commands, Python matrix or review-session rules. Existing guidance remains applicable.",
+    "digest": "b16da194e28333121e1f6ca1e95b5fb8a25966c0aef91beb70b8ab20696cb7b3"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed and retained PR #27 gate and review guidance unchanged after refreshing main. Settlement changes runtime contracts and offline CLI behavior, documented in contracts, CLI, settlement and TDD pages; it does not change gate commands, analyzer policy, Python matrix, lock/build rules or the newly adopted review-session semantics. Native Linux assurance remains pending.",
-    "digest": "12ec1b4a83885ca444474d24e9086da6f6bab558c8cc5e586eb8199ad981ae41"
+    "reason": "The same mandatory Linux analyzer pipeline and local/staged checks remain in force. Refactoring does not change gate behavior or accept an unsupported controller as passing.",
+    "digest": "b16da194e28333121e1f6ca1e95b5fb8a25966c0aef91beb70b8ab20696cb7b3"
+  },
+  "CONTRIBUTING.md": {
+    "reason": "The refactor preserves all contributor commands, stage boundaries, dependencies and acceptance policy; the hosted failure and focused correction are documented in settlement TDD evidence.",
+    "digest": "b16da194e28333121e1f6ca1e95b5fb8a25966c0aef91beb70b8ab20696cb7b3"
+  },
+  "README.md": {
+    "reason": "The six-file static-quality refactor preserves the documented offline capabilities, setup, unreleased 0.x phase and pending native assurance; no usage instructions changed.",
+    "digest": "b16da194e28333121e1f6ca1e95b5fb8a25966c0aef91beb70b8ab20696cb7b3"
+  },
+  "docs/commands.md": {
+    "reason": "Generated CLI output is byte-identical: the static-quality refactor changes internal helper structure and typed input iteration only; all command names and options remain unchanged.",
+    "digest": "abac2254cc940ea361837d560309a73f447dcbaa5ce02604a2e36fb1d03cb198"
+  },
+  "llms.txt": {
+    "reason": "Generated navigation and capability descriptions are byte-identical. Existing settlement/TDD entries already point to the updated static-quality evidence; no new entrypoint or skill was added.",
+    "digest": "abac2254cc940ea361837d560309a73f447dcbaa5ce02604a2e36fb1d03cb198"
+  },
+  "docs/contracts.md": {
+    "reason": "Reviewed the extracted membership/ledger validation and result construction: field names, strict validation, transaction boundaries, local authority, timestamps, version and recovery behavior are unchanged.",
+    "digest": "c918bb8b190379b039ed75ea0a0a3ea755f872a21827aeaf17b7b2ad89ede7ca"
+  },
+  "docs/settlement.md": {
+    "reason": "Reviewed source-chain/lane/window and coverage refactors plus unchanged CLI examples: exact sums, exclusions, synthetic-only finality, retry semantics and recovery limits are preserved. TDD evidence records the native failures and focused correction.",
+    "digest": "1ce6ccb6b2e955cdcc998c1964983c82f90166d253b1483145ff7760645dd970"
   }
 }

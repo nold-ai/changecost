@@ -52,12 +52,10 @@ def assess_run(records, run, selection, selected, scope):
     refs.add(key(reference(run_record)))
     outcome = latest(records, "outcome", key(reference(run_record)))
     interval = latest(records, "interval", tuple(run.model_dump().values()))
-    for record in (outcome, interval):
-        if record is not None:
-            refs.add(key(reference(record)))
+    refs.update(lifecycle_refs(outcome, interval))
     if outcome is None:
         reasons.add("open_run")
-    if interval is None or interval.start is None or interval.end is None:
+    if interval is None or missing_bounds(interval):
         reasons.add("missing_work_bounds")
         return reasons, refs
     all_events = [e for e in selection.effective if selection.runs[key(reference(e))] == run]
@@ -105,15 +103,10 @@ def assess_coverage(records, change, members, selection, selected, scope):
     )
     if any(selection.runs[key(reference(e))] is None for e in selection.selected):
         reasons.add("relevant_unbound_evidence")
-    bindings = {key(r.evidence): r for r in records.values() if isinstance(r, EvidenceBinding)}
-    economics = {key(r.evidence) for r in records.values() if r.kind == "economic_evidence"}
-    for record in records.values():
-        if not isinstance(record, Evidence) or key(reference(record)) in economics:
-            continue
-        binding = bindings.get(key(reference(record)))
-        if binding is None or binding.run in members:
-            reasons.add("missing_economic_evidence")
-            refs.add(key(reference(record)))
+    missing = unpriced_evidence(records, members)
+    if missing:
+        reasons.add("missing_economic_evidence")
+        refs.update(missing)
     if any(economic_identity(e.component) != scope.economic for e in selected):
         reasons.add("unresolved_economic_identity")
     return reasons, refs
@@ -125,3 +118,20 @@ def partial_scope(scope, interval) -> bool:
 
 def missing_bounds(interval) -> bool:
     return interval is None or interval.start is None or interval.end is None
+
+
+def lifecycle_refs(*records) -> set:
+    return {key(reference(record)) for record in records if record is not None}
+
+
+def unpriced_evidence(records, members) -> set:
+    refs = set()
+    bindings = {key(r.evidence): r for r in records.values() if isinstance(r, EvidenceBinding)}
+    economics = {key(r.evidence) for r in records.values() if r.kind == "economic_evidence"}
+    for record in records.values():
+        if not isinstance(record, Evidence) or key(reference(record)) in economics:
+            continue
+        binding = bindings.get(key(reference(record)))
+        if binding is None or binding.run in members:
+            refs.add(key(reference(record)))
+    return refs

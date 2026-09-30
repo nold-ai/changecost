@@ -67,7 +67,7 @@ def import_evidence(store: Store, data: object, repository_id: str) -> list[str]
             identity = economic_key(economic)
             prior = existing.get(identity)
             if prior is not None:
-                prior_input = {k: getattr(prior, k) for k in EconomicInput.model_fields}
+                prior_input = {k: getattr(prior, k) for k in event.model_dump()}
                 if EconomicInput.model_validate(prior_input) != event:
                     raise ContractError("conflicting normalized source semantics")
                 selectors.append(prior.evidence.record_id)
