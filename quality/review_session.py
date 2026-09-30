@@ -25,6 +25,7 @@ SCHEMA_VERSION = 8
 DEFAULT_BATCHES = 3
 DEFAULT_MINUTES = 90
 WAIT_LIMIT_MINUTES = 30
+ABSOLUTE_WAIT_MINUTES = 45
 REQUEST_DEADLINE: ContextVar[float | None] = ContextVar("request_deadline", default=None)
 
 
@@ -162,6 +163,10 @@ def validate_provenance(event: dict[str, Any], provenance: Any) -> None:
             expected.add("adoption")
             if provenance.get("adoption") != adoption_binding(event):
                 raise ValueError("base adoption provenance mismatch")
+    if event["kind"] == "evidence" and "provider_completions" in event:
+        expected.add("provider_sources")
+        if not isinstance(provenance.get("provider_sources"), list):
+            raise ValueError("native evidence requires retained provider sources")
     if provenance.keys() != expected:
         raise ValueError("unexpected event provenance fields")
 
@@ -327,6 +332,36 @@ def file_fingerprint(root: Path, name: str) -> str:
         raise ValueError(f"cannot read intended path: {name}") from error
 
 
+def index_entries(raw: bytes) -> dict[str, list[list[str]]]:
+    """Parse one Git index snapshot for all declared input identities."""
+    entries: dict[str, list[list[str]]] = {}
+    for record in raw.split(b"\0"):
+        if record:
+            metadata, _, name = record.partition(b"\t")
+            entries.setdefault(name.decode(), []).append(metadata.decode().split())
+    return entries
+
+
+def input_fingerprint(
+    root: Path, name: str, index: dict[str, list[list[str]]] | None = None
+) -> str:
+    """Bind declared bytes, executable mode and exact supported index identity."""
+    content = file_fingerprint(root, name)
+    path = repository.safe_path(root, name)
+    mode = (
+        None if content == "<absent>" else ("100755" if path.stat().st_mode & 0o100 else "100644")
+    )
+    if index is None:
+        index = index_entries(repository.git(root, "ls-files", "--stage", "-z"))
+    entries = index.get(name, [])
+    if len(entries) > 1 or any(
+        stage != "0" or mode not in {"100644", "100755"} for mode, _, stage in entries
+    ):
+        raise ValueError("unsupported or unmerged declared index entry")
+    value = dict(format="input-identity/v1", content=content, mode=mode, index=entries)
+    return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
+
+
 def validate_initial_scope(contract: dict[str, Any], facts: Any) -> None:
     if not isinstance(facts, dict) or facts.keys() != {
         "base",
@@ -364,12 +399,13 @@ def capture_inputs(root: Path, expected_head: str, declared: Any) -> dict[str, A
     names = repository.git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
     files = set(names.decode().split("\0")) - {""}
     index = repository.git(root, "ls-files", "--stage", "-z")
-    fingerprints = {name: file_fingerprint(root, name) for name in declared}
+    parsed_index = index_entries(index)
+    fingerprints = {name: input_fingerprint(root, name, parsed_index) for name in declared}
     manifest = json.dumps(fingerprints, sort_keys=True).encode()
     fingerprint = repository.digest(root, files).encode() + b"\0" + index + b"\0" + manifest
     tracked = {record.partition(b"\t")[2].decode() for record in index.split(b"\0") if record}
     untracked_declared = any(
-        name not in tracked and value != "<absent>" for name, value in fingerprints.items()
+        name not in tracked and file_fingerprint(root, name) != "<absent>" for name in declared
     )
     clean = not untracked_declared and not repository.git(
         root, "status", "--porcelain", "--untracked-files=all"
@@ -510,6 +546,8 @@ def record(
             return state
         if expected_revision is not None and state["revision"] != expected_revision:
             raise ConflictError(f"expected revision {expected_revision}, found {state['revision']}")
+        if event["kind"] in {"batch", "investigation"} and budget_decision(state):
+            raise ValueError("review budget exhausted; explicit extension required")
         return persist_event(root, change_id, state, event)
 
 
@@ -537,6 +575,10 @@ def persist_event(
 def capture_event_facts(
     root: Path, state: dict[str, Any], event: dict[str, Any], provenance: dict[str, Any]
 ) -> None:
+    if "provider_completions" in event or "resolves_findings" in event:
+        require_current_inputs(root, state)
+    if event["kind"] == "evidence" and "provider_completions" in event:
+        provenance["provider_sources"] = capture_provider_sources(state, event)
     if event["kind"] != "advance_head":
         return
     scope = refresh_scope_contract(state, event)
@@ -604,6 +646,10 @@ def apply_event(state: dict[str, Any], event: dict[str, Any], provenance: dict[s
             state.update(copy.deepcopy(provenance["adoption"]))
             state["context_since"] = provenance["recorded_at"]
         return
+    if event["kind"] == "evidence":
+        add_evidence(state, event)
+        validate_provider_completions(state, event, provenance.get("provider_sources", []))
+        return
     handlers = {
         "batch": add_batch,
         "extension": add_extension,
@@ -611,7 +657,6 @@ def apply_event(state: dict[str, Any], event: dict[str, Any], provenance: dict[s
         "disposition": add_disposition,
         "investigation": add_investigation,
         "scope_decision": add_scope_decision,
-        "evidence": add_evidence,
         "usage": add_usage,
         "phase": set_phase,
         "bind_pr": bind_pr,
@@ -703,6 +748,8 @@ def add_scope_decision(state: dict[str, Any], event: dict[str, Any]) -> None:
         raise ValueError("scope resolution must name an existing pending decision")
     if "intended_files" in event:
         validate_manifest(event["intended_files"])
+    if "resolves_findings" in event:
+        validate_family_resolution(state, event)
     state["scope_decisions"].append(event)
 
 
@@ -717,6 +764,8 @@ def add_evidence(state: dict[str, Any], event: dict[str, Any]) -> None:
         raise ValueError("evidence binding is missing or stale")
     if "reviewed_reports" in event:
         validate_report_coverage(event["reviewed_reports"])
+    if "covers_findings" in event:
+        exact_id_list(event["covers_findings"], "closure coverage")
     state["evidence"].append(event)
 
 
@@ -729,6 +778,114 @@ def validate_report_coverage(coverage: Any) -> None:
             raise ValueError("report identity requires a typed source namespace")
         if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
             raise ValueError("reviewed report digest requires SHA256")
+
+
+def comment_author(comment: dict[str, Any]) -> Any:
+    user = comment.get("user")
+    return user.get("login") if isinstance(user, dict) else None
+
+
+def provider_source(snapshot: dict[str, Any], identity: str) -> dict[str, Any]:
+    if not isinstance(identity, str) or not re.fullmatch(r"comment:[1-9][0-9]*", identity):
+        raise ValueError("native completion requires a comment source")
+    receipts = report_receipts(snapshot)
+    if receipts is None:
+        raise ValueError("native completion requires valid source receipts")
+    comments = {f"comment:{item['id']}": item for page in snapshot["comments"] for item in page}
+    if identity not in comments:
+        raise ValueError("native completion source comment is absent")
+    comment = comments[identity]
+    return {
+        "source": identity,
+        "reviewer": comment_author(comment),
+        "report_sha256": receipts[identity],
+    }
+
+
+def capture_provider_sources(state: dict[str, Any], event: dict[str, Any]) -> list[dict[str, Any]]:
+    snapshot = state["monitor"]["data"]
+    if state["monitor"]["errors"] or not snapshot:
+        raise ValueError("native completion requires complete fetched source evidence")
+    if snapshot.get("head") != state["reviewed_head"] or snapshot.get(
+        "_input_epoch"
+    ) != binding_epoch(state):
+        raise ValueError("native completion requires current fetched source binding")
+    entries = event["provider_completions"]
+    if (
+        not isinstance(entries, list)
+        or not entries
+        or any(not isinstance(item, dict) for item in entries)
+    ):
+        raise ValueError("provider_completions requires explicit records")
+    return [
+        {
+            **provider_source(snapshot, item.get("source", "")),
+            "head": snapshot["head"],
+            "completed_at": item.get("completed_at"),
+            "review_kind": item.get("review_kind"),
+        }
+        for item in entries
+    ]
+
+
+def validate_provider_completions(
+    state: dict[str, Any], event: dict[str, Any], sources: list[Any]
+) -> None:
+    if "provider_completions" not in event:
+        return
+    entries = event["provider_completions"]
+    if (
+        event.get("evidence_type") != "reviewer"
+        or event.get("result") != "pass"
+        or not isinstance(entries, list)
+        or not entries
+        or len(entries) != len(sources)
+    ):
+        raise ValueError(
+            "native completion requires passing reviewer evidence and retained sources"
+        )
+    names: set[str] = set()
+    for item, source in zip(entries, sources, strict=True):
+        validate_provider_completion(state, item, source)
+        if item["reviewer"] in names:
+            raise ValueError("native completion requires one source per reviewer")
+        names.add(item["reviewer"])
+
+
+def validate_provider_completion(state: dict[str, Any], item: Any, source: Any) -> None:
+    fields = {"reviewer", "review_kind", "source", "report_sha256", "head", "completed_at"}
+    if not isinstance(item, dict) or item.keys() != fields or source != item:
+        raise ValueError("native completion differs from retained fetched source facts")
+    if (
+        item["reviewer"] not in state["contract"]["required_reviewers"]
+        or item["review_kind"] != "code"
+    ):
+        raise ValueError("native completion requires the exact required code reviewer")
+    validate_commit_id(item["head"], "native completion head")
+    if item["head"] != state["reviewed_head"] or not timestamp_after(
+        item["completed_at"], state["context_since"]
+    ):
+        raise ValueError("native completion head or timestamp is stale")
+    if not isinstance(item["source"], str) or not re.fullmatch(
+        r"comment:[1-9][0-9]*", item["source"]
+    ):
+        raise ValueError("native completion requires a comment source")
+    validate_report_coverage({item["source"]: item["report_sha256"]})
+
+
+def native_reviewer_names(state: dict[str, Any], snapshot: dict[str, Any]) -> set[str]:
+    names: set[str] = set()
+    for evidence in current_evidence(state):
+        if evidence.get("binding") != evidence_binding(state) or evidence.get("result") != "pass":
+            continue
+        for item in evidence.get("provider_completions", []):
+            try:
+                actual = provider_source(snapshot, item["source"])
+            except ValueError:
+                continue
+            if all(actual[key] == item[key] for key in actual):
+                names.add(item["reviewer"])
+    return names - latest_review_states(snapshot).keys()
 
 
 def add_usage(state: dict[str, Any], event: dict[str, Any]) -> None:
@@ -783,15 +940,16 @@ def status(root: Path, change_id: str) -> dict[str, Any]:
     return status_from_state(root, state)
 
 
+def require_current_inputs(root: Path, state: dict[str, Any]) -> None:
+    if capture_inputs(root, state["reviewed_head"], state["reviewed_manifest"]) != state["inputs"]:
+        raise ValueError(
+            "reviewed repository inputs changed; recovery or explicit head advancement required"
+        )
+
+
 def status_from_state(root: Path, state: dict[str, Any]) -> dict[str, Any]:
     try:
-        if (
-            capture_inputs(root, state["reviewed_head"], state["reviewed_manifest"])
-            != state["inputs"]
-        ):
-            raise ValueError(
-                "reviewed repository inputs changed; recovery or explicit head advancement required"
-            )
+        require_current_inputs(root, state)
     except ValueError as error:
         return {"action": "incomplete", "reason": str(error)}
     action, reason = decision(state)
@@ -870,28 +1028,85 @@ def budget_decision(state: dict[str, Any]) -> tuple[str, str] | None:
     return None
 
 
-def family_decision(state: dict[str, Any]) -> tuple[str, str] | None:
-    corrected, investigated, escaped, post_investigation = family_history(state)
-    del corrected
-    if post_investigation:
-        return (
-            "replan",
-            f"finding family {sorted(post_investigation)[0]} escaped after investigation",
+def exact_id_list(value: Any, label: str) -> set[str]:
+    if not isinstance(value, list) or not value or any(not nonblank(item) for item in value):
+        raise ValueError(f"{label} requires exact nonempty identities")
+    if len(set(value)) != len(value):
+        raise ValueError(f"{label} requires unique identities")
+    return set(value)
+
+
+def validate_family_resolution(state: dict[str, Any], event: dict[str, Any]) -> None:
+    identities = exact_id_list(event["resolves_findings"], "resolution")
+    if event["decision"] != "approved" or not nonblank(event.get("approved_by")):
+        raise ValueError("resolution requires explicit approval")
+    binding = evidence_binding(state)
+    if event.get("binding") != binding:
+        raise ValueError("resolution binding is missing or stale")
+    _, escalations = escalation_history(state)
+    fixed = {item["id"] for item in state["findings"] if item["disposition"] == "fixed"}
+    if not identities <= fixed & escalations.keys():
+        raise ValueError("resolution requires verified fixed escalation findings")
+    closure = next(
+        (item for item in state["evidence"] if item["id"] == event.get("closure_evidence_id")), {}
+    )
+    if (
+        closure.get("evidence_type") != "reviewer"
+        or closure.get("result") != "pass"
+        or closure.get("binding") != binding
+        or not identities <= set(closure.get("covers_findings", []))
+    ):
+        raise ValueError(
+            "resolution requires current closure evidence covering every named finding"
         )
-    pending = escaped - investigated
-    return (
-        ("investigate", f"finding family {sorted(pending)[0]} escaped after correction")
-        if pending
-        else None
+    validate_closure_history(state, closure["id"], identities)
+
+
+def validate_closure_history(state: dict[str, Any], closure_id: str, identities: set[str]) -> None:
+    positions = {event["id"]: index for index, event in enumerate(state["events"])}
+    closure_position = positions[closure_id]
+    if any(positions[identity] >= closure_position for identity in identities):
+        raise ValueError("closure must follow the existence of every named finding")
+    later = state["events"][closure_position + 1 :]
+    if any(contradicts_closure(event, identities) for event in later):
+        raise ValueError("closure was contradicted; fresh scoped reviewer evidence required")
+
+
+def contradicts_closure(event: dict[str, Any], identities: set[str]) -> bool:
+    if event["kind"] == "disposition":
+        return event["finding_id"] in identities and event["disposition"] != "fixed"
+    if event["kind"] != "evidence" or event["evidence_type"] != "reviewer":
+        return False
+    return event["result"] in {"fail", "incomplete"} and bool(
+        identities.intersection(event.get("covers_findings", []))
     )
 
 
-def family_history(state: dict[str, Any]) -> tuple[set[str], set[str], set[str], set[str]]:
+def family_decision(state: dict[str, Any]) -> tuple[str, str] | None:
+    investigated, escalations = escalation_history(state)
+    resolved = {
+        identity
+        for item in state["scope_decisions"]
+        for identity in item.get("resolves_findings", [])
+    }
+    pending = {
+        identity: value for identity, value in escalations.items() if identity not in resolved
+    }
+    post = {family for family, after_investigation in pending.values() if after_investigation}
+    if post:
+        return "replan", f"finding family {sorted(post)[0]} escaped after investigation"
+    first = {family for family, _ in pending.values()} - investigated
+    if first:
+        return "investigate", f"finding family {sorted(first)[0]} escaped after correction"
+    return None
+
+
+def escalation_history(state: dict[str, Any]) -> tuple[set[str], dict[str, tuple[str, bool]]]:
     investigated: set[str] = set()
     corrected: set[str] = set()
     families: dict[str, str] = {}
     escaped: set[str] = set()
-    post_investigation: set[str] = set()
+    escalations: dict[str, tuple[str, bool]] = {}
     genuine = genuine_finding_ids(state)
     for event in state["events"]:
         family = event.get("family", "")
@@ -903,12 +1118,10 @@ def family_history(state: dict[str, Any]) -> tuple[set[str], set[str], set[str],
         if kind != "finding" or event["id"] not in genuine:
             continue
         families[event["id"]] = family
-        if family not in corrected:
-            continue
-        if family in investigated:
-            post_investigation.add(family)
-        escaped.add(family)
-    return corrected, investigated, escaped, post_investigation
+        if family in corrected:
+            escalations[event["id"]] = (family, family in investigated)
+            escaped.add(family)
+    return investigated, escalations
 
 
 def genuine_correction(event: dict[str, Any], genuine: set[str]) -> bool:
@@ -1072,8 +1285,24 @@ def classify_observation(observation: Any, state: dict[str, Any]) -> dict[str, A
     errors = monitor_errors(observation, contract)
     if observation.get("_input_epoch") != binding_epoch(state):
         errors.append("monitor evidence is for another input binding")
-    pending = [] if errors else monitor_pending(observation, contract)
+    pending = (
+        []
+        if errors
+        else monitor_pending(observation, contract, native_reviewer_names(state, observation))
+    )
     meaningful = observation if errors else semantic_snapshot(observation)
+    sources = {
+        item["source"]
+        for evidence in current_evidence(state)
+        for item in evidence.get("provider_completions", [])
+    }
+    if sources and not errors:
+        meaningful["native_authors"] = {
+            f"comment:{item['id']}": comment_author(item)
+            for page in observation["comments"]
+            for item in page
+            if f"comment:{item['id']}" in sources
+        }
     digest = hashlib.sha256(json.dumps(meaningful, sort_keys=True).encode()).hexdigest()
     return {
         "snapshot": digest,
@@ -1450,11 +1679,13 @@ def check_failed(run: dict[str, Any], required: list[str]) -> bool:
     return run.get("status") == "completed" and run.get("conclusion") not in accepted
 
 
-def monitor_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
+def monitor_pending(
+    snapshot: dict[str, Any], contract: dict[str, Any], native: set[str] | None = None
+) -> list[str]:
     if monitor_errors(snapshot, contract):
         return []
-    pending = reviewer_pending(snapshot, contract)
-    pending.extend(freshness_pending(snapshot, contract))
+    pending = reviewer_pending(snapshot, contract, native)
+    pending.extend(freshness_pending(snapshot, contract, native))
     pending.extend(missing_gates(snapshot, contract))
     pending.extend(
         f"current-head check is pending: {run.get('name', 'unnamed check')}"
@@ -1496,7 +1727,9 @@ def timestamp_after(value: Any, since: str) -> bool:
         return False
 
 
-def freshness_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
+def freshness_pending(
+    snapshot: dict[str, Any], contract: dict[str, Any], native: set[str] | None = None
+) -> list[str]:
     since = contract.get("context_since")
     if since is None:
         return []
@@ -1517,7 +1750,7 @@ def freshness_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> lis
             for name in contract[required]
             if name not in fresh
         )
-    fresh_reviewers = fresh_reviewer_names(snapshot, since)
+    fresh_reviewers = fresh_reviewer_names(snapshot, since) | (native or set())
     pending.extend(
         f"fresh reviewer evidence required for current review context: {name}"
         for name in contract["required_reviewers"]
@@ -1537,13 +1770,19 @@ def fresh_reviewer_names(snapshot: dict[str, Any], since: str) -> set[str]:
     }
 
 
-def reviewer_pending(snapshot: dict[str, Any], contract: dict[str, Any]) -> list[str]:
+def reviewer_pending(
+    snapshot: dict[str, Any], contract: dict[str, Any], native: set[str] | None = None
+) -> list[str]:
     latest = latest_review_states(snapshot)
     requested = requested_user_names(snapshot)
     return [
         f"required reviewer has no current-head result: {reviewer}"
         for reviewer in contract["required_reviewers"]
-        if reviewer in requested or latest.get(reviewer) not in {"APPROVED", "COMMENTED"}
+        if reviewer in requested
+        or (
+            latest.get(reviewer) not in {"APPROVED", "COMMENTED"}
+            and (reviewer in latest or reviewer not in (native or set()))
+        )
     ]
 
 
@@ -1592,39 +1831,88 @@ def page_items(pages: list[Any], key: str) -> list[dict[str, Any]]:
     return result
 
 
+def observation_may_continue(root: Path, change_id: str, current: dict[str, Any]) -> bool:
+    state = load(root, change_id)
+    budget = budget_decision(state)
+    if not budget or (current["action"], current["reason"]) != budget:
+        return False
+    terminal = terminal_decision(state)
+    return not (
+        family_decision(state)
+        or unresolved_findings(state)
+        or (terminal and terminal[0] not in {"wait"})
+        or "unresolved review thread" in state["monitor"]["pending"]
+    )
+
+
 def watch(
-    root: Path, change_id: str, repository: str, pull_request: int, timeout_minutes: int
+    root: Path,
+    change_id: str,
+    repository: str,
+    pull_request: int,
+    timeout_minutes: int | None = None,
+    *,
+    observe_only: bool = False,
 ) -> int:
-    if not 0 <= timeout_minutes <= WAIT_LIMIT_MINUTES:
+    if timeout_minutes is not None and not 0 <= timeout_minutes <= WAIT_LIMIT_MINUTES:
         raise ValueError(f"watch timeout must be between 0 and {WAIT_LIMIT_MINUTES} minutes")
-    deadline = time.monotonic() + timeout_minutes * 60
+    start = time.monotonic()
+    absolute = start + ABSOLUTE_WAIT_MINUTES * 60
+    deadline = absolute if timeout_minutes is None else min(absolute, start + timeout_minutes * 60)
     intervals = (15, 30, 60)
     index = 0
     while True:
         if index and time.monotonic() >= deadline:
-            return watch_timeout(root, change_id)
-        snapshot = collect_snapshot(
-            root,
-            change_id,
-            repository,
-            pull_request,
-            deadline if timeout_minutes else time.monotonic() + 60,
-        )
+            return watch_timeout(root, change_id, observe_only=observe_only)
+        fetch_deadline = min(absolute, start + 60) if timeout_minutes == 0 else deadline
+        snapshot = collect_snapshot(root, change_id, repository, pull_request, fetch_deadline)
         outcome = record_monitor_snapshot(root, change_id, snapshot)
         if outcome["changed"]:
-            deadline = time.monotonic() + timeout_minutes * 60
+            if timeout_minutes:
+                deadline = min(absolute, time.monotonic() + timeout_minutes * 60)
             handoff = packet(root, change_id)
             current = handoff["status"]
             print(json.dumps({"packet": handoff, "snapshot": handoff["monitor"]["data"]}, indent=2))
         else:
             current = status(root, change_id)
-        terminal = emit_terminal(current, already_emitted=outcome["changed"])
+        bypass = observe_only and observation_may_continue(root, change_id, current)
+        terminal = None if bypass else emit_terminal(current, already_emitted=outcome["changed"])
         if terminal is not None:
             return terminal
+        handoff_reason = review_handoff(root, change_id)
+        if handoff_reason:
+            print(
+                json.dumps(
+                    {
+                        "action": "wait",
+                        "reason": handoff_reason,
+                    }
+                )
+            )
+            return 0
         time.sleep(
             min(intervals[min(index, len(intervals) - 1)], max(0, deadline - time.monotonic()))
         )
         index += 1
+
+
+def review_handoff(root: Path, change_id: str) -> str | None:
+    state = load(root, change_id)
+    pending = state["monitor"]["pending"]
+    if unresolved_findings(state) or "unresolved review thread" in pending:
+        return "actionable findings require independent triage"
+    snapshot = state["monitor"]["data"]
+    if not snapshot or state["monitor"]["errors"]:
+        return None
+    if reports_need_adjudication(state):
+        return "current reports are ready for independent adjudication"
+    return None
+
+
+def reports_need_adjudication(state: dict[str, Any]) -> bool:
+    receipts = current_report_receipts(state)
+    latest = [item for item in current_evidence(state) if item["evidence_type"] == "reviewer"]
+    return bool(receipts) and (not latest or latest[-1].get("reviewed_reports") != receipts)
 
 
 def emit_terminal(current: dict[str, Any], *, already_emitted: bool = False) -> int | None:
@@ -1635,8 +1923,10 @@ def emit_terminal(current: dict[str, Any], *, already_emitted: bool = False) -> 
     return int(current["action"] == "incomplete")
 
 
-def watch_timeout(root: Path, change_id: str) -> int:
-    terminal = emit_terminal(status(root, change_id))
+def watch_timeout(root: Path, change_id: str, *, observe_only: bool = False) -> int:
+    current = status(root, change_id)
+    bypass = observe_only and observation_may_continue(root, change_id, current)
+    terminal = None if bypass else emit_terminal(current)
     if terminal is not None:
         return terminal
     print(json.dumps({"action": "wait", "reason": "watch timeout"}))
@@ -1673,7 +1963,8 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument("--expected-revision", type=int)
     parser.add_argument("--repo")
     parser.add_argument("--pr", type=int)
-    parser.add_argument("--timeout-minutes", type=int, default=WAIT_LIMIT_MINUTES)
+    parser.add_argument("--timeout-minutes", type=int)
+    parser.add_argument("--observe-only", action="store_true")
     return parser
 
 
@@ -1696,7 +1987,14 @@ def main() -> int:
         if args.operation == "watch":
             if not args.repo or args.pr is None:
                 raise ValueError("watch requires --repo and --pr")
-            return watch(args.root, args.change_id, args.repo, args.pr, args.timeout_minutes)
+            return watch(
+                args.root,
+                args.change_id,
+                args.repo,
+                args.pr,
+                args.timeout_minutes,
+                observe_only=args.observe_only,
+            )
         output = dispatch(args)
     except (ConflictError, OSError, ValueError, json.JSONDecodeError) as error:
         print(json.dumps({"action": "incomplete", "reason": str(error)}))

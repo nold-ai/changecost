@@ -1,26 +1,30 @@
 {
   "CONTRIBUTING.md": {
-    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
-    "digest": "58061d8bdba62be98d410fcdc2e9894540c7a41f1e225261b80e32596c9e2d35"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
   },
   "README.md": {
-    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
-    "digest": "58061d8bdba62be98d410fcdc2e9894540c7a41f1e225261b80e32596c9e2d35"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
   },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
-    "digest": "58061d8bdba62be98d410fcdc2e9894540c7a41f1e225261b80e32596c9e2d35"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
   },
   "docs/commands.md": {
-    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
-    "digest": "a1e304e9e17499f5e039969612a4050c7d286510118e7788b4f134e0631c52a3"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
-    "digest": "58061d8bdba62be98d410fcdc2e9894540c7a41f1e225261b80e32596c9e2d35"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
   },
   "llms.txt": {
-    "reason": "Reviewed signed-64 sequence validation, atomic allocation errors and suppressed copied-input serialization warnings before strict revalidation: setup, dependencies, gate policy and public command/help signatures are unchanged. Contract/diagnostic behavior is updated in docs/contracts.md, docs/cli.md, specs, changelog and TDD; deterministic generated references remain required.",
-    "digest": "a1e304e9e17499f5e039969612a4050c7d286510118e7788b4f134e0631c52a3"
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
+  },
+  "docs/development/behavioral-evidence.md": {
+    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
+    "digest": "51520e85488a4b658b22ad20aa241d6055b2071827027aa8b1b07a27fe02f4c1"
   }
 }

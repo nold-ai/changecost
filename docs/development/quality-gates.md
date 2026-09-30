@@ -585,3 +585,6 @@ feature branch and manually dispatch Repository quality with its full comparison
 base. Feature-branch pushes alone do not trigger this workflow. Keep full assurance
 pending until the Ubuntu matrix and native reports pass; a local unsupported report
 is neither a native pass nor a reason to attempt local capsule execution repeatedly.
+
+Contributor review can use the [behavioral evidence pilot](behavioral-evidence.md) for bounded
+lifecycle controls and content-bound delta review. Final required gates remain mandatory.

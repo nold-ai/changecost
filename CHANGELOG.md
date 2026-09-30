@@ -2,6 +2,46 @@
 
 ## Unreleased
 
+- Hand off new review reports while CI remains pending; disable automatic incremental CodeRabbit review alongside automatic initial review.
+
+- Require causally valid named review closure and align promotion completion with
+  the shared risk-based provider policy, preserving administrative fixed-after-review.
+
+- Refine bounded review recovery with named verified family closure, explicit native
+  code-review source adjudication, and budget-only observation under an absolute
+  45-minute watch; retain all counters and independent negative gates. Consolidate
+  risk-based provider selection and publish live verification in the PR receipt.
+
+- Retain prior affected invariant and assumption mappings for removed or remapped
+  behavioral inputs without changing broad-review and evidence gates.
+
+- Reject contradictory or unexplained not-applicable behavioral evidence while
+  preserving required analyzer failure and optional advisory semantics.
+
+- Record behavioral-evidence pilot validation, successful SpecFact inventory, and
+  remaining coordinator and bounded-oracle limitations without claiming savings.
+
+- Anchor bounded export schema and strict integer sequence envelopes before comparing
+  persisted lifecycle payloads, provenance and history.
+
+- Conserve exact foreign observation provenance in bounded append/import tests and
+  verify the initial source identity against its pre-call allocation fixture.
+
+- Bind declared review inputs to executable mode and index state, preserving raw
+  report hashes; compare full pre-call expected lifecycle payloads and cardinality.
+
+- Preserve prior advisory findings and analyzer policy definitions in follow-up packet
+  context; require broader review for semantic changes while allowing fresh executions.
+
+- Check complete persisted observations and source boundaries in the bounded lifecycle
+  oracle, including accepted appends and fresh destination imports.
+
+- Require broad initial behavioral review and reject foreign-change comparison packets;
+  preserve lifecycle oracle assertions while making its tests analyzable by Linux gates.
+
+- Add a contributor behavioral-evidence packet validator and bounded independent
+  SQLite lifecycle controls, with delta-review guidance and measured pilot evidence.
+
 - Reject out-of-range SQLite transaction sequences in portable observations and
   cutoffs; report controlled, atomic import/allocation failures while preserving
   maximum-sequence retries and observation-only imports. Suppress serializer

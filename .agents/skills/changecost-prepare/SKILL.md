@@ -11,6 +11,11 @@ Read `AGENTS.md`, `openspec/config.yaml`, the project brief and
 [GitHub governance](../../../docs/agent-rules/60-github-change-governance.md).
 This stage changes planning/docs and the selected issue, not product behavior.
 
+Follow the canonical [review selection and live acceptance policy](../../../docs/agent-rules/30-change-workflow.md#review-selection-and-live-acceptance):
+one upfront obligation review, affected-scope closure, Codex by default and additional
+CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
+add a generic full local/CLI review or a receipt-only commit by default.
+
 ## Bounded review-session contract
 
 For a change expected to reach implementation, prepare a compact review contract
@@ -112,3 +117,15 @@ choice. No answer is not a choice; keep the work intact while waiting.
 Finish with selected change, disposition, evidence/limits and the exact next
 invocation: `$changecost-implement <id>` only when implementation is desired and
 its prerequisites are met. This preparation does not start that stage.
+
+## Behavioral evidence pilot
+
+Use the [behavioral evidence guide](../../../docs/development/behavioral-evidence.md)
+for the selected pilot: retain stable intent, independently inspected invariant and
+dependency mappings, specification/oracle/generator/configuration fingerprints and
+native report digests. Capture the existing review-session binding before executing
+checks; provide the first reviewer the complete packet and later reviewers the actual
+delta plus affected assumptions and unresolved findings. New/unknown inputs, changed
+entrypoints or trust boundaries require renewed broad review. Missing, stale, skipped
+or unbound required evidence stays incomplete. Preserve existing counters and final
+current-head quality/independent/external-review gates; the packet grants no completion.

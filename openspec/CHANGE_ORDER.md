@@ -11,6 +11,19 @@ tracks the delivered/archived [dev-workflow-01-bounded-review](changes/archive/2
 review context and bounding correction loops. It is a sub-issue of [#6](https://github.com/nold-ai/changecost/issues/6), has no pilot dependency edge, and does not
 change the nine-change product delivery order.
 
+Supplemental behavioral-evidence pilot: [#26](https://github.com/nold-ai/changecost/issues/26)
+tracks [dev-workflow-02-behavioral-evidence](changes/dev-workflow-02-behavioral-evidence/proposal.md),
+an implementation-authorized contributor workflow under #6, published in open
+[PR #27](https://github.com/nold-ai/changecost/pull/27). Its 2026-09-30 in-place
+post-replan phase preserves the original pilot outcome and adds scoped recovery,
+native-evidence adjudication and finite reviewer/receipt workflow obligations. Native
+prerequisites are #23 and #11, delivered by merged PRs #24 and #25; #11 remains
+administratively open at preparation. That discrepancy does not block the authorized
+pilot on the merged lifecycle code. This story adds no dependency to the nine-change
+product delivery order. Its original controls and empirical outcome are recorded; automatic coordinator
+completion remains unmet until the post-replan exact-head acceptance actually passes.
+This adds no new issue or product-order dependency.
+
 - Epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
 - Organization project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, linked to this repository.
 - Native hierarchy: **Epic → Feature → User Story**. All 14 issues start **Todo**,

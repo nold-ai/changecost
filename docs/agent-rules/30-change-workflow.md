@@ -127,7 +127,7 @@ do not synthesize prior measurements into a new schema-8 allowance. Schema-1/2/3
 receipts remain recovery evidence; new required initial-scope facts are not invented.
 
 The complete JSON contract has this shape (replace example SHAs, file fingerprint,
-requirements, gates and exact REST reviewer identities with inspected values):
+requirements, gates and exact provider identities with inspected values):
 
 ```json
 {
@@ -233,15 +233,103 @@ after that investigation requires replanning. Final non-findings are excluded;
 fixing a genuine escape does not erase its chronology. Independent scope work may
 continue, but dependent work awaits an explicitly identified scope resolution.
 
-Polling ignores incidental metadata changes and caps requests, pagination and
-sleep by the remaining no-progress deadline. `--timeout-minutes 0` collects one
-snapshot with a 60-second collection cap. Missing REST reviewer submissions stay
-pending even if a provider emits only a clean summary. The coordinator may retain
-separately verified current-head provider output, but must disclose that the helper
-cannot validate that completion; silence and reactions are not proof.
-Unchanged remote evidence does not suppress local terminal decisions. A terminal
-result is emitted once, and deadline handling rereads local status before reporting
-wait so newly exhausted budgets or incomplete scope remain visible.
+### Review selection and live acceptance
+
+Use one independent high-effort obligation/architecture review before implementation;
+then close only affected obligations and dependencies after corrections. Stabilize
+mechanical gates before requesting one full Codex review. Codex is required for every
+normal PR. Also require CodeRabbit for security/trust boundaries, persistence/data-loss,
+assurance or gate changes, and contradictory evidence. This behavioral-evidence replan
+requires both providers. Explicit user review requests override the default. Do not add
+a generic full local review or CodeRabbit CLI scan by default. All mechanical gates,
+the supported-Linux capsule and the existing Python matrix remain mandatory.
+
+Disable both `reviews.auto_review.enabled` and
+`reviews.auto_review.auto_incremental_review` for explicit risk-selected review.
+The pilot observed an incremental attempt with only the first flag disabled; effective
+configuration alone does not establish hosted trigger behavior or review coverage.
+Inspect actual pending/current-head provider state and effective feature-branch config
+once before requesting a review; reuse an already-running required review. For a
+required provider use its established manual protocol: `@coderabbitai full review` for
+the initial stable diff, `@coderabbitai review` for subsequent stable increments.
+Never duplicate a running request or bypass quota/purchase credits. Codex app automation
+is independent of this YAML. Official [automatic-review configuration](https://docs.coderabbit.ai/configuration/auto-review)
+and [commands](https://docs.coderabbit.ai/guides/commands) were checked 2026-09-30.
+
+The PR body is the canonical published live verification index: exact head/base,
+current gate links, provider review source identities, independent closure evidence,
+and the existing session's actual decision. Tracked tasks/TDD/report record immutable
+publication milestones. A live acceptance checkbox may remain unchecked at publication;
+record later exact-head acceptance in the ledger and PR receipt without a receipt-only
+source commit. Do not claim every tracked checkbox is complete. A subsequent authorized
+archival lifecycle may reconcile it using already verified proof. Old-head evidence
+cannot certify a new head; negative pilot outcomes remain visible.
+
+### Verified recovery and native provider evidence
+
+An approved `scope_decision` may resolve only named historical escalation instances:
+`resolves_findings` is a list of exact existing finding IDs, `binding` is the current
+full session binding, and `closure_evidence_id` references prior passing reviewer
+evidence. That evidence must explicitly `covers_findings` for every named ID; each must
+have a genuine verified fixed disposition. Supply `approved_by`. Unknown, nonfixed,
+uncovered or stale claims reject. The insertion-time binding is validated during
+historical replay, so accepted closure survives later head adoption. Findings,
+dispositions, investigations and counters remain; later or unlisted escapes cannot
+inherit closure. Extending allowance alone never resolves a family.
+The referenced findings must already exist when that closure is recorded. A later
+nonfixed disposition or explicit failing/incomplete reviewer evidence covering the
+same ID invalidates that closure for a subsequent resolution until fresh closure
+follows. Unrelated events do not invalidate it. A known finding may be reviewed against
+the corrected current binding before its administrative fixed flag is recorded;
+there is no blanket requirement to record that flag before independent review.
+
+When normal REST review submission is absent, passing existing reviewer evidence may
+include `provider_completions`, for example:
+
+```json
+{
+  "provider_completions": [{
+    "reviewer": "chatgpt-codex-connector[bot]",
+    "review_kind": "code",
+    "source": "comment:123456",
+    "report_sha256": "<current report_receipts comment SHA256>",
+    "head": "<full independently verified current SHA>",
+    "completed_at": "<verified ISO-8601 completion timestamp>"
+  }]
+}
+```
+
+Include this in an ordinary bound `evidence` event with `evidence_type: reviewer`,
+`result: pass`, current `head`/`binding` and complete `reviewed_reports`. Independently
+inspect the fetched source's code-review kind, full-head association and completion
+time; the helper does not parse or authenticate arbitrary prose. A literal full SHA in
+prose is unnecessary, but an ambiguous short SHA or unrelated security metadata cannot
+establish the association. At recording, the helper retains selected fetched source
+identity/author/digest plus the adjudicated head/time/kind in existing provenance.
+Replay uses those facts offline; current use requires the fetched source to still
+match. Normal REST remains preferred; no synthetic REST review is created. Positive
+native evidence satisfies only the named provider's completion/freshness, never a
+negative review, requested reviewer, failed/pending/missing check, unresolved thread,
+local finding, report-coverage or changed-input obligation. This trusts the independent
+adjudicator and existing checkout/GitHub identities, not hostile-source forgery defense.
+
+### Bounded observation
+
+Polling ignores incidental metadata changes. The omitted timeout now means one absolute
+45-minute deadline from invocation, including requests/pagination/sleep; progress never
+extends it. `--timeout-minutes N` explicitly selects a supported 1–30-minute inactivity
+limit within that absolute bound. Zero retains one collection capped at 60 seconds.
+Only meaningful changes are emitted. Actionable feedback, evidence ready for independent
+adjudication, terminal status or deadline stops observation. Timeout returns pending/wait,
+not a passing review or fabricated failure; no automatic requests/retries/extensions.
+
+`watch --observe-only` permits collecting already-running checks at budget-only REPLAN,
+while the authoritative status and counters remain unchanged. It does not mask a
+simultaneous family escalation, input/evidence error, failed gate or actionable finding.
+Exhaustion rejects new correction-batch/investigation records until an explicit allowance
+extension; observation and bound adjudication consume no correction batch. Exact-limit
+completion still requires every obligation; over-limit completion remains REPLAN.
+Existing histories retain their original events, including administrative overcounts.
 
 ### Delegation evidence
 
@@ -281,3 +369,13 @@ Pattern inspected on 2026-09-28 (Europe/Berlin): `specfact-cli-modules` at
 `docs/agent-rules/70-release-commit-and-docs.md` (metadata consistency).
 ChangeCost currently generates only its foundation help/version surface; economic
 commands remain unimplemented.
+
+## Behavioral evidence and follow-up review
+
+The [behavioral evidence pilot](../development/behavioral-evidence.md) adds a read-only
+packet check alongside this existing session. Bind actual reports and the specification,
+oracle, generator and configuration to inputs captured before each check. Review stable
+intent once, then provide the actual delta, affected invariant/assumption mappings and
+unresolved findings. Unknown dependencies, changed scope/entrypoints/trust boundaries
+require broader review; an old packet cannot waive current-head final gates or reset
+review budgets. Seeded faults are detector controls, not defects found in runtime.

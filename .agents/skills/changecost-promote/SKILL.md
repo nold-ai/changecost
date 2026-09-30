@@ -15,6 +15,11 @@ verified fixes, and posting evidence-backed replies and thread resolutions. It
 does not authorize unrelated issue changes, merges, releases, deployments, or
 account/repository configuration changes.
 
+Follow the canonical [review selection and live acceptance policy](../../../docs/agent-rules/30-change-workflow.md#review-selection-and-live-acceptance):
+one upfront obligation review, affected-scope closure, Codex by default and additional
+CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
+add a generic full local/CLI review or a receipt-only commit by default.
+
 ## Establish the target
 
 Delegate this target/PR work to the designated PR worker as well. The parent
@@ -33,18 +38,17 @@ and reports compact results; it does not absorb full review threads or CI logs.
 3. Read the current PR template. Describe the final problem and behavior, scope,
    actual validation, remaining limits, and rollback. Link the change and issue;
    planning-only PRs must not close unfinished implementation issues. Create the
-   PR against `main` when ready for review; a draft will not trigger the configured
-   CodeRabbit automatic review. Preserve an explicitly requested draft and report
-   that review is blocked until the user authorizes ready status.
+   PR against `main` when ready for review; preserve an explicitly requested draft. Required provider requests follow the shared
+   policy; automatic CodeRabbit review is disabled.
 4. Read back the PR's head SHA, base, body, and draft status. If its head differs
    from the verified/pushed SHA, stop publication claims and reconcile/reverify
    that actual head before continuing. Attach every created
    PR with the app's `attach_artifact` tool, and attach an existing PR being worked
    on when that tool is available. Tool unavailability does not justify another PR.
 
-## Delegate with one writer
+## Coordinate with one writer
 
-Keep the parent as coordinator. Give workers a narrow target: repository/worktree,
+Keep one coordinator. When delegating selected obligations, give workers a narrow target: repository/worktree,
 PR URL, change ID, exact head SHA, applicable rules, permitted actions, and required
 evidence. Keep full logs in ignored local output; return only findings, changed
 paths, commands/results, commit SHAs, and blockers to the parent.
@@ -57,8 +61,8 @@ paths, commands/results, commit SHAs, and blockers to the parent.
   may commit/push only after verification reports completion for its exact diff.
 - **Verification (read-only repository access):** run applicable gates and freshness
   checks on a stable snapshot after the writer stops editing. Delegate the
-  defect-first review according to [verify](../changecost-verify/SKILL.md), including
-  the available `review-agent` skill; that reviewer must not mutate or delegate.
+  defect-first review according to [verify](../changecost-verify/SKILL.md), using the affected-scope contract and
+  available `review-agent` skill; that reviewer must not mutate or delegate.
 
 Respect available worker slots; reuse workers sequentially rather than spawning
 unbounded agents. Do not run tests/review against a tree another worker is editing.
@@ -82,10 +86,9 @@ for replanning rather than continuing a narrow fix loop. An extension requires a
 explicit maintainer record and retains previous counters.
 Continue the existing receipt across branches/worktrees; do not use `init` to
 replace missing history. Bind the exact repository and PR once, and preserve exact
-REST reviewer logins, including `[bot]`. The helper cannot infer provider completion
-from quiet polls or reactions: a clean provider summary without a REST review stays
-pending. Retain separately verified current-head provider output for the coordinator
-and disclose that helper limitation; do not label the helper check passing.
+provider logins, including `[bot]`. Follow shared native-evidence adjudication when
+normal REST submission is absent; silence/reactions never prove completion. Use the
+absolute-deadline watcher and explicit budget-only observation as documented there.
 
 1. Monitor the current PR head. Fetch every page of check runs, commit statuses,
    reviews, review threads and their comments, and general PR comments; do not
@@ -94,8 +97,8 @@ and disclose that helper limitation; do not label the helper check passing.
    Record each check's status, conclusion, and head SHA. Confirm required-check
    configuration where accessible; a skipped, missing, cancelled, or unavailable
    required gate is not a pass.
-2. Establish that **both Codex and CodeRabbit completed review of the current
-   head**. A historical approval, request acknowledgement, quiet bot, or lack of
+2. Establish that **every provider required by the shared risk policy completed
+   review of the current head**. A historical approval, request acknowledgement, quiet bot, or lack of
    comments is insufficient. Inspect installed/configured integrations and current
    official documentation before choosing review-trigger commands; do not invent
    bot mentions. If automatic review is disabled, paused, or stale, the writer may
@@ -140,8 +143,8 @@ exact next action. They do not count as a successful review loop.
 ## Completion and handoff
 
 Immediately before reporting success, reread the PR head and state. Complete only
-when the head is unchanged, applicable required checks pass, both requested bot
-reviews cover that head, and all actionable bot/human findings are verified fixed
+when the head is unchanged, applicable required checks pass, every provider required
+by the shared risk policy has reviewed that head, and all actionable bot/human findings are verified fixed
 or have an explicitly justified disposition with no outstanding dispute. Report
 remaining human approval/branch protection requirements separately; do not imply
 the PR was merged. If another actor closes or merges the PR, stop mutations and
@@ -153,3 +156,15 @@ workers, not unattended background services: do not promise monitoring after the
 turn ends. If the user requests a later wakeup or ongoing watch, use the app's
 supported automation workflow explicitly and preserve quiet-on-unchanged behavior;
 do not create a scheduled monitor merely from installing this skill.
+
+## Behavioral evidence pilot
+
+Use the [behavioral evidence guide](../../../docs/development/behavioral-evidence.md)
+for the selected pilot: retain stable intent, independently inspected invariant and
+dependency mappings, specification/oracle/generator/configuration fingerprints and
+native report digests. Capture the existing review-session binding before executing
+checks; provide the first reviewer the complete packet and later reviewers the actual
+delta plus affected assumptions and unresolved findings. New/unknown inputs, changed
+entrypoints or trust boundaries require renewed broad review. Missing, stale, skipped
+or unbound required evidence stays incomplete. Preserve existing counters and final
+current-head quality/independent/external-review gates; the packet grants no completion.

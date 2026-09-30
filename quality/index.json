@@ -32,7 +32,7 @@
   {
     "title": "Change workflow",
     "path": "docs/agent-rules/30-change-workflow.md",
-    "description": "freshness, verified scope, visible review checkpoints and canonical recovery."
+    "description": "Canonical staged workflow, risk-based review selection, verified family/native evidence recovery and live exact-head acceptance."
   },
   {
     "title": "OpenSpec configuration",
@@ -118,5 +118,15 @@
     "title": "Contracts v1",
     "path": "docs/contracts.md",
     "description": "Exact field semantics, immutable revisions, local history and recovery limits."
+  },
+  {
+    "title": "Behavioral evidence review",
+    "path": "docs/development/behavioral-evidence.md",
+    "description": "Bounded lifecycle controls and content-bound review packets; no completion authority."
+  },
+  {
+    "title": "Behavioral evidence pilot",
+    "path": "docs/lessons-learned/behavioral-evidence-pilot.md",
+    "description": "Measured experiment status, tool coverage and limitations."
   }
 ]

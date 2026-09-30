@@ -254,3 +254,6 @@ Core-02 runtime changes use Pydantic 2 and explicit SQLite transactions. See
 [contracts](docs/contracts.md) and [offline command examples](docs/cli.md). The
 installed-distribution proof exercises registration, outcomes and portable replay
 with networking blocked; it does not approve any provider integration.
+
+Contributor review can use the [behavioral evidence pilot](docs/development/behavioral-evidence.md) for bounded
+lifecycle controls and content-bound delta review. Final required gates remain mandatory.

@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from threading import Barrier
@@ -492,6 +493,9 @@ def test_watcher_polls_after_a_changed_continue_snapshot(
             ]
         ],
     }
+    snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "existing-review")
     calls: list[int] = []
     clock = [0.0]
     monkeypatch.setattr(
@@ -1641,7 +1645,8 @@ def test_watch_deadline_rechecks_local_budget(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     review_session.initialize(tmp_path, "change", contract())
-    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    complete_session(tmp_path)
+    review_session.record(tmp_path, "change", {"id": "active", "kind": "phase", "phase": "active"})
     clock = [0.0]
     monkeypatch.setattr(review_session.time, "monotonic", lambda: clock[0])
     monkeypatch.setattr(review_session, "gh_snapshot", lambda *args: complete_snapshot())
@@ -3741,3 +3746,578 @@ def test_two_passes_share_one_decreasing_request_deadline(
     observed = review_session.collect_snapshot(tmp_path, "change", "nold-ai/changecost", 24, 150)
     assert timeouts == [50, 40]
     assert "errors" not in observed
+
+
+def test_dirty_working_mode_change_invalidates_capture(tmp_path: Path) -> None:
+    path = tmp_path / "input.txt"
+    path.write_text("already dirty\n")
+    review_session.initialize(tmp_path, "change", contract())
+    path.chmod(path.stat().st_mode ^ 0o100)
+    result = review_session.status(tmp_path, "change")
+    assert result["action"] == "incomplete"
+    assert "inputs changed" in result["reason"]
+
+
+@pytest.mark.parametrize("mode,stage", [("120000", "0"), ("100644", "1")])
+def test_declared_unsupported_index_is_rejected(tmp_path: Path, mode: str, stage: str) -> None:
+    blob = review_session.repository.git(tmp_path, "rev-parse", "HEAD:input.txt").decode().strip()
+    subprocess.run(
+        ["git", "-C", str(tmp_path), "update-index", "--force-remove", "input.txt"], check=True
+    )
+    subprocess.run(
+        ["git", "-C", str(tmp_path), "update-index", "--index-info"],
+        input=f"{mode} {blob} {stage}\tinput.txt\n",
+        text=True,
+        check=True,
+    )
+    with pytest.raises(ValueError, match="unsupported or unmerged"):
+        review_session.input_fingerprint(tmp_path, "input.txt")
+
+
+def test_input_identity_ignores_mtime_and_report_hash_is_raw(tmp_path: Path) -> None:
+    path = tmp_path / "input.txt"
+    before = review_session.input_fingerprint(tmp_path, "input.txt")
+    path.touch()
+    assert review_session.input_fingerprint(tmp_path, "input.txt") == before
+    assert (
+        review_session.file_fingerprint(tmp_path, "input.txt")
+        == hashlib.sha256(path.read_bytes()).hexdigest()
+    )
+
+
+# Post-replan selected coordinator obligations (O1-O6).
+def escalated_session(root: Path, *, closure_before_fixed: bool = False) -> dict[str, Any]:
+    review_session.initialize(root, "change", contract())
+    events = [
+        {"id": "first", "kind": "finding", "family": "inputs"},
+        {"id": "fix-first", "kind": "disposition", "finding_id": "first", "disposition": "fixed"},
+        {"id": "escape", "kind": "finding", "family": "inputs"},
+        {"id": "audit", "kind": "investigation", "family": "inputs"},
+        {"id": "later", "kind": "finding", "family": "inputs"},
+        {"id": "fix-escape", "kind": "disposition", "finding_id": "escape", "disposition": "fixed"},
+        {"id": "fix-later", "kind": "disposition", "finding_id": "later", "disposition": "fixed"},
+    ]
+    for event in events[:-2] if closure_before_fixed else events:
+        review_session.record(root, "change", event)
+    complete_session(root)
+    state = review_session.load(root, "change")
+    review_session.record(
+        root,
+        "change",
+        {
+            "id": "closure",
+            "kind": "evidence",
+            "evidence_type": "reviewer",
+            "result": "pass",
+            "head": TEST_HEAD,
+            "binding": review_session.evidence_binding(state),
+            "covers_findings": ["escape", "later"],
+            "reviewed_reports": review_session.report_receipts(complete_snapshot()),
+        },
+    )
+    if closure_before_fixed:
+        for event in events[-2:]:
+            review_session.record(root, "change", event)
+    return {
+        "id": "resolution",
+        "kind": "scope_decision",
+        "decision": "approved",
+        "approved_by": "independent-reviewer",
+        "resolves_findings": ["escape", "later"],
+        "binding": review_session.evidence_binding(state),
+        "closure_evidence_id": "closure",
+    }
+
+
+def test_named_family_resolution_preserves_history_and_reopens(tmp_path: Path) -> None:
+    resolution = escalated_session(tmp_path)
+    before = review_session.load(tmp_path, "change")
+    review_session.record(tmp_path, "change", resolution)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    after = review_session.load(tmp_path, "change")
+    assert after["findings"] == before["findings"]
+    assert after["batches"] == before["batches"]
+    review_session.record(
+        tmp_path, "change", {"id": "new-escape", "kind": "finding", "family": "inputs"}
+    )
+    review_session.record(tmp_path, "change", {"id": "active", "kind": "phase", "phase": "active"})
+    assert review_session.status(tmp_path, "change")["action"] == "replan"
+
+
+@pytest.mark.parametrize(
+    "mutation", ["unknown", "not-escalated", "uncovered", "stale", "missing-closure", "nonfixed"]
+)
+def test_named_family_resolution_rejects_unverified_claim(tmp_path: Path, mutation: str) -> None:
+    resolution = escalated_session(tmp_path)
+    if mutation in {"unknown", "not-escalated", "uncovered"}:
+        resolution["resolves_findings"] = [
+            {"unknown": "absent", "not-escalated": "first", "uncovered": "other"}[mutation]
+        ]
+    if mutation == "uncovered":
+        review_session.record(
+            tmp_path, "change", {"id": "other", "kind": "finding", "family": "inputs"}
+        )
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "other-fix",
+                "kind": "disposition",
+                "finding_id": "other",
+                "disposition": "fixed",
+            },
+        )
+    if mutation == "stale":
+        resolution["binding"] = {**resolution["binding"], "input_digest": "0" * 64}
+    if mutation == "missing-closure":
+        resolution["closure_evidence_id"] = "absent"
+    if mutation == "nonfixed":
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "exception",
+                "kind": "disposition",
+                "finding_id": "later",
+                "disposition": "accepted_exception",
+            },
+        )
+    with pytest.raises(ValueError, match="resolution|closure"):
+        review_session.record(tmp_path, "change", resolution)
+
+
+def native_completion(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    review_session.initialize(root, "change", contract())
+    complete_session(root)
+    snapshot = complete_snapshot()
+    snapshot["reviews"] = [[]]
+    snapshot["comments"] = [
+        [{"id": 900, "body": "Native code review finished", "user": {"login": "reviewer-a"}}]
+    ]
+    review_session.record_monitor_snapshot(root, "change", snapshot)
+    state = review_session.load(root, "change")
+    receipts = review_session.report_receipts(snapshot)
+    assert receipts is not None
+    evidence = {
+        "id": "native",
+        "kind": "evidence",
+        "evidence_type": "reviewer",
+        "result": "pass",
+        "head": TEST_HEAD,
+        "binding": review_session.evidence_binding(state),
+        "reviewed_reports": receipts,
+        "provider_completions": [
+            {
+                "reviewer": "reviewer-a",
+                "review_kind": "code",
+                "source": "comment:900",
+                "report_sha256": receipts["comment:900"],
+                "head": TEST_HEAD,
+                "completed_at": "2099-01-01T00:00:00Z",
+            }
+        ],
+    }
+    return snapshot, evidence
+
+
+def test_native_completion_replays_and_requires_unchanged_source(tmp_path: Path) -> None:
+    snapshot, evidence = native_completion(tmp_path)
+    review_session.record(tmp_path, "change", evidence)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    state = review_session.load(tmp_path, "change")
+    assert state["monitor"]["data"]["reviews"] == [[]]
+    assert state["provenance"][-1]["provider_sources"]
+    snapshot["comments"][0][0]["body"] += " edited"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] != "complete"
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("reviewer", "wrong-bot"),
+        ("review_kind", "security"),
+        ("source", "comment:901"),
+        ("report_sha256", "0" * 64),
+        ("head", "a" * 40),
+        ("head", "abcdef0"),
+        ("completed_at", "2000-01-01T00:00:00Z"),
+    ],
+)
+def test_native_completion_rejects_misbound_source(tmp_path: Path, field: str, value: str) -> None:
+    _, evidence = native_completion(tmp_path)
+    evidence["provider_completions"][0][field] = value
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", evidence)
+
+
+@pytest.mark.parametrize("kind", ["batch", "investigation"])
+def test_exhaustion_blocks_new_correction_authority(tmp_path: Path, kind: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    for index in range(3):
+        review_session.record(tmp_path, "change", {"id": str(index), "kind": "batch"})
+    with pytest.raises(ValueError, match="budget"):
+        review_session.record(
+            tmp_path, "change", {"id": "unauthorized", "kind": kind, "family": "inputs"}
+        )
+
+
+@pytest.mark.parametrize("timeout", [None, 30])
+def test_watch_default_is_absolute_despite_progress(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, timeout: int | None
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    clock = [0.0]
+    deadlines = []
+
+    def collect(*args: Any) -> dict[str, Any]:
+        deadlines.append(args[-1])
+        clock[0] += 600
+        snapshot = complete_snapshot()
+        snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
+        snapshot["checks"][0]["check_runs"][0]["status"] = (
+            "queued" if len(deadlines) % 2 else "in_progress"
+        )
+        return snapshot
+
+    monkeypatch.setattr(review_session.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(
+        review_session.time, "sleep", lambda seconds: clock.__setitem__(0, clock[0] + seconds)
+    )
+    monkeypatch.setattr(review_session, "collect_snapshot", collect)
+    assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, timeout) == 0
+    assert deadlines and max(deadlines) == 2700
+    assert len(deadlines) == 5
+
+
+@pytest.mark.parametrize(
+    "objection",
+    [
+        "failed",
+        "pending",
+        "missing",
+        "requested",
+        "negative",
+        "thread",
+        "finding",
+        "input",
+        "author",
+        "absent",
+    ],
+)
+def test_native_completion_never_waives_objections(tmp_path: Path, objection: str) -> None:
+    snapshot, evidence = native_completion(tmp_path)
+    review_session.record(tmp_path, "change", evidence)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    mutations: dict[str, Callable[[], object]] = {
+        "failed": lambda: snapshot["checks"][0]["check_runs"][0].update(conclusion="failure"),
+        "pending": lambda: snapshot["checks"][0]["check_runs"][0].update(status="in_progress"),
+        "missing": lambda: snapshot.update(checks=[]),
+        "requested": lambda: snapshot.update(requested_reviewers=[{"login": "reviewer-a"}]),
+        "negative": lambda: snapshot.update(
+            reviews=[[{**complete_snapshot()["reviews"][0][0], "state": "CHANGES_REQUESTED"}]]
+        ),
+        "thread": lambda: snapshot.update(
+            threads=[{"id": "t", "isResolved": False, "isOutdated": False, "comments": []}]
+        ),
+        "finding": lambda: review_session.record(
+            tmp_path, "change", {"id": "new", "kind": "finding", "family": "other"}
+        ),
+        "input": lambda: (tmp_path / "input.txt").write_text("changed"),
+        "author": lambda: snapshot["comments"][0][0]["user"].update(login="impostor"),
+        "absent": lambda: snapshot.update(comments=[[]]),
+    }
+    mutations[objection]()
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] != "complete"
+
+
+def test_named_resolution_survives_refresh_without_resolving_unlisted(tmp_path: Path) -> None:
+    resolution = escalated_session(tmp_path)
+    resolution["resolves_findings"] = ["escape"]
+    review_session.record(tmp_path, "change", resolution)
+    assert review_session.status(tmp_path, "change")["action"] == "replan"
+    resolution = {**resolution, "id": "resolve-later", "resolves_findings": ["later"]}
+    review_session.record(tmp_path, "change", resolution)
+    review_session.record(
+        tmp_path, "change", {"id": "refresh", "kind": "advance_head", "head": TEST_HEAD}
+    )
+    assert review_session.family_decision(review_session.load(tmp_path, "change")) is None
+
+
+@pytest.mark.parametrize("blocker", ["none", "family", "finding", "failed", "thread", "input"])
+def test_observe_only_is_budget_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, blocker: str
+) -> None:
+    if blocker == "family":
+        escalated_session(tmp_path)
+        review_session.record(
+            tmp_path, "change", {"id": "active", "kind": "phase", "phase": "active"}
+        )
+    else:
+        review_session.initialize(tmp_path, "change", contract())
+    review_session.record_monitor_snapshot(tmp_path, "change", complete_snapshot())
+    acknowledge_reports(tmp_path, "baseline-reports")
+    for index in range(3):
+        review_session.record(tmp_path, "change", {"id": f"batch-{index}", "kind": "batch"})
+    if blocker == "finding":
+        review_session.record(
+            tmp_path, "change", {"id": "new", "kind": "finding", "family": "other"}
+        )
+    if blocker == "input":
+        (tmp_path / "input.txt").write_text("drift")
+    clock = [0.0]
+    polls = []
+
+    def collect(*args: Any) -> dict[str, Any]:
+        polls.append(clock[0])
+        snapshot = complete_snapshot()
+        snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
+        if blocker == "failed":
+            snapshot["checks"][0]["check_runs"][0].update(status="completed", conclusion="failure")
+        if blocker == "thread":
+            snapshot["threads"] = [
+                {"id": "t", "isResolved": False, "isOutdated": False, "comments": []}
+            ]
+        return snapshot
+
+    monkeypatch.setattr(review_session.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(
+        review_session.time, "sleep", lambda seconds: clock.__setitem__(0, clock[0] + seconds)
+    )
+    monkeypatch.setattr(review_session, "collect_snapshot", collect)
+    review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 1, observe_only=True)
+    assert (len(polls) > 1) == (blocker == "none")
+    state = review_session.load(tmp_path, "change")
+    assert state["batches"] == 3
+    assert review_session.status(tmp_path, "change")["action"] != "complete"
+
+
+def test_native_provenance_replay_rejects_tampering(tmp_path: Path) -> None:
+    _, evidence = native_completion(tmp_path)
+    review_session.record(tmp_path, "change", evidence)
+    state = review_session.load(tmp_path, "change")
+    state["provenance"][-1]["provider_sources"][0]["reviewer"] = "impostor"
+    with pytest.raises(ValueError, match="retained fetched"):
+        review_session.replay(state["genesis"], state["events"], state["provenance"], None, 0)
+
+
+@pytest.mark.parametrize("kind", ["closure", "native"])
+def test_new_durable_claim_requires_actual_current_inputs(tmp_path: Path, kind: str) -> None:
+    if kind == "closure":
+        event = escalated_session(tmp_path)
+    else:
+        _, event = native_completion(tmp_path)
+    (tmp_path / "input.txt").write_text("unreviewed mutation")
+    with pytest.raises(ValueError, match="inputs changed"):
+        review_session.record(tmp_path, "change", event)
+
+
+def test_watcher_keeps_waiting_after_incomplete_native_adjudication(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    snapshot, evidence = native_completion(tmp_path)
+    evidence.pop("provider_completions")
+    evidence["result"] = "incomplete"
+    review_session.record(tmp_path, "change", evidence)
+    clock = [0.0]
+    calls = []
+    monkeypatch.setattr(review_session.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(
+        review_session.time, "sleep", lambda seconds: clock.__setitem__(0, clock[0] + seconds)
+    )
+    monkeypatch.setattr(
+        review_session, "collect_snapshot", lambda *args: calls.append(1) or snapshot
+    )
+    assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 1) == 0
+    assert len(calls) == 3
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+@pytest.mark.parametrize("review_state", ["PENDING", "DISMISSED"])
+def test_native_fallback_cannot_override_present_rest_state(
+    tmp_path: Path, review_state: str
+) -> None:
+    snapshot, evidence = native_completion(tmp_path)
+    review_session.record(tmp_path, "change", evidence)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    snapshot["reviews"] = complete_snapshot()["reviews"]
+    snapshot["reviews"][0][0]["state"] = review_state
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "adjudicated-current-rest-report")
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+    assert review_session.load(tmp_path, "change")["monitor"]["pending"]
+
+
+@pytest.mark.parametrize(
+    "timestamp,expected", [("2000-01-01T00:00:00Z", "wait"), ("2099-01-01T00:00:00Z", "complete")]
+)
+def test_existing_rest_keeps_its_own_freshness(
+    tmp_path: Path, timestamp: str, expected: str
+) -> None:
+    snapshot, evidence = native_completion(tmp_path)
+    review_session.record(tmp_path, "change", evidence)
+    snapshot["reviews"] = complete_snapshot()["reviews"]
+    snapshot["reviews"][0][0]["submitted_at"] = timestamp
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    acknowledge_reports(tmp_path, "adjudicated-existing-rest")
+    assert review_session.status(tmp_path, "change")["action"] == expected
+
+
+def closure_event(root: Path, identity: str, result: str, covers: list[str]) -> dict[str, Any]:
+    state = review_session.load(root, "change")
+    return {
+        "id": identity,
+        "kind": "evidence",
+        "evidence_type": "reviewer",
+        "result": result,
+        "head": TEST_HEAD,
+        "binding": review_session.evidence_binding(state),
+        "covers_findings": covers,
+        "reviewed_reports": review_session.report_receipts(state["monitor"]["data"]),
+    }
+
+
+def test_resolution_rejects_future_finding_coverage(tmp_path: Path) -> None:
+    resolution = escalated_session(tmp_path)
+    covered = ["escape", "later", "future"]
+    review_session.record(tmp_path, "change", closure_event(tmp_path, "premature", "pass", covered))
+    review_session.record(
+        tmp_path, "change", {"id": "future", "kind": "finding", "family": "inputs"}
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        {"id": "fix-future", "kind": "disposition", "finding_id": "future", "disposition": "fixed"},
+    )
+    resolution.update(closure_evidence_id="premature", resolves_findings=covered)
+    with pytest.raises(ValueError, match="closure.*finding|finding.*closure"):
+        review_session.record(tmp_path, "change", resolution)
+
+
+@pytest.mark.parametrize(
+    "contradiction", ["accepted_exception", "non_finding", "fail", "incomplete"]
+)
+def test_resolution_rejects_intervening_contradiction_and_accepts_fresh_closure(
+    tmp_path: Path, contradiction: str
+) -> None:
+    resolution = escalated_session(tmp_path)
+    if contradiction in {"accepted_exception", "non_finding"}:
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "contradiction",
+                "kind": "disposition",
+                "finding_id": "later",
+                "disposition": contradiction,
+            },
+        )
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "fixed-again",
+                "kind": "disposition",
+                "finding_id": "later",
+                "disposition": "fixed",
+            },
+        )
+    else:
+        review_session.record(
+            tmp_path, "change", closure_event(tmp_path, "contradiction", contradiction, ["later"])
+        )
+        acknowledge_reports(tmp_path, "current-reports")
+    with pytest.raises(ValueError, match="closure.*contradict|contradict.*closure"):
+        review_session.record(tmp_path, "change", resolution)
+    review_session.record(
+        tmp_path, "change", closure_event(tmp_path, "fresh-closure", "pass", ["escape", "later"])
+    )
+    resolution["closure_evidence_id"] = "fresh-closure"
+    review_session.record(tmp_path, "change", resolution)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+@pytest.mark.parametrize("closure_before_fixed", [False, True])
+def test_known_closure_and_administrative_fixed_orders_are_valid(
+    tmp_path: Path, closure_before_fixed: bool
+) -> None:
+    resolution = escalated_session(tmp_path, closure_before_fixed=closure_before_fixed)
+    review_session.record(
+        tmp_path, "change", {"id": "unrelated", "kind": "finding", "family": "unrelated"}
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "unrelated-exception",
+            "kind": "disposition",
+            "finding_id": "unrelated",
+            "disposition": "accepted_exception",
+        },
+    )
+    review_session.record(
+        tmp_path,
+        "change",
+        closure_event(tmp_path, "unrelated-negative", "incomplete", ["unrelated"]),
+    )
+    acknowledge_reports(tmp_path, "current-report-coverage")
+    review_session.record(tmp_path, "change", resolution)
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+
+
+@pytest.mark.parametrize("gate", ["pending", "missing"])
+def test_new_report_hands_off_before_pending_gates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, gate: str
+) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
+    if gate == "missing":
+        snapshot["checks"] = [{"check_runs": []}]
+    snapshot["comments"] = [[{"id": 902, "body": "New potentially actionable feedback"}]]
+    clock = [0.0]
+    calls: list[int] = []
+    monkeypatch.setattr(review_session.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(
+        review_session.time, "sleep", lambda seconds: clock.__setitem__(0, clock[0] + seconds)
+    )
+    monkeypatch.setattr(
+        review_session, "collect_snapshot", lambda *args: calls.append(1) or snapshot
+    )
+    assert review_session.watch(tmp_path, "change", "nold-ai/changecost", 24, 1) == 0
+    assert calls == [1]
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+@pytest.mark.parametrize("report", ["acknowledged-incomplete", "check-only-progress"])
+def test_pending_gates_do_not_repeat_unchanged_report_handoff(tmp_path: Path, report: str) -> None:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    snapshot = complete_snapshot()
+    snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
+    if report == "acknowledged-incomplete":
+        snapshot["comments"] = [[{"id": 903, "body": "Still awaiting provider completion"}]]
+        review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+        state = review_session.load(tmp_path, "change")
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "acknowledged",
+                "kind": "evidence",
+                "evidence_type": "reviewer",
+                "result": "incomplete",
+                "head": TEST_HEAD,
+                "binding": review_session.evidence_binding(state),
+                "reviewed_reports": review_session.report_receipts(snapshot),
+            },
+        )
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.review_handoff(tmp_path, "change") is None
+    snapshot["checks"][0]["check_runs"][0]["status"] = "queued"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.review_handoff(tmp_path, "change") is None
+    assert review_session.status(tmp_path, "change")["action"] == "wait"
