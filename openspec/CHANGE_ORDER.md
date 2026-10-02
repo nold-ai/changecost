@@ -3,8 +3,9 @@
 Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-09-29**.
 The Python foundation and supplemental bounded-review workflow are delivered and
 archived. Source-feasibility research is partly implemented; its remaining inspection
-tasks keep it active despite closed #9. Core-02 (#11) implementation is authorized and under local verification;
-other product implementation and live collection require a subsequent request.
+tasks keep it active despite closed #9. Core-02 (#11) merged in PR #25 and is
+archived with synchronized main specs. Settlement reconciliation implementation was authorized on 2026-09-29 and is
+in progress; provider implementation and live collection require a subsequent request.
 
 Supplemental contributor workflow: [#23](https://github.com/nold-ai/changecost/issues/23)
 tracks the delivered/archived [dev-workflow-01-bounded-review](changes/archive/2026-09-29-dev-workflow-01-bounded-review/proposal.md), a development-only control for retaining
@@ -46,7 +47,7 @@ This adds no new issue or product-order dependency.
 | --- | --- | --- | --- |
 | [pilot-01-source-feasibility](changes/pilot-01-source-feasibility/proposal.md) | [#9](https://github.com/nold-ai/changecost/issues/9) | [#5](https://github.com/nold-ai/changecost/issues/5) | None |
 | [core-01-python-foundation](changes/archive/2026-09-29-core-01-python-foundation/proposal.md) | [#10](https://github.com/nold-ai/changecost/issues/10) | [#6](https://github.com/nold-ai/changecost/issues/6) | None |
-| [core-02-change-run-contracts](changes/core-02-change-run-contracts/proposal.md) | [#11](https://github.com/nold-ai/changecost/issues/11) | [#6](https://github.com/nold-ai/changecost/issues/6) | [#10](https://github.com/nold-ai/changecost/issues/10) `core-01-python-foundation` |
+| [core-02-change-run-contracts](changes/archive/2026-09-29-core-02-change-run-contracts/proposal.md) | [#11](https://github.com/nold-ai/changecost/issues/11) | [#6](https://github.com/nold-ai/changecost/issues/6) | [#10](https://github.com/nold-ai/changecost/issues/10) `core-01-python-foundation` |
 | [settlement-01-reconciliation](changes/settlement-01-reconciliation/proposal.md) | [#12](https://github.com/nold-ai/changecost/issues/12) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#11](https://github.com/nold-ai/changecost/issues/11) `core-02-change-run-contracts` |
 | [provider-01-copilot-import](changes/provider-01-copilot-import/proposal.md) | [#13](https://github.com/nold-ai/changecost/issues/13) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [provider-02-cursor-import](changes/provider-02-cursor-import/proposal.md) | [#14](https://github.com/nold-ai/changecost/issues/14) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
@@ -120,12 +121,25 @@ limitations were remediated.
 Both changes were archived with OpenSpec CLI 1.13.2 on 2026-09-29, synchronizing
 [python-foundation](specs/python-foundation/spec.md) and
 [bounded-review-session](specs/bounded-review-session/spec.md) into main specs.
-Eight active changes remain. The next implementation dependency is **core-02 (#11)**:
-its native prerequisite #10 is satisfied, while reconciliation #12 still depends on
-#11. The contracts [preparation evidence](changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md)
-records current code, research, validation and remaining implementation gates.
-The implementation remains local/unpublished until all required verification gates pass.
-See [implementation evidence](changes/core-02-change-run-contracts/TDD_EVIDENCE.md).
+Core-02 merged in [PR #25](https://github.com/nold-ai/changecost/pull/25) on
+2026-09-29 at `999cb8f960785fe4ac0434d41a0892beca933191`. All 15 tasks are complete;
+`openspec archive core-02-change-run-contracts --yes` synchronized its 18 requirements
+into [change-run-contracts](specs/change-run-contracts/spec.md) and archived the change.
+Readback verified the full requirement blocks and retained metadata.
+Seven active changes remain. Next is **settlement-01-reconciliation (#12)**;
+its Core-02 implementation prerequisite is delivered. The prepared artifacts were carried directly onto `codex/settlement-01-reconciliation`
+for the authorized implementation. It is local/unpublished and under verification;
+no provider support is delivered.
+See the [settlement preparation evidence](changes/settlement-01-reconciliation/PREPARATION_EVIDENCE.md);
+the maintainer confirmed that all pilot changes remain in unreleased 0.x. The plan
+evolves the existing internal schema without a public v2 compatibility programme.
+See archived [implementation evidence](changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md).
+
+GitHub readback on 2026-09-29 found #11 open and #12 closed/Done, despite #11 being
+implemented and #12 unimplemented. Preparation reopened #12 and restored its private project item to Todo; readback
+confirmed both on 2026-09-29. #11 remains open as an administrative discrepancy
+despite verified code delivery. These issue states do not prove settlement delivery.
+Native dependency and hierarchy edges remain unchanged.
 
 Provider-specific mappings remain blocked until feasibility records inspected source
 profiles. Completing feasibility with an unavailable capability does not authorize

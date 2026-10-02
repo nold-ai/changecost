@@ -19,7 +19,7 @@ def render(root: Path) -> dict[str, str]:
     lines = [
         "# ChangeCost",
         "",
-        "> Private, unreleased offline contracts and lifecycle CLI. "
+        "> Private, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. "
         "Provider operations remain planned.",
         "",
         "## Project and evidence",
@@ -56,8 +56,10 @@ def render(root: Path) -> dict[str, str]:
         "Help and version succeed offline. Bare or unknown commands exit nonzero.",
         "No database, configuration or evidence files are created by these invocations.",
         "",
-        "`bind` registers/maps/imports; `settle` declares lifecycle only;",
-        "`explain` inspects/exports. `quote`, `check` and economic reconciliation remain planned.",
+        "`bind` registers/maps/imports; `settle` declares lifecycle, "
+        "imports normalized evidence or computes;",
+        "`explain` inspects/exports and reports repository remainder. "
+        "`quote`, `check` and provider adapters remain planned.",
         "",
     ]
     lines += [

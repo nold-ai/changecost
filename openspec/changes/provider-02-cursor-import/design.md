@@ -20,7 +20,7 @@ package or runtime. This design describes later implementation, not delivered be
 
 3. Use verified stable source event IDs where present. Otherwise exact-file hash plus row index makes repeated identical files idempotent only; overlapping exports remain a documented ambiguity and cannot silently double-count or assume identical rows are one event. Reject ambiguous overlap from final reconciliation pending explicit evidence.
 
-4. Use the [core evidence references and mappings](../core-02-change-run-contracts/design.md)
+4. Use the [core evidence references and mappings](../archive/2026-09-29-core-02-change-run-contracts/design.md)
    for manual attribution. First import the row as unbound and expose its evidence_id;
    bind then maps that exact reference to an existing run, which is explicitly bound
    to a change. A portable artifact may import evidence and its mapping atomically.
