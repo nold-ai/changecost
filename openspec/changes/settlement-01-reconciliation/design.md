@@ -281,3 +281,37 @@ separate fresh-store import; never downgrade a populated store or confuse portab
 reimport with historical restore. Revert planning changes through their eventual
 commit/stash while retaining issue/review history. Reverting this plan does not
 reopen completed Core-02 work or waive provider feasibility gates.
+
+
+## Consolidated bounded-work repair — 2026-10-02
+
+Validate correction chains from their leaves once, with shared visited state;
+unvisited nodes identify cycles, and missing predecessors remain pending. Retain
+fork, currency and inherited-binding subject checks. Overlap uses sorted starts
+and the furthest ends for two distinct digests (including namespaced null), with
+inclusive endpoints and the prior two-file prerequisite.
+
+Build full-RunRef, coverage, binding and lifecycle-leaf indexes once per operation;
+leaf identity follows previous references, never timestamp or insertion order.
+Group effective and selected events by full RunRef once and use set membership.
+Cutoff pruning seeds unavailable records and invalidates reverse dependents once.
+Inspection reuses one transaction for exact payload, local receipt authority,
+cutoff bounds and one validated availability snapshot for every input.
+
+Repository remainder computes each bucket once, adds unknown_amount for unknown
+values, and discloses identity-only Evidence lacking economics as unresolved
+missing_economic_evidence. Unbound identity-only Evidence stays conservative;
+explicit bindings scope it to the repository without creating monetary values.
+No source policy, provider capability, schema or package version is expanded.
+
+
+### Coverage assertion closure — 2026-10-02
+
+Per-Run event grouping alone did not remove supports() rescans per assertion.
+Summarize the selected group once as a distinct full Evidence-key set, point
+minimum/maximum and has_events. Each assertion keeps its own policy, economic,
+finality, full-work interval and evidence-set predicates. Point extrema retain
+inclusive starts and exclusive ends. Reject insufficient distinct evidence
+cardinality before subset evaluation; subsequent work is proportional to each
+assertion's actual references. Never union assertions. Retain references to all
+consulted assertions even when their individual support checks fail.

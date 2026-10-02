@@ -1043,3 +1043,372 @@ def test_computed_outcome_subject_membership_controls(tmp_path, subject):
             validate_computed_subject(result, outcome, member_keys, declared)
     else:
         validate_computed_subject(result, outcome, member_keys, declared)
+
+
+@pytest.mark.parametrize("count", [20, 40])
+def test_correction_chain_subject_work_is_linear(monkeypatch, count):
+    from changecost import economic_graph
+    from changecost.models import EconomicInput, EvidenceBinding
+    from changecost.normalized import normalized_records
+    from changecost.operations import common
+    from changecost.store import key
+
+    records = {}
+    for i in range(count):
+        item = event(str(i))
+        if i:
+            item.update(replaces=locator(str(i - 1)), correction_reason="correction")
+        pair = normalized_records(EconomicInput.model_validate(item), "origin", NOW)
+        records.update((key(reference(record)), record) for record in pair)
+        binding = EvidenceBinding(
+            **common("origin", NOW, f"binding-{i}"), evidence=reference(pair[0]), run=RUN
+        )
+        records[key(reference(binding))] = binding
+    original = economic_graph.validate_chain_subject
+    visits = 0
+
+    class CountedBindings(dict):
+        def get(self, *args):
+            nonlocal visits
+            visits += 1
+            return super().get(*args)
+
+    def counted(node, edges, events, bindings, *args):
+        return original(node, edges, events, CountedBindings(bindings), *args)
+
+    monkeypatch.setattr(economic_graph, "validate_chain_subject", counted)
+    economic_graph.correction_graph(records)
+    assert visits <= 2 * count
+
+
+@pytest.mark.parametrize("count", [20, 40])
+def test_disjoint_file_overlap_work_is_bounded(monkeypatch, count):
+    from changecost import reconciliation
+    from changecost.models import EconomicInput
+    from changecost.normalized import normalized_records
+
+    rows = []
+    for i in range(count):
+        point = START + timedelta(seconds=i * 2)
+        item = event(
+            str(i),
+            source={
+                **locator(),
+                "identity_scope": "file",
+                "source_key": None,
+                "file_digest": f"{i % 2:064x}",
+                "ordinal": i,
+            },
+            start=point.isoformat(),
+            end=point.isoformat(),
+        )
+        rows.append(normalized_records(EconomicInput.model_validate(item), "origin", NOW)[1])
+    original = reconciliation.overlaps
+    checks = 0
+
+    def counted(left, right):
+        nonlocal checks
+        checks += 1
+        return original(left, right)
+
+    monkeypatch.setattr(reconciliation, "overlaps", counted)
+    assert not reconciliation.ambiguous_file_overlap(rows)
+    assert checks <= count
+
+
+@pytest.mark.parametrize("bound", [False, True])
+def test_repository_unknown_amount_reason(tmp_path, bound):
+    from changecost.reconciliation import repository_report
+
+    store, _, members = setup_change(tmp_path)
+    ident = import_events(store, event(amount=None))[0]
+    if bound:
+        bind_evidence(store, ident, members[0])
+    report = repository_report(store, scope())
+    bucket = report["bound" if bound else "unbound"]
+    assert bucket[0]["amount"] is None and bucket[0]["unknown_count"] == 1
+    assert "unknown_amount" in report["unknown_reasons"]
+
+
+@pytest.mark.parametrize("subject", ["unbound", "local", "foreign"])
+def test_repository_plain_evidence_uncertainty(tmp_path, subject):
+    from changecost.models import Evidence
+    from changecost.operations import common
+    from changecost.reconciliation import repository_report
+
+    store, _, members = setup_change(tmp_path)
+    plain = Evidence(
+        **common("origin", NOW, "plain"),
+        provider="synthetic",
+        surface="fixture",
+        profile="synthetic/v1",
+        identity_scope="namespaced",
+        source_key="plain",
+    )
+    store.apply(lambda records, store_id, now: ([plain], None))
+    if subject != "unbound":
+        run = members[0]
+        if subject == "foreign":
+            register_change(store, "elsewhere", "other")
+            run = RUN.model_copy(update={"repository_id": "elsewhere"})
+            register_run(store, run, "other")
+        bind_evidence(store, plain.record_id, run)
+    before = store.export_bundle()
+    report = repository_report(store, scope())
+    assert ("missing_economic_evidence" in report["unknown_reasons"]) == (subject != "foreign")
+    assert any(e["reference"] == reference(plain).model_dump() for e in report["unresolved"]) == (
+        subject != "foreign"
+    )
+    assert all(s["amount"] is None for s in [*report["bound"], *report["unbound"]])
+    assert store.export_bundle() == before
+
+
+@pytest.mark.parametrize("count,expected", [(5, "2.00"), (10, "4.00"), (20, "8.00")])
+def test_computation_coverage_record_work_is_bounded(tmp_path, count, expected):
+    from changecost.models import Subtotal
+    from changecost.reconciliation import computation_details
+    from changecost.store import key
+
+    store, change, members = setup_change(tmp_path, runs=count)
+    ids = import_events(store, *(event(str(i)) for i in range(count)))
+    for run, ident in zip(members, ids, strict=True):
+        bind_evidence(store, ident, run)
+        add_coverage(store, run, ident)
+    records = CountingRecords((key(reference(record)), record) for record in store.records())
+    details = computation_details(records, change, scope())
+    totals = details["subtotals"]
+    assert isinstance(totals, list) and isinstance(totals[0], Subtotal)
+    assert details["full_change"] and totals[0].amount == expected
+    assert records.visits <= 12 * len(records)
+
+
+@pytest.mark.parametrize("count", [20, 40])
+def test_cutoff_pruning_dependency_work_is_bounded(monkeypatch, count):
+    import sqlite3
+
+    from changecost import reconciliation
+    from changecost.models import Cutoff
+
+    connection = sqlite3.connect(":memory:")
+    connection.execute("CREATE TABLE records (kind,id,available_at,sequence)")
+    refs = [("outcome", str(i)) for i in range(count)]
+    connection.executemany(
+        "INSERT INTO records VALUES (?,?,?,?)", [(k, i, NOW.isoformat(), 1) for k, i in refs]
+    )
+    checks = 0
+
+    class CountedDependencies(set):
+        def __le__(self, other):
+            nonlocal checks
+            checks += 1
+            return super().__le__(other)
+
+        def __iter__(self):
+            nonlocal checks
+            checks += len(self)
+            return super().__iter__()
+
+    graph = {
+        ref: CountedDependencies([refs[i + 1]] if i + 1 < count else [])
+        for i, ref in enumerate(refs)
+    }
+    monkeypatch.setattr(
+        reconciliation, "read_records", lambda conn: dict(zip(refs, range(count), strict=True))
+    )
+    monkeypatch.setattr(reconciliation, "validate_graph", lambda records: graph)
+    monkeypatch.setattr(
+        reconciliation, "available", lambda record, obs, cutoff: record != count - 1
+    )
+    try:
+        assert (
+            reconciliation.snapshot_records(
+                connection, Cutoff(store_id="origin", at=NOW, sequence=1)
+            )
+            == {}
+        )
+    finally:
+        connection.close()
+    assert checks <= 3 * count
+
+
+@pytest.mark.parametrize("count", [5, 10])
+def test_inspection_uses_one_consistent_transaction(tmp_path, monkeypatch, count):
+    from changecost.reconciliation import inspect_computation
+
+    store, _, _ = setup_change(tmp_path, runs=count)
+    result = compute(store)
+    original = store.connect
+    connections = 0
+
+    def counted(*args, **kwargs):
+        nonlocal connections
+        connections += 1
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(store, "connect", counted)
+    assert inspect_computation(store, result)["replay_eligibility"] == "inputs_available"
+    assert connections == 1
+
+
+@pytest.mark.parametrize("count", [10, 20])
+def test_coverage_does_not_rescan_global_events_per_run(tmp_path, monkeypatch, count):
+    from changecost import reconciliation
+    from changecost.store import key
+
+    store, change, members = setup_change(tmp_path, runs=count)
+    ids = import_events(store, *(event(str(i)) for i in range(count)))
+    for run, ident in zip(members, ids, strict=True):
+        bind_evidence(store, ident, run)
+        add_coverage(store, run, ident)
+    records = {key(reference(record)): record for record in store.records()}
+    original = reconciliation.select
+    visits = 0
+
+    class CountedEvents(list):
+        def __iter__(self):
+            nonlocal visits
+            visits += len(self)
+            return super().__iter__()
+
+    def counted(*args, **kwargs):
+        selection = original(*args, **kwargs)
+        selection.effective = CountedEvents(selection.effective)
+        selection.selected = CountedEvents(selection.selected)
+        return selection
+
+    monkeypatch.setattr(reconciliation, "select", counted)
+    assert reconciliation.computation_details(records, change, scope())["full_change"]
+    assert visits <= 6 * count
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_coverage_index_uses_revision_leaves_and_complete_run_refs(tmp_path, reverse):
+    from changecost.coverage import CoverageIndex
+    from changecost.operations import latest
+    from changecost.store import key, run_key
+
+    store, change, members = setup_change(tmp_path)
+    run = next(record for record in store.records() if record.kind == "run")
+    declare(
+        store,
+        reference(run),
+        LifecycleDeclaration(
+            outcome="failed",
+            end=NOW - timedelta(minutes=1),
+            correct_outcome=True,
+            correct_interval=True,
+            reason="corrected",
+        ),
+    )
+    declare(
+        store,
+        reference(change),
+        LifecycleDeclaration(outcome="abandoned", correct_outcome=True, reason="corrected"),
+    )
+    register_change(store, "other-repo", "other")
+    foreign = RUN.model_copy(update={"repository_id": "other-repo", "run_id": members[0].run_id})
+    foreign_run = register_run(store, foreign, "other", work_start=START)
+    declare(store, reference(foreign_run), LifecycleDeclaration(outcome="cancelled", end=START))
+    rows = store.records()
+    if reverse:
+        rows.reverse()
+    records = {key(reference(record)): record for record in rows}
+    index = CoverageIndex(records)
+    assert index.outcomes[key(reference(run))] == latest(records, "outcome", key(reference(run)))
+    assert index.outcomes[key(reference(change))].outcome == "abandoned"
+    assert index.intervals[run_key(members[0])].end == NOW - timedelta(minutes=1)
+    assert index.intervals[run_key(foreign)].end == START
+    assert index.runs[run_key(foreign)] == foreign_run
+
+
+@pytest.mark.parametrize("field", ["sequence", "available_at", "recorded_at", "effective_at"])
+def test_cutoff_snapshot_keeps_all_availability_boundaries(tmp_path, field):
+    from changecost.models import Cutoff, Observation
+    from changecost.store import available
+
+    store, change, _ = setup_change(tmp_path)
+    cutoff = Cutoff(store_id="origin", at=NOW, sequence=1)
+    observation = Observation(
+        reference=reference(change), store_id="origin", available_at=NOW, sequence=1
+    )
+    assert available(change, observation, cutoff)
+    if field in {"recorded_at", "effective_at"}:
+        change = change.model_copy(update={field: NOW + timedelta(microseconds=1)})
+    else:
+        observation = observation.model_copy(
+            update={field: 2 if field == "sequence" else NOW + timedelta(microseconds=1)}
+        )
+    assert not available(change, observation, cutoff)
+
+
+@pytest.mark.parametrize("count", [10, 20])
+@pytest.mark.parametrize(
+    "layout, measured",
+    [("points", "start"), ("shared_components", "start"), ("shared_components", "evidence")],
+)
+def test_coverage_assertion_work_tracks_declared_inputs(
+    tmp_path, monkeypatch, count, layout, measured
+):
+    from changecost.coverage import CoverageIndex, event_coverage_reasons
+    from changecost.models import EconomicEvidence
+    from changecost.reconciliation import select
+    from changecost.store import key, run_key, validate_graph
+
+    store, _, members = setup_change(tmp_path)
+    items = [event(str(i)) for i in range(count)]
+    if layout == "shared_components":
+        items = [event("shared", component_key=f"charge{i}") for i in range(count - 1)]
+        items.append(event("missing"))
+    ids = import_events(store, *items)
+    for ident in ids:
+        bind_evidence(store, ident, members[0])
+    for i in range(count):
+        add_coverage(store, members[0], ids[i] if layout == "points" else ids[0])
+    records = {key(reference(record)): record for record in store.records()}
+    validate_graph(records)
+    index = CoverageIndex(records)
+    selected = sorted(
+        select(records, scope()).selected, key=lambda e: e.evidence.record_id != ids[0]
+    )
+    original = EconomicEvidence.__getattribute__
+    visits = {"start": 0, "evidence": 0}
+
+    def counted(self, name):
+        if name in visits:
+            visits[name] += 1
+        return original(self, name)
+
+    monkeypatch.setattr(EconomicEvidence, "__getattribute__", counted)
+    refs = set()
+    reasons = event_coverage_reasons(
+        index, members[0], index.intervals[run_key(members[0])], selected, scope(), refs
+    )
+    assert "missing_supported_coverage" in reasons
+    assert ("unsupported_source_policy" in reasons) == (layout == "shared_components")
+    assert refs == {key(reference(c)) for c in index.coverage[run_key(members[0])]}
+    assert visits[measured] <= 2 * count
+
+
+@pytest.mark.parametrize("complete_assertion", [False, True])
+def test_coverage_requires_one_assertion_to_cover_selected_group(tmp_path, complete_assertion):
+    from changecost.models import RecordRef
+
+    store, _, members = setup_change(tmp_path)
+    ids = import_events(store, event("one"), event("two"))
+    assertion = None
+    for ident in ids:
+        bind_evidence(store, ident, members[0])
+        assertion = add_coverage(store, members[0], ident)
+    assert assertion is not None
+    if complete_assertion:
+        combined = assertion.model_copy(
+            update={
+                "record_id": "complete",
+                "evidence": [RecordRef(kind="evidence", record_id=ident) for ident in ids],
+            }
+        )
+        store.apply(lambda records, store_id, now: ([combined], None))
+    result = compute(store)
+    assert result.full_change == complete_assertion
+    assert ("missing_supported_coverage" in result.unknown_reasons) != complete_assertion
+    assert result.subtotals[0].amount == "0.80"

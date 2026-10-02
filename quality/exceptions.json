@@ -1,26 +1,26 @@
 {
   "docs/agent-rules/50-quality-gates-and-review.md": {
     "reason": "Required analyzers, Python matrix, review-session budgets and provider policies are unchanged. This runtime correction does not waive required hosted validation.",
-    "digest": "4596d23ca7a83e8db191fb5d0fd61af3c2dfdb04904cbcf470aa5ee9ef33cd3f"
+    "digest": "0d2b79ada29b1bab58888d24e551dc100280410c6ff5a3bb0f7675a708e978b4"
   },
   "docs/development/quality-gates.md": {
     "reason": "Gate commands, supported execution platform and analyzer thresholds are unchanged; local targeted diagnostics remain distinct from mandatory native hosted assurance.",
-    "digest": "4596d23ca7a83e8db191fb5d0fd61af3c2dfdb04904cbcf470aa5ee9ef33cd3f"
+    "digest": "0d2b79ada29b1bab58888d24e551dc100280410c6ff5a3bb0f7675a708e978b4"
   },
   "CONTRIBUTING.md": {
     "reason": "Contributor commands, dependencies, stage boundaries and acceptance policy are unchanged; this batch corrects scoped runtime behavior and documents its exact red/green evidence.",
-    "digest": "4596d23ca7a83e8db191fb5d0fd61af3c2dfdb04904cbcf470aa5ee9ef33cd3f"
+    "digest": "0d2b79ada29b1bab58888d24e551dc100280410c6ff5a3bb0f7675a708e978b4"
   },
   "README.md": {
-    "reason": "The correction restores the documented Change-specific settlement behavior and optimizes two internal lookup steps; installation, CLI usage, offline scope and unreleased 0.x phase are unchanged. Detailed policy and red/green evidence are updated in settlement documentation and TDD evidence.",
-    "digest": "4596d23ca7a83e8db191fb5d0fd61af3c2dfdb04904cbcf470aa5ee9ef33cd3f"
+    "reason": "Offline preview capabilities, install commands and CLI selectors remain accurate. The seven-path repair details and uncertainty semantics are documented in settlement/contracts and TDD evidence; package remains unreleased 0.1.0.dev0.",
+    "digest": "0d2b79ada29b1bab58888d24e551dc100280410c6ff5a3bb0f7675a708e978b4"
   },
   "docs/commands.md": {
     "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",
-    "digest": "0d02e14b69dd07c2e8b96830c373e38ffba41c11ec528b872a63077862bbdd92"
+    "digest": "e1328dab163d67eb8a9a257a490c17638250ed0d2329a67abee6bf064f45eac4"
   },
   "llms.txt": {
-    "reason": "Generated navigation and capability summaries are unchanged; existing settlement and TDD links cover the updated Change isolation and bounded lookup details.",
-    "digest": "0d02e14b69dd07c2e8b96830c373e38ffba41c11ec528b872a63077862bbdd92"
+    "reason": "Generated navigation and capability summaries remain accurate: no new command, schema, provider capability or skill. Existing settlement/contracts/evidence links expose the revised bounded work and report uncertainty.",
+    "digest": "e1328dab163d67eb8a9a257a490c17638250ed0d2329a67abee6bf064f45eac4"
   }
 }

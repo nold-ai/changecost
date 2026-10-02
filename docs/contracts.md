@@ -168,3 +168,9 @@ input cutoff is not reinterpreted using a later binding elsewhere.
 
 Outcome subjects use separate member-set and Change-reference checks, preserving
 the same allowed subjects without copying complete membership for every Outcome.
+
+Read-only repository remainder identifies unknown selected amounts and identity-only
+Evidence without normalized economics explicitly; plain Evidence supplies no amount.
+Computed replay inspection checks immutable payload, local receipt authority, cutoff
+bounds and transitive input availability in one read snapshot. Lifecycle coverage
+lookups use complete RunRefs and predecessor-defined revision leaves.

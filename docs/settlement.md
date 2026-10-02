@@ -52,7 +52,11 @@ changecost --db imported.sqlite bind --import-artifact evidence.json
 with provisional coverage: no terminal outcomes, work bounds or supported coverage
 have been declared. Missing observations yield null, not zero. Distinct currencies,
 units and billed/estimated bases require separate explicit scopes; no grand total is
-created. Optional `--source-start` and `--source-end` must both be present and use
+created. Repository reports name `unknown_amount` when either bucket includes
+unknown values. Identity-only Evidence without normalized economics is listed as
+unresolved `missing_economic_evidence`: unbound identities are conservatively
+potentially relevant, and bound identities are scoped by their Run repository.
+They contribute no fabricated economic amount. Optional `--source-start` and `--source-end` must both be present and use
 aware RFC3339 times. Source windows are start-inclusive/end-exclusive.
 
 ## Normalization and corrections
@@ -98,7 +102,18 @@ preserving the first matching core record and updating the index for new records
 Economic graph validation similarly indexes Evidence and Run bindings once per
 validation and declared Run membership once per computed result. Coverage and
 computed membership validation reuse those indexes.
-These bounds apply to these lookup steps, not to total pipeline complexity.
+Correction subject validation visits each present chain node once, including
+inherited bindings and pending predecessors. File-overlap detection sorts windows
+and tracks the furthest endpoints for two distinct digests, preserving inclusive
+point boundaries and namespaced/file ambiguity. Computation builds full-reference
+Run, lifecycle-leaf, coverage and event indexes once per snapshot. Cutoff pruning
+propagates unavailable dependencies through a reverse index once per edge.
+Coverage summarizes distinct Evidence references and point extrema once per Run;
+each assertion separately checks its own declared evidence and point boundaries.
+Assertions are not combined to manufacture complete coverage. Per-assertion work
+is bounded by that assertion's declared references, including shared-Evidence
+components.
+These bounds apply to these steps, not to total pipeline complexity.
 
 ## Temporal and coverage policy
 
@@ -131,7 +146,9 @@ and atomically writes the result and local operation receipt. Retry an identical
 operation_id after a lost response: the original result and cutoff return even if
 new evidence has arrived. Reusing it with different selectors fails; a new operation_id
 captures a new revision. Imported computed results remain producer claims. Inspection
-always labels completeness as `snapshot_only`, never current eligibility.
+always labels completeness as `snapshot_only`, never current eligibility. It checks
+the exact immutable payload, local operation receipt, cutoff bounds and all input
+dependencies in one read transaction with one graph validation.
 
 The local computed ledger is separate from legacy Settlement claims. Its ledger_id
 is an opaque local chain identity; a portable origin ID cannot create a local receipt.

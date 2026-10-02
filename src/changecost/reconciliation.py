@@ -18,14 +18,13 @@ from changecost.models import (
     EconomicScope,
     EvidenceBinding,
     Exclusion,
-    RunBinding,
     Subtotal,
     timestamp,
 )
 from changecost.normalized import MAX_RECORDS
 from changecost.operations import change_in, common
 from changecost.serialization import ContractError
-from changecost.store import Store, available, key, read_records, reference, validate_graph
+from changecost.store import Store, available, key, read_records, reference, run_key, validate_graph
 
 ALGORITHM = "settlement/v1"
 POLICY = "synthetic/v1"
@@ -126,26 +125,36 @@ def overlaps(left, right) -> bool:
     return left.start <= right.end and right.start <= left.end
 
 
-def choose_series(events: list[EconomicEvidence], result: Selection, scope: EconomicScope, records):
+def choose_series(events: list[EconomicEvidence], result: Selection, scope: EconomicScope, index):
     if ambiguous_file_overlap(events):
         result.exclude(events, "dedupe_limited_overlap")
         return []
     snapshots = [e for e in events if e.lane == "snapshot"]
     if snapshots:
-        return select_snapshot(events, result, scope, records)
+        return select_snapshot(events, result, scope, index)
     return select_deltas(events, result, scope)
 
 
 def ambiguous_file_overlap(events) -> bool:
     files = {e.source.file_digest for e in events if e.source.identity_scope == "file"}
-    return len(files) > 1 and any(
-        a.source.file_digest != b.source.file_digest and overlaps(a, b)
-        for a in events
-        for b in events
-    )
+    if len(files) <= 1:
+        return False
+    # Keep the furthest endpoints for two distinct digests (including namespaced None).
+    furthest = []
+    for event in sorted(events, key=lambda e: e.start):
+        digest = event.source.file_digest
+        other = next((prior for prior in furthest if prior.source.file_digest != digest), None)
+        if other is not None and overlaps(other, event):
+            return True
+        same = next((prior for prior in furthest if prior.source.file_digest == digest), None)
+        if same is None or event.end > same.end:
+            furthest = [prior for prior in furthest if prior.source.file_digest != digest]
+            furthest.append(event)
+            furthest = sorted(furthest, key=lambda e: e.end, reverse=True)[:2]
+    return False
 
 
-def select_snapshot(events, result, scope, records):
+def select_snapshot(events, result, scope, index):
     snapshots = [e for e in events if e.lane == "snapshot"]
     from changecost.coverage import supported_event
 
@@ -154,7 +163,7 @@ def select_snapshot(events, result, scope, records):
         return []
     snapshot = snapshots[0]
     run = result.runs[key(reference(snapshot))]
-    exact = exact_snapshot_window(snapshot, run, scope, records)
+    exact = exact_snapshot_window(snapshot, run, scope, index)
     subjects = {str(result.runs[key(reference(e))]) for e in events}
     if not snapshot.baseline_zero or not exact or len(subjects) != 1:
         result.exclude(events, "unsupported_snapshot_window")
@@ -179,7 +188,10 @@ def select_deltas(events, result, scope):
     return included
 
 
-def select(records: dict, scope: EconomicScope, members=None) -> Selection:
+def select(records: dict, scope: EconomicScope, members=None, index=None) -> Selection:
+    from changecost.coverage import CoverageIndex
+
+    index = index if index is not None else CoverageIndex(records)
     result = effective_events(records, scope, members)
     series = defaultdict(list)
     for event in result.selected:
@@ -187,7 +199,7 @@ def select(records: dict, scope: EconomicScope, members=None) -> Selection:
     result.effective = list(result.selected)
     result.selected = []
     for events in series.values():
-        result.selected.extend(choose_series(events, result, scope, records))
+        result.selected.extend(choose_series(events, result, scope, index))
     return result
 
 
@@ -208,8 +220,8 @@ def subtotals(events, scope: EconomicScope) -> list[Subtotal]:
     ]
 
 
-def snapshot_records(connection, cutoff: Cutoff) -> dict:
-    records = read_records(connection)
+def snapshot_records(connection, cutoff: Cutoff, records=None) -> dict:
+    records = read_records(connection) if records is None else records
     from changecost.models import Observation, RecordRef
 
     observations = {
@@ -225,25 +237,33 @@ def snapshot_records(connection, cutoff: Cutoff) -> dict:
     }
     graph = validate_graph(records)
     included = {k for k, r in records.items() if available(r, observations.get(k), cutoff)}
-    while True:
-        narrowed = {k for k in included if graph[k] <= included}
-        if narrowed == included:
-            return {k: records[k] for k in included}
-        included = narrowed
+    dependents = defaultdict(list)
+    for ref, dependencies in graph.items():
+        for dependency in dependencies:
+            dependents[dependency].append(ref)
+    pending = list(records.keys() - included)
+    while pending:
+        for child in dependents[pending.pop()]:
+            if child in included:
+                included.remove(child)
+                pending.append(child)
+    return {k: records[k] for k in included}
 
 
 def computation_details(records, change, scope):
-    from changecost.coverage import assess_coverage, supported_event
+    from changecost.coverage import CoverageIndex, assess_coverage, supported_event
 
-    bindings = {
-        tuple(r.run.model_dump().values()): r
-        for r in records.values()
-        if isinstance(r, RunBinding) and r.change == reference(change)
-    }
+    index = CoverageIndex(records)
+    bindings = {run_key(r.run): r for r in index.change_bindings[key(reference(change))]}
     members = [bindings[k].run for k in sorted(bindings)]
-    selection = select(records, scope, set(bindings))
-    selected = [e for e in selection.selected if selection.runs[key(reference(e))] in members]
-    reasons, supporting = assess_coverage(records, change, members, selection, selected, scope)
+    selection = select(records, scope, set(bindings), index)
+    selected = [
+        e
+        for e in selection.selected
+        if selection.runs[key(reference(e))] is not None
+        and run_key(selection.runs[key(reference(e))]) in bindings
+    ]
+    reasons, supporting = assess_coverage(index, change, members, selection, selected, scope)
     totals = subtotals(selected, scope)
     reasons.update(selection.reasons)
     if any(t.unknown_count for t in totals):
@@ -315,7 +335,8 @@ def inspect_computation(store: Store, record: ComputedSettlement) -> dict:
     connection = store.connect(readonly=True)
     try:
         connection.execute("BEGIN")
-        stored = read_records(connection).get(key(reference(record)))
+        records = read_records(connection)
+        stored = records.get(key(reference(record)))
         if stored != record:
             raise ContractError("computation does not match immutable stored record")
         local = (
@@ -324,9 +345,22 @@ def inspect_computation(store: Store, record: ComputedSettlement) -> dict:
             ).fetchone()
             is not None
         )
+        store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
+        now = timestamp(store.clock())
+        if last_at is not None and timestamp(last_at) > now:
+            raise ContractError("clock moved backwards")
+        cutoff = record.cutoff
+        eligible = False
+        if (
+            local
+            and cutoff.store_id == store_id
+            and cutoff.sequence <= sequence
+            and cutoff.at <= now
+        ):
+            snapshot = snapshot_records(connection, cutoff, records)
+            eligible = all(key(ref) in snapshot for ref in record.inputs)
     finally:
         connection.close()
-    eligible = local and all(store.eligible(ref, record.cutoff) for ref in record.inputs)
     return dict(
         local_computation=local,
         replay_eligibility="inputs_available" if eligible else "replay_unavailable",
@@ -347,13 +381,22 @@ def repository_report(store: Store, scope: EconomicScope) -> dict:
         records = snapshot_records(connection, cutoff)
     finally:
         connection.close()
-    selection = select(records, scope)
+    from changecost.coverage import CoverageIndex, unpriced_evidence
+
+    index = CoverageIndex(records)
+    selection = select(records, scope, index=index)
     bound = [e for e in selection.selected if selection.runs[key(reference(e))] is not None]
     unbound = [e for e in selection.selected if selection.runs[key(reference(e))] is None]
+    bound_totals, unbound_totals = subtotals(bound, scope), subtotals(unbound, scope)
+    if any(s.unknown_count for s in [*bound_totals, *unbound_totals]):
+        selection.reasons.add("unknown_amount")
+    missing = unpriced_evidence(index, repository_id=scope.repository_id)
+    if missing:
+        selection.exclude([records[ref] for ref in sorted(missing)], "missing_economic_evidence")
     return dict(
         cutoff=cutoff.model_dump(mode="json"),
-        bound=[s.model_dump() for s in subtotals(bound, scope)],
-        unbound=[s.model_dump() for s in subtotals(unbound, scope)],
+        bound=[s.model_dump() for s in bound_totals],
+        unbound=[s.model_dump() for s in unbound_totals],
         unresolved=[e.model_dump() for e in selection.exclusions],
         unknown_reasons=sorted(selection.reasons),
     )
@@ -383,12 +426,10 @@ def select_chain(result, chain, resolved, bindings, members):
     result.exclude(chain[1:], "replaced", unresolved=False)
 
 
-def exact_snapshot_window(snapshot, run, scope, records):
-    from changecost.operations import latest
-
+def exact_snapshot_window(snapshot, run, scope, index):
     if run is None:
         return False
-    interval = latest(records, "interval", tuple(run.model_dump().values()))
+    interval = index.intervals.get(run_key(run))
     if interval is None:
         return False
     exact = (interval.start, interval.end) == (

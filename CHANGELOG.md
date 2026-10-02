@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Bound correction-chain, overlap, coverage and cutoff dependency work; evaluate
+  computed replay inputs in one consistent read transaction. Repository remainder
+  reports now name unknown amounts and identity-only Evidence uncertainty.
+
 - Preserve selected-chain input provenance, reject foreign explicit binding inputs,
   and share coverage/computed membership indexes without reinterpreting historical
   unbound evidence after later attribution; avoid copying full membership for each

@@ -301,3 +301,97 @@ mechanical-only matrix (1,038 tests per Python version) did not certify absence
 of this defect. Fresh independent closure covering the exact named escape and
 all prior related fixes, full quality verification and new-head hosted assurance
 remain required before live acceptance. Version stays unpublished 0.1.0.dev0.
+
+## Consolidated seven-path repair — 2026-10-02 (Europe/Berlin)
+
+The maintainer approved correction of findings 11–13 and related findings 14–17
+as batch 8. The existing schema-8 session, investigations, active-time history and
+extension to 11 batches / 300 active minutes were retained. Replan remains pending
+current-binding independent closure and a verified named family resolution.
+
+The four new specification scenarios preceded test and implementation edits.
+Before implementation, `.venv/bin/python -m pytest tests/test_reconciliation.py -k
+'subject_work_is_linear or disjoint_file_overlap_work or repository_unknown_amount_reason
+or repository_plain_evidence_uncertainty or computation_coverage_record_work
+or cutoff_pruning_dependency_work or inspection_uses_one' -q` produced **15 failures,
+1 passing foreign-repository control and 67 deselections in 2.33 seconds**. The
+ignored `batch8-red.log` contains the actual failures: repeated chain binding visits,
+ordered overlap comparisons, empty unknown reasons, omitted plain Evidence,
+repeated complete-record coverage scans, repeated dependency pruning and multiple
+inspection read transactions. These are causal baseline failures, not tool failures.
+
+The correction walks chain leaves once with shared visited state; sorts overlap
+windows and retains the furthest endpoints for two distinct digests; indexes
+full-reference lifecycle leaves, coverage, bindings and per-Run event groups;
+propagates unavailable references through reverse dependencies once per edge; and
+checks inspection payload, local receipt authority, cutoff bounds and all inputs
+in one transaction with one graph validation. Repository bucket subtotals are
+computed once, unknown amounts name unknown_amount, and identity-only Evidence
+is explicitly unresolved and scoped by any explicit Run repository binding.
+These are bounds for these steps, not a whole-pipeline linear-complexity claim.
+
+After implementation, the original complete settlement file passed **83 tests in
+0.98 seconds**. Additional controls cover per-Run global event scan counts,
+predecessor-defined leaves in both insertion orders, complete RunRefs with matching
+run IDs across repositories, and all four availability inequalities. An initial
+new control attempted a future declared work bound and correctly failed contract
+validation; it was repaired to a past bound. A CLI test initially lacked the
+installed entrypoint in PATH; using the existing `.venv/bin` resolved that test
+environment issue. Neither is counted as baseline red evidence.
+
+The final affected command, `PATH="$PWD/.venv/bin:$PATH" .venv/bin/python -m pytest
+tests/test_reconciliation.py tests/test_settlement_cli.py tests/test_store.py
+tests/test_contracts.py tests/test_cli.py -q`, passed **187 tests and 4 subtests in
+3.41 seconds**. Focused Ruff and BasedPyright passed with zero errors/warnings;
+`openspec validate settlement-01-reconciliation --strict --no-interactive` passed.
+Independent closure, full current-input quality/matrix, staged checks and new-head
+Linux native/provider review remain required. Prior native passes do not certify
+this new result. No schema, package version, analyzer threshold or source policy
+changed; package remains unpublished `0.1.0.dev0`, with offline synthetic scope.
+
+Rollback is a follow-up revert of the scoped repair commit after publication;
+no stored payload format or database migration is introduced. Preserve the prior
+checkout and database backup for preview rollback and original cutoff inspection.
+
+## Coverage assertion closure and full-test typing — 2026-10-02 (Europe/Berlin)
+
+Generation-21 independent review confirmed the seven direct corrections, including
+2,100 overlap sets, eight correction controls, 720 cutoff DAGs, 50 coverage parity
+cases and single-transaction inspection controls. Complete family closure failed:
+each coverage assertion still rescanned all selected point endpoints and economic
+components. Valid graph probes measured 200/800 point-start reads for 10/20 events
+and assertions, and 100/400 evidence reads when components shared Evidence. This
+is finding `codex-pr28-related-18` in the existing bounded-lookup family, retained
+as a post-investigation escape. Both full 3.11.15/3.13.14 suites passed 1,067 tests,
+but the full types leaf failed three errors at the new subtotal assertion. The
+prior focused runtime typing pass did not cover that test and was not full quality
+acceptance. No previous incomplete result is relabeled passed.
+
+Persistent explicit maintainer instructions to continue until the PR is green and
+to repair/continue authorize this in-scope follow-up. Batch 9 collects the residual
+and full-test type blocker; counters, budget and replan history are preserved.
+A new specification scenario preceded regression and implementation edits.
+`pytest tests/test_reconciliation.py -k coverage_assertion_work_tracks_declared_inputs
+-q` failed **six causal work-count cases with 91 deselections in 0.31 seconds**:
+10/20-event endpoint cases and shared-Evidence endpoint/membership cases. Each
+fixture passed graph validation and retained expected uncertainty/provenance.
+
+Coverage now summarizes distinct complete Evidence keys, point minimum/maximum
+and presence of events once per selected Run group. Each assertion keeps its own
+policy, finality, economic identity, full interval and evidence-set requirements.
+Cardinality rejection and subset checking use distinct keys; no assertion union
+manufactures completeness. Point starts stay inclusive and ends exclusive; no
+point events skips only the point predicate. All consulted assertions remain
+provenance even when rejected. The unmodified independent probes now measure
+10/20 point-start reads and 10/20 shared-Evidence reads for 10/20 events; their
+missing-supported/unsupported-source reasons remain unchanged.
+
+The subtotal test uses list/Subtotal runtime guards to narrow actual values. A
+new assertion-separation fixture briefly triggered a possibly-unbound local
+variable diagnostic; explicit initialization/guard repaired the test, without an
+ignore or gate relaxation. The final focused command from batch 8 passed **195
+tests and four subtests in 3.38 seconds**; full `make types` against comparison
+`131799f640caac6c2ee68dc6904d331a4203f825` passed with zero errors/warnings.
+Ruff passed. New independent full-family closure, fresh current-input full quality,
+staged checks and native/provider/live acceptance remain required. All earlier
+repair controls and offline unpublished `0.1.0.dev0` scope are preserved.

@@ -374,3 +374,33 @@ amount was unknown, retaining its old unresolved revision and provenance.
 - **GIVEN** a computed result with many declared Runs and their Outcome inputs
 - **WHEN** each Outcome subject is validated
 - **THEN** its membership is checked without copying the complete member set per Outcome; the target Change and member Run Outcomes remain allowed, while a foreign subject is rejected.
+
+#### Scenario: Bounded correction and overlap validation
+
+- **GIVEN** linear corrections, pending predecessors, and file or namespaced source windows within the input limits
+- **WHEN** their attribution and overlap invariants are evaluated
+- **THEN** correction chains visit each present node once, and overlap detection sorts windows and performs bounded per-window work; forks, cycles, inherited subject conflicts, known-currency changes and inclusive cross-file overlaps remain rejected or unresolved as before.
+
+#### Scenario: Indexed coverage and cutoff dependency work
+
+- **GIVEN** many linked Runs with lifecycle revisions, coverage assertions and economic events, or a dependency chain rooted in unavailable history
+- **WHEN** computation selects its cutoff inputs and evaluates coverage
+- **THEN** full-reference lifecycle, membership, coverage and event indexes are built once per operation, revision leaves determine lifecycle state regardless of insertion order, and cutoff invalidation visits each dependency edge once.
+
+#### Scenario: Repository uncertainty without normalized economics
+
+- **GIVEN** a selected unknown economic amount or identity-only Evidence without normalized economics
+- **WHEN** a read-only repository report is requested
+- **THEN** unknown subtotals name unknown_amount; potentially relevant identity-only Evidence names missing_economic_evidence and is identified as unresolved without fabricating an amount, while Evidence explicitly bound to another repository is omitted.
+
+#### Scenario: Consistent inspection eligibility
+
+- **GIVEN** an immutable stored computed result and its complete input dependency graph
+- **WHEN** replay eligibility is inspected
+- **THEN** the stored payload, local computation authority and all input availability are evaluated from one read transaction with one graph validation; cutoff bounds, origin-claim limits and transitive dependency availability remain enforced.
+
+#### Scenario: Coverage assertions reuse selected event requirements
+
+- **GIVEN** one Run with many selected point events or many economic components sharing Evidence, and many coverage assertions with small explicit evidence lists
+- **WHEN** supported coverage is evaluated
+- **THEN** distinct complete Evidence keys and selected point extrema are summarized once per Run group; each assertion separately checks its own references and point bounds, without unioning assertions or rescanning every selected component. Empty events, missing references, unsupported source policy and exclusive point end boundaries retain their uncertainty reasons.

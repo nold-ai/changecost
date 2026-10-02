@@ -82,8 +82,11 @@ def correction_graph(records: dict) -> dict:
             )
             if left is not None and right is not None and left != right:
                 raise ContractError("replacement changes attribution subject")
-    for node in edges:
-        validate_chain_subject(node, edges, events, bindings)
+    visited = set()
+    for node in events.keys() - children:
+        validate_chain_subject(node, edges, events, bindings, visited)
+    if len(visited) != len(events):
+        raise ContractError("cyclic correction graph")
     return edges
 
 
@@ -160,8 +163,8 @@ def validate_economics(records: dict) -> None:
     correction_graph(records)
 
 
-def validate_chain_subject(node, edges, events, bindings):
-    seen, subjects = set(), set()
+def validate_chain_subject(node, edges, events, bindings, seen):
+    subjects = set()
     while node in events:
         if node in seen:
             raise ContractError("cyclic correction graph")
