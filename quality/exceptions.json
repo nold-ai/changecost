@@ -1,19 +1,19 @@
 {
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Required analyzers, Python matrix, review-session budgets and provider policies are unchanged. This runtime correction does not waive required hosted validation.",
-    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+    "reason": "The updated host type checker does not replace or waive the signed SpecFact 0.50.1 analyzer composition, complete hosted review, Python matrix, session budgets or provider review policy; the linked gate guide explains isolation.",
+    "digest": "4db26e625c3382e90a43cb27ad169f1313b22046abde6ff979633d6b75cb83f2"
   },
   "docs/development/quality-gates.md": {
     "reason": "Gate commands, supported execution platform and analyzer thresholds are unchanged; local targeted diagnostics remain distinct from mandatory native hosted assurance.",
     "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
   },
   "CONTRIBUTING.md": {
-    "reason": "Contributor commands, dependencies, stage boundaries and acceptance policy are unchanged; this batch corrects scoped runtime behavior and documents its exact red/green evidence.",
-    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+    "reason": "Default uv sync still installs the complete development tool set through the dev group, including BasedPyright 1.40.1; contributor commands and required gates are unchanged. Test-runtime isolation is explained in the linked gate guide.",
+    "digest": "4db26e625c3382e90a43cb27ad169f1313b22046abde6ff979633d6b75cb83f2"
   },
   "README.md": {
-    "reason": "Offline preview capabilities, install commands and CLI selectors remain accurate. The seven-path repair details and uncertainty semantics are documented in settlement/contracts and TDD evidence; package remains unreleased 0.1.0.dev0.",
-    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+    "reason": "The development type-checker upgrade and test-runtime grouping preserve offline preview capabilities, runtime dependencies, install commands, CLI selectors and the unreleased package version.",
+    "digest": "4db26e625c3382e90a43cb27ad169f1313b22046abde6ff979633d6b75cb83f2"
   },
   "docs/commands.md": {
     "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",

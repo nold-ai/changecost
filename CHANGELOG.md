@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Update the locked project type checker to BasedPyright 1.40.1 and separate
+  test-runtime dependencies so SpecFact retains its signed analyzer composition
+  while local and CI type checks use the updated development tool.
+
 - Flatten coverage index dispatch to satisfy the native nesting rule while
   preserving lifecycle and evidence lookup semantics.
 
