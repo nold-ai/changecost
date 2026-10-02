@@ -1,19 +1,19 @@
 {
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Required analyzers, Python matrix, review-session budgets and provider policies are unchanged. This runtime correction does not waive required hosted validation.",
-    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+    "reason": "The artifact upload action bump preserves required analyzers, full enforcement, Python matrix, review budgets and provider policy; only evidence transport changes.",
+    "digest": "a7c6d6d2660a9eb45e44c7dc3f3e2ba9f6c3d3a8b51a2a03f9e284a479b670f4"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Gate commands, supported execution platform and analyzer thresholds are unchanged; local targeted diagnostics remain distinct from mandatory native hosted assurance.",
-    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+    "reason": "Artifact upload 7.0.1 keeps the existing archive default, hidden-file inclusion, evidence paths and retention; all documented checks and capsule requirements remain accurate.",
+    "digest": "a7c6d6d2660a9eb45e44c7dc3f3e2ba9f6c3d3a8b51a2a03f9e284a479b670f4"
   },
   "CONTRIBUTING.md": {
-    "reason": "Contributor commands, dependencies, stage boundaries and acceptance policy are unchanged; this batch corrects scoped runtime behavior and documents its exact red/green evidence.",
-    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+    "reason": "The SHA-pinned artifact upload action now uses 7.0.1; contributor setup, locked tools, review workflow and required gates are unchanged.",
+    "digest": "a7c6d6d2660a9eb45e44c7dc3f3e2ba9f6c3d3a8b51a2a03f9e284a479b670f4"
   },
   "README.md": {
-    "reason": "Offline preview capabilities, install commands and CLI selectors remain accurate. The seven-path repair details and uncertainty semantics are documented in settlement/contracts and TDD evidence; package remains unreleased 0.1.0.dev0.",
-    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+    "reason": "Updating the CI evidence upload action to 7.0.1 preserves zipped artifacts and the documented offline preview, CLI, install commands and unreleased package version.",
+    "digest": "a7c6d6d2660a9eb45e44c7dc3f3e2ba9f6c3d3a8b51a2a03f9e284a479b670f4"
   },
   "docs/commands.md": {
     "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",
