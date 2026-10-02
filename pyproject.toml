@@ -20,7 +20,10 @@ dependencies = [
 changecost = "changecost.cli:main"
 
 [dependency-groups]
-dev = ["pytest>=8,<10", "ruff>=0.12,<1", "basedpyright==1.39.10", "pre-commit==4.6.2", "packaging>=25", "pyyaml>=6", "types-pyyaml>=6", "pip-audit>=2.9,<3", "uv==0.12.19"]
+# SpecFact selects the test group without uv's default dev group, preserving
+# its signed analyzer versions while host typing uses the current BasedPyright.
+test = ["pytest>=8,<10", "ruff>=0.12,<1", "pre-commit==4.6.2", "packaging>=25", "pyyaml>=6", "types-pyyaml>=6", "pip-audit>=2.9,<3", "uv==0.12.19"]
+dev = [{include-group = "test"}, "basedpyright==1.40.1"]
 build = ["hatchling>=1.27,<2"]
 
 [tool.hatch.build.targets.wheel]

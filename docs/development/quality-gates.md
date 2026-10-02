@@ -6,10 +6,11 @@ returns nonzero if any required child fails or cannot run. Python 3.11.15 and
 3.13.14 use the same targets; OpenSpec 1.13.2, uv 0.12.19 and actionlint 1.7.12
 are bootstrap pins. The actionlint version check accepts the release/Homebrew
 `1.7.12` and Go-module `v1.7.12` spellings only. The lock resolves Python runtime, dev and build dependencies.
-The dev group also pins uv so isolated repository tests can invoke it. BasedPyright
-1.39.10 and its Node wheel 24.16.0 are constrained to the signed SpecFact 0.50.1
-composition: newer project versions caused required analyzer evidence to be UNKNOWN.
-These are development dependencies; analyzer coverage and type-checking rules remain intact. Pytest
+The dev group includes the test tools and pins uv so isolated repository tests can
+invoke it. Host typing uses BasedPyright 1.40.1; its Node wheel remains constrained
+to 24.16.0. The separate test group lets SpecFact 0.50.1 retain its signed
+BasedPyright 1.39.10 analyzer without a conflicting project copy. These are
+development dependencies; analyzer coverage and type-checking rules remain intact. Pytest
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package. CLI tests resolve the active environment’s console script
 from PATH, and the wheel proof puts its clean installation first.
@@ -339,6 +340,15 @@ Behavior-affecting source, tests, dependencies, validator or CI edits require re
 changes to `openspec/config.yaml` or either pre-commit configuration, including
 the shared hygiene policy, also require review. Docs-only work states non-applicability and still runs its gates. Missing/skipped
 analyzers fail. The manual hook alone is not review completion.
+
+The default `dev` dependency group includes `test` and BasedPyright 1.40.1;
+locked local and CI typing use that current project tool. SpecFact module 0.50.1
+auto-selects the explicit `test` group and syncs it with `--no-default-groups`,
+so its project runtime receives all existing test dependencies without installing
+a second BasedPyright. The required capsule analyzer remains its signed 1.39.10
+version. This separation avoids the module's pinned-analyzer conflict check;
+it preserves every required analyzer and full enforcement. Native execution of
+this composition must still pass on the current PR head in the Linux CI matrix.
 
 Review capsules currently need a Linux x86-64 controller. Local macOS results
 are UNKNOWN, not PASS. The gate must remain nonzero until the supported runtime

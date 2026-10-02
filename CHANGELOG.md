@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Update the locked project type checker to BasedPyright 1.40.1 and separate
+  test-runtime dependencies so SpecFact retains its signed analyzer composition
+  while local and CI type checks use the updated development tool.
+
 - Update the SHA-pinned CI artifact uploader from 4.6.2 to 7.0.1 while preserving
   zipped native review evidence, hidden-file inclusion and seven-day retention.
 
