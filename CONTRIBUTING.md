@@ -1,9 +1,10 @@
 # Contributing to ChangeCost
 
-ChangeCost has unreleased offline contracts and lifecycle commands; economic operations remain in the
-[approved backlog](openspec/CHANGE_ORDER.md). The maintainer authorized foundation
-implementation on 2026-09-28 and Core-02 implementation on 2026-09-29. Other product work and live collection require a
-subsequent request; research does not expand that authorization.
+ChangeCost has unreleased offline contracts, lifecycle and normalized settlement
+commands. The maintainer authorized foundation on 2026-09-28 and Core-02 plus
+settlement implementation on 2026-09-29. Settlement verification remains pending;
+see [current evidence](openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md).
+Other backlog work and live collection require a subsequent request.
 
 ## Workflow
 

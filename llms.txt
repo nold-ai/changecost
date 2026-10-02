@@ -1,6 +1,6 @@
 # ChangeCost
 
-> Private, unreleased offline contracts and lifecycle CLI. Provider operations remain planned.
+> Private, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. Provider operations remain planned.
 
 ## Project and evidence
 
@@ -25,11 +25,15 @@
 - [Research evidence](openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md): scenario review, checks and unresolved source inspection.
 - [Python foundation specification](openspec/specs/python-foundation/spec.md): Accepted behavior synchronized from the merged implementation.
 - [Bounded review specification](openspec/specs/bounded-review-session/spec.md): Accepted behavior synchronized from the merged implementation.
-- [Core-02 contracts preparation](openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md): Contract preparation, archive results and prerequisite evidence; implementation evidence is recorded separately.
+- [Core-02 contracts preparation](openspec/changes/archive/2026-09-29-core-02-change-run-contracts/PREPARATION_EVIDENCE.md): Contract preparation, archive results and prerequisite evidence; implementation evidence is recorded separately.
 - [Offline CLI](docs/cli.md): Synthetic registration, lifecycle, inspection and portable replay examples.
 - [Contracts v1](docs/contracts.md): Exact field semantics, immutable revisions, local history and recovery limits.
 - [Behavioral evidence review](docs/development/behavioral-evidence.md): Bounded lifecycle controls and content-bound review packets; no completion authority.
 - [Behavioral evidence pilot](docs/lessons-learned/behavioral-evidence-pilot.md): Measured experiment status, tool coverage and limitations.
+- [Change/run contracts specification](openspec/specs/change-run-contracts/spec.md): Accepted offline contracts and lifecycle behavior synchronized by the OpenSpec archive CLI.
+- [Settlement preparation](openspec/changes/settlement-01-reconciliation/PREPARATION_EVIDENCE.md): Current code gaps, dated primary-source research, preparation probes and implementation prerequisites.
+- [Offline settlement preview](docs/settlement.md): Normalized input, exact computation, synthetic coverage, operation retries and recovery.
+- [Settlement implementation evidence](openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md): Actual TDD and review evidence, current verification limits and rollback.
 
 ## Local skills
 
@@ -38,7 +42,7 @@
 - [changecost-promote](.agents/skills/changecost-promote/SKILL.md): Create or update a ChangeCost PR to main and delegate its review, CI, and verified-fix loop. Use when the user asks to promote a verified branch or handle its PR findings; never merge or deploy.
 - [changecost-verify](.agents/skills/changecost-verify/SKILL.md): Verify a ChangeCost change with scoped quality, defect-review, and documentation subagents, then commit and push the verified feature branch. Use after implementation or preparation, before promotion to a PR.
 - [openspec-apply-change](.agents/skills/openspec-apply-change/SKILL.md): Implement tasks from an OpenSpec change. Use when the user wants to start implementing, continue implementation, or work through tasks.
-- [openspec-archive-change](.agents/skills/openspec-archive-change/SKILL.md): Archive a completed change in the experimental workflow. Use when the user wants to finalize and archive a change after implementation is complete.
+- [openspec-archive-change](.agents/skills/openspec-archive-change/SKILL.md): Archive a completed OpenSpec change through the OpenSpec CLI, including its built-in main-spec synchronization. Use after implementation acceptance; never replace CLI operations with agent-written specs or manual folder moves.
 - [openspec-explore](.agents/skills/openspec-explore/SKILL.md): Enter explore mode - a thinking partner for exploring ideas, investigating problems, and clarifying requirements. Use when the user wants to think through something before or during a change.
 - [openspec-propose](.agents/skills/openspec-propose/SKILL.md): Propose a new change with all artifacts generated in one step. Use when the user wants to quickly describe what they want to build and get a complete proposal with design, specs, and tasks ready for implementation.
 - [openspec-sync-specs](.agents/skills/openspec-sync-specs/SKILL.md): Sync delta specs from a change to main specs. Use when the user wants to update main specs with changes from a delta spec, without archiving the change.

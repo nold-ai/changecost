@@ -1,30 +1,34 @@
 {
-  "CONTRIBUTING.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
-  },
-  "README.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
-  },
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
-  },
-  "docs/commands.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
+    "reason": "Required analyzers, Python matrix, review-session budgets and provider policies are unchanged. This runtime correction does not waive required hosted validation.",
+    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "f95f9c1964af22f5550ec31bbc38101dcd347cd538d1d4dd04de1833a9026501"
+    "reason": "Gate commands, supported execution platform and analyzer thresholds are unchanged; local targeted diagnostics remain distinct from mandatory native hosted assurance.",
+    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+  },
+  "CONTRIBUTING.md": {
+    "reason": "Contributor commands, dependencies, stage boundaries and acceptance policy are unchanged; this batch corrects scoped runtime behavior and documents its exact red/green evidence.",
+    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+  },
+  "README.md": {
+    "reason": "Offline preview capabilities, install commands and CLI selectors remain accurate. The seven-path repair details and uncertainty semantics are documented in settlement/contracts and TDD evidence; package remains unreleased 0.1.0.dev0.",
+    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+  },
+  "docs/commands.md": {
+    "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",
+    "digest": "06a7d596d51686f06f61d141a246af10e6dbd5a57f14e72d96c35ff14c3572c9"
   },
   "llms.txt": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "1779f3fbd2a8ab9c155c278e05cddb84fe9805b5f41703f9292fc9c5ec319281"
+    "reason": "Generated navigation and capability summaries remain accurate: no new command, schema, provider capability or skill. Existing settlement/contracts/evidence links expose the revised bounded work and report uncertainty.",
+    "digest": "06a7d596d51686f06f61d141a246af10e6dbd5a57f14e72d96c35ff14c3572c9"
   },
-  "docs/development/behavioral-evidence.md": {
-    "reason": "Reviewed pending-gate report handoff and empirical two-switch CodeRabbit configuration: product APIs, setup, command signatures and document inventory remain unchanged. Canonical workflow, approved design/specs, tasks, changelog and TDD record the trigger and observation corrections. This document retains its accurate canonical links and mechanical gate requirements; generated references remain byte-identical.",
-    "digest": "51520e85488a4b658b22ad20aa241d6055b2071827027aa8b1b07a27fe02f4c1"
+  "docs/settlement.md": {
+    "reason": "Structural guard flattening preserves all documented index roles, complete-reference lifecycle leaves, report semantics and cutoff/authority behavior. Existing controls pass; actual native failure and repair proof are recorded in settlement TDD evidence. No product/wire/CLI change.",
+    "digest": "d3867fc9001d4698da82c67c164dd5f1cd24de8c7e9b58791bf91f06cb344e45"
+  },
+  "docs/contracts.md": {
+    "reason": "Structural guard flattening preserves all documented index roles, complete-reference lifecycle leaves, report semantics and cutoff/authority behavior. Existing controls pass; actual native failure and repair proof are recorded in settlement TDD evidence. No product/wire/CLI change.",
+    "digest": "5c75a8aa211ca05fa0358137d3885ba03eee74897011a5b552656b02eb4d5712"
   }
 }

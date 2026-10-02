@@ -6,10 +6,16 @@ Retries and duplicate exports can inflate spend while missing charges can hide i
 
 ## What Changes
 
-- Normalize allowlisted evidence independently of provider parsers.
+- Normalize allowlisted economic evidence independently of provider parsers, retaining
+  Core-02 identities, explicit bindings and destination-local availability.
 - Deduplicate imports, preserve actual retries and apply identifiable corrections as revisions.
 - Aggregate bound and unbound evidence separately, retaining accepted and abandoned outcomes.
-- Record auditable full-change coverage separately from reconciled source intervals; incomplete attempts never become total-change observations.
+- Record auditable full-change coverage separately from reconciled source intervals;
+  incomplete attempts never become total-change observations.
+- Define semantic deduplication, replacement correction graphs, authoritative temporal
+  lanes and bounded exact arithmetic.
+- Add snapshot-bound, operation-idempotent computed revisions and explain traces,
+  keeping imported assertions and synthetic coverage distinct from local verification.
 
 ## Capabilities
 
@@ -19,15 +25,23 @@ Retries and duplicate exports can inflate spend while missing charges can hide i
 
 ### Modified Capabilities
 
-None; no main capability specs exist yet.
+- `change-run-contracts`: extend the evolving internal `changecost/v1` records
+  with economic evidence, coverage assertions and computed settlements while
+  retaining strict boundaries and separating local computation from imported claims.
+  See [the portable delta](specs/change-run-contracts/spec.md).
 
 ## Impact
 
-Future implementation affects the standalone Python CLI and local evidence workflow.
+The local/unpublished implementation is based on merged main
+`999cb8f960785fe4ac0434d41a0892beca933191`; implementation was authorized on 2026-09-29.
+Implementation affects `src/changecost/models.py`, serialization/store
+boundaries, a focused reconciliation module, existing CLI/operations, contract/store
+tests and new reconciliation/CLI tests. Reuse Python/Decimal/SQLite/Pydantic;
+no new runtime dependency or provider framework is justified.
 Documentation: docs/settlement.md, docs/contracts.md, and docs/cli.md.
 Verification: the scenarios in [the capability spec](specs/evidence-reconciliation/spec.md),
 strict OpenSpec validation, applicable quality gates and truthful review evidence.
-No runtime files or dependencies are introduced by this planning proposal.
+Runtime files implement the planned behavior without new dependencies; verification remains pending.
 
 ## Non-goals
 
@@ -35,7 +49,7 @@ No inferred cash prices, universal invoice reconciliation guarantee, automatic a
 
 ## Dependencies
 
-- [core-02-change-run-contracts](../core-02-change-run-contracts/proposal.md)
+- [core-02-change-run-contracts](../archive/2026-09-29-core-02-change-run-contracts/proposal.md)
 
 Dependencies are implementation prerequisites; planning can proceed together.
 See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
@@ -43,7 +57,12 @@ See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/
 ## Decisions and uncertainty
 
 The Python/local-first scope is confirmed. Provider access and prediction quality
-remain To-Validate. See [design](design.md) for decisions and evidence gates.
+remain To-Validate. The delivered economic-field and cutoff gaps, numerical probes
+and dated primary sources are recorded in [preparation evidence](PREPARATION_EVIDENCE.md).
+All changes belong to the unreleased 0.x alpha/preview feasibility study; package
+`0.1.0.dev0` and the existing internal artifact label are retained. There is no
+public v2 release or backward-compatibility programme in scope. See [design](design.md)
+for the settled development boundary and evidence gates.
 
 ## Risks and rollback
 
@@ -61,7 +80,10 @@ evidence and prior local database versions; do not erase financial history.
 - GitHub issue: [#12](https://github.com/nold-ai/changecost/issues/12) (native type: User Story).
 - Parent feature: [#7](https://github.com/nold-ai/changecost/issues/7) — Attribution and settlement.
 - Parent epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
-- Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status Todo.
+- Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status In Progress.
 - Source: maintainer-approved pilot plan, 2026-09-28 (Europe/Berlin).
-- Tracking verified: 2026-09-28; implementation is unstarted, unassigned and undated.
+- Tracking readback: 2026-09-29; #12 was reopened and its private project item restored
+  to Todo. Parent, dependency, labels and unassigned/undated state are preserved.
+  Implementation authorized 2026-09-29; local branch under verification, issue OPEN/In Progress.
+  No published implementation branch or PR is claimed.
 <!-- tracking:end -->

@@ -367,8 +367,9 @@ Pattern inspected on 2026-09-28 (Europe/Berlin): `specfact-cli-modules` at
 `scripts/generate-command-overview.py` (render/check comparison),
 `tests/unit/docs/test_llms_overview_freshness.py` (freshness guard), and
 `docs/agent-rules/70-release-commit-and-docs.md` (metadata consistency).
-ChangeCost currently generates only its foundation help/version surface; economic
-commands remain unimplemented.
+The generated reference now includes offline lifecycle and normalized settlement
+options. Quote/check and native provider adapters remain unimplemented; source
+policy and accepted limitations are documented with the settlement implementation.
 
 ## Behavioral evidence and follow-up review
 

@@ -2,8 +2,8 @@
 
 Prepared on 2026-09-29 against fresh main and the archived foundation/review specs.
 Implementation and pre-promotion verification are complete at `fae72f330b2e8187521f2ed176b7bc0118f3575f`.
-[PR #25](https://github.com/nold-ai/changecost/pull/25) is open for current-head review
-and acceptance. Preparation probes are not product TDD. See
+[PR #25](https://github.com/nold-ai/changecost/pull/25) merged on 2026-09-29 at
+`999cb8f960785fe4ac0434d41a0892beca933191`; the maintainer requested archival after acceptance. Preparation probes are not product TDD. See
 [preparation evidence](PREPARATION_EVIDENCE.md) and [implementation evidence](TDD_EVIDENCE.md).
 
 ## 1. Scope and prerequisite recovery
@@ -36,8 +36,16 @@ and acceptance. Preparation probes are not product TDD. See
 - [x] 5.2 Reconcile every scenario with actual TDD_EVIDENCE.md commands/results, verify scope/non-goals, docs/index/package versions and issue links/relationships, and record unresolved evidence honestly. Do not mark provider support, reconciliation or estimation delivered.
 - [x] 5.3 Verify the final staged snapshot, commit/push through the verification stage, and open the focused implementation PR when requested; retain rollback/backup guidance and archive only after implementation acceptance.
 
-Promotion checkpoint, 2026-09-29 (Europe/Berlin): GitHub run 36558317437 and both
+Historical promotion checkpoint, 2026-09-29 (Europe/Berlin): GitHub run 36558317437 and both
 native reports certify the cited implementation commit. The reviewed branch was
 committed/pushed and ready PR #25 opened against main; fresh PR-head checks and
 Codex/CodeRabbit review remain pending. Core-02 is intentionally not archived until
 implementation acceptance. No merge, issue closure or release is claimed.
+
+Archive checkpoint, 2026-09-29 (Europe/Berlin): all four artifacts and all 15 tasks
+are complete. `openspec archive core-02-change-run-contracts --yes` synchronized
+all 18 requirements and archived the change using the `spec-driven` schema.
+Readback verified every full requirement block and retained `.openspec.yaml`;
+strict validation passed. Historical checkpoints above remain historical evidence,
+not a claim that every advisory was remediated. No provider/economic implementation
+or release is implied by acceptance.

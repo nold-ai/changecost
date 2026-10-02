@@ -15,8 +15,8 @@ Before contract research, OpenSpec CLI **1.13.2** archived:
 
 | Delivered change | Delivery evidence | Archive/spec result |
 | --- | --- | --- |
-| core-01-python-foundation | [PR #22](https://github.com/nold-ai/changecost/pull/22), merged 2026-09-28; final head c70ebcf; [Linux run 36462266628](https://github.com/nold-ai/changecost/actions/runs/36462266628) | [Archived record](../archive/2026-09-29-core-01-python-foundation/tasks.md); seven requirements in [main spec](../../specs/python-foundation/spec.md) |
-| dev-workflow-01-bounded-review | [PR #24](https://github.com/nold-ai/changecost/pull/24), merged 2026-09-29; final head 7af6666; [Linux run 36517806157](https://github.com/nold-ai/changecost/actions/runs/36517806157) | [Archived record](../archive/2026-09-29-dev-workflow-01-bounded-review/tasks.md); 25 requirements in [main spec](../../specs/bounded-review-session/spec.md) |
+| core-01-python-foundation | [PR #22](https://github.com/nold-ai/changecost/pull/22), merged 2026-09-28; final head c70ebcf; [Linux run 36462266628](https://github.com/nold-ai/changecost/actions/runs/36462266628) | [Archived record](../2026-09-29-core-01-python-foundation/tasks.md); seven requirements in [main spec](../../../specs/python-foundation/spec.md) |
+| dev-workflow-01-bounded-review | [PR #24](https://github.com/nold-ai/changecost/pull/24), merged 2026-09-29; final head 7af6666; [Linux run 36517806157](https://github.com/nold-ai/changecost/actions/runs/36517806157) | [Archived record](../2026-09-29-dev-workflow-01-bounded-review/tasks.md); 25 requirements in [main spec](../../../specs/bounded-review-session/spec.md) |
 
 Both archives used `openspec archive <id> --yes --json`, with validation and spec
 updates enabled. All artifacts existed; task closure was reconciled against final

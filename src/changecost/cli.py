@@ -13,7 +13,15 @@ from typing import Annotated, Any
 import typer
 
 from changecost import operations
-from changecost.models import Quote, RecordRef, Run, RunRef, timestamp
+from changecost.models import (
+    ComputedSettlement,
+    EconomicScope,
+    Quote,
+    RecordRef,
+    Run,
+    RunRef,
+    timestamp,
+)
 from changecost.serialization import ContractError, dumps_bundle, loads_bundle
 from changecost.store import Store, key, lookup, reference, subject
 
@@ -188,10 +196,47 @@ def settle(
     correct_outcome: bool = False,
     correct_interval: bool = False,
     reason: str | None = None,
+    import_evidence: Path | None = None,
+    compute: bool = False,
+    operation_id: str | None = None,
+    economic_kind: str | None = None,
+    unit: str | None = None,
+    currency: str | None = None,
+    basis: str | None = None,
+    source_start: str | None = None,
+    source_end: str | None = None,
 ) -> None:
-    """Declare outcomes/work bounds; economic reconciliation is not implemented."""
+    """Import normalized economics, compute a revision, or declare lifecycle facts."""
+    economic_options = dict(
+        economic_kind=economic_kind,
+        unit=unit,
+        currency=currency,
+        basis=basis,
+        source_start=source_start,
+        source_end=source_end,
+    )
+    lifecycle = (provider, surface, run_id, outcome, run_outcome, work_start, work_end, reason)
 
     def perform():
+        economic = import_evidence is not None or compute
+        fields = operation_id is not None or any(v is not None for v in economic_options.values())
+        if economic:
+            if any(v is not None for v in lifecycle) or correct_outcome or correct_interval:
+                raise ContractError("settle modes are mutually exclusive")
+            return economic_request(
+                context.obj,
+                repository_id,
+                change_id,
+                import_evidence,
+                compute,
+                operation_id,
+                economic_options,
+            )
+        if fields:
+            raise ContractError("economic options require computation")
+        return lifecycle_request()
+
+    def lifecycle_request():
         if outcome is not None and run_outcome is not None:
             raise ContractError("outcome modes are mutually exclusive")
         ref = target(context.obj, repository_id, change_id, provider, surface, run_id)
@@ -232,11 +277,34 @@ def explain(
     record_kind: str | None = None,
     record_id: str | None = None,
     export_artifact: Path | None = None,
+    repository_remainder: bool = False,
+    economic_kind: str | None = None,
+    unit: str | None = None,
+    currency: str | None = None,
+    basis: str | None = None,
+    source_start: str | None = None,
+    source_end: str | None = None,
 ) -> None:
     """Inspect stored claims/revisions or export a consistent portable snapshot."""
 
     def perform():
         selectors = (repository_id, change_id, provider, surface, run_id, record_kind, record_id)
+        options = dict(
+            economic_kind=economic_kind,
+            unit=unit,
+            currency=currency,
+            basis=basis,
+            source_start=source_start,
+            source_end=source_end,
+        )
+        if repository_remainder:
+            if export_artifact is not None or any(v is not None for v in selectors[1:]):
+                raise ContractError("repository reporting cannot use record selectors")
+            from changecost.reconciliation import repository_report
+
+            return repository_report(context.obj, economic_scope(repository_id, options))
+        if any(v is not None for v in options.values()):
+            raise ContractError("economic options require repository remainder mode")
         if export_artifact is not None:
             if any(value is not None for value in selectors):
                 raise ContractError("export cannot use record selectors")
@@ -278,6 +346,10 @@ def inspect_record(store: Store, ref: RecordRef) -> dict:
         ],
         "provenance_status": "producer_assertion; provider_support_not_verified",
     }
+    if isinstance(record, ComputedSettlement):
+        from changecost.reconciliation import inspect_computation
+
+        result.update(inspect_computation(store, record))
     if isinstance(record, Quote):
         eligible = all(
             store.eligible(dep, record.cutoff) for dep in [record.change, *record.inputs]
@@ -317,3 +389,42 @@ def export_file(store: Store, path: Path) -> None:
 def main() -> None:
     """Run the installed command."""
     app()
+
+
+def economic_scope(repository_id, options) -> EconomicScope:
+    return EconomicScope.model_validate(
+        dict(
+            repository_id=repository_id,
+            economic={k: options[k] for k in ("economic_kind", "unit", "currency", "basis")},
+            start=options["source_start"],
+            end=options["source_end"],
+        )
+    )
+
+
+def economic_request(store, repository_id, change_id, path, compute, operation_id, options):
+    from changecost.normalized import MAX_INPUT_BYTES, import_evidence, load_input
+    from changecost.reconciliation import compute_settlement
+
+    if path is not None:
+        if (
+            compute
+            or change_id is not None
+            or operation_id is not None
+            or any(v is not None for v in options.values())
+        ):
+            raise ContractError("normalized import cannot use computation selectors")
+        if not repository_id:
+            raise ContractError("normalized import requires repository selector")
+        with path.open("rb") as stream:
+            content = stream.read(MAX_INPUT_BYTES + 1)
+        if len(content) > MAX_INPUT_BYTES:
+            raise ContractError("normalized input size limit exceeded")
+        return {
+            "evidence_ids": import_evidence(store, load_input(content.decode()), repository_id),
+            "provider_support": "not_verified",
+        }
+    scope = economic_scope(repository_id, options)
+    if not change_id or not operation_id:
+        raise ContractError("compute requires Change and operation selectors")
+    return compute_settlement(store, change_id, scope, operation_id)
