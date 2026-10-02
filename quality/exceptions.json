@@ -1,19 +1,19 @@
 {
   "docs/agent-rules/50-quality-gates-and-review.md": {
-    "reason": "The updated host type checker does not replace or waive the signed SpecFact 0.50.1 analyzer composition, complete hosted review, Python matrix, session budgets or provider review policy; the linked gate guide explains isolation.",
-    "digest": "4db26e625c3382e90a43cb27ad169f1313b22046abde6ff979633d6b75cb83f2"
+    "reason": "The host type-checker and artifact upload upgrades preserve signed SpecFact 0.50.1 analyzers, full enforcement, complete hosted review, Python matrix, session budgets and provider policy; the linked gate guide explains supported test-runtime isolation.",
+    "digest": "d0c76d30d1d040801cae265865af71571c309213574232c8657c0d0f32923f2c"
   },
   "docs/development/quality-gates.md": {
-    "reason": "Gate commands, supported execution platform and analyzer thresholds are unchanged; local targeted diagnostics remain distinct from mandatory native hosted assurance.",
-    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
+    "reason": "The gate guide already documents host BasedPyright 1.40.1 and signed capsule isolation. Artifact upload 7.0.1 preserves zipped evidence, hidden-file inclusion, evidence paths and retention. Required checks and capsule requirements remain accurate.",
+    "digest": "d0c76d30d1d040801cae265865af71571c309213574232c8657c0d0f32923f2c"
   },
   "CONTRIBUTING.md": {
-    "reason": "Default uv sync still installs the complete development tool set through the dev group, including BasedPyright 1.40.1; contributor commands and required gates are unchanged. Test-runtime isolation is explained in the linked gate guide.",
-    "digest": "4db26e625c3382e90a43cb27ad169f1313b22046abde6ff979633d6b75cb83f2"
+    "reason": "Default uv sync still installs every developer tool through the dev group, including BasedPyright 1.40.1. Artifact uploader 7.0.1 preserves CI evidence transport. Contributor commands and required gates remain accurate; test-runtime isolation is explained in the linked gate guide.",
+    "digest": "d0c76d30d1d040801cae265865af71571c309213574232c8657c0d0f32923f2c"
   },
   "README.md": {
-    "reason": "The development type-checker upgrade and test-runtime grouping preserve offline preview capabilities, runtime dependencies, install commands, CLI selectors and the unreleased package version.",
-    "digest": "4db26e625c3382e90a43cb27ad169f1313b22046abde6ff979633d6b75cb83f2"
+    "reason": "The development type-checker upgrade, supported test-runtime grouping and artifact upload action 7.0.1 preserve offline preview capabilities, runtime dependencies, install commands, CLI selectors and the unreleased package version.",
+    "digest": "d0c76d30d1d040801cae265865af71571c309213574232c8657c0d0f32923f2c"
   },
   "docs/commands.md": {
     "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",
