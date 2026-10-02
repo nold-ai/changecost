@@ -35,7 +35,7 @@ No SDK wrapper requirement, telemetry collector, automatic environment/IDE confi
 ## Dependencies
 
 - [pilot-01-source-feasibility](../pilot-01-source-feasibility/proposal.md)
-- [settlement-01-reconciliation](../settlement-01-reconciliation/proposal.md)
+- [settlement-01-reconciliation](../archive/2026-10-02-settlement-01-reconciliation/proposal.md)
 
 Dependencies are implementation prerequisites; planning can proceed together.
 See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).

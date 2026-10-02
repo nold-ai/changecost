@@ -27,7 +27,7 @@ package or runtime. This design describes later implementation, not delivered be
 ## Dependencies and evidence
 
 - [pilot-01-source-feasibility](../pilot-01-source-feasibility/proposal.md)
-- [settlement-01-reconciliation](../settlement-01-reconciliation/proposal.md)
+- [settlement-01-reconciliation](../archive/2026-10-02-settlement-01-reconciliation/proposal.md)
 
 Shared boundaries and current provider evidence are recorded in the
 [source assessment](../../../docs/research/pilot-source-assessment.md).

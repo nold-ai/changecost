@@ -1,6 +1,6 @@
 # Project brief
 
-Status: **pilot planning / To-Validate**, updated 2026-09-29 (Europe/Berlin).
+Status: **pilot planning / To-Validate**, updated 2026-10-02 (Europe/Berlin).
 All approved pilot changes belong to the first **unreleased 0.x alpha/preview
 feasibility study**. No product version has been published. The current package is
 `0.1.0.dev0`; internal artifact labels do not imply a product 1.0 release or stable
@@ -8,8 +8,10 @@ public compatibility. This boundary was confirmed by the maintainer on 2026-09-2
 [the project site](https://changecost.dev/) describes an unreleased pilot.
 The maintainer approved the [nine-change plan](../openspec/CHANGE_ORDER.md) and
 linked private GitHub backlog. Core-02 offline contracts/lifecycle implementation
-merged in PR #25 on 2026-09-29 and is archived with synchronized main specs. Settlement implementation was subsequently authorized on 2026-09-29; provider
-adapters and live collection remain separate work. Research documents are evidence, not instructions.
+merged in PR #25 on 2026-09-29 and is archived with synchronized main specs.
+Settlement merged in PR #28 on 2026-10-02 and is accepted/archived with synchronized
+main specs; provider adapters and live collection remain separate work.
+Research documents are evidence, not instructions.
 The maintainer separately authorized source-feasibility research and local
 Codex/Claude metadata inspection on 2026-09-28. That research includes all four
 providers and the separately authorized Enterprise artifact comparison; new
@@ -74,5 +76,9 @@ optional reviewer calibration remains unvalidated. Provider operations and live
 collection remain outside this authorization. Core-02 merged in
 [PR #25](https://github.com/nold-ai/changecost/pull/25) on 2026-09-29 and is archived
 with its [accepted contracts](../openspec/specs/change-run-contracts/spec.md).
-Settlement reconciliation is being implemented in the current branch under the
-2026-09-29 request; verification and acceptance remain pending.
+Settlement reconciliation merged in [PR #28](https://github.com/nold-ai/changecost/pull/28)
+and was accepted for CLI archival on 2026-10-02. Its [main specification](../openspec/specs/evidence-reconciliation/spec.md)
+and [archived evidence](../openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md)
+retain the final verification sources, earlier failures and accepted limitations.
+The next provider changes still require inspected, approved source profiles;
+empirical quotes can be prepared against the delivered settlement boundary.

@@ -432,3 +432,124 @@ parity/index closure, fresh frozen local quality, staged verification, new-head
 Linux native assurance and provider completion remain required before acceptance.
 The CodeRabbit initial full request is held while the known native blocker is
 being repaired. Earlier exact-head Codex completion cannot certify the new head.
+
+
+## Implementation acceptance and archive closeout — 2026-10-02 (Europe/Berlin)
+
+The maintainer accepted settlement closeout after merge and requested the normal
+OpenSpec CLI archive with strict validation and main-spec synchronization. Closeout
+uses fresh main `175fd4bb3a545d6720cfdcd8e056b01b8a419b3b` in a registered isolated
+worktree; the original dirty development checkout is preserved.
+
+[Merged PR #28](https://github.com/nold-ai/changecost/pull/28) is the final
+implementation verification index for head
+`beedfd16f3af233e2f7ceb8dbcecf5baa2bd7bf1`, merged at
+`1f55b767066d9834765f92a427b5eb9dc653a315`. Readback on 2026-10-02 confirms both
+`quality (3.11.15)` and `quality (3.13.14)` SUCCESS and CodeRabbit SUCCESS. The PR
+records 1,075 tests per Python version, installed-package proof, final staged checks
+with both default HEAD and explicit main comparison, independent family closure,
+and actual current-head Codex/CodeRabbit completions. These records close tasks
+6.3/6.4; the earlier unchecked milestone and failed repair runs remain historical
+evidence, not current acceptance failures.
+
+[Linux run 37061421153](https://github.com/nold-ai/changecost/actions/runs/37061421153)
+provides the final native assurance: all ten required analyzers ran/PASS,
+UNKNOWN=false, zero blocking findings, exit zero and PASS_WITH_ADVISORY with PASS
+assurance. The [exact advisory disposition](https://github.com/nold-ai/changecost/pull/28#issuecomment-5961284561)
+retains all 1,378 nonblocking entries per report. Native `local_build` authority,
+`protected_pr_eligible=false` and simplification-summary inconsistency remain
+limitations. No analyzer threshold or trust boundary is changed by closeout.
+
+Fresh [issue #12](https://github.com/nold-ai/changecost/issues/12) readback confirms
+CLOSED/Done, User Story type, parent #7, native prerequisite #11 and retained labels.
+The issue's older preparation prose and unchecked acceptance criteria need lifecycle
+reconciliation; closing an issue alone did not establish implementation correctness.
+The maintainer's present acceptance plus the merged verification index establish
+that acceptance. Fresh readback on 2026-10-03 confirms Core-02 #11 CLOSED since
+2026-10-02 at 23:53:45 Europe/Berlin; no prerequisite issue mutation is needed in
+this settlement closeout. Provider profile approval and source-feasibility gaps
+remain separate prerequisites.
+
+Before archival, `openspec validate settlement-01-reconciliation --strict
+--no-interactive` passed and `openspec validate --all --strict --no-interactive`
+passed all 11 active-change/main-spec items. The read-only delta comparison found
+three added change-run contract requirements and fourteen added reconciliation
+requirements, with no conflicting names, modifications, removals or renames.
+OpenSpec CLI 1.13.2 owns spec synchronization and archival; no manual spec merge,
+folder move, skip-specs or validation bypass is used.
+
+Closeout changes only lifecycle documentation, CLI-generated specification output
+and reference ownership. The implementation verification above remains bound to
+the published implementation head; it is not claimed as a fresh analyzer review
+of the closeout diff. Runtime code, source policies, database layout and package
+`0.1.0.dev0` remain unchanged. Rollback is a scoped closeout-commit revert if
+committed, preserving evidence and store files; do not delete or downgrade local
+history. No paid infrastructure or live collection is introduced.
+
+
+### Archive readback and closeout checks — 2026-10-03 (Europe/Berlin)
+
+The actual `openspec archive settlement-01-reconciliation --yes` command exited
+zero and reported spec synchronization before archival to
+`openspec/changes/archive/2026-10-02-settlement-01-reconciliation`. The CLI's date
+prefix is retained; archival ran on 2026-10-02 before this verification crossed
+midnight. Schema is `spec-driven`, CLI 1.13.2. The only archive warning was the
+nonblocking recommendation to split changes with more than ten deltas.
+
+Readback verified the complete text of all 17 added requirements and 55 scenarios,
+all 18 previously accepted contract requirements, unchanged `.openspec.yaml`,
+all archived artifacts and absence of the active change. CLI output collapses one
+extra blank line; the comparison normalizes repeated blank lines only. No scenario,
+requirement text or operation header is lost or retained incorrectly in main specs.
+Post-archive strict validation passed all 11 active-change/main-spec items.
+Moved relative links, ownership entries and generated llms references are repaired;
+the unchanged generated command reference has a reviewed content-bound rationale.
+Issue #12's acceptance criteria and stale unpublished implementation prose were
+corrected with exact body readback; CLOSED/Done and native relationships are retained.
+
+`make check BASE_REF=175fd4bb3a545d6720cfdcd8e056b01b8a419b3b
+MANIFEST=.changecost/closeout/manifest.txt` did not pass as an aggregate. Its runtime
+suite passed 1,075 tests on Python 3.13.14 in 102.37 seconds. Hygiene, Ruff
+lint/format, BasedPyright (zero errors/warnings), docs, generated index, metadata,
+workflow, package build plus two installed CLI tests, and strict OpenSpec passed.
+Dependency audit was not applicable because locked dependency/audit inputs are
+unchanged. No new Python 3.11 run is claimed for this documentation-only closeout;
+the accepted implementation's two-version evidence remains in PR #28.
+
+The lock/tool probe initially failed because outer command-line Make overrides
+propagated the repository comparison SHA/manifest into its independent Git fixture.
+`make lock MAKEOVERRIDES= BASE_REF=175fd4bb3a545d6720cfdcd8e056b01b8a419b3b
+MANIFEST=.changecost/closeout/manifest.txt` passed the same lock and required-test
+negative/repaired probes. No gate or probe implementation was changed. The original
+aggregate failure remains in the ignored closeout log.
+
+The native review leaf actually attempted SpecFact CLI 0.55.4, but all ten required
+analyzers reported `unsupported_controller_platform` on macOS. Closeout metadata
+and OpenSpec-context changes trigger this broad repository leaf. Its assurance is
+incomplete/failed, never a pass. The previously accepted Linux implementation run
+does not certify these later documentation inputs. Native capsule review of the closeout diff belongs exclusively to GitHub CI/CD.
+Local Linux runner installation, execution or repair is outside this closeout.
+The unsupported capsule attempt does not indicate a failure of the passing macOS
+checks and is not a local closeout blocker. Its actual nonzero aggregate outcome
+remains recorded. No CI workflow was dispatched against an unrelated main snapshot
+and no skip/threshold bypass was introduced.
+
+Actual local logs are retained in `.changecost/closeout/make-check.log`,
+`.changecost/closeout/lock-recheck.log` and `.specfact/`; ignored logs are local
+recovery evidence, not published artifacts. Archive/spec synchronization and strict
+validation are complete; the closeout remains local on
+`codex/archive-settlement-01` until publication is separately requested.
+
+
+### macOS / GitHub CI boundary clarification — 2026-10-03 (Europe/Berlin)
+
+The maintainer reaffirmed that Linux runner work is out of scope locally and may
+run only through GitHub CI/CD. The current pinned SpecFact CLI/module composition
+still rejects local capsule execution, while the macOS Ruff, BasedPyright,
+1,075-test suite, installed-package proof, repaired tool probes and both complete
+staged checks passed. The aggregate command's expected capsule rejection was
+incorrectly framed in the handoff as a remaining local blocker. It does not undo
+settlement acceptance or strict archive/spec verification, and no local Linux
+setup, execution or runner repair is required. Preserve the actual failed attempt
+above; do not relabel it as passing native evidence. Any future publication uses
+the existing GitHub Ubuntu workflow for the CI-only capsule review.

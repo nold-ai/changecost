@@ -16,8 +16,8 @@
     "digest": "d0c76d30d1d040801cae265865af71571c309213574232c8657c0d0f32923f2c"
   },
   "docs/commands.md": {
-    "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",
-    "digest": "06a7d596d51686f06f61d141a246af10e6dbd5a57f14e72d96c35ff14c3572c9"
+    "reason": "Regeneration after settlement archival preserves the complete command reference byte-for-byte: only quality/index.json navigation paths and descriptions changed; CLI code, command options, help text and skill metadata are unchanged. llms.txt now links accepted archived evidence and the synchronized reconciliation specification.",
+    "digest": "3ba09600f6d987818e3f759527f4d55728762b4d417b3880583cad6db81dba52"
   },
   "llms.txt": {
     "reason": "Generated navigation and capability summaries remain accurate: no new command, schema, provider capability or skill. Existing settlement/contracts/evidence links expose the revised bounded work and report uncertainty.",

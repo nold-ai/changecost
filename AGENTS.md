@@ -45,5 +45,6 @@ SpecFact is development tooling, not a runtime framework.
 
 Core-02 offline contracts/lifecycle implementation was explicitly authorized on
 2026-09-29, merged in PR #25, and archived through the OpenSpec CLI with synchronized
-main specs. Settlement reconciliation implementation was explicitly authorized on 2026-09-29
-and is in progress. Provider adapters and live collection require a subsequent request.
+main specs. Settlement reconciliation merged in PR #28 on 2026-10-02 and is
+accepted/archived with synchronized main specs. Provider adapters and live
+collection require a subsequent request.

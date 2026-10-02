@@ -136,8 +136,8 @@
   },
   {
     "title": "Settlement preparation",
-    "path": "openspec/changes/settlement-01-reconciliation/PREPARATION_EVIDENCE.md",
-    "description": "Current code gaps, dated primary-source research, preparation probes and implementation prerequisites."
+    "path": "openspec/changes/archive/2026-10-02-settlement-01-reconciliation/PREPARATION_EVIDENCE.md",
+    "description": "Historical code gaps, dated primary-source research and preparation probes before the accepted implementation."
   },
   {
     "title": "Offline settlement preview",
@@ -146,7 +146,12 @@
   },
   {
     "title": "Settlement implementation evidence",
-    "path": "openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md",
-    "description": "Actual TDD and review evidence, current verification limits and rollback."
+    "path": "openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md",
+    "description": "Accepted implementation TDD, final merged verification, retained limitations and archive closeout."
+  },
+  {
+    "title": "Evidence reconciliation specification",
+    "path": "openspec/specs/evidence-reconciliation/spec.md",
+    "description": "Accepted normalized reconciliation, immutable computation and explicit coverage requirements synchronized by the OpenSpec archive CLI."
   }
 ]

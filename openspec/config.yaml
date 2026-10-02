@@ -3,7 +3,8 @@ schema: spec-driven
 context: |
   Core-02 merged in PR #25 on 2026-09-29 and is archived with synchronized main specs.
   Offline contracts, bind, lifecycle-only settle and explain are delivered on main.
-  The current branch implements normalized reconciliation; verification is in progress.
+  Normalized reconciliation merged in PR #28 on 2026-10-02 and is accepted/archived
+  with synchronized main specs; final verification and limitations remain archived.
   No provider adapter or quote computation is delivered.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
   cost estimates and settlement for AI-assisted software changes.

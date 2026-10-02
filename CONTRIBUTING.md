@@ -2,8 +2,8 @@
 
 ChangeCost has unreleased offline contracts, lifecycle and normalized settlement
 commands. The maintainer authorized foundation on 2026-09-28 and Core-02 plus
-settlement implementation on 2026-09-29. Settlement verification remains pending;
-see [current evidence](openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md).
+settlement implementation on 2026-09-29. Settlement merged in PR #28 on 2026-10-02
+and is accepted/archived; see [accepted evidence](openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md).
 Other backlog work and live collection require a subsequent request.
 
 ## Workflow

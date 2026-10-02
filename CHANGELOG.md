@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Accept and archive settlement reconciliation through OpenSpec CLI 1.13.2,
+  synchronizing 17 requirements into main specs. Reconcile merged verification,
+  lifecycle summaries, moved links and documentation ownership while preserving
+  historical failures and accepted limitations.
+
 - Update the locked project type checker to BasedPyright 1.40.1 and separate
   test-runtime dependencies so SpecFact retains its signed analyzer composition
   while local and CI type checks use the updated development tool.

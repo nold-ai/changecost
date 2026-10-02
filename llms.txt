@@ -31,9 +31,10 @@
 - [Behavioral evidence review](docs/development/behavioral-evidence.md): Bounded lifecycle controls and content-bound review packets; no completion authority.
 - [Behavioral evidence pilot](docs/lessons-learned/behavioral-evidence-pilot.md): Measured experiment status, tool coverage and limitations.
 - [Change/run contracts specification](openspec/specs/change-run-contracts/spec.md): Accepted offline contracts and lifecycle behavior synchronized by the OpenSpec archive CLI.
-- [Settlement preparation](openspec/changes/settlement-01-reconciliation/PREPARATION_EVIDENCE.md): Current code gaps, dated primary-source research, preparation probes and implementation prerequisites.
+- [Settlement preparation](openspec/changes/archive/2026-10-02-settlement-01-reconciliation/PREPARATION_EVIDENCE.md): Historical code gaps, dated primary-source research and preparation probes before the accepted implementation.
 - [Offline settlement preview](docs/settlement.md): Normalized input, exact computation, synthetic coverage, operation retries and recovery.
-- [Settlement implementation evidence](openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md): Actual TDD and review evidence, current verification limits and rollback.
+- [Settlement implementation evidence](openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md): Accepted implementation TDD, final merged verification, retained limitations and archive closeout.
+- [Evidence reconciliation specification](openspec/specs/evidence-reconciliation/spec.md): Accepted normalized reconciliation, immutable computation and explicit coverage requirements synchronized by the OpenSpec archive CLI.
 
 ## Local skills
 
