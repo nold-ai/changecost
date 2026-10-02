@@ -395,3 +395,40 @@ tests and four subtests in 3.38 seconds**; full `make types` against comparison
 Ruff passed. New independent full-family closure, fresh current-input full quality,
 staged checks and native/provider/live acceptance remain required. All earlier
 repair controls and offline unpublished `0.1.0.dev0` scope are preserved.
+
+## Native structural correction — 2026-10-02 (Europe/Berlin)
+
+The automatic current-head Linux run
+[37058926420](https://github.com/nold-ai/changecost/actions/runs/37058926420)
+failed both matrix jobs at `fe18874140c91414841b379181b2ef6c99ef1dce`.
+All ten required analyzers actually ran; nine passed and Radon failed with one
+blocking finding: `CoverageIndex.add_record` at coverage.py:98 had seven nesting
+levels (`radon-kiss` / `kiss.nesting.error`). Neither report had UNKNOWN required
+evidence. Both exact report digests and published-scope/blob proofs are retained
+in ignored `ci-37058926420/summary.json`. The earlier CC-only local diagnostics
+did not cover this separate native nesting rule and did not certify native PASS.
+
+The installed pinned `specfact-code-review` 0.50.1 `radon_runner.py` defines
+`_nesting_depth` using control-flow AST children, so the elif chain contributes
+nested If nodes. Its warning threshold is 3 and error threshold is 5; the native
+message recommends keeping nesting under 3. Executing those exact installed
+AST definitions reproduced depth 7 before editing. The detector file SHA256 is
+`4a15673a9ff26c34a4a9becad794ce450dbf6e2b6e2549bf230946c4d4ac7101`.
+This actual structural gate failure is the RED evidence; no behavior change or
+fabricated failing product test is claimed. The native-static-quality finding,
+exact-rule investigation and batch 10 preserve the existing history and allowance.
+
+The minimal change replaces mutually exclusive elif dispatch with separate
+if guards and early returns. Each selected record role still populates the same
+index exactly once; full references, predecessor-defined lifecycle leaves and
+bounded scans are preserved. The same pinned detector now measures depth 2 for
+add_record and no blocking nesting in coverage.py. No gate threshold, analyzer,
+suppression, source policy, version or schema is changed, and no unsupported macOS
+capsule or manual CI retry is used.
+
+The existing focused suite passed **195 tests and four subtests in 4.85 seconds**;
+full typing passed with zero errors/warnings and Ruff passed. Independent coverage
+parity/index closure, fresh frozen local quality, staged verification, new-head
+Linux native assurance and provider completion remain required before acceptance.
+The CodeRabbit initial full request is held while the known native blocker is
+being repaired. Earlier exact-head Codex completion cannot certify the new head.

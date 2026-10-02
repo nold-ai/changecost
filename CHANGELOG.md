@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Flatten coverage index dispatch to satisfy the native nesting rule while
+  preserving lifecycle and evidence lookup semantics.
+
 - Bound correction-chain, overlap, coverage and cutoff dependency work; evaluate
   computed replay inputs in one consistent read transaction. Repository remainder
   reports now name unknown amounts and identity-only Evidence uncertainty.

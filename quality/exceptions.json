@@ -1,26 +1,34 @@
 {
   "docs/agent-rules/50-quality-gates-and-review.md": {
     "reason": "Required analyzers, Python matrix, review-session budgets and provider policies are unchanged. This runtime correction does not waive required hosted validation.",
-    "digest": "0d2b79ada29b1bab58888d24e551dc100280410c6ff5a3bb0f7675a708e978b4"
+    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
   },
   "docs/development/quality-gates.md": {
     "reason": "Gate commands, supported execution platform and analyzer thresholds are unchanged; local targeted diagnostics remain distinct from mandatory native hosted assurance.",
-    "digest": "0d2b79ada29b1bab58888d24e551dc100280410c6ff5a3bb0f7675a708e978b4"
+    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
   },
   "CONTRIBUTING.md": {
     "reason": "Contributor commands, dependencies, stage boundaries and acceptance policy are unchanged; this batch corrects scoped runtime behavior and documents its exact red/green evidence.",
-    "digest": "0d2b79ada29b1bab58888d24e551dc100280410c6ff5a3bb0f7675a708e978b4"
+    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
   },
   "README.md": {
     "reason": "Offline preview capabilities, install commands and CLI selectors remain accurate. The seven-path repair details and uncertainty semantics are documented in settlement/contracts and TDD evidence; package remains unreleased 0.1.0.dev0.",
-    "digest": "0d2b79ada29b1bab58888d24e551dc100280410c6ff5a3bb0f7675a708e978b4"
+    "digest": "4422fad2ee6082acd2bebf091fc6d78dbffe83709f61d910d926b8f30c104534"
   },
   "docs/commands.md": {
     "reason": "Generated command output remains unchanged: no command names, options, help text or CLI entrypoints change in the scoped selection/index correction.",
-    "digest": "e1328dab163d67eb8a9a257a490c17638250ed0d2329a67abee6bf064f45eac4"
+    "digest": "06a7d596d51686f06f61d141a246af10e6dbd5a57f14e72d96c35ff14c3572c9"
   },
   "llms.txt": {
     "reason": "Generated navigation and capability summaries remain accurate: no new command, schema, provider capability or skill. Existing settlement/contracts/evidence links expose the revised bounded work and report uncertainty.",
-    "digest": "e1328dab163d67eb8a9a257a490c17638250ed0d2329a67abee6bf064f45eac4"
+    "digest": "06a7d596d51686f06f61d141a246af10e6dbd5a57f14e72d96c35ff14c3572c9"
+  },
+  "docs/settlement.md": {
+    "reason": "Structural guard flattening preserves all documented index roles, complete-reference lifecycle leaves, report semantics and cutoff/authority behavior. Existing controls pass; actual native failure and repair proof are recorded in settlement TDD evidence. No product/wire/CLI change.",
+    "digest": "d3867fc9001d4698da82c67c164dd5f1cd24de8c7e9b58791bf91f06cb344e45"
+  },
+  "docs/contracts.md": {
+    "reason": "Structural guard flattening preserves all documented index roles, complete-reference lifecycle leaves, report semantics and cutoff/authority behavior. Existing controls pass; actual native failure and repair proof are recorded in settlement TDD evidence. No product/wire/CLI change.",
+    "digest": "5c75a8aa211ca05fa0358137d3885ba03eee74897011a5b552656b02eb4d5712"
   }
 }

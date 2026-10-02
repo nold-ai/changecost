@@ -98,19 +98,25 @@ class CoverageIndex:
     def add_record(self, record, revisions, predecessors):
         if isinstance(record, Run):
             self.runs[run_key(record.ref)] = record
-        elif isinstance(record, (Outcome, Interval)):
+            return
+        if isinstance(record, (Outcome, Interval)):
             revisions.append(record)
             if record.previous is not None:
                 predecessors.add(key(record.previous))
-        elif isinstance(record, SourceCoverage):
+            return
+        if isinstance(record, SourceCoverage):
             self.coverage[run_key(record.run)].append(record)
-        elif isinstance(record, RunBinding):
+            return
+        if isinstance(record, RunBinding):
             self.change_bindings[key(record.change)].append(record)
-        elif isinstance(record, EvidenceBinding):
+            return
+        if isinstance(record, EvidenceBinding):
             self.bindings[key(record.evidence)] = record
-        elif isinstance(record, Evidence):
+            return
+        if isinstance(record, Evidence):
             self.evidence[key(reference(record))] = record
-        elif record.kind == "economic_evidence":
+            return
+        if record.kind == "economic_evidence":
             self.economics.add(key(record.evidence))
 
 
