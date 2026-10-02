@@ -39,8 +39,8 @@ was used. The old Core-02 review receipt remains intact.
 | Imported `verified_provider` or `reconciled` is trusted | False: current docs explicitly retain producer assertions only. | Source policy is a local, versioned implementation decision; portable labels cannot certify support. |
 
 Read: `src/changecost/models.py`, `store.py`, `operations.py`, `serialization.py`,
-`cli.py`; tests for contracts, store and offline commands; [delivered contracts](../../specs/change-run-contracts/spec.md)
-and [runtime documentation](../../../docs/contracts.md). The source feasibility
+`cli.py`; tests for contracts, store and offline commands; [delivered contracts](../../../specs/change-run-contracts/spec.md)
+and [runtime documentation](../../../../docs/contracts.md). The source feasibility
 matrix still marks actual monetary/completeness profiles unverified. No provider
 sample or account configuration was read or changed by this preparation.
 

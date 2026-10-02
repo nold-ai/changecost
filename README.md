@@ -9,16 +9,17 @@ that history to improve future estimates.
 **Status: unreleased 0.x alpha/preview feasibility study; pilot To-Validate.** The merged implementation provides explicit Change/Run registration, bindings, lifecycle declarations and
 portable import/export. See [CLI examples](docs/cli.md), [v1 contracts](docs/contracts.md)
 and [verification evidence](openspec/changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md).
-This working branch adds [offline normalized reconciliation](docs/settlement.md),
-exact subtotals and immutable computation; verification remains in progress.
+[Offline normalized reconciliation](docs/settlement.md), exact subtotals and
+immutable computation merged in [PR #28](https://github.com/nold-ai/changecost/pull/28).
 Cost estimation and native provider imports remain planned.
 Live collection requires a separate request. This repository remains private.
 
 The delivered [Python foundation](openspec/specs/python-foundation/spec.md) and
 [bounded review workflow](openspec/specs/bounded-review-session/spec.md) are archived
 alongside [Core-02 contracts](openspec/specs/change-run-contracts/spec.md) as of
-2026-09-29. Settlement reconciliation implementation was authorized on 2026-09-29 and is
-under verification in the current working branch.
+2026-09-29. Settlement is accepted and archived as of 2026-10-02, with synchronized
+[reconciliation requirements](openspec/specs/evidence-reconciliation/spec.md) and
+[final verification evidence](openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md).
 
 The [source-feasibility research](docs/providers/source-feasibility.md) now covers
 Copilot, Cursor, Codex and Claude Code. Local Codex/Claude metadata supplies partial

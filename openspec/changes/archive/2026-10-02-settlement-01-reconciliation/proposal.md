@@ -49,10 +49,10 @@ No inferred cash prices, universal invoice reconciliation guarantee, automatic a
 
 ## Dependencies
 
-- [core-02-change-run-contracts](../archive/2026-09-29-core-02-change-run-contracts/proposal.md)
+- [core-02-change-run-contracts](../2026-09-29-core-02-change-run-contracts/proposal.md)
 
 Dependencies are implementation prerequisites; planning can proceed together.
-See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
+See [change order](../../../CHANGE_ORDER.md) and [source assessment](../../../../docs/research/pilot-source-assessment.md).
 
 ## Decisions and uncertainty
 
@@ -80,10 +80,11 @@ evidence and prior local database versions; do not erase financial history.
 - GitHub issue: [#12](https://github.com/nold-ai/changecost/issues/12) (native type: User Story).
 - Parent feature: [#7](https://github.com/nold-ai/changecost/issues/7) — Attribution and settlement.
 - Parent epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
-- Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status In Progress.
+- Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status Done.
 - Source: maintainer-approved pilot plan, 2026-09-28 (Europe/Berlin).
-- Tracking readback: 2026-09-29; #12 was reopened and its private project item restored
-  to Todo. Parent, dependency, labels and unassigned/undated state are preserved.
-  Implementation authorized 2026-09-29; local branch under verification, issue OPEN/In Progress.
-  No published implementation branch or PR is claimed.
+- Implementation: authorized 2026-09-29, merged in [PR #28](https://github.com/nold-ai/changecost/pull/28) on 2026-10-02.
+- Acceptance: maintainer requested settlement closeout and normal CLI synchronization/archive on 2026-10-02.
+- Tracking readback: 2026-10-02; #12 CLOSED/Done, User Story, parent #7, prerequisite #11 and labels retained.
+- Archive: OpenSpec CLI 1.13.2, `openspec archive settlement-01-reconciliation --yes`; 17 added requirements synchronized into main specs.
+- Historical 2026-09-29 reopening/Todo preparation evidence remains in [PREPARATION_EVIDENCE.md](PREPARATION_EVIDENCE.md).
 <!-- tracking:end -->

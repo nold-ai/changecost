@@ -1,11 +1,12 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-09-29**.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-10-02**.
 The Python foundation and supplemental bounded-review workflow are delivered and
 archived. Source-feasibility research is partly implemented; its remaining inspection
 tasks keep it active despite closed #9. Core-02 (#11) merged in PR #25 and is
-archived with synchronized main specs. Settlement reconciliation implementation was authorized on 2026-09-29 and is
-in progress; provider implementation and live collection require a subsequent request.
+archived with synchronized main specs. Settlement reconciliation merged in PR #28
+on 2026-10-02 and is accepted/archived with synchronized main specs. Provider
+implementation and live collection require a subsequent request.
 
 Supplemental contributor workflow: [#23](https://github.com/nold-ai/changecost/issues/23)
 tracks the delivered/archived [dev-workflow-01-bounded-review](changes/archive/2026-09-29-dev-workflow-01-bounded-review/proposal.md), a development-only control for retaining
@@ -14,7 +15,7 @@ change the nine-change product delivery order.
 
 Supplemental behavioral-evidence pilot: [#26](https://github.com/nold-ai/changecost/issues/26)
 tracks [dev-workflow-02-behavioral-evidence](changes/dev-workflow-02-behavioral-evidence/proposal.md),
-an implementation-authorized contributor workflow under #6, published in open
+a contributor workflow under #6, merged in
 [PR #27](https://github.com/nold-ai/changecost/pull/27). Its 2026-09-30 in-place
 post-replan phase preserves the original pilot outcome and adds scoped recovery,
 native-evidence adjudication and finite reviewer/receipt workflow obligations. Native
@@ -48,7 +49,7 @@ This adds no new issue or product-order dependency.
 | [pilot-01-source-feasibility](changes/pilot-01-source-feasibility/proposal.md) | [#9](https://github.com/nold-ai/changecost/issues/9) | [#5](https://github.com/nold-ai/changecost/issues/5) | None |
 | [core-01-python-foundation](changes/archive/2026-09-29-core-01-python-foundation/proposal.md) | [#10](https://github.com/nold-ai/changecost/issues/10) | [#6](https://github.com/nold-ai/changecost/issues/6) | None |
 | [core-02-change-run-contracts](changes/archive/2026-09-29-core-02-change-run-contracts/proposal.md) | [#11](https://github.com/nold-ai/changecost/issues/11) | [#6](https://github.com/nold-ai/changecost/issues/6) | [#10](https://github.com/nold-ai/changecost/issues/10) `core-01-python-foundation` |
-| [settlement-01-reconciliation](changes/settlement-01-reconciliation/proposal.md) | [#12](https://github.com/nold-ai/changecost/issues/12) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#11](https://github.com/nold-ai/changecost/issues/11) `core-02-change-run-contracts` |
+| [settlement-01-reconciliation](changes/archive/2026-10-02-settlement-01-reconciliation/proposal.md) | [#12](https://github.com/nold-ai/changecost/issues/12) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#11](https://github.com/nold-ai/changecost/issues/11) `core-02-change-run-contracts` |
 | [provider-01-copilot-import](changes/provider-01-copilot-import/proposal.md) | [#13](https://github.com/nold-ai/changecost/issues/13) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [provider-02-cursor-import](changes/provider-02-cursor-import/proposal.md) | [#14](https://github.com/nold-ai/changecost/issues/14) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [quote-01-empirical-estimation](changes/quote-01-empirical-estimation/proposal.md) | [#15](https://github.com/nold-ai/changecost/issues/15) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
@@ -126,20 +127,39 @@ Core-02 merged in [PR #25](https://github.com/nold-ai/changecost/pull/25) on
 `openspec archive core-02-change-run-contracts --yes` synchronized its 18 requirements
 into [change-run-contracts](specs/change-run-contracts/spec.md) and archived the change.
 Readback verified the full requirement blocks and retained metadata.
-Seven active changes remain. Next is **settlement-01-reconciliation (#12)**;
-its Core-02 implementation prerequisite is delivered. The prepared artifacts were carried directly onto `codex/settlement-01-reconciliation`
-for the authorized implementation. It is local/unpublished and under verification;
-no provider support is delivered.
-See the [settlement preparation evidence](changes/settlement-01-reconciliation/PREPARATION_EVIDENCE.md);
-the maintainer confirmed that all pilot changes remain in unreleased 0.x. The plan
-evolves the existing internal schema without a public v2 compatibility programme.
-See archived [implementation evidence](changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md).
+Settlement reconciliation merged in [PR #28](https://github.com/nold-ai/changecost/pull/28)
+on 2026-10-02 at `1f55b767066d9834765f92a427b5eb9dc653a315`. The maintainer accepted
+closeout and CLI archival on 2026-10-02. All 19 tasks are complete against the
+[final merged verification index](changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md#implementation-acceptance-and-archive-closeout--2026-10-02-europeberlin).
+`openspec archive settlement-01-reconciliation --yes` (CLI 1.13.2) synchronized
+three added [contract requirements](specs/change-run-contracts/spec.md) and fourteen
+added [reconciliation requirements](specs/evidence-reconciliation/spec.md), then
+archived the change. Readback preserved all 17 requirement bodies, 55 scenarios,
+the 18 prior contract requirements and metadata. The CLI collapses an extra blank
+line; no requirement or scenario content changed.
+
+Seven active changes remain: six pilot product changes and the separate behavioral
+evidence workflow. Next in the approved product order is **provider-01-copilot-import
+(#13)**, then **provider-02-cursor-import (#14)**. Settlement is delivered, but both
+adapters still require inspected, feasibility-approved source profiles; closed #9
+does not waive that gate. **quote-01-empirical-estimation (#15)** depends only on
+settlement and can be prepared using synthetic evidence if provider inspection is
+unavailable. No provider parser, live collection or quote algorithm is delivered
+by settlement. New implementation still requires a subsequent request.
+See the [historical settlement preparation evidence](changes/archive/2026-10-02-settlement-01-reconciliation/PREPARATION_EVIDENCE.md)
+and [accepted implementation evidence](changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md). All pilot changes
+remain the first unreleased 0.x product; no public v2 compatibility programme is
+introduced. The supplemental behavioral workflow remains active pending its own
+lifecycle closeout; this settlement request does not archive it.
 
 GitHub readback on 2026-09-29 found #11 open and #12 closed/Done, despite #11 being
 implemented and #12 unimplemented. Preparation reopened #12 and restored its private project item to Todo; readback
 confirmed both on 2026-09-29. #11 remains open as an administrative discrepancy
-despite verified code delivery. These issue states do not prove settlement delivery.
-Native dependency and hierarchy edges remain unchanged.
+despite verified code delivery. That readback is historical. On 2026-10-02, #12
+is CLOSED/Done after merged PR #28; its User Story type, parent #7, prerequisite
+#11 and labels are retained. Fresh readback on 2026-10-03 confirms #11 CLOSED
+since 2026-10-02 at 23:53:45 Europe/Berlin; no prerequisite issue mutation is
+needed in this settlement closeout. Native dependency and hierarchy edges remain unchanged.
 
 Provider-specific mappings remain blocked until feasibility records inspected source
 profiles. Completing feasibility with an unavailable capability does not authorize

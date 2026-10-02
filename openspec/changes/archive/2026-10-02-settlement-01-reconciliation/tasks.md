@@ -41,12 +41,21 @@ Implementation was authorized on 2026-09-29. Live collection remains outside sco
 
 - [x] 6.1 Derive failing compute/explain CLI tests for explicit economic/Change/operation selectors, mixed-mode errors, missing stores and privacy-safe failures; implement the minimal command integration and verify lifecycle/help/read-only behavior stays intact while quote/check/provider parsers remain undelivered.
 - [x] 6.2 Execute documented synthetic import-bind-compute-explain and portable round trips from installed wheel/sdist outside the checkout with network blocked and no SpecFact runtime; verify package/private-artifact exclusion and update README, contracts/CLI/settlement docs, ownership metadata, changelog and generated references.
-- [ ] 6.3 Run strict selected/all OpenSpec validation, make check with explicit fresh comparison base and intended-file manifest, both required Python suites, independent scoped reviews and fresh supported-Linux native analyzer assurance. Record actual failures/fixes/accepted limits without claiming missing analyzers passed.
-- [ ] 6.4 Verify final staged/default-HEAD and aggregate checks, align issue acceptance/status and native hierarchy/dependencies with actual delivery, then commit/push/promote only when requested. Preserve rollback/backup guidance and archive through the full OpenSpec CLI only after implementation acceptance.
+- [x] 6.3 Run strict selected/all OpenSpec validation, make check with explicit fresh comparison base and intended-file manifest, both required Python suites, independent scoped reviews and fresh supported-Linux native analyzer assurance. Record actual failures/fixes/accepted limits without claiming missing analyzers passed.
+- [x] 6.4 Verify final staged/default-HEAD and aggregate checks, align issue acceptance/status and native hierarchy/dependencies with actual delivery, then commit/push/promote only when requested. Preserve rollback/backup guidance and archive through the full OpenSpec CLI only after implementation acceptance.
 
 
-Implementation handoff: 17/19 tasks complete. Task 6.3 remains open for required
-supported-Linux native assurance; task 6.4 retains staged verification, acceptance
-and any later requested publication. This stage does not commit or push.
-See [actual evidence](TDD_EVIDENCE.md) for the matrix, review findings/fixes, native
-limitation and isolated active checkout. Issue #12 remains OPEN/In Progress.
+Implementation acceptance: 19/19 tasks complete, reconciled on 2026-10-02
+(Europe/Berlin). The earlier 17/19 handoff was a frozen pre-publication milestone.
+[Merged PR #28](https://github.com/nold-ai/changecost/pull/28) records final local
+quality, both Python suites, staged/default-HEAD and aggregate checks, supported-Linux
+native assurance and both provider review completions at head
+`beedfd16f3af233e2f7ceb8dbcecf5baa2bd7bf1`. Its merge commit is
+`1f55b767066d9834765f92a427b5eb9dc653a315`.
+Fresh GitHub readback confirms #12 CLOSED/Done, native User Story, parent #7 and
+prerequisite #11; the labels and hierarchy are retained. The maintainer explicitly
+accepted settlement closeout and requested normal CLI spec synchronization and
+archival on 2026-10-02. This reconciles completed work without rerunning or
+relabeling historical failures. See [actual evidence](TDD_EVIDENCE.md) for the final
+acceptance sources and retained limits. Provider adapters and live collection are
+not delivered by this change.

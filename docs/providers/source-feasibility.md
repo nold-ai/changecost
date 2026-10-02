@@ -169,9 +169,12 @@ a wholly unavailable source needs a maintainer scope decision before its adapter
 
 [Copilot #13](https://github.com/nold-ai/changecost/issues/13) and
 [Cursor #14](https://github.com/nold-ai/changecost/issues/14) remain blocked by
-[feasibility #9](https://github.com/nold-ai/changecost/issues/9) and reconciliation
-#12. The [change order](../../openspec/CHANGE_ORDER.md) is unchanged. Do not close
-#9, archive this change, or claim provider compatibility while task 2.2 is pending.
+[feasibility #9](https://github.com/nold-ai/changecost/issues/9)'s incomplete source
+inspection. Settlement #12 merged in [PR #28](https://github.com/nold-ai/changecost/pull/28)
+on 2026-10-02 and is accepted/archived; its implementation prerequisite is delivered.
+The [change order](../../openspec/CHANGE_ORDER.md) is unchanged. Closed #9 does not
+waive task 2.2: do not archive this research change or claim provider compatibility
+until the source-profile evidence gate is satisfied.
 
 ## Limits, risk and rollback
 

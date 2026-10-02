@@ -157,7 +157,7 @@ paths or instructions. Databases, exports and review artifacts stay outside pack
 Keep package version `0.1.0.dev0`; contract versioning is independent. The internal schema develops within this first unreleased 0.x product. Older
 checkouts may reject new kinds. No public v2 or general migration programme is
 introduced. This working implementation is based on `999cb8f`; its actual tested
-state and limitations are in [settlement evidence](../openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md).
+state and limitations are in [settlement evidence](../openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md).
 
 
 Computed-result input roles include subject checks: an explicit EvidenceBinding
