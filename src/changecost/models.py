@@ -61,6 +61,9 @@ Kind = Literal[
     "interval",
     "quote",
     "settlement",
+    "economic_evidence",
+    "source_coverage",
+    "computed_settlement",
 ]
 
 
@@ -297,6 +300,134 @@ class Settlement(Record):
     previous: RecordRef | None = None
 
 
+class EconomicIdentity(Model):
+    economic_kind: Literal["monetary", "nonmonetary"]
+    unit: Identifier
+    basis: Identifier
+    currency: str | None = None
+
+    @model_validator(mode="after")
+    def valid_identity(self) -> Self:
+        Component(**self.model_dump(), amount=None)
+        return self
+
+
+class SourceLocator(Model):
+    repository_id: Identifier
+    provider: Identifier
+    surface: Identifier
+    profile: Identifier
+    namespace: Identifier
+    identity_scope: Literal["namespaced", "file"]
+    source_key: Identifier | None = None
+    file_digest: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")] | None = None
+    ordinal: Annotated[int, Field(strict=True, ge=0)] | None = None
+
+    @model_validator(mode="after")
+    def scoped(self) -> Self:
+        if self.identity_scope == "namespaced":
+            if self.source_key is None or self.file_digest is not None or self.ordinal is not None:
+                raise ValueError("invalid namespaced source")
+        elif self.file_digest is None or self.ordinal is None or self.source_key is not None:
+            raise ValueError("invalid file source")
+        return self
+
+
+class EconomicInput(Model):
+    source: SourceLocator
+    component_key: Identifier
+    component: Component
+    series: Identifier
+    lane: Literal["delta", "snapshot"]
+    start: Timestamp
+    end: Timestamp
+    baseline_zero: Annotated[bool, Field(strict=True)] = False
+    replaces: SourceLocator | None = None
+    correction_reason: Identifier | None = None
+
+    @model_validator(mode="after")
+    def valid_window(self) -> Self:
+        if self.start > self.end:
+            raise ValueError("reversed source interval")
+        if (self.replaces is None) != (self.correction_reason is None):
+            raise ValueError("replacement requires locator and reason")
+        if self.lane == "delta" and self.baseline_zero:
+            raise ValueError("delta cannot declare a snapshot baseline")
+        return self
+
+
+class EconomicEvidence(Record, EconomicInput):
+    kind: Literal["economic_evidence"] = "economic_evidence"
+    evidence: RecordRef
+
+
+class SourceCoverage(Record):
+    kind: Literal["source_coverage"] = "source_coverage"
+    run: RunRef
+    provider: Identifier
+    surface: Identifier
+    profile: Identifier
+    namespace: Identifier
+    component_key: Identifier
+    policy_version: Identifier
+    economic: EconomicIdentity
+    start: Timestamp
+    end: Timestamp
+    final: Annotated[bool, Field(strict=True)]
+    evidence: list[RecordRef]
+
+    @model_validator(mode="after")
+    def ordered(self) -> Self:
+        if self.start > self.end or not self.evidence:
+            raise ValueError("invalid coverage window or absent support")
+        return self
+
+
+class EconomicScope(Model):
+    repository_id: Identifier
+    economic: EconomicIdentity
+    start: Timestamp | None = None
+    end: Timestamp | None = None
+
+    @model_validator(mode="after")
+    def window(self) -> Self:
+        if (self.start is None) != (self.end is None):
+            raise ValueError("source window requires both bounds")
+        if self.start is not None and self.end is not None and self.start > self.end:
+            raise ValueError("reversed source window")
+        return self
+
+
+class Exclusion(Model):
+    reference: RecordRef
+    reason: Identifier
+
+
+class Subtotal(Model):
+    economic: EconomicIdentity
+    amount: Amount
+    unknown_count: Annotated[int, Field(strict=True, ge=0)]
+
+
+class ComputedSettlement(Record):
+    kind: Literal["computed_settlement"] = "computed_settlement"
+    change: RecordRef
+    operation_id: Identifier
+    ledger_id: Identifier
+    cutoff: Cutoff
+    algorithm_version: Identifier
+    policy_version: Identifier
+    scope: EconomicScope
+    subtotals: list[Subtotal]
+    runs: list[RunRef]
+    inputs: list[RecordRef]
+    exclusions: list[Exclusion]
+    unknown_reasons: list[Identifier]
+    full_change: Annotated[bool, Field(strict=True)]
+    synthetic: Annotated[bool, Field(strict=True)]
+    previous: RecordRef | None = None
+
+
 PortableRecord = Annotated[
     Change
     | Run
@@ -306,7 +437,10 @@ PortableRecord = Annotated[
     | Outcome
     | Interval
     | Quote
-    | Settlement,
+    | Settlement
+    | EconomicEvidence
+    | SourceCoverage
+    | ComputedSettlement,
     Field(discriminator="kind"),
 ]
 

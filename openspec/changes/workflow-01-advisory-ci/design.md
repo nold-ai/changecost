@@ -20,7 +20,7 @@ exempt the repository from the foundation's development quality gates.
    and association; quote reads a registered Change and creates its economic Quote;
    settle accepts local evidence/artifacts and explicit Run/Change outcomes; check
    compares a quote/settlement to a compatible budget; explain traces a selected
-   record. Use the [core lifecycle contract](../core-02-change-run-contracts/design.md#registration-outcomes-and-cohort-inputs)
+   record. Use the [core lifecycle contract](../archive/2026-09-29-core-02-change-run-contracts/design.md#registration-outcomes-and-cohort-inputs)
    for registration, immutable features and outcome revision semantics. All support
    structured JSON as appropriate; diagnostics go to stderr, not mixed into JSON stdout.
 

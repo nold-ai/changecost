@@ -6,8 +6,8 @@ See [proposal](proposal.md) and [capability spec](specs/change-run-contracts/spe
 Fresh main `cb6ff3b2e218466c8633463928e7c94b1cf31b22` includes the merged
 Typer help/version package and repository gates (PR #22), plus bounded review
 sessions (PR #24). Both delivered changes were archived through OpenSpec before
-this review. Their [foundation](../../specs/python-foundation/spec.md) and
-[review-session](../../specs/bounded-review-session/spec.md) specs are authoritative.
+this review. Their [foundation](../../../specs/python-foundation/spec.md) and
+[review-session](../../../specs/bounded-review-session/spec.md) specs are authoritative.
 At that preparation baseline, no economic models, database or operations existed
 in `src/changecost`. The maintainer subsequently authorized this implementation;
 its current verification is recorded in [implementation evidence](TDD_EVIDENCE.md). Research and local
@@ -287,10 +287,10 @@ remain unusable for narrow cohorts; repository-wide eligibility is unaffected.
 
 ## Dependencies and evidence
 
-- [core-01-python-foundation](../archive/2026-09-29-core-01-python-foundation/proposal.md)
+- [core-01-python-foundation](../2026-09-29-core-01-python-foundation/proposal.md)
 
 Shared boundaries and current provider evidence are recorded in the
-[source assessment](../../../docs/research/pilot-source-assessment.md).
+[source assessment](../../../../docs/research/pilot-source-assessment.md).
 No provider-specific mapping becomes supported merely by appearing in this plan.
 
 ## Risks / Trade-offs

@@ -23,32 +23,48 @@ Implemented command surface:
 - `changecost bind --trajectory`
 - `changecost bind --work-start`
 - `changecost explain`
+- `changecost explain --basis`
 - `changecost explain --change-id`
+- `changecost explain --currency`
+- `changecost explain --economic-kind`
 - `changecost explain --export-artifact`
 - `changecost explain --help`
 - `changecost explain --provider`
 - `changecost explain --record-id`
 - `changecost explain --record-kind`
 - `changecost explain --repository-id`
+- `changecost explain --repository-remainder`
 - `changecost explain --run-id`
+- `changecost explain --source-end`
+- `changecost explain --source-start`
 - `changecost explain --surface`
+- `changecost explain --unit`
 - `changecost settle`
+- `changecost settle --basis`
 - `changecost settle --change-id`
+- `changecost settle --compute`
 - `changecost settle --correct-interval`
 - `changecost settle --correct-outcome`
+- `changecost settle --currency`
+- `changecost settle --economic-kind`
 - `changecost settle --help`
+- `changecost settle --import-evidence`
+- `changecost settle --operation-id`
 - `changecost settle --outcome`
 - `changecost settle --provider`
 - `changecost settle --reason`
 - `changecost settle --repository-id`
 - `changecost settle --run-id`
 - `changecost settle --run-outcome`
+- `changecost settle --source-end`
+- `changecost settle --source-start`
 - `changecost settle --surface`
+- `changecost settle --unit`
 - `changecost settle --work-end`
 - `changecost settle --work-start`
 
 Help and version succeed offline. Bare or unknown commands exit nonzero.
 No database, configuration or evidence files are created by these invocations.
 
-`bind` registers/maps/imports; `settle` declares lifecycle only;
-`explain` inspects/exports. `quote`, `check` and economic reconciliation remain planned.
+`bind` registers/maps/imports; `settle` declares lifecycle, imports normalized evidence or computes;
+`explain` inspects/exports and reports repository remainder. `quote`, `check` and provider adapters remain planned.

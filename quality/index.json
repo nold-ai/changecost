@@ -106,7 +106,7 @@
   },
   {
     "title": "Core-02 contracts preparation",
-    "path": "openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md",
+    "path": "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/PREPARATION_EVIDENCE.md",
     "description": "Contract preparation, archive results and prerequisite evidence; implementation evidence is recorded separately."
   },
   {
@@ -128,5 +128,25 @@
     "title": "Behavioral evidence pilot",
     "path": "docs/lessons-learned/behavioral-evidence-pilot.md",
     "description": "Measured experiment status, tool coverage and limitations."
+  },
+  {
+    "title": "Change/run contracts specification",
+    "path": "openspec/specs/change-run-contracts/spec.md",
+    "description": "Accepted offline contracts and lifecycle behavior synchronized by the OpenSpec archive CLI."
+  },
+  {
+    "title": "Settlement preparation",
+    "path": "openspec/changes/settlement-01-reconciliation/PREPARATION_EVIDENCE.md",
+    "description": "Current code gaps, dated primary-source research, preparation probes and implementation prerequisites."
+  },
+  {
+    "title": "Offline settlement preview",
+    "path": "docs/settlement.md",
+    "description": "Normalized input, exact computation, synthetic coverage, operation retries and recovery."
+  },
+  {
+    "title": "Settlement implementation evidence",
+    "path": "openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md",
+    "description": "Actual TDD and review evidence, current verification limits and rollback."
   }
 ]

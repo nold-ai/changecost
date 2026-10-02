@@ -82,7 +82,7 @@ binding = current["binding"]  # capture BEFORE the command
 report = ".changecost/behavioral-report.txt"
 paths = set(current["reviewed_manifest"])
 roles = {
-    "specification": ["openspec/changes/core-02-change-run-contracts/specs/change-run-contracts/spec.md"],
+    "specification": ["openspec/specs/change-run-contracts/spec.md"],
     "oracle": ["tests/behavioral_model.py", "tests/behavioral_payloads.py"],
     "generator": ["tests/test_lifecycle_stateful.py"],
     "configuration": ["pyproject.toml", "uv.lock"],

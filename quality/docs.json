@@ -395,34 +395,34 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-02-change-run-contracts/design.md",
+      "path": "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/design.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-02-change-run-contracts/design.md"
+        "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-02-change-run-contracts/proposal.md",
+      "path": "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/proposal.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-02-change-run-contracts/proposal.md"
+        "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-02-change-run-contracts/specs/change-run-contracts/spec.md",
+      "path": "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/specs/change-run-contracts/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-02-change-run-contracts/specs/change-run-contracts/spec.md"
+        "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/specs/change-run-contracts/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-02-change-run-contracts/tasks.md",
+      "path": "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/tasks.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-02-change-run-contracts/tasks.md"
+        "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/tasks.md"
       ],
       "kind": "manual"
     },
@@ -723,10 +723,10 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/PREPARATION_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/core-02-change-run-contracts/PREPARATION_EVIDENCE.md"
+        "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/PREPARATION_EVIDENCE.md"
       ],
       "kind": "manual"
     },
@@ -748,10 +748,55 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/core-02-change-run-contracts/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md",
       "owner": "core-contracts",
       "sources": [
-        "openspec/changes/core-02-change-run-contracts/TDD_EVIDENCE.md"
+        "openspec/changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/change-run-contracts/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/specs/change-run-contracts/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/settlement-01-reconciliation/PREPARATION_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/settlement-01-reconciliation/PREPARATION_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/settlement-01-reconciliation/specs/change-run-contracts/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/settlement-01-reconciliation/specs/change-run-contracts/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/settlement.md",
+      "owner": "settlement",
+      "sources": [
+        "src/changecost/*.py",
+        "tests/test_reconciliation.py",
+        "tests/test_settlement_cli.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/settlement-01-reconciliation/TDD_EVIDENCE.md",
+      "owner": "settlement",
+      "sources": [
+        "src/changecost/*.py",
+        "tests/test_reconciliation.py",
+        "tests/test_settlement_cli.py",
+        "tests/test_cli.py"
       ],
       "kind": "manual"
     },

@@ -139,6 +139,128 @@ class CliContract(unittest.TestCase):
         import json
 
         self.assertEqual(json.loads(result)["revisions"][0]["outcome"], "failed")
+        self.prove_economic_roundtrip(invoke, work)
+
+    def prove_economic_roundtrip(self, invoke, work):
+        """Prove normalized/retry/correction semantics in the installed offline wheel."""
+        import json
+
+        source = dict(
+            repository_id="demo",
+            provider="synthetic",
+            surface="cli",
+            profile="synthetic/v1",
+            namespace="opaque",
+            identity_scope="namespaced",
+        )
+
+        def event(name, amount, target=None):
+            result = dict(
+                source={**source, "source_key": name},
+                component_key="charge",
+                component=dict(
+                    economic_kind="monetary",
+                    unit="USD",
+                    currency="USD",
+                    basis="billed",
+                    amount=amount,
+                ),
+                series="usage",
+                lane="delta",
+                start="2026-09-29T08:00:00Z",
+                end="2026-09-29T08:00:00Z",
+            )
+            if target is not None:
+                result.update(
+                    replaces={**source, "source_key": target}, correction_reason="corrected"
+                )
+            return result
+
+        data = dict(
+            schema="changecost/normalized-v1",
+            repository_id="demo",
+            batch_id="offline",
+            events=[
+                event("a", "0.40"),
+                event("a", "0.40"),
+                event("retry", "0.20"),
+                event("correction", "0.25", "a"),
+            ],
+        )
+        artifact = work / "normalized.json"
+        artifact.write_text(json.dumps(data))
+        imported = json.loads(
+            invoke(
+                "source.sqlite",
+                "settle",
+                "--repository-id",
+                "demo",
+                "--import-evidence",
+                str(artifact),
+            )
+        )
+        for ident in imported["evidence_ids"]:
+            invoke(
+                "source.sqlite",
+                "bind",
+                "--repository-id",
+                "demo",
+                "--provider",
+                "synthetic",
+                "--surface",
+                "cli",
+                "--run-id",
+                "r",
+                "--evidence-id",
+                ident,
+            )
+        args = (
+            "settle",
+            "--compute",
+            "--repository-id",
+            "demo",
+            "--change-id",
+            "c",
+            "--operation-id",
+            "offline-proof",
+            "--economic-kind",
+            "monetary",
+            "--unit",
+            "USD",
+            "--currency",
+            "USD",
+            "--basis",
+            "billed",
+        )
+        computed = json.loads(invoke("source.sqlite", *args))
+        self.assertEqual(computed["subtotals"][0]["amount"], "0.45")
+        self.assertEqual(json.loads(invoke("source.sqlite", *args)), computed)
+        inspection = json.loads(
+            invoke(
+                "source.sqlite",
+                "explain",
+                "--record-kind",
+                "computed_settlement",
+                "--record-id",
+                computed["record_id"],
+            )
+        )
+        self.assertTrue(inspection["local_computation"])
+        invoke("source.sqlite", "explain", "--export-artifact", str(work / "economics.json"))
+        for _ in range(2):
+            invoke("economics.sqlite", "bind", "--import-artifact", str(work / "economics.json"))
+        imported = json.loads(
+            invoke(
+                "economics.sqlite",
+                "explain",
+                "--record-kind",
+                "computed_settlement",
+                "--record-id",
+                computed["record_id"],
+            )
+        )
+        self.assertFalse(imported["local_computation"])
+        self.assertEqual(imported["replay_eligibility"], "replay_unavailable")
 
 
 if __name__ == "__main__":

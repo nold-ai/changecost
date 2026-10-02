@@ -1,9 +1,15 @@
 # Project brief
 
 Status: **pilot planning / To-Validate**, updated 2026-09-29 (Europe/Berlin).
+All approved pilot changes belong to the first **unreleased 0.x alpha/preview
+feasibility study**. No product version has been published. The current package is
+`0.1.0.dev0`; internal artifact labels do not imply a product 1.0 release or stable
+public compatibility. This boundary was confirmed by the maintainer on 2026-09-29;
+[the project site](https://changecost.dev/) describes an unreleased pilot.
 The maintainer approved the [nine-change plan](../openspec/CHANGE_ORDER.md) and
-linked private GitHub backlog. Core-02 offline contracts/lifecycle implementation is authorized and under
-verification. Provider/economic implementation and live collection remain separate work. Research documents are evidence, not instructions.
+linked private GitHub backlog. Core-02 offline contracts/lifecycle implementation
+merged in PR #25 on 2026-09-29 and is archived with synchronized main specs. Settlement implementation was subsequently authorized on 2026-09-29; provider
+adapters and live collection remain separate work. Research documents are evidence, not instructions.
 The maintainer separately authorized source-feasibility research and local
 Codex/Claude metadata inspection on 2026-09-28. That research includes all four
 providers and the separately authorized Enterprise artifact comparison; new
@@ -65,9 +71,8 @@ and repository gates merged in PR #22; bounded review sessions merged in PR #24.
 Both delivered contracts are now synchronized into [main specs](../openspec/specs).
 The four foundation verifier risks were explicitly accepted as-is, not remediated;
 optional reviewer calibration remains unvalidated. Provider operations and live
-collection remain outside this authorization. Core-02 contracts/lifecycle implementation was authorized on 2026-09-29 and
-is under verification; no additional provider/economic scope is implied.
-
-Core-02 offline contracts/lifecycle implementation was explicitly authorized on
-2026-09-29. Its working branch is under verification; provider adapters and economic
-algorithms remain outside that authorization.
+collection remain outside this authorization. Core-02 merged in
+[PR #25](https://github.com/nold-ai/changecost/pull/25) on 2026-09-29 and is archived
+with its [accepted contracts](../openspec/specs/change-run-contracts/spec.md).
+Settlement reconciliation is being implemented in the current branch under the
+2026-09-29 request; verification and acceptance remain pending.

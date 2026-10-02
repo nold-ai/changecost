@@ -6,16 +6,19 @@ ChangeCost is an early NOLD AI project exploring how to quote the cost of an
 agentic software change, reconcile its actual provider-reported cost, and use
 that history to improve future estimates.
 
-**Status: unreleased offline contracts / pilot To-Validate.** The current branch
-implements explicit Change/Run registration, bindings, lifecycle declarations and
+**Status: unreleased 0.x alpha/preview feasibility study; pilot To-Validate.** The merged implementation provides explicit Change/Run registration, bindings, lifecycle declarations and
 portable import/export. See [CLI examples](docs/cli.md), [v1 contracts](docs/contracts.md)
-and [verification evidence](openspec/changes/core-02-change-run-contracts/TDD_EVIDENCE.md).
-Cost estimation, provider imports and economic reconciliation remain planned.
+and [verification evidence](openspec/changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md).
+This working branch adds [offline normalized reconciliation](docs/settlement.md),
+exact subtotals and immutable computation; verification remains in progress.
+Cost estimation and native provider imports remain planned.
 Live collection requires a separate request. This repository remains private.
 
 The delivered [Python foundation](openspec/specs/python-foundation/spec.md) and
 [bounded review workflow](openspec/specs/bounded-review-session/spec.md) are archived
-as of 2026-09-29. Core-02 remains active until implementation acceptance.
+alongside [Core-02 contracts](openspec/specs/change-run-contracts/spec.md) as of
+2026-09-29. Settlement reconciliation implementation was authorized on 2026-09-29 and is
+under verification in the current working branch.
 
 The [source-feasibility research](docs/providers/source-feasibility.md) now covers
 Copilot, Cursor, Codex and Claude Code. Local Codex/Claude metadata supplies partial
