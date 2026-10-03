@@ -243,3 +243,38 @@ No adapters, runtime commands, schema, collection, new source fields, thresholds
 coverage exclusions were added. Affected independent closure, full scoped/staged
 checks, fresh supported Linux and current-head provider acceptance remain pending
 for the repaired head.
+
+### Approved report provenance repair (batch 8) — 2026-10-04 Europe/Berlin
+
+Published 84f7cb18ecaacac353eaa22fd97278ed9f6cf691 passed supported Linux
+37157951153 on both versions: 1,429 tests, strict11/11 and all ten native members
+ran/PASS, assurancePASS, exit0, noUNKNOWN (PASS_WITH_ADVISORY). Current Codex
+review5403079887 nevertheless identified P2 comment4175142838: public inspection
+reports omitted safe registered evidence references. Same-byte distinct-reference
+reproduction confirmed the explicit inspection specification violation. CodeRabbit
+completed full 5f43→84f7 review across24files with no actionable comments; its
+included allowance was zero afterward. Mechanical/provider clean output could not
+close the known provenance defect. The eight-batch repair has no prior-head acceptance.
+
+At seven batches /149.226 recorded active minutes, the maintainer explicitly replied
+“yes approved” after the coordinator described the minimum provenance/privacy repair
+and one additional batch with30active minutes. The same session now allows eight
+batches /180minutes, retaining all history and original failures; no reset or quota
+bypass. Independent immutable-head provenance investigation and writer consumer
+mapping covered success reports, direct inspection and validated-reference errors.
+
+Specification preceded controls: actual provenance red28failed; valid-reference
+failure/atomic-output red5failed1passed. Minimum helpers match registered safe
+profile/evidence keys, validate grammar and uniqueness before echo, and retain that
+pair in success reports and fixed-code diagnostics after validation. Unknown/unsafe
+references stay redacted. Repaired controls cover shared bytes/different origins,
+cross-profile equal labels, reorder/replay, malformed matched labels, ambiguous and
+unknown refs, malformed/hash/selector failures, no partial output and private data
+suppression. The final source suite has317passing tests; original18fixture bytes and
+all native approval/finality/economic policies remain unchanged.
+
+Current-head independent closure, complete local/staged gates, fresh supported Linux
+and required provider completion remain pending. No adapters, public runtime command,
+schema, collection, account change, paid request, threshold/exclusion or authenticated
+provenance framework was added. The registered keys are intended public opaque
+references, not authentication of source claims or human review.

@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Preserve validated registered opaque profile/evidence references in inspection
+  reports and safe failure diagnostics; reject ambiguous/unsafe references without
+  exposing private input or granting source approval.
+
 - Validate every snapshot/rollout quantity before replay deduplication; leave Claude
   correlation counts unresolved for incomplete or conflicting identities and simplify
   rollout scope checking without changing source approval boundaries.

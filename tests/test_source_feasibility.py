@@ -279,7 +279,12 @@ def test_cli_private_manifest_report_and_hash_fault(tmp_path, monkeypatch, capsy
     assert "PRIVATE" not in output.out + output.err
     assert str(tmp_path) not in output.out + output.err
     if changed_hash:
-        assert output.out == "" and output.err == "hash-mismatch\n"
+        assert output.out == ""
+        assert json.loads(output.err) == {
+            "error": "hash-mismatch",
+            "profile": request["entries"][0]["profile"],
+            "evidence_id": request["entries"][0]["evidence_id"],
+        }
     else:
         assert json.loads(output.out) == inspect_manifest(request, data)
         assert output.err == ""
@@ -821,3 +826,179 @@ def test_all_message_identifiers_missing_keep_physical_rows():
     result = evaluate_case(sample, "messages")
     assert result["request_count"] is None and result["message_count"] is None
     assert result["record_count"] == 3 and result["usage_variant_count"] == 2
+
+
+@pytest.mark.parametrize("order", [(0, 1), (1, 0), (0, 1, 0)])
+def test_public_registered_provenance_survives_order_and_replay(tmp_path, order):
+    raw = b'{"usage":0,"requestId":"PRIVATE-SENTINEL"}'
+    request, data, source = manifest(tmp_path, raw)
+    profile = data["profiles"][0]
+    other = copy.deepcopy(profile["evidence"][0])
+    other["id"] = "second-safe-evidence"
+    other["origin"] = "producer"
+    profile["evidence"].append(other)
+    entries = [request["entries"][0], copy.deepcopy(request["entries"][0])]
+    entries[1]["evidence_id"] = other["id"]
+    request["entries"] = [copy.deepcopy(entries[i]) for i in order]
+    for entry in request["entries"]:
+        entry["caller_label"] = "PRIVATE-CALLER-LABEL"
+    reports = inspect_manifest(request, data)
+    assert [(r["profile"], r["evidence_id"]) for r in reports] == [
+        (profile["id"], entries[i]["evidence_id"]) for i in order
+    ]
+    assert len({r["sha256"] for r in reports}) == 1
+    assert all(r["semantic_approval"] is False for r in reports)
+    encoded = json.dumps(reports)
+    assert "PRIVATE" not in encoded and str(source) not in encoded
+    assert "requestId" not in encoded and "origin" not in encoded and "usage" not in encoded
+    assert source.read_bytes() == raw
+
+
+def test_public_reference_pair_scopes_same_evidence_label(tmp_path):
+    request, data, _ = manifest(tmp_path, b'{"usage":0}')
+    second = copy.deepcopy(data["profiles"][0])
+    second["id"] = "second-safe-profile"
+    data["profiles"].append(second)
+    entry = copy.deepcopy(request["entries"][0])
+    entry["profile"] = second["id"]
+    request["entries"].append(entry)
+    reports = inspect_manifest(request, data)
+    assert reports[0]["evidence_id"] == reports[1]["evidence_id"]
+    assert reports[0]["profile"] != reports[1]["profile"]
+
+
+@pytest.mark.parametrize("kind", ["profile", "evidence"])
+@pytest.mark.parametrize(
+    "unsafe",
+    [None, True, 7, [], {}, "", "PRIVATE-LABEL", "private/path", "private\nlabel", "a" * 81],
+)
+def test_direct_public_references_reject_unsafe_and_repair(tmp_path, kind, unsafe):
+    request, data, _ = manifest(tmp_path, b'{"usage":0}')
+    repaired = copy.deepcopy((request, data))
+    if kind == "profile":
+        data["profiles"][0]["id"] = unsafe
+        request["entries"][0]["profile"] = unsafe
+    else:
+        data["profiles"][0]["evidence"][0]["id"] = unsafe
+        request["entries"][0]["evidence_id"] = unsafe
+    with pytest.raises(EvidenceError, match="^manifest-binding$"):
+        inspect_manifest(request, data)
+    reports = inspect_manifest(*repaired)
+    assert reports[0]["profile"] == repaired[0]["entries"][0]["profile"]
+    assert reports[0]["evidence_id"] == repaired[0]["entries"][0]["evidence_id"]
+
+
+@pytest.mark.parametrize("kind", ["profile", "evidence"])
+def test_public_reference_rejects_ambiguous_register_and_repairs(tmp_path, kind):
+    request, data, _ = manifest(tmp_path, b'{"usage":0}')
+    repaired = copy.deepcopy(data)
+    if kind == "profile":
+        data["profiles"].append(copy.deepcopy(data["profiles"][0]))
+    else:
+        items = data["profiles"][0]["evidence"]
+        items.append(copy.deepcopy(items[0]))
+    with pytest.raises(EvidenceError, match="^manifest-binding$"):
+        inspect_manifest(request, data)
+    assert (
+        inspect_manifest(request, repaired)[0]["evidence_id"]
+        == request["entries"][0]["evidence_id"]
+    )
+
+
+@pytest.mark.parametrize("kind", ["profile", "evidence_id"])
+def test_public_reference_unknown_manifest_label_does_not_echo(tmp_path, kind):
+    request, data, _ = manifest(tmp_path, b'{"usage":0}')
+    repaired = copy.deepcopy(request)
+    request["entries"][0][kind] = "private-unregistered-label"
+    with pytest.raises(EvidenceError, match="^manifest-binding$"):
+        inspect_manifest(request, data)
+    assert inspect_manifest(repaired, data)[0]["profile"] == repaired["entries"][0]["profile"]
+
+
+@pytest.mark.parametrize("fault", ["hash", "malformed", "fields", "later-entry"])
+def test_validated_provenance_failure_diagnostic_and_atomic_output(
+    tmp_path, monkeypatch, capsys, fault
+):
+    request, data, source = manifest(tmp_path, b'{"usage":0,"secret":"PRIVATE-PAYLOAD"}')
+    raw = source.read_bytes()
+    if fault == "hash":
+        request["entries"][0]["sha256"] = "0" * 64
+    elif fault == "malformed":
+        source.write_bytes(b'{"PRIVATE-PAYLOAD":')
+        digest = hashlib.sha256(source.read_bytes()).hexdigest()
+        request["entries"][0]["sha256"] = digest
+        data["profiles"][0]["evidence"][0]["sha256"] = digest
+    elif fault == "fields":
+        request["entries"][0]["fields"] = "PRIVATE-SELECTOR"
+    else:
+        other = copy.deepcopy(request["entries"][0])
+        other["sha256"] = "0" * 64
+        request["entries"].append(other)
+    register_path = tmp_path / "PRIVATE-register.json"
+    manifest_path = tmp_path / "PRIVATE-manifest.json"
+    register_path.write_text(json.dumps(data))
+    manifest_path.write_text(json.dumps(request))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["source-check", "--register", str(register_path), "--manifest", str(manifest_path)],
+    )
+    assert research.main() == 1
+    output = capsys.readouterr()
+    assert output.out == ""
+    diagnostic = json.loads(output.err)
+    assert diagnostic["profile"] == request["entries"][0]["profile"]
+    assert diagnostic["evidence_id"] == request["entries"][0]["evidence_id"]
+    assert "sha256" not in diagnostic  # failed hashing/parsing never asserts verified success
+    assert "PRIVATE" not in output.err and str(source) not in output.err
+    # The same valid reference succeeds after repairing the targeted fault.
+    source.write_bytes(raw)
+    digest = hashlib.sha256(raw).hexdigest()
+    data["profiles"][0]["evidence"][0]["sha256"] = digest
+    request["entries"] = [request["entries"][0]]
+    request["entries"][0]["sha256"] = digest
+    request["entries"][0]["fields"] = [["usage"]]
+    register_path.write_text(json.dumps(data))
+    manifest_path.write_text(json.dumps(request))
+    assert research.main() == 0
+    repaired = capsys.readouterr()
+    assert repaired.err == ""
+    assert json.loads(repaired.out)[0]["evidence_id"] == diagnostic["evidence_id"]
+
+
+@pytest.mark.parametrize("kind", ["profile", "evidence"])
+def test_unsafe_registered_cli_labels_remain_redacted(tmp_path, monkeypatch, capsys, kind):
+    request, data, _ = manifest(tmp_path, b'{"usage":0}')
+    if kind == "profile":
+        data["profiles"][0]["id"] = "PRIVATE/IDENTIFIER"
+        request["entries"][0]["profile"] = "PRIVATE/IDENTIFIER"
+    else:
+        data["profiles"][0]["evidence"][0]["id"] = "PRIVATE/IDENTIFIER"
+        request["entries"][0]["evidence_id"] = "PRIVATE/IDENTIFIER"
+    register_path = tmp_path / "PRIVATE-register.json"
+    manifest_path = tmp_path / "PRIVATE-manifest.json"
+    register_path.write_text(json.dumps(data))
+    manifest_path.write_text(json.dumps(request))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["source-check", "--register", str(register_path), "--manifest", str(manifest_path)],
+    )
+    assert research.main() == 1
+    output = capsys.readouterr()
+    assert output.out == "" and output.err == "register-invalid\n"
+
+
+def test_safe_reference_length_boundary_and_unknown_later_entry(tmp_path):
+    request, data, _ = manifest(tmp_path, b'{"usage":0}')
+    data["profiles"][0]["id"] = "p" * 80
+    data["profiles"][0]["evidence"][0]["id"] = "e" * 80
+    request["entries"][0]["profile"] = "p" * 80
+    request["entries"][0]["evidence_id"] = "e" * 80
+    assert inspect_manifest(request, data)[0]["evidence_id"] == "e" * 80
+    other = copy.deepcopy(request["entries"][0])
+    other["evidence_id"] = "PRIVATE-UNREGISTERED"
+    request["entries"].append(other)
+    with pytest.raises(EvidenceError) as failure:
+        inspect_manifest(request, data)
+    assert failure.value.public_diagnostic() == "manifest-binding"

@@ -190,3 +190,6 @@ scope claims, and complete stable economic-basis and revision identities for cor
 
 Source snapshot totals validate each quantity before replay deduplication. Claude
 correlation counts require complete stable identities; physical row counts remain observations.
+
+Inspection reports and validated-reference failures retain registered opaque profile/
+evidence keys. Unknown or unsafe references remain redacted; source approval stays separate.

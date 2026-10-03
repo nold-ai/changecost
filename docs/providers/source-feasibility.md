@@ -228,9 +228,11 @@ The inspector opens regular files without following links in any path component,
 reads at most 10 MiB per file and hashes/parses those same bytes. It rejects duplicate
 JSON members, nonfinite numbers, invalid UTF-8, malformed CSV, duplicate headers,
 row-width mismatches, depth above 32 and record/container counts above 10,000.
-Register and manifest documents use the same bounds. Reports contain only ordinal
-entry/field references, hashes, byte/record counts and type/missing counts. Diagnostics
-contain fixed codes. No values, source paths, identifiers or field names are reported.
+Register and manifest documents use the same bounds. Reports contain validated registered opaque profile/evidence keys, ordinal entry/field
+references, checked hashes, byte/record counts and type/missing counts. Failures after
+reference validation contain a JSON fixed error code plus that safe registered pair;
+unknown, unsafe or ambiguous references produce a redacted fixed code. No payload
+values, source paths, native identifiers, caller labels or field names are reported.
 CSV cells remain strings: passing structure establishes no numeric/unit interpretation.
 
 The test suite exercises both subprocess diagnostics and the same CLI entry point
@@ -325,3 +327,21 @@ unresolved. Exact replay preserves correlation counts. Physical record count rem
 the observed row count; usage-variant count remains a structural observation. Neither
 establishes unique requests, additive consumption or finality. Native profile
 approval remains pending the artifacts listed above.
+
+### Registered report provenance repair — 2026-10-04
+
+A report's provenance is the registered opaque profile/evidence pair and checked byte
+hash. Evidence labels are scoped to their profile; distinct references can share
+bytes. Reordering or replaying manifest entries preserves those references independently
+of caller-order ordinals. Only matched registered keys in the bounded lowercase ASCII
+letter/digit/hyphen grammar (1–80 characters) are publishable; register authors must
+use opaque public references rather than private identifiers. This validates reference
+shape and binding, not the truth of native claims.
+
+The direct inspection function checks safe-key grammar and duplicate reference
+ambiguity before publishing. Caller labels, evidence origin text, private paths, native
+identifiers, selectors and payloads are excluded. After a reference is validated,
+malformed-input, hash and selector failures retain the safe pair with a fixed code.
+A failed inspection emits no partial success report or unverified success hash.
+Structural success remains separate from semantic approval, accounting authority and
+finality; missing native source artifacts still block issue #9 completion.

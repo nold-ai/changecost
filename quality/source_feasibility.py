@@ -302,7 +302,7 @@ def main() -> int:
             return bool(errors)
         return 0
     except EvidenceError as error:
-        print(str(error), file=sys.stderr)
+        print(error.public_diagnostic(), file=sys.stderr)
         return 1
     except (OSError, ValueError, TypeError):
         print("input-invalid", file=sys.stderr)

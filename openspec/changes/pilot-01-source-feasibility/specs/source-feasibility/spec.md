@@ -172,6 +172,17 @@ for hashing and parsing. Caller-controlled metadata SHALL not bypass output priv
 - **WHEN** a local explicit-profile inspection runs
 - **THEN** only permitted field types/counts and opaque provenance appear, with no semantic approval.
 
+#### Scenario: Retained public reports preserve registered opaque provenance
+
+- **GIVEN** explicit registered opaque profile/evidence references, including distinct
+  evidence references sharing bytes or the same evidence label in different profiles
+- **WHEN** inspections are reordered, replayed or retained separately from the private manifest
+- **THEN** each public report preserves its validated registered profile/evidence pair
+- **AND** failures after reference validation retain that safe reference with a fixed error code
+- **AND** unknown, ambiguous or unsafe reference labels fail with redacted fixed diagnostics
+- **AND** caller labels, native source identifiers, paths, field names and payloads remain private
+- **AND** report provenance does not establish semantic approval or finality.
+
 ### Requirement: Independent executable research conclusions
 
 All eighteen existing research cases SHALL have computed semantic conclusions

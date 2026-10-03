@@ -8,6 +8,7 @@ import io
 import json
 import math
 import os
+import re
 import stat
 from pathlib import Path
 from typing import Any
@@ -18,7 +19,16 @@ MAX_DEPTH = 32
 
 
 class EvidenceError(ValueError):
-    """A fixed, public diagnostic code."""
+    """A fixed code with an optional validated registered public reference."""
+
+    def __init__(self, code, reference=None):
+        super().__init__(code)
+        self.reference = reference
+
+    def public_diagnostic(self):
+        if self.reference is None:
+            return str(self)
+        return json.dumps({"error": str(self), **self.reference}, sort_keys=True)
 
 
 def _pairs(pairs):
@@ -152,8 +162,56 @@ def _field_types(rows, fields):
     return kinds
 
 
+def _public_reference(value):
+    if not isinstance(value, str) or re.fullmatch(r"[a-z0-9-]{1,80}", value) is None:
+        raise EvidenceError("manifest-binding")
+    return value
+
+
+def _registered_bindings(register):
+    profiles = {}
+    for profile in register["profiles"]:
+        profile_id = _public_reference(profile["id"])
+        if profile_id in profiles:
+            raise EvidenceError("manifest-binding")
+        evidence = {}
+        for item in profile["evidence"]:
+            evidence_id = _public_reference(item["id"])
+            if evidence_id in evidence:
+                raise EvidenceError("manifest-binding")
+            evidence[evidence_id] = item
+        profiles[profile_id] = (profile_id, evidence)
+    return profiles
+
+
+def _inspect_entry(index, entry, bindings):
+    profile_id, evidence_items = bindings[entry["profile"]]
+    evidence = evidence_items[entry["evidence_id"]]
+    reference = {"profile": profile_id, "evidence_id": evidence["id"]}
+    try:
+        raw = _read(Path(entry["path"]))
+        digest = hashlib.sha256(raw).hexdigest()
+        if digest != entry["sha256"] or digest != evidence["sha256"]:
+            raise EvidenceError("hash-mismatch")
+        value = _parse(raw, entry["format"])
+        rows = value if isinstance(value, list) else [value]
+        kinds = _field_types(rows, entry["fields"])
+        return {
+            **reference,
+            "entry": index,
+            "sha256": digest,
+            "bytes": len(raw),
+            "records": len(rows),
+            "field_types": kinds,
+            "semantic_approval": False,
+        }
+    except (KeyError, TypeError, ValueError) as error:
+        code = str(error) if isinstance(error, EvidenceError) else "manifest-binding"
+        raise EvidenceError(code, reference) from None
+
+
 def inspect_manifest(manifest, register) -> list[dict]:
-    """Structural findings only; caller-selected fields are reported by ordinal."""
+    """Publish registered opaque provenance and ordinal structural observations."""
     _bounded(manifest)
     _bounded(register)
     try:
@@ -161,30 +219,12 @@ def inspect_manifest(manifest, register) -> list[dict]:
             manifest["entries"], list
         ):
             raise EvidenceError("manifest-shape")
-        profiles = {p["id"]: p for p in register["profiles"]}
-        reports = []
-        for index, entry in enumerate(manifest["entries"]):
-            profile = profiles[entry["profile"]]
-            evidence = next(e for e in profile["evidence"] if e["id"] == entry["evidence_id"])
-            raw = _read(Path(entry["path"]))
-            digest = hashlib.sha256(raw).hexdigest()
-            if digest != entry["sha256"] or digest != evidence["sha256"]:
-                raise EvidenceError("hash-mismatch")
-            value = _parse(raw, entry["format"])
-            rows = value if isinstance(value, list) else [value]
-            kinds = _field_types(rows, entry["fields"])
-            reports.append(
-                {
-                    "entry": index,
-                    "sha256": digest,
-                    "bytes": len(raw),
-                    "records": len(rows),
-                    "field_types": kinds,
-                    "semantic_approval": False,
-                }
-            )
-        return reports
-    except (KeyError, TypeError, StopIteration, ValueError) as error:
+        bindings = _registered_bindings(register)
+        return [
+            _inspect_entry(index, entry, bindings)
+            for index, entry in enumerate(manifest["entries"])
+        ]
+    except (KeyError, TypeError, ValueError) as error:
         if isinstance(error, EvidenceError):
             raise
         raise EvidenceError("manifest-binding") from None
