@@ -68,11 +68,12 @@ certify replay. A consistent [backup](contracts.md#transactions-revisions-and-hi
 preserves local receipts; portable import establishes destination availability when it
 arrives. Keep records private and use allowlisted normalized data, never prompts or transcripts.
 
-Zero-attempt peer Changes share one lifecycle index and a constant number of empty
-reconciliation evaluations for open/terminal lifecycle presence. Each peer retains
-its own Change/outcome references and rejection reasons; repository-wide unbound
-evidence and pending corrections remain in the auditable input closure. Run-bearing
-peers retain the complete reconciliation evaluator.
+One committed Quote snapshot builds lifecycle, correction-chain, raw evidence and
+feature-timing lookups once. Linked peers consult their own attempts and genuinely
+shared uncertainty. Zero-attempt peers also share open/terminal diagnostics. Each
+peer retains its own references and reasons; unbound evidence and pending corrections
+remain auditable. Member filtering precedes economic series/lane selection, preserving
+complete reconciliation and exact historical replay; no cohort count cap is added.
 
 No package version or SQLite layout migration is introduced. Back up before changing
 checkouts; rollback uses a follow-up code revert and separate compatible backup restore,

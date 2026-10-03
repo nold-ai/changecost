@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Index Quote snapshot correction chains, raw evidence and feature timing once to
+  bound repeated structural/source scanning for linked peers. Preserve member-first
+  economic selection, exact exclusions, input references and historical replay.
+
 - Reject Quote explanation when the local clock predates committed availability,
   using one clock reading in the existing read snapshot. Preserve imported-claim
   boundaries, immutable retries and equality with the latest availability.

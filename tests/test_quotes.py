@@ -817,3 +817,256 @@ def test_empty_peer_cache_replays_prior_full_reconciliation_result(tmp_path, mon
         previous.setattr(quotes, "peer_details", full_details)
         original = quote(store, "full-reconciliation", 1)
     assert quotes.inspect_quote(store, original)["economic_validation"] == "reproduced"
+
+
+def linked_peers(store, count, lifecycle):
+    from changecost.models import Change, Features, Interval, Outcome, Run, RunBinding
+    from changecost.operations import common
+
+    def operation(records, store_id, now):
+        additions = []
+        for n in range(count):
+            change = Change(
+                **common(store_id, now),
+                repository_id="repo",
+                change_id=f"linked-{n}",
+                features=Features(captured_at=now, recorded_at=now),
+            )
+            run = Run(
+                **common(store_id, now),
+                ref=RunRef(
+                    repository_id="repo",
+                    provider="synthetic",
+                    surface="fixture",
+                    run_id=f"linked-{n}",
+                ),
+            )
+            additions.extend(
+                [
+                    change,
+                    run,
+                    RunBinding(**common(store_id, now), change=reference(change), run=run.ref),
+                ]
+            )
+            if lifecycle != "open":
+                additions.extend(
+                    [
+                        Outcome(
+                            **common(store_id, now), subject=reference(change), outcome="abandoned"
+                        ),
+                        Outcome(
+                            **common(store_id, now), subject=reference(run), outcome="succeeded"
+                        ),
+                        Interval(
+                            **common(store_id, now),
+                            run=run.ref,
+                            start=START if lifecycle == "bounded" else None,
+                            end=now if lifecycle == "bounded" else None,
+                        ),
+                    ]
+                )
+        return additions, additions
+
+    return store.apply(operation)
+
+
+@pytest.mark.parametrize("lifecycle", ["open", "missing_bounds", "bounded"])
+def test_linked_peer_growth_uses_snapshot_indices(
+    tmp_path, monkeypatch, record_property, lifecycle
+):
+    from changecost import quotes
+
+    original = quotes.estimate
+    visits = []
+
+    def measured(records, *arguments):
+        counted = CountedQuoteSnapshot(records)
+        result = original(counted, *arguments)
+        visits.append(counted.visits)
+        return result
+
+    monkeypatch.setattr(quotes, "estimate", measured)
+    for count in (32, 64, 128):
+        store = setup(tmp_path / str(count))
+        additions = linked_peers(store, count, lifecycle)
+        result = quote(store, minimum=1)
+        assert result.state == "unpriced" and result.p50.amount is None
+        assert result.estimation is not None
+        refs = {(r.kind, r.record_id) for r in result.inputs}
+        assert {(r.kind, r.record_id) for r in additions} <= refs
+        for change in [r for r in additions if r.kind == "change"]:
+            assert_empty_peer_diagnostics(
+                {(r.kind, r.record_id): r for r in store.records()}, change, result, refs
+            )
+    record_property("record_visits", visits)
+    assert visits[1] < 3 * visits[0]
+    assert visits[2] < 3 * visits[1]
+
+
+@pytest.mark.parametrize(
+    "uncertainty", ["none", "pending", "unbound", "raw", "snapshot", "currency", "resolved", "file"]
+)
+def test_snapshot_context_matches_full_member_selection_and_historical_quote(
+    tmp_path, monkeypatch, uncertainty
+):
+    from changecost import quotes
+    from changecost.reconciliation import SnapshotIndex, computation_details
+
+    store = setup(tmp_path)
+    zero, extra = multi_attempt_zero_peer(store)
+    other = peer(store, "other", "5")
+    additions = linked_peers(store, 8, "bounded")
+    snapshot_uncertainty(store, extra, uncertainty)
+    register_change(store, "foreign", "private")
+    records = {(r.kind, r.record_id): r for r in store.records()}
+    context = SnapshotIndex(records, scope())
+    for candidate in [zero, other, *(r for r in additions if r.kind == "change")]:
+        assert computation_details(records, candidate, scope(), context) == computation_details(
+            records, candidate, scope()
+        )
+    assert_snapshot_feature_parity(store, records, context)
+    with monkeypatch.context() as full:
+        full.setattr(quotes, "SnapshotIndex", lambda records, scope: None)
+        original = quote(store, "full-original", 1)
+    if uncertainty == "none":
+        assert original.sample_count == 2 and original.p50.amount == "0"
+    assert quotes.inspect_quote(store, original)["economic_validation"] == "reproduced"
+    inputs = {(r.kind, r.record_id) for r in original.inputs}
+    assert_quote_subset_import(store, original, inputs, tmp_path / "portable")
+
+
+def multi_attempt_zero_peer(store):
+    change = register_change(store, "repo", "zero")
+    runs = []
+    for name in ("zero", "retry"):
+        run = register_run(
+            store,
+            RunRef(repository_id="repo", provider="synthetic", surface="fixture", run_id=name),
+            "zero",
+        )
+        declare(store, reference(run), LifecycleDeclaration(start=START, end=NOW, outcome="failed"))
+        ident = import_events(store, event(name, "0"))[0]
+        bind_evidence(store, ident, run.ref)
+        add_coverage(store, run.ref, ident, start=START, end=NOW)
+        runs.append(run)
+    declare(store, reference(change), LifecycleDeclaration(outcome="abandoned"))
+    return change, runs[-1]
+
+
+def snapshot_uncertainty(store, extra, uncertainty):
+    from changecost.models import Evidence
+    from changecost.operations import common
+    from tests.test_reconciliation import IDENTITY, locator
+
+    if uncertainty in {"pending", "unbound", "snapshot", "currency", "resolved", "file"}:
+        updates = {
+            "pending": {"replaces": locator("absent"), "correction_reason": "fix"},
+            "unbound": {},
+            "snapshot": {"lane": "snapshot", "end": NOW.isoformat(), "baseline_zero": True},
+            "currency": {"component": {**IDENTITY, "currency": None, "amount": None}},
+            "resolved": {"replaces": locator("retry"), "correction_reason": "corrected"},
+            "file": {
+                "source": {
+                    **locator(),
+                    "identity_scope": "file",
+                    "source_key": None,
+                    "file_digest": "a" * 64,
+                    "ordinal": 0,
+                }
+            },
+        }[uncertainty]
+        ident = import_events(store, event("uncertain", "7", **updates))[0]
+        if uncertainty in {"snapshot", "currency", "file"}:
+            bind_evidence(store, ident, extra.ref)
+    if uncertainty == "raw":
+
+        def operation(records, store_id, now):
+            raw = Evidence(
+                **common(store_id, now),
+                provider="unverified",
+                surface="fixture",
+                profile="unknown/v1",
+                identity_scope="namespaced",
+                source_key="raw",
+            )
+            return [raw], raw
+
+        store.apply(operation)
+
+
+def assert_snapshot_feature_parity(store, records, context):
+    from changecost import quotes
+
+    with store.connect(readonly=True) as connection:
+        availability = quotes.local_availability(connection)
+    for candidate in [r for r in records.values() if r.kind == "change"]:
+        assert quotes.feature_valid(
+            records, candidate, availability, context
+        ) == quotes.feature_valid(records, candidate, availability)
+        assert quotes.feature_inputs(records, candidate, context) == quotes.feature_inputs(
+            records, candidate
+        )
+
+
+def price_linked_zero_peers(store, additions):
+    from changecost.models import EconomicIdentity, EvidenceBinding, RecordRef, SourceCoverage
+    from changecost.operations import common
+    from tests.test_reconciliation import IDENTITY
+
+    runs = [r for r in additions if r.kind == "run"]
+    ids = import_events(store, *(event(r.ref.run_id, "0") for r in runs))
+
+    def operation(records, store_id, now):
+        priced = []
+        for run, ident in zip(runs, ids, strict=True):
+            ref = RecordRef(kind="evidence", record_id=ident)
+            priced.extend(
+                [
+                    EvidenceBinding(**common(store_id, now), evidence=ref, run=run.ref),
+                    SourceCoverage(
+                        **common(store_id, now),
+                        run=run.ref,
+                        provider="synthetic",
+                        surface="fixture",
+                        profile="synthetic/v1",
+                        namespace="opaque",
+                        component_key="charge",
+                        policy_version="synthetic/v1",
+                        economic=EconomicIdentity.model_validate(IDENTITY),
+                        start=START,
+                        end=NOW,
+                        final=True,
+                        evidence=[ref],
+                    ),
+                ]
+            )
+        return priced, priced
+
+    return store.apply(operation)
+
+
+def test_supported_zero_peer_growth_preserves_priced_cohort(tmp_path, monkeypatch, record_property):
+    from changecost import quotes
+
+    original = quotes.estimate
+    visits = []
+
+    def measured(records, *arguments):
+        counted = CountedQuoteSnapshot(records)
+        result = original(counted, *arguments)
+        visits.append(counted.visits)
+        return result
+
+    monkeypatch.setattr(quotes, "estimate", measured)
+    for count in (16, 32, 64):
+        store = setup(tmp_path / str(count))
+        additions = linked_peers(store, count, "bounded")
+        price_linked_zero_peers(store, additions)
+        result = quote(store, minimum=1)
+        assert result.state == "priced" and result.p50.amount == result.p90.amount == "0"
+        assert result.sample_count == count
+        assert result.estimation is not None and result.estimation.synthetic
+        assert len(result.estimation.peers) == count
+    record_property("record_visits", visits)
+    assert visits[1] < 3 * visits[0]
+    assert visits[2] < 3 * visits[1]

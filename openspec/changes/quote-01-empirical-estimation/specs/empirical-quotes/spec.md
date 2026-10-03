@@ -233,3 +233,10 @@ original result/cutoff and conflicting reuse SHALL fail unchanged.
 - **WHEN** quote evaluates eligible peers from its committed snapshot
 - **THEN** growth in snapshot record visits remains near-linear for additional zero-attempt Changes; all incomplete-peer reasons, Change/outcome references and relevant unbound/correction evidence remain auditable without repeated full reconciliation for each empty peer.
 - **AND** run-bearing peers retain complete reconciliation and historical replay behavior; this adds no provider policy or arbitrary cohort-count limit.
+
+#### Scenario: Linked-peer snapshot evaluation remains bounded
+
+- **GIVEN** many Changes with linked attempts, including open attempts, terminal attempts with missing or complete bounds, multiple attempts and supported observed zero expenditure
+- **WHEN** quote evaluates them from one committed snapshot
+- **THEN** structural/source indices are built once, additional peers visit their member data and genuinely shared uncertainty rather than repeatedly scanning the full snapshot.
+- **AND** member filtering precedes economic series/lane selection; exact amounts, exclusions, order, dependency references and historical algorithm-v1 replay match full reconciliation, including pending corrections, temporal ambiguity and unattributed evidence.

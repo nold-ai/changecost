@@ -283,3 +283,39 @@ intended Python paths. Supported-Linux and fresh remote review remain required
 at the pushed correction head.
 
 Collected annotation scoped green: `.venv/bin/python -m pytest tests/test_quotes.py tests/test_quote_cli.py tests/test_reconciliation.py tests/test_store.py tests/test_contracts.py tests/test_contract_cli.py tests/test_cli.py -q` returned exit 0: 251 tests and 4 subtests passed. Final full-suite/native/remote acceptance is separate and pending.
+
+## Linked-peer repeated-scan family correction (2026-10-03, Europe/Berlin)
+
+After the preceding pushed correction, the Codex P3 review identified repeated
+full-record scanning for linked peers. Independent family investigation covered
+economic correction selection, raw unpriced evidence and every feature timing/input
+scan before the patch. The retained maintainer-directed scoped allowance is now
+7 total batches / 165 active minutes; history and prior failures are retained.
+
+Spec first added linked-peer bounded-work and exact member-first selection parity.
+Real red: `.venv/bin/pytest tests/test_quotes.py -k linked_peer_growth -q --junitxml=.changecost/workflow/quote-01-empirical-estimation/linked-scan-red.xml`
+returned exit 1: three growth failures (suite timestamp 2026-10-03T14:55:15.464836+02:00).
+Open linked peers required 14841/54233/206745 visits for 32/64/128; terminal
+missing/full bounds required 29529/108185/412953. Semantic checks passed before
+the growth assertions failed.
+
+The optional Quote snapshot index prepares correction chains, complete RunRef
+membership, raw-unpriced groups, all Interval revisions and feature economic work
+once. Peer membership filters chains before unchanged series/lane selection.
+Default settlement/report execution retains the full evaluator. Feature validity
+caches use typed Change references and all economic identities, not only pricing
+identity. Shared unresolved/unbound uncertainty remains consulted and auditable.
+
+Green: `PATH="$PWD/.venv/bin:$PATH" .venv/bin/pytest tests/test_quotes.py tests/test_quote_cli.py tests/test_reconciliation.py tests/test_store.py tests/test_contracts.py tests/test_contract_cli.py tests/test_cli.py -q --junitxml=.changecost/workflow/quote-01-empirical-estimation/linked-scan-scoped.xml`
+returned exit 0: 263 tests and 4 subtests (suite timestamp 2026-10-03T15:04:08.692950+02:00,
+7.84 seconds). Open growth is 970/1930/3850; missing/full bounds 1930/3850/7690.
+Supported observed-zero peers remain priced, with 1610/3210/6410 visits for
+16/32/64 peers. Exact full-vs-indexed details and historical Quote replay cover
+multiple attempts/abandonment, pending/resolved corrections, unknown currency,
+snapshot lane ambiguity, file sources, raw/unbound evidence and foreign records;
+feature timing roots and dependency-only portable import are preserved.
+
+BasedPyright reports zero errors; the fresh complete canonical four-rule oracle
+reports zero errors and 27 advisories over all 12 intended Python paths. These are
+local preparatory metrics, not native certification. Independent full verification
+and fresh native/provider acceptance remain required after the correction freeze.

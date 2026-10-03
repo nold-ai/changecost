@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from uuid import uuid4
 
+from changecost.coverage import CoverageIndex
 from changecost.economic_graph import (
     correction_graph,
     economic_identity,
@@ -101,7 +102,85 @@ def chain_members(events: dict, leaf, edges: dict) -> tuple[list, bool]:
     return chain, True
 
 
-def effective_events(records: dict, scope: EconomicScope, members=None) -> Selection:
+class SnapshotIndex(CoverageIndex):
+    """Read-only structural and source lookups for one Quote snapshot and identity."""
+
+    def __init__(self, records, scope):
+        super().__init__(records)
+        self.scope = scope
+        self.feature_cache = {}
+        self.chains_by_run, self.shared_chains = defaultdict(list), []
+        self.work_by_run, self.all_intervals = defaultdict(list), defaultdict(list)
+        self.raw_by_run, self.raw_unbound = defaultdict(set), set()
+        self.prepare_structure(records)
+        self.prepare_chains(records)
+
+    def prepare_structure(self, records):
+        for record in records.values():
+            if record.kind == "interval":
+                self.all_intervals[run_key(record.run)].append(record)
+        for ref in self.evidence.keys() - self.economics:
+            binding = self.bindings.get(ref)
+            if binding is None:
+                self.raw_unbound.add(ref)
+            else:
+                self.raw_by_run[run_key(binding.run)].add(ref)
+
+    def prepare_chains(self, records):
+        events = {economic_key(r): r for r in records.values() if isinstance(r, EconomicEvidence)}
+        edges = correction_graph(records)
+        repository_events = {
+            name: r
+            for name, r in events.items()
+            if r.source.repository_id == self.scope.repository_id
+        }
+        if len(repository_events) > MAX_RECORDS:
+            raise ContractError("economic record count limit exceeded")
+        predecessors = set(edges.values())
+        for leaf in events.keys() - predecessors:
+            chain, _resolved = chain_members(events, leaf, edges)
+            members = {
+                run_key(self.bindings[key(r.evidence)].run)
+                for r in chain
+                if key(r.evidence) in self.bindings
+            }
+            for member in members:
+                self.work_by_run[member].extend(chain)
+        for ordinal, leaf in enumerate(repository_events.keys() - predecessors):
+            chain, resolved = chain_members(repository_events, leaf, edges)
+            if chain_relevant(chain, resolved, self.scope):
+                self.add_chain(ordinal, chain, resolved)
+
+    def add_chain(self, ordinal, chain, resolved):
+        members = {
+            run_key(self.bindings[key(r.evidence)].run)
+            for r in chain
+            if key(r.evidence) in self.bindings
+        }
+        entry = (ordinal, chain, resolved)
+        if not members:
+            self.shared_chains.append(entry)
+        for member in members:
+            self.chains_by_run[member].append(entry)
+
+    def effective(self, members):
+        entries = list(self.shared_chains)
+        groups = (
+            self.chains_by_run.values()
+            if members is None
+            else (self.chains_by_run[member] for member in members)
+        )
+        for group in groups:
+            entries.extend(group)
+        result = Selection()
+        for _, chain, resolved in sorted(entries, key=lambda entry: entry[0]):
+            select_chain(result, chain, resolved, self.bindings, members)
+        return result
+
+
+def effective_events(records: dict, scope: EconomicScope, members=None, index=None) -> Selection:
+    if isinstance(index, SnapshotIndex) and index.scope == scope:
+        return index.effective(members)
     events = {
         economic_key(r): r
         for r in records.values()
@@ -201,7 +280,7 @@ def select(records: dict, scope: EconomicScope, members=None, index=None) -> Sel
     from changecost.coverage import CoverageIndex
 
     index = index if index is not None else CoverageIndex(records)
-    result = effective_events(records, scope, members)
+    result = effective_events(records, scope, members, index)
     series = defaultdict(list)
     for event in result.selected:
         series[(partition(event.source), event.series, event.component_key)].append(event)

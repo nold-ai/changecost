@@ -208,6 +208,8 @@ def lifecycle_refs(*records) -> set:
 
 
 def unpriced_evidence(index, members=None, repository_id=None) -> set:
+    if members is not None and repository_id is None and hasattr(index, "raw_by_run"):
+        return index.raw_unbound | set().union(*(index.raw_by_run[m] for m in members))
     refs = set()
     for ref in index.evidence.keys() - index.economics:
         binding = index.bindings.get(ref)

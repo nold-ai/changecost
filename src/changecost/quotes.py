@@ -32,6 +32,7 @@ from changecost.reconciliation import (
 )
 from changecost.reconciliation import (
     POLICY,
+    SnapshotIndex,
     computation_details,
     snapshot_records,
 )
@@ -69,8 +70,14 @@ def local_availability(connection):
     }
 
 
-def economic_work_records(records, members):
+def economic_work_records(records, members, context=None):
     """Retain earlier work in every visible correction-connected attributable input."""
+    if context is not None:
+        return [event for member in members for event in context.work_by_run[member]]
+    return scanned_economic_work(records, members)
+
+
+def scanned_economic_work(records, members):
     events = {economic_key(r): r for r in records.values() if isinstance(r, EconomicEvidence)}
     mapped = {
         key(r.evidence): run_key(r.run) for r in records.values() if isinstance(r, EvidenceBinding)
@@ -91,24 +98,44 @@ def economic_work_records(records, members):
     return [events[name] for name in included]
 
 
-def change_run_bindings(records, change):
+def change_run_bindings(records, change, context=None):
+    if context is not None:
+        return context.change_bindings[key(reference(change))]
     return [
         r for r in records.values() if isinstance(r, RunBinding) and r.change == reference(change)
     ]
 
 
-def run_features_valid(records, run, change_availability, availability, bound):
+def run_features_valid(records, run, change_availability, availability, bound, context=None):
     if bound > run.recorded_at or (run.observed_start is not None and bound > run.observed_start):
         return False
     if change_availability >= availability[key(reference(run))]:
         return False
-    intervals = [r for r in records.values() if r.kind == "interval" and r.run == run.ref]
+    intervals = (
+        context.all_intervals[run_key(run.ref)]
+        if context is not None
+        else [r for r in records.values() if r.kind == "interval" and r.run == run.ref]
+    )
     return not any(r.start is not None and bound > r.start for r in intervals)
 
 
-def feature_valid(records, change, availability):
-    bindings = change_run_bindings(records, change)
-    runs = {run_key(r.ref): r for r in records.values() if isinstance(r, Run)}
+def feature_valid(records, change, availability, context=None):
+    ref = key(reference(change))
+    if context is not None and ref in context.feature_cache:
+        return context.feature_cache[ref]
+    valid = feature_timing_valid(records, change, availability, context)
+    if context is not None:
+        context.feature_cache[ref] = valid
+    return valid
+
+
+def feature_timing_valid(records, change, availability, context):
+    bindings = change_run_bindings(records, change, context)
+    runs = (
+        context.runs
+        if context is not None
+        else {run_key(r.ref): r for r in records.values() if isinstance(r, Run)}
+    )
     change_availability = availability[key(reference(change))]
     bound = max(
         change.features.captured_at,
@@ -116,16 +143,26 @@ def feature_valid(records, change, availability):
         change.recorded_at,
         change_availability[0],
     )
-    earlier = economic_work_records(records, {run_key(binding.run) for binding in bindings})
+    earlier = economic_work_records(
+        records, {run_key(binding.run) for binding in bindings}, context
+    )
     if any(bound > event.start for event in earlier):
         return False
     return all(
-        run_features_valid(records, runs[run_key(b.run)], change_availability, availability, bound)
+        run_features_valid(
+            records, runs[run_key(b.run)], change_availability, availability, bound, context
+        )
         for b in bindings
     )
 
 
-def lifecycle_inputs(records, members):
+def lifecycle_inputs(records, members, context=None):
+    if context is not None:
+        return {
+            key(reference(r))
+            for member in members
+            for r in [context.runs[member], *context.all_intervals[member]]
+        }
     return {
         key(reference(r))
         for r in records.values()
@@ -134,25 +171,28 @@ def lifecycle_inputs(records, members):
     }
 
 
-def economic_feature_inputs(records, members):
-    economics = economic_work_records(records, members)
+def economic_feature_inputs(records, members, context=None):
+    economics = economic_work_records(records, members, context)
     refs = {key(reference(r)) for r in economics}
     evidence = {key(r.evidence) for r in economics}
-    refs.update(
-        key(reference(r))
-        for r in records.values()
-        if isinstance(r, EvidenceBinding) and key(r.evidence) in evidence
-    )
+    if context is not None:
+        refs.update(key(reference(context.bindings[e])) for e in evidence if e in context.bindings)
+    else:
+        refs.update(
+            key(reference(r))
+            for r in records.values()
+            if isinstance(r, EvidenceBinding) and key(r.evidence) in evidence
+        )
     return refs
 
 
-def feature_inputs(records, change):
+def feature_inputs(records, change, context=None):
     """References consulted to prove feature timing, including normalized work."""
-    bindings = change_run_bindings(records, change)
+    bindings = change_run_bindings(records, change, context)
     members = {run_key(binding.run) for binding in bindings}
     refs = {key(reference(change)), *(key(reference(r)) for r in bindings)}
-    refs.update(lifecycle_inputs(records, members))
-    refs.update(economic_feature_inputs(records, members))
+    refs.update(lifecycle_inputs(records, members, context))
+    refs.update(economic_feature_inputs(records, members, context))
     return refs
 
 
@@ -168,8 +208,8 @@ def input_closure(records, roots):
     return included
 
 
-def peer_features_valid(records, candidate, availability):
-    return feature_valid(records, candidate, availability) and all(
+def peer_features_valid(records, candidate, availability, context=None):
+    return feature_valid(records, candidate, availability, context) and all(
         getattr(candidate.features, field) is not None
         for field in ("change_shape", "trajectory", "execution_profile")
     )
@@ -196,11 +236,11 @@ def peer_details(records, candidate, scope, index, cache):
     return zero_run_peer_details(records, candidate, scope, index, cache)
 
 
-def evaluate_peers(records, change, scope, availability):
+def evaluate_peers(records, change, scope, availability, context=None):
     peers = []
     exclusions = []
-    dependencies = feature_inputs(records, change)
-    index, empty_cache = CoverageIndex(records), {}
+    dependencies = feature_inputs(records, change, context)
+    index, empty_cache = context if context is not None else CoverageIndex(records), {}
     candidates = sorted(
         (
             r
@@ -222,8 +262,8 @@ def evaluate_peers(records, change, scope, availability):
                 for r in details["unknown_reasons"]
             )
             continue
-        dependencies.update(feature_inputs(records, candidate))
-        if not peer_features_valid(records, candidate, availability):
+        dependencies.update(feature_inputs(records, candidate, context))
+        if not peer_features_valid(records, candidate, availability, context):
             exclusions.append(
                 QuoteExclusion(
                     reference=reference(candidate), reason="missing_or_late_peer_features"
@@ -242,7 +282,7 @@ def evaluate_peers(records, change, scope, availability):
     return peers, exclusions, dependencies
 
 
-def matching_peers(records, change, peers, fields, valid, availability):
+def matching_peers(records, change, peers, fields, valid, availability, context=None):
     if not fields:
         return [p for _, p in peers]
     if not valid:
@@ -250,21 +290,21 @@ def matching_peers(records, change, peers, fields, valid, availability):
     return [
         p
         for c, p in peers
-        if feature_valid(records, c, availability)
+        if feature_valid(records, c, availability, context)
         and all(getattr(c.features, f) == getattr(change.features, f) for f in fields)
     ]
 
 
-def select_cohort(records, change, peers, minimum, availability):
+def select_cohort(records, change, peers, minimum, availability, context=None):
     evaluations = []
     selected = []
     chosen = "repository"
     for level, fields in LEVELS:
         valid = not fields or (
-            feature_valid(records, change, availability)
+            feature_valid(records, change, availability, context)
             and all(getattr(change.features, f) is not None for f in fields)
         )
-        matches = matching_peers(records, change, peers, fields, valid, availability)
+        matches = matching_peers(records, change, peers, fields, valid, availability, context)
         reason = (
             None
             if len(matches) >= minimum
@@ -278,8 +318,11 @@ def select_cohort(records, change, peers, minimum, availability):
 
 
 def estimate(records, change, scope, minimum, cutoff, availability):
-    peers, exclusions, dependencies = evaluate_peers(records, change, scope, availability)
-    selected, chosen, evaluations = select_cohort(records, change, peers, minimum, availability)
+    context = SnapshotIndex(records, scope)
+    peers, exclusions, dependencies = evaluate_peers(records, change, scope, availability, context)
+    selected, chosen, evaluations = select_cohort(
+        records, change, peers, minimum, availability, context
+    )
     amounts = sorted((p.amount for p in selected), key=Decimal)
     n = len(amounts)
     quantiles = [amounts[(percent * n + 99) // 100 - 1] if n else None for percent in (50, 90)]
