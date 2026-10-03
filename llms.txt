@@ -35,6 +35,8 @@
 - [Offline settlement preview](docs/settlement.md): Normalized input, exact computation, synthetic coverage, operation retries and recovery.
 - [Settlement implementation evidence](openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md): Accepted implementation TDD, final merged verification, retained limitations and archive closeout.
 - [Evidence reconciliation specification](openspec/specs/evidence-reconciliation/spec.md): Accepted normalized reconciliation, immutable computation and explicit coverage requirements synchronized by the OpenSpec archive CLI.
+- [Empirical quotes preparation](openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md): Historical preparation against delivered cutoff/coverage contracts; later runtime evidence is separate.
+- [Empirical Quotes](docs/quotes.md): Offline synthetic peer estimation, exact quantiles, feature backoff and historical replay.
 
 ## Local skills
 

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Implement offline empirical Quotes with exact nearest-rank quantiles, supported
+  complete synthetic peers, pre-run feature backoff and immutable historical replay.
+  Add compatible optional provenance metadata, atomic cross-kind operation retries
+  and typed receipt authority; retain legacy imported claims and unsupported cohorts.
+  Provider adapters, live collection and calibration remain pending.
+
+- Reconcile planned empirical quotes with delivered settlement: derive cutoff-bound
+  complete peers, preserve synthetic-only coverage and imported-claim boundaries,
+  specify compatible Quote metadata and update current review/TDD obligations.
+  Preparation only; no estimator or provider support is delivered.
+
 - Accept and archive settlement reconciliation through OpenSpec CLI 1.13.2,
   synchronizing 17 requirements into main specs. Reconcile merged verification,
   lifecycle summaries, moved links and documentation ownership while preserving

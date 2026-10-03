@@ -153,5 +153,15 @@
     "title": "Evidence reconciliation specification",
     "path": "openspec/specs/evidence-reconciliation/spec.md",
     "description": "Accepted normalized reconciliation, immutable computation and explicit coverage requirements synchronized by the OpenSpec archive CLI."
+  },
+  {
+    "title": "Empirical quotes preparation",
+    "path": "openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
+    "description": "Historical preparation against delivered cutoff/coverage contracts; later runtime evidence is separate."
+  },
+  {
+    "title": "Empirical Quotes",
+    "path": "docs/quotes.md",
+    "description": "Offline synthetic peer estimation, exact quantiles, feature backoff and historical replay."
   }
 ]

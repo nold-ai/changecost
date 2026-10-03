@@ -140,6 +140,7 @@ class CliContract(unittest.TestCase):
 
         self.assertEqual(json.loads(result)["revisions"][0]["outcome"], "failed")
         self.prove_economic_roundtrip(invoke, work)
+        self.prove_quote_roundtrip(invoke, work)
 
     def prove_economic_roundtrip(self, invoke, work):
         """Prove normalized/retry/correction semantics in the installed offline wheel."""
@@ -261,6 +262,153 @@ class CliContract(unittest.TestCase):
         )
         self.assertFalse(imported["local_computation"])
         self.assertEqual(imported["replay_eligibility"], "replay_unavailable")
+
+    def prove_quote_roundtrip(self, invoke, work):
+        """Use only the installed public CLI and synthetic portable coverage."""
+        import json
+
+        for change in ("quote-target", "quote-peer"):
+            invoke(
+                "quote.sqlite",
+                "bind",
+                "--register-change",
+                "--repository-id",
+                "demo",
+                "--change-id",
+                change,
+            )
+        run = dict(repository_id="demo", provider="synthetic", surface="fixture", run_id="qrun")
+        selectors = [
+            "--repository-id",
+            "demo",
+            "--provider",
+            "synthetic",
+            "--surface",
+            "fixture",
+            "--run-id",
+            "qrun",
+        ]
+        invoke("quote.sqlite", "bind", "--register-run", *selectors, "--change-id", "quote-peer")
+        start, end = "2026-09-29T08:00:00Z", "2026-09-29T09:00:00Z"
+        invoke(
+            "quote.sqlite",
+            "settle",
+            *selectors,
+            "--run-outcome",
+            "succeeded",
+            "--work-start",
+            start,
+            "--work-end",
+            end,
+        )
+        invoke(
+            "quote.sqlite",
+            "settle",
+            "--repository-id",
+            "demo",
+            "--change-id",
+            "quote-peer",
+            "--outcome",
+            "accepted",
+        )
+        economic = dict(economic_kind="monetary", unit="USD", currency="USD", basis="billed")
+        event = dict(
+            source=dict(
+                repository_id="demo",
+                provider="synthetic",
+                surface="fixture",
+                profile="synthetic/v1",
+                namespace="opaque",
+                identity_scope="namespaced",
+                source_key="qevent",
+            ),
+            component_key="charge",
+            component={**economic, "amount": "0.25"},
+            series="usage",
+            lane="delta",
+            start=start,
+            end=start,
+        )
+        path = work / "quote-normalized.json"
+        path.write_text(
+            json.dumps(
+                dict(
+                    schema="changecost/normalized-v1",
+                    repository_id="demo",
+                    batch_id="quote",
+                    events=[event],
+                )
+            )
+        )
+        imported = json.loads(
+            invoke(
+                "quote.sqlite", "settle", "--repository-id", "demo", "--import-evidence", str(path)
+            )
+        )
+        evidence = imported["evidence_ids"][0]
+        invoke("quote.sqlite", "bind", *selectors, "--evidence-id", evidence)
+        snapshot_path = work / "quote-inputs.json"
+        invoke("quote.sqlite", "explain", "--export-artifact", str(snapshot_path))
+        source = json.loads(snapshot_path.read_text())["source"]
+        coverage = dict(
+            schema="changecost/v1",
+            kind="source_coverage",
+            record_id="qcoverage",
+            origin_store_id=source["store_id"],
+            recorded_at=source["at"],
+            effective_at=source["at"],
+            run=run,
+            provider="synthetic",
+            surface="fixture",
+            profile="synthetic/v1",
+            namespace="opaque",
+            component_key="charge",
+            policy_version="synthetic/v1",
+            economic=economic,
+            start=start,
+            end=end,
+            final=True,
+            evidence=[dict(kind="evidence", record_id=evidence)],
+        )
+        coverage_path = work / "quote-coverage.json"
+        coverage_path.write_text(
+            json.dumps(dict(schema="changecost/v1", source=source, records=[coverage]))
+        )
+        invoke("quote.sqlite", "bind", "--import-artifact", str(coverage_path))
+        args = [
+            "quote",
+            "--repository-id",
+            "demo",
+            "--change-id",
+            "quote-target",
+            "--operation-id",
+            "installed-quote",
+            "--economic-kind",
+            "monetary",
+            "--unit",
+            "USD",
+            "--currency",
+            "USD",
+            "--basis",
+            "billed",
+            "--minimum",
+            "1",
+        ]
+        quote = json.loads(invoke("quote.sqlite", *args))
+        self.assertEqual(quote["p50"]["amount"], "0.25")
+        self.assertEqual(json.loads(invoke("quote.sqlite", *args)), quote)
+        explanation = json.loads(
+            invoke(
+                "quote.sqlite",
+                "explain",
+                "--record-kind",
+                "quote",
+                "--record-id",
+                quote["record_id"],
+            )
+        )
+        self.assertTrue(explanation["local_computation"])
+        self.assertEqual(explanation["economic_validation"], "reproduced")
 
 
 if __name__ == "__main__":

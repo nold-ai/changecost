@@ -35,7 +35,7 @@ complete tuple; bare provider run IDs never resolve a reference.
 | evidence_binding | evidence (RecordRef), run (RunRef), method, source_refs |
 | outcome | subject (Change/Run RecordRef), outcome; optional previous (Outcome RecordRef), reason |
 | interval | run (RunRef), nullable start/end, method, source_refs; optional previous (Interval RecordRef), reason |
-| quote | change, state, p50, p90, sample_count, cohort, algorithm_version, cutoff, inputs; optional reason, features |
+| quote | change, state, p50, p90, sample_count, cohort, algorithm_version, cutoff, inputs; optional reason, features, estimation |
 | settlement | change, components, completeness, scope, coverage, inputs, unknown_reasons; optional previous (Settlement RecordRef) |
 | economic_evidence | evidence (core RecordRef), source (SourceLocator), component_key, component, series, lane, start/end, baseline_zero; optional replaces (SourceLocator), correction_reason |
 | source_coverage | run (RunRef), provider, surface, profile, namespace, component_key, policy_version, economic (economic_kind/unit/currency/basis), start/end, final (boolean), evidence (RecordRefs) |
@@ -54,7 +54,8 @@ legacy imported claims do not establish a local computation receipt. New
 computed records retain a scope (repository, economic identity, nullable start/end),
 subtotals (economic identity, amount, unknown_count), complete RunRef membership,
 and exclusions (reference, reason). See [normalization and computation](settlement.md)
-for SourceLocator, temporal and correction fields. No estimator runs.
+for SourceLocator, temporal and correction fields. [Empirical Quotes](quotes.md)
+compute synthetic cutoff-bound estimates in this checkout.
 
 Features have `version: features/v1`, captured_at/recorded_at equal to Change
 registration, and three nullable fields. ASCII whitespace is stripped and ASCII
@@ -174,3 +175,27 @@ Evidence without normalized economics explicitly; plain Evidence supplies no amo
 Computed replay inspection checks immutable payload, local receipt authority, cutoff
 bounds and transitive input availability in one read snapshot. Lifecycle coverage
 lookups use complete RunRefs and predecessor-defined revision leaves.
+
+## Empirical Quote computation
+
+`quote` extends the existing portable Quote with optional allowlisted `estimation/v1`
+metadata: strict positive minimum, accepted-and-abandoned population, reconciliation
+and policy versions, synthetic status, ordered cohort counts/reasons, selected Change
+amounts/support references and exclusion reasons. Exact amounts remain decimal strings.
+Metadata peer/exclusion references must be covered by Quote inputs. Legacy Quotes
+without metadata remain importable and inspectable producer claims.
+
+Calculation derives one aggregate per terminal peer from normalized inputs and supported
+coverage at one committed local time/sequence cutoff, without creating settlements or
+trusting saved/imported full_change flags. Only synthetic billed USD is currently supported.
+All attempted expenditure and abandoned Changes remain in the population. Portable
+records cannot manufacture local calculation authority: computation receipts resolve
+by exact request and typed record identity across both Quote and settlement operations.
+An identical retry retains the original record; conflicting operation reuse fails atomically.
+
+Explain reads the exact stored Quote, receipt and replay inputs in one snapshot. It
+separates `local_computation` from `economic_validation: reproduced|not_computed`.
+A compatible same-layout backup preserves authority; portable export/import does not.
+Foreign/future or unavailable cutoffs, unsupported algorithms/policies and result
+mismatches report replay_unavailable. Later evidence cannot alter a stored historical
+result. See [Quotes](quotes.md) for rank, cohort and feature details.

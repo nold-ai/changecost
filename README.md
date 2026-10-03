@@ -11,7 +11,9 @@ portable import/export. See [CLI examples](docs/cli.md), [v1 contracts](docs/con
 and [verification evidence](openspec/changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md).
 [Offline normalized reconciliation](docs/settlement.md), exact subtotals and
 immutable computation merged in [PR #28](https://github.com/nold-ai/changecost/pull/28).
-Cost estimation and native provider imports remain planned.
+This checkout implements [offline empirical Quotes](docs/quotes.md) from complete
+synthetic history; verification/publication is tracked in the active change. Native
+provider imports and calibration remain pending.
 Live collection requires a separate request. This repository remains private.
 
 The delivered [Python foundation](openspec/specs/python-foundation/spec.md) and
@@ -169,3 +171,7 @@ for the pinned analyzer composition and hosted-runner trust boundary.
 
 Contributor review can use the [behavioral evidence pilot](docs/development/behavioral-evidence.md) for bounded
 lifecycle controls and content-bound delta review. Final required gates remain mandatory.
+
+Quote #15 runtime implementation was authorized on 2026-10-03. This checkout adds
+offline synthetic empirical estimation and historical replay; verification/publication
+remain tracked in the active change evidence. No provider collection is authorized.

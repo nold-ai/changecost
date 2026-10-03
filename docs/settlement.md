@@ -3,7 +3,8 @@
 This checkout implements normalized import and economic computation for the unreleased
 `0.1.0.dev0` feasibility study. Verification and accepted limitations are recorded in
 [the change evidence](../openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md).
-No provider parser, collector, quote estimator or budget enforcement is included.
+No provider parser, collector or budget enforcement is included. The separate
+[empirical Quote operation](quotes.md) computes offline synthetic estimates.
 
 ## Import, bind, compute and explain
 

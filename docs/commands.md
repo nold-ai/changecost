@@ -39,6 +39,16 @@ Implemented command surface:
 - `changecost explain --source-start`
 - `changecost explain --surface`
 - `changecost explain --unit`
+- `changecost quote`
+- `changecost quote --basis`
+- `changecost quote --change-id`
+- `changecost quote --currency`
+- `changecost quote --economic-kind`
+- `changecost quote --help`
+- `changecost quote --minimum`
+- `changecost quote --operation-id`
+- `changecost quote --repository-id`
+- `changecost quote --unit`
 - `changecost settle`
 - `changecost settle --basis`
 - `changecost settle --change-id`
@@ -67,4 +77,4 @@ Help and version succeed offline. Bare or unknown commands exit nonzero.
 No database, configuration or evidence files are created by these invocations.
 
 `bind` registers/maps/imports; `settle` declares lifecycle, imports normalized evidence or computes;
-`explain` inspects/exports and reports repository remainder. `quote`, `check` and provider adapters remain planned.
+`explain` inspects/exports and reports repository remainder. `quote` computes offline empirical estimates. `check` and provider adapters remain planned.

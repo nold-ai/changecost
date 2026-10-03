@@ -24,7 +24,16 @@ from changecost.models import (
 from changecost.normalized import MAX_RECORDS
 from changecost.operations import change_in, common
 from changecost.serialization import ContractError
-from changecost.store import Store, available, key, read_records, reference, run_key, validate_graph
+from changecost.store import (
+    Store,
+    available,
+    computation_refs,
+    key,
+    read_records,
+    reference,
+    run_key,
+    validate_graph,
+)
 
 ALGORITHM = "settlement/v1"
 POLICY = "synthetic/v1"
@@ -250,7 +259,7 @@ def snapshot_records(connection, cutoff: Cutoff, records=None) -> dict:
     return {k: records[k] for k in included}
 
 
-def computation_details(records, change, scope):
+def computation_details(records, change, scope) -> dict:
     from changecost.coverage import CoverageIndex, assess_coverage, supported_event
 
     index = CoverageIndex(records)
@@ -298,7 +307,10 @@ def compute_settlement(store: Store, change_id: str, scope: EconomicScope, opera
         ).fetchone()
         all_records = read_records(connection)
         if existing:
-            if existing[0] != request:
+            if existing[0] != request or (
+                "computed_settlement",
+                existing[1],
+            ) not in computation_refs(connection, all_records):
                 raise ContractError("operation ID already used for a different request")
             return all_records[("computed_settlement", existing[1])]
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
@@ -310,12 +322,12 @@ def compute_settlement(store: Store, change_id: str, scope: EconomicScope, opera
         change = change_in(records, scope.repository_id, change_id)
         if change is None:
             raise ContractError("unknown Change at input cutoff")
-        local_ids = {row[0] for row in connection.execute("SELECT record_id FROM computations")}
+        local_ids = computation_refs(connection, all_records)
         local = [
             r
             for r in all_records.values()
             if isinstance(r, ComputedSettlement)
-            and r.record_id in local_ids
+            and key(reference(r)) in local_ids
             and r.change == reference(change)
         ]
         parents = {r.previous.record_id for r in local if r.previous is not None}
@@ -339,12 +351,7 @@ def inspect_computation(store: Store, record: ComputedSettlement) -> dict:
         stored = records.get(key(reference(record)))
         if stored != record:
             raise ContractError("computation does not match immutable stored record")
-        local = (
-            connection.execute(
-                "SELECT 1 FROM computations WHERE record_id=?", (record.record_id,)
-            ).fetchone()
-            is not None
-        )
+        local = key(reference(record)) in computation_refs(connection, records)
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
         now = timestamp(store.clock())
         if last_at is not None and timestamp(last_at) > now:

@@ -884,6 +884,36 @@
         "openspec/specs/evidence-reconciliation/spec.md"
       ],
       "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
+        "openspec/changes/quote-01-empirical-estimation/proposal.md",
+        "openspec/changes/quote-01-empirical-estimation/design.md",
+        "openspec/changes/quote-01-empirical-estimation/specs/empirical-quotes/spec.md",
+        "openspec/changes/quote-01-empirical-estimation/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/quotes.md",
+      "owner": "empirical-quotes",
+      "sources": [
+        "src/changecost/quotes.py",
+        "tests/test_quotes.py",
+        "tests/test_quote_cli.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/quote-01-empirical-estimation/TDD_EVIDENCE.md",
+      "owner": "empirical-quotes",
+      "sources": [
+        "openspec/changes/quote-01-empirical-estimation/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
     }
   ],
   "immutable": {

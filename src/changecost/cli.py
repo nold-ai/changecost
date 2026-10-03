@@ -16,7 +16,6 @@ from changecost import operations
 from changecost.models import (
     ComputedSettlement,
     EconomicScope,
-    Quote,
     RecordRef,
     Run,
     RunRef,
@@ -182,6 +181,35 @@ def bind_run_request(store, args, ref):
 
 
 @app.command()
+def quote(
+    context: typer.Context,
+    repository_id: Annotated[str, typer.Option()],
+    change_id: Annotated[str, typer.Option()],
+    operation_id: Annotated[str, typer.Option()],
+    economic_kind: Annotated[str, typer.Option()],
+    unit: Annotated[str, typer.Option()],
+    basis: Annotated[str, typer.Option()],
+    currency: Annotated[str | None, typer.Option()] = None,
+    minimum: Annotated[int, typer.Option(min=1)] = 20,
+) -> None:
+    """Compute an exact empirical Quote using complete offline peer Changes."""
+    from changecost.quotes import compute_quote
+
+    def operation():
+        scope = EconomicScope.model_validate(
+            dict(
+                repository_id=repository_id,
+                economic=dict(
+                    economic_kind=economic_kind, unit=unit, basis=basis, currency=currency
+                ),
+            )
+        )
+        return compute_quote(context.obj, change_id, scope, operation_id, minimum)
+
+    execute(operation)
+
+
+@app.command()
 def settle(
     context: typer.Context,
     repository_id: str | None = None,
@@ -325,6 +353,10 @@ def explain(
 
 
 def inspect_record(store: Store, ref: RecordRef) -> dict:
+    if ref.kind == "quote":
+        from changecost.quotes import inspect_quote
+
+        return inspect_quote(store, ref)
     bundle = store.export_bundle()
     records = {key(reference(r)): r for r in bundle.records}
     record = lookup(records, ref)
@@ -350,12 +382,6 @@ def inspect_record(store: Store, ref: RecordRef) -> dict:
         from changecost.reconciliation import inspect_computation
 
         result.update(inspect_computation(store, record))
-    if isinstance(record, Quote):
-        eligible = all(
-            store.eligible(dep, record.cutoff) for dep in [record.change, *record.inputs]
-        )
-        result["replay_eligibility"] = "inputs_available" if eligible else "replay_unavailable"
-        result["economic_validation"] = "not_computed"
     return result
 
 
