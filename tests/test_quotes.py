@@ -1070,3 +1070,207 @@ def test_supported_zero_peer_growth_preserves_priced_cohort(tmp_path, monkeypatc
     record_property("record_visits", visits)
     assert visits[1] < 3 * visits[0]
     assert visits[2] < 3 * visits[1]
+
+
+@pytest.mark.parametrize("shared_kind", ["resolved", "raw", "mixed"])
+def test_shared_source_growth_tracks_linear_quote_output(
+    tmp_path, monkeypatch, record_property, shared_kind
+):
+    from changecost import quotes, reconciliation
+
+    original = quotes.estimate
+    select_chain = reconciliation.select_chain
+    original_key = quotes.key
+    work, output = [], []
+    counter = [0]
+
+    def counted_chain(*args):
+        counter[0] += 1
+        return select_chain(*args)
+
+    def counted_key(ref):
+        counter[0] += 1
+        return original_key(ref)
+
+    def measured(records, *arguments):
+        counter[0] = 0
+        result = original(records, *arguments)
+        work.append(counter[0])
+        assert result.estimation is not None
+        output.append(len(result.inputs) + len(result.estimation.exclusions))
+        return result
+
+    monkeypatch.setattr(quotes, "estimate", measured)
+    monkeypatch.setattr(reconciliation, "select_chain", counted_chain)
+    monkeypatch.setattr(quotes, "key", counted_key)
+    for count in (16, 32, 64):
+        store = setup(tmp_path / str(count))
+        additions = linked_peers(store, count, "bounded")
+        if shared_kind == "mixed":
+            price_linked_zero_peers(store, additions)
+        add_shared_uncertainty(store, count, shared_kind)
+        result = quote(store, minimum=1)
+        assert result.state == "unpriced" and result.sample_count == 0
+        assert result.estimation is not None
+        reason = (
+            "missing_economic_evidence" if shared_kind == "raw" else "relevant_unbound_evidence"
+        )
+        assert sum(e.reason == reason for e in result.estimation.exclusions) >= count
+    record_property("shared_work", work)
+    record_property("output_references", output)
+    assert work[1] < 3 * work[0]
+    assert work[2] < 3 * work[1]
+    assert output[1] < 3 * output[0]
+    assert output[2] < 3 * output[1]
+
+
+def add_shared_uncertainty(store, count, kind):
+    from changecost.models import Evidence
+    from changecost.operations import common
+
+    if kind != "raw":
+        import_events(store, *(event(f"shared-{n}", "3") for n in range(count)))
+        return
+
+    def operation(records, store_id, now):
+        evidence = [
+            Evidence(
+                **common(store_id, now),
+                provider="unverified",
+                surface="fixture",
+                profile="unknown/v1",
+                identity_scope="namespaced",
+                source_key=f"shared-{n}",
+            )
+            for n in range(count)
+        ]
+        return evidence, evidence
+
+    store.apply(operation)
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "deltas",
+        "pending",
+        "snapshot",
+        "snapshots",
+        "unsupported",
+        "file_disjoint",
+        "file_point",
+        "file_namespaced",
+    ],
+)
+def test_shared_summary_matches_original_quote_and_replay(tmp_path, monkeypatch, case):
+    from changecost import quotes
+    from changecost.reconciliation import SnapshotIndex, computation_details
+
+    store = setup(tmp_path)
+    zero, extra = multi_attempt_zero_peer(store)
+    additions = linked_peers(store, 4, "bounded")
+    shared_series_case(store, extra, case)
+    records = {(r.kind, r.record_id): r for r in store.records()}
+    index = SnapshotIndex(records, scope())
+    for candidate in [zero, *(r for r in additions if r.kind == "change")]:
+        full = computation_details(records, candidate, scope(), index)
+        old = computation_details(records, candidate, scope())
+        assert full == old
+        compact = computation_details(records, candidate, scope(), index, True)
+        compact["inputs"] = sorted(
+            [*compact["inputs"], *(reference(records[ref]) for ref in index.shared_inputs)],
+            key=lambda ref: (ref.kind, ref.record_id),
+        )
+        compact["exclusions"] = sorted(
+            compact["exclusions"], key=lambda e: (e.reference.record_id, e.reason)
+        )
+        old["exclusions"] = sorted(
+            old["exclusions"], key=lambda e: (e.reference.record_id, e.reason)
+        )
+        assert compact == old
+    with monkeypatch.context() as previous:
+        previous.setattr(quotes, "SnapshotIndex", lambda records, scope: None)
+        original = quote(store, "original", 1)
+    assert quotes.inspect_quote(store, original)["economic_validation"] == "reproduced"
+    refs = {(r.kind, r.record_id) for r in original.inputs}
+    assert_quote_subset_import(store, original, refs, tmp_path / "subset")
+
+
+def shared_series_case(store, extra, case):
+    from tests.test_reconciliation import locator
+
+    updates = {}
+    if case == "pending":
+        updates = dict(replaces=locator("absent"), correction_reason="fix")
+    if case in {"snapshot", "snapshots"}:
+        updates = dict(lane="snapshot", end=NOW.isoformat(), baseline_zero=True)
+    if case == "unsupported":
+        updates = dict(
+            source={**locator("unknown"), "profile": "unsupported/v1"},
+            lane="snapshot",
+            end=NOW.isoformat(),
+            baseline_zero=True,
+        )
+    if case.startswith("file_"):
+        shared_file_case(store, extra, case)
+    else:
+        import_events(store, event("shared", "3", **updates))
+        if case == "snapshots":
+            import_events(store, event("shared2", "4", **updates))
+
+
+def shared_file_case(store, extra, case):
+    from tests.test_reconciliation import locator
+
+    shared_at = START + timedelta(minutes=10)
+    bound_at = shared_at if case == "file_point" else START + timedelta(minutes=20)
+    source = {
+        **locator(),
+        "identity_scope": "file",
+        "source_key": None,
+        "file_digest": "a" * 64,
+        "ordinal": 0,
+    }
+    import_events(
+        store,
+        event("shared", "3", source=source, start=shared_at.isoformat(), end=shared_at.isoformat()),
+    )
+    bound = import_events(
+        store,
+        event(
+            "bound",
+            "0",
+            source={**source, "file_digest": "b" * 64},
+            start=bound_at.isoformat(),
+            end=bound_at.isoformat(),
+        ),
+    )[0]
+    bind_evidence(store, bound, extra.ref)
+    if case == "file_namespaced":
+        import_events(
+            store,
+            event("shared-namespaced", "4", start=shared_at.isoformat(), end=shared_at.isoformat()),
+        )
+
+
+def test_shared_pending_corrections_preserve_intrinsic_exclusion_output(tmp_path):
+    from tests.test_reconciliation import locator
+
+    store = setup(tmp_path)
+    linked_peers(store, 8, "bounded")
+    import_events(
+        store,
+        *(
+            event(f"pending-{n}", "3", replaces=locator(f"absent-{n}"), correction_reason="fix")
+            for n in range(8)
+        ),
+    )
+    result = quote(store, minimum=1)
+    assert result.estimation is not None
+    pending = [
+        e
+        for e in result.estimation.exclusions
+        if e.reference.kind == "economic_evidence" and e.reason == "pending_correction"
+    ]
+    assert len(pending) == 8 * 8
+    assert result.state == "unpriced"

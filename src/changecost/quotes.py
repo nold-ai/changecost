@@ -220,7 +220,9 @@ def zero_run_peer_details(records, candidate, scope, index, cache):
     outcome = index.outcomes.get(key(reference(candidate)))
     terminal = outcome is not None
     if terminal not in cache:
-        details = computation_details(records, candidate, scope, index)
+        details = computation_details(
+            records, candidate, scope, index, hasattr(index, "shared_inputs")
+        )
         cache[terminal] = details
         return details
     # Common evidence roots were retained when this lifecycle class was first evaluated.
@@ -232,7 +234,12 @@ def zero_run_peer_details(records, candidate, scope, index, cache):
 
 def peer_details(records, candidate, scope, index, cache):
     if index.change_bindings[key(reference(candidate))]:
-        return computation_details(records, candidate, scope, index)
+        details = computation_details(
+            records, candidate, scope, index, hasattr(index, "shared_inputs")
+        )
+        if details["full_change"] and hasattr(index, "shared_inputs"):
+            details["inputs"] = computation_details(records, candidate, scope, index)["inputs"]
+        return details
     return zero_run_peer_details(records, candidate, scope, index, cache)
 
 
@@ -279,6 +286,8 @@ def evaluate_peers(records, change, scope, availability, context=None):
                 ),
             )
         )
+    if context is not None and candidates:
+        dependencies.update(context.shared_inputs)
     return peers, exclusions, dependencies
 
 

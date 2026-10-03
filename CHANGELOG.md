@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Cache shared Quote source/series uncertainty and aggregate provenance once,
+  preserving member-first temporal/file decisions and exact historical outputs.
+  Bound resolved-unbound/raw processing when output is linear; retain required
+  repeated pending-correction exclusions.
+
 - Index Quote snapshot correction chains, raw evidence and feature timing once to
   bound repeated structural/source scanning for linked peers. Preserve member-first
   economic selection, exact exclusions, input references and historical replay.

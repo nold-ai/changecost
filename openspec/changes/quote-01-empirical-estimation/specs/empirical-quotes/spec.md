@@ -240,3 +240,10 @@ original result/cutoff and conflicting reuse SHALL fail unchanged.
 - **WHEN** quote evaluates them from one committed snapshot
 - **THEN** structural/source indices are built once, additional peers visit their member data and genuinely shared uncertainty rather than repeatedly scanning the full snapshot.
 - **AND** member filtering precedes economic series/lane selection; exact amounts, exclusions, order, dependency references and historical algorithm-v1 replay match full reconciliation, including pending corrections, temporal ambiguity and unattributed evidence.
+
+#### Scenario: Shared source uncertainty avoids repeated work
+
+- **GIVEN** linked peers and many resolved unbound economic deltas or unattributed raw evidence, with linear persisted Quote output
+- **WHEN** quote evaluates the committed snapshot
+- **THEN** shared source selection, temporal summaries and aggregate input roots are prepared once and member-dependent interaction is evaluated without repeating all shared work per peer.
+- **AND** member-first lane/file/window selection and exact historical output remain unchanged; pending corrections or whole-series exclusions retain their literal repeated provenance when the output itself requires it.

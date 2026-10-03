@@ -72,8 +72,12 @@ One committed Quote snapshot builds lifecycle, correction-chain, raw evidence an
 feature-timing lookups once. Linked peers consult their own attempts and genuinely
 shared uncertainty. Zero-attempt peers also share open/terminal diagnostics. Each
 peer retains its own references and reasons; unbound evidence and pending corrections
-remain auditable. Member filtering precedes economic series/lane selection, preserving
-complete reconciliation and exact historical replay; no cohort count cap is added.
+remain auditable. Shared normalized chains, fixed-window series summaries and raw
+uncertainty are prepared once, and aggregate Quote dependencies retain their roots
+once. Member filtering precedes economic series/lane selection; shared file-overlap
+and snapshot decisions still include each member's source interactions. Exact
+historical output is preserved, including repeated pending-correction exclusions
+when those are required by the audit output. No cohort count cap is added.
 
 No package version or SQLite layout migration is introduced. Back up before changing
 checkouts; rollback uses a follow-up code revert and separate compatible backup restore,
