@@ -90,56 +90,68 @@ def economic_work_records(records, members):
     return [events[name] for name in included]
 
 
-def feature_valid(records, change, availability):
-    bindings = [
+def change_run_bindings(records, change):
+    return [
         r for r in records.values() if isinstance(r, RunBinding) and r.change == reference(change)
     ]
+
+
+def run_features_valid(records, run, change_availability, availability, bound):
+    if bound > run.recorded_at or (run.observed_start is not None and bound > run.observed_start):
+        return False
+    if change_availability >= availability[key(reference(run))]:
+        return False
+    intervals = [r for r in records.values() if r.kind == "interval" and r.run == run.ref]
+    return not any(r.start is not None and bound > r.start for r in intervals)
+
+
+def feature_valid(records, change, availability):
+    bindings = change_run_bindings(records, change)
     runs = {run_key(r.ref): r for r in records.values() if isinstance(r, Run)}
-    bounds = [
+    change_availability = availability[key(reference(change))]
+    bound = max(
         change.features.captured_at,
         change.features.recorded_at,
         change.recorded_at,
-        availability[key(reference(change))][0],
-    ]
+        change_availability[0],
+    )
     earlier = economic_work_records(records, {run_key(binding.run) for binding in bindings})
-    if any(max(bounds) > event.start for event in earlier):
+    if any(bound > event.start for event in earlier):
         return False
-    for binding in bindings:
-        run = runs[run_key(binding.run)]
-        if max(bounds) > run.recorded_at or (
-            run.observed_start is not None and max(bounds) > run.observed_start
-        ):
-            return False
-        if availability[key(reference(change))] >= availability[key(reference(run))]:
-            return False
-        # Declared earlier work disqualifies reconstructed features.
-        intervals = [r for r in records.values() if r.kind == "interval" and r.run == run.ref]
-        if any(r.start is not None and max(bounds) > r.start for r in intervals):
-            return False
-    return True
+    return all(
+        run_features_valid(records, runs[run_key(b.run)], change_availability, availability, bound)
+        for b in bindings
+    )
 
 
-def feature_inputs(records, change):
-    """References consulted to prove feature timing, including normalized work."""
-    bindings = [
-        r for r in records.values() if isinstance(r, RunBinding) and r.change == reference(change)
-    ]
-    members = {run_key(binding.run) for binding in bindings}
-    refs = {key(reference(change)), *(key(reference(r)) for r in bindings)}
-    refs.update(
+def lifecycle_inputs(records, members):
+    return {
         key(reference(r))
         for r in records.values()
         if (isinstance(r, Run) and run_key(r.ref) in members)
         or (r.kind == "interval" and run_key(r.run) in members)
-    )
+    }
+
+
+def economic_feature_inputs(records, members):
     economics = economic_work_records(records, members)
-    refs.update(key(reference(r)) for r in economics)
+    refs = {key(reference(r)) for r in economics}
     evidence = {key(r.evidence) for r in economics}
     refs.update(
         key(reference(r))
         for r in records.values()
         if isinstance(r, EvidenceBinding) and key(r.evidence) in evidence
     )
+    return refs
+
+
+def feature_inputs(records, change):
+    """References consulted to prove feature timing, including normalized work."""
+    bindings = change_run_bindings(records, change)
+    members = {run_key(binding.run) for binding in bindings}
+    refs = {key(reference(change)), *(key(reference(r)) for r in bindings)}
+    refs.update(lifecycle_inputs(records, members))
+    refs.update(economic_feature_inputs(records, members))
     return refs
 
 
@@ -155,7 +167,14 @@ def input_closure(records, roots):
     return included
 
 
-def estimate(records, change, scope, minimum, cutoff, availability):
+def peer_features_valid(records, candidate, availability):
+    return feature_valid(records, candidate, availability) and all(
+        getattr(candidate.features, field) is not None
+        for field in ("change_shape", "trajectory", "execution_profile")
+    )
+
+
+def evaluate_peers(records, change, scope, availability):
     peers = []
     exclusions = []
     dependencies = feature_inputs(records, change)
@@ -181,22 +200,39 @@ def estimate(records, change, scope, minimum, cutoff, availability):
             )
             continue
         dependencies.update(feature_inputs(records, candidate))
-        if not feature_valid(records, candidate, availability) or any(
-            getattr(candidate.features, field) is None
-            for field in ("change_shape", "trajectory", "execution_profile")
-        ):
+        if not peer_features_valid(records, candidate, availability):
             exclusions.append(
                 QuoteExclusion(
                     reference=reference(candidate), reason="missing_or_late_peer_features"
                 )
             )
-        total = details["subtotals"][0].amount
         peers.append(
             (
                 candidate,
-                QuotePeer(change=reference(candidate), amount=total, inputs=details["inputs"]),
+                QuotePeer(
+                    change=reference(candidate),
+                    amount=details["subtotals"][0].amount,
+                    inputs=details["inputs"],
+                ),
             )
         )
+    return peers, exclusions, dependencies
+
+
+def matching_peers(records, change, peers, fields, valid, availability):
+    if not fields:
+        return [p for _, p in peers]
+    if not valid:
+        return []
+    return [
+        p
+        for c, p in peers
+        if feature_valid(records, c, availability)
+        and all(getattr(c.features, f) == getattr(change.features, f) for f in fields)
+    ]
+
+
+def select_cohort(records, change, peers, minimum, availability):
     evaluations = []
     selected = []
     chosen = "repository"
@@ -205,16 +241,7 @@ def estimate(records, change, scope, minimum, cutoff, availability):
             feature_valid(records, change, availability)
             and all(getattr(change.features, f) is not None for f in fields)
         )
-        matches = [
-            p
-            for c, p in peers
-            if not fields
-            or (
-                valid
-                and feature_valid(records, c, availability)
-                and all(getattr(c.features, f) == getattr(change.features, f) for f in fields)
-            )
-        ]
+        matches = matching_peers(records, change, peers, fields, valid, availability)
         reason = (
             None
             if len(matches) >= minimum
@@ -224,7 +251,12 @@ def estimate(records, change, scope, minimum, cutoff, availability):
         if not selected and len(matches) >= minimum:
             selected = matches
             chosen = level
-    dependencies = input_closure(records, dependencies)
+    return selected, chosen, evaluations
+
+
+def estimate(records, change, scope, minimum, cutoff, availability):
+    peers, exclusions, dependencies = evaluate_peers(records, change, scope, availability)
+    selected, chosen, evaluations = select_cohort(records, change, peers, minimum, availability)
     amounts = sorted((p.amount for p in selected), key=Decimal)
     n = len(amounts)
     quantiles = [amounts[(percent * n + 99) // 100 - 1] if n else None for percent in (50, 90)]
@@ -241,7 +273,8 @@ def estimate(records, change, scope, minimum, cutoff, availability):
         algorithm_version=ALGORITHM,
         cutoff=cutoff,
         inputs=[
-            RecordRef.model_validate(dict(kind=k, record_id=i)) for k, i in sorted(dependencies)
+            RecordRef.model_validate(dict(kind=k, record_id=i))
+            for k, i in sorted(input_closure(records, dependencies))
         ],
         features=change.features,
         estimation=Estimation(
@@ -295,72 +328,84 @@ def compute_quote(
         return result
 
 
+def stored_quote(records, record):
+    ref = record if isinstance(record, RecordRef) else reference(record)
+    stored = records.get(key(ref))
+    if not isinstance(stored, Quote):
+        raise ContractError("unknown Quote")
+    if isinstance(record, Quote) and stored != record:
+        raise ContractError("Quote does not match immutable stored record")
+    return stored, ref
+
+
+def replay_supported(record):
+    return (
+        record.estimation is not None
+        and record.algorithm_version == ALGORITHM
+        and record.estimation.version == "estimation/v1"
+        and record.estimation.policy_version == POLICY
+        and record.estimation.reconciliation_version == RECONCILIATION
+    )
+
+
+def quote_reproduced(connection, records, record):
+    snapshot = snapshot_records(connection, record.cutoff, records)
+    if not all(key(r) in snapshot for r in [record.change, *record.inputs]):
+        return False
+    change = snapshot[key(record.change)]
+    scope = EconomicScope(
+        repository_id=change.repository_id,
+        economic=EconomicIdentity(**record.p50.model_dump(exclude={"amount"})),
+    )
+    result = estimate(
+        snapshot,
+        change,
+        scope,
+        record.estimation.minimum,
+        record.cutoff,
+        local_availability(connection),
+    )
+    excluded = {"record_id", "recorded_at", "effective_at", "origin_store_id"}
+    return result.model_dump(exclude=excluded) == record.model_dump(exclude=excluded)
+
+
+def quote_explanation(record, ref, store_id, observation, local, reproduced):
+    return dict(
+        record=record.model_dump(mode="json", by_alias=True),
+        revisions=[],
+        availability=[
+            dict(
+                reference=ref.model_dump(),
+                store_id=store_id,
+                available_at=observation[0],
+                sequence=observation[1],
+            )
+        ],
+        provenance_status="producer_assertion; provider_support_not_verified",
+        local_computation=local,
+        replay_eligibility="inputs_available" if reproduced else "replay_unavailable",
+        economic_validation="reproduced" if reproduced else "not_computed",
+        replay_reason=None
+        if reproduced
+        else "unsupported_or_unavailable_inputs_or_result_mismatch",
+    )
+
+
 def inspect_quote(store: Store, record: Quote | RecordRef):
     with closing(store.connect(readonly=True)) as connection:
         connection.execute("BEGIN")
         records = read_records(connection)
-        ref = record if isinstance(record, RecordRef) else reference(record)
-        stored = records.get(key(ref))
-        if not isinstance(stored, Quote):
-            raise ContractError("unknown Quote")
-        if isinstance(record, Quote) and stored != record:
-            raise ContractError("Quote does not match immutable stored record")
-        record = stored
+        record, ref = stored_quote(records, record)
         local = key(reference(record)) in computation_refs(connection, records)
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
-        supported = (
-            record.estimation is not None
-            and record.algorithm_version == ALGORITHM
-            and record.estimation.version == "estimation/v1"
-            and record.estimation.policy_version == POLICY
-            and record.estimation.reconciliation_version == RECONCILIATION
-        )
         eligible = (
-            supported
+            replay_supported(record)
             and record.cutoff.store_id == store_id
             and record.cutoff.sequence <= sequence
             and record.cutoff.at <= timestamp(store.clock())
         )
-        reproduced = False
-        if eligible and record.estimation is not None:
-            snapshot = snapshot_records(connection, record.cutoff, records)
-            if all(key(r) in snapshot for r in [record.change, *record.inputs]):
-                change = snapshot[key(record.change)]
-                scope = EconomicScope(
-                    repository_id=change.repository_id,
-                    economic=EconomicIdentity(**record.p50.model_dump(exclude={"amount"})),
-                )
-                result = estimate(
-                    snapshot,
-                    change,
-                    scope,
-                    record.estimation.minimum,
-                    record.cutoff,
-                    local_availability(connection),
-                )
-                excluded = {"record_id", "recorded_at", "effective_at", "origin_store_id"}
-                reproduced = result.model_dump(exclude=excluded) == record.model_dump(
-                    exclude=excluded
-                )
+        reproduced = eligible and quote_reproduced(connection, records, record)
         observation = connection.execute(
             "SELECT available_at,sequence FROM records WHERE kind=? AND id=?", key(ref)
         ).fetchone()
-        return dict(
-            record=record.model_dump(mode="json", by_alias=True),
-            revisions=[],
-            availability=[
-                dict(
-                    reference=ref.model_dump(),
-                    store_id=store_id,
-                    available_at=observation[0],
-                    sequence=observation[1],
-                )
-            ],
-            provenance_status="producer_assertion; provider_support_not_verified",
-            local_computation=local,
-            replay_eligibility="inputs_available" if reproduced else "replay_unavailable",
-            economic_validation="reproduced" if reproduced else "not_computed",
-            replay_reason=None
-            if reproduced
-            else "unsupported_or_unavailable_inputs_or_result_mismatch",
-        )
+        return quote_explanation(record, ref, store_id, observation, local, reproduced)

@@ -310,30 +310,36 @@ class Quote(Record):
             raise ValueError("unpriced quote requires null quantiles and reason")
         return self
 
+    def estimation_peer_refs(self, metadata: Estimation) -> set[tuple[str, str]]:
+        peer_refs = [(p.change.kind, p.change.record_id) for p in metadata.peers]
+        if len(set(peer_refs)) != len(peer_refs) or any(
+            p.change.kind != "change" or p.amount is None for p in metadata.peers
+        ):
+            raise ValueError("invalid Quote peers")
+        return set(peer_refs)
+
+    def validate_estimation_references(self, metadata: Estimation) -> None:
+        refs = {(r.kind, r.record_id) for r in self.inputs}
+        referenced = self.estimation_peer_refs(metadata) | {
+            (r.kind, r.record_id) for p in metadata.peers for r in p.inputs
+        }
+        referenced.update((e.reference.kind, e.reference.record_id) for e in metadata.exclusions)
+        if not referenced <= refs:
+            raise ValueError("Quote metadata references missing inputs")
+
+    def validate_estimation_samples(self, metadata: Estimation) -> None:
+        if self.sample_count != len(metadata.peers) or (
+            self.state == "priced" and self.sample_count < metadata.minimum
+        ):
+            raise ValueError("Quote sample count inconsistent")
+        if self.state == "unpriced" and metadata.peers:
+            raise ValueError("unpriced Quote has selected peers")
+
     @model_validator(mode="after")
     def estimation_inputs(self) -> Self:
         if self.estimation is not None:
-            metadata = self.estimation
-            refs = {(r.kind, r.record_id) for r in self.inputs}
-            peer_refs = [(p.change.kind, p.change.record_id) for p in metadata.peers]
-            if len(set(peer_refs)) != len(peer_refs) or any(
-                p.change.kind != "change" or p.amount is None for p in metadata.peers
-            ):
-                raise ValueError("invalid Quote peers")
-            referenced = set(peer_refs) | {
-                (r.kind, r.record_id) for p in metadata.peers for r in p.inputs
-            }
-            referenced.update(
-                (e.reference.kind, e.reference.record_id) for e in metadata.exclusions
-            )
-            if not referenced <= refs:
-                raise ValueError("Quote metadata references missing inputs")
-            if self.sample_count != len(metadata.peers) or (
-                self.state == "priced" and self.sample_count < metadata.minimum
-            ):
-                raise ValueError("Quote sample count inconsistent")
-            if self.state == "unpriced" and metadata.peers:
-                raise ValueError("unpriced Quote has selected peers")
+            self.validate_estimation_references(self.estimation)
+            self.validate_estimation_samples(self.estimation)
         return self
 
 

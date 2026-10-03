@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Simplify Quote metadata validation, peer/cohort selection and historical replay
+  helpers to satisfy native maintainability rules without changing estimator behavior.
+  Split installed offline CLI fixtures into focused stages while retaining retry and
+  replay proofs.
+
 - Implement offline empirical Quotes with exact nearest-rank quantiles, supported
   complete synthetic peers, pre-run feature backoff and immutable historical replay.
   Add compatible optional provenance metadata, atomic cross-kind operation retries

@@ -263,10 +263,7 @@ class CliContract(unittest.TestCase):
         self.assertFalse(imported["local_computation"])
         self.assertEqual(imported["replay_eligibility"], "replay_unavailable")
 
-    def prove_quote_roundtrip(self, invoke, work):
-        """Use only the installed public CLI and synthetic portable coverage."""
-        import json
-
+    def quote_lifecycle_fixture(self, invoke):
         for change in ("quote-target", "quote-peer"):
             invoke(
                 "quote.sqlite",
@@ -311,6 +308,11 @@ class CliContract(unittest.TestCase):
             "--outcome",
             "accepted",
         )
+        return (run, start, end), selectors
+
+    def quote_economics_fixture(self, invoke, work, selectors, start):
+        import json
+
         economic = dict(economic_kind="monetary", unit="USD", currency="USD", basis="billed")
         event = dict(
             source=dict(
@@ -347,6 +349,14 @@ class CliContract(unittest.TestCase):
         )
         evidence = imported["evidence_ids"][0]
         invoke("quote.sqlite", "bind", *selectors, "--evidence-id", evidence)
+        return evidence, economic
+
+    def quote_coverage_fixture(self, invoke, work, lifecycle, economics):
+        import json
+
+        run, start, end = lifecycle
+        evidence, economic = economics
+
         snapshot_path = work / "quote-inputs.json"
         invoke("quote.sqlite", "explain", "--export-artifact", str(snapshot_path))
         source = json.loads(snapshot_path.read_text())["source"]
@@ -375,6 +385,10 @@ class CliContract(unittest.TestCase):
             json.dumps(dict(schema="changecost/v1", source=source, records=[coverage]))
         )
         invoke("quote.sqlite", "bind", "--import-artifact", str(coverage_path))
+
+    def assert_quote_roundtrip(self, invoke):
+        import json
+
         args = [
             "quote",
             "--repository-id",
@@ -409,6 +423,13 @@ class CliContract(unittest.TestCase):
         )
         self.assertTrue(explanation["local_computation"])
         self.assertEqual(explanation["economic_validation"], "reproduced")
+
+    def prove_quote_roundtrip(self, invoke, work):
+        """Use only the installed public CLI and synthetic portable coverage."""
+        lifecycle, selectors = self.quote_lifecycle_fixture(invoke)
+        economics = self.quote_economics_fixture(invoke, work, selectors, lifecycle[1])
+        self.quote_coverage_fixture(invoke, work, lifecycle, economics)
+        self.assert_quote_roundtrip(invoke)
 
 
 if __name__ == "__main__":
