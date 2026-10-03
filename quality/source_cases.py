@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 
 from quality.source_inspection import EvidenceError
@@ -121,6 +122,8 @@ def _replacement(rows):
     for row in rows:
         key = (row.get("event_id"), _integer(row.get("revision")))
         _decimal(row.get("amount"))
+        if "replaces_revision" in row:
+            _integer(row["replaces_revision"])
         if key in revisions and revisions[key] != row:
             valid = False
         revisions[key] = row
@@ -151,25 +154,43 @@ def _snapshot(rows):
     }
 
 
-def _cumulative(rows):
-    keys = {
-        (r.get("metric"), r.get("unit"), r.get("temporality"), r.get("interval_start"))
-        for r in rows
-    }
-    ends = {}
-    bound = all(r.get("metric") and r.get("interval_start") and r.get("interval_end") for r in rows)
-    valid = (
-        bound
-        and len(keys) == 1
-        and all(r.get("temporality") == "cumulative" and r.get("unit") == "USD" for r in rows)
-    )
-    for row in sorted(rows, key=lambda r: r.get("interval_end", "")):
+def _instant(value):
+    if not isinstance(value, str) or "T" not in value:
+        return None
+    try:
+        instant = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return instant.astimezone(UTC) if instant.tzinfo is not None else None
+    except ValueError:
+        return None
+
+
+def _cumulative_points(rows):
+    points = []
+    for row in rows:
         value = _decimal(row.get("value"))
-        end = row.get("interval_end")
+        start, end = _instant(row.get("interval_start")), _instant(row.get("interval_end"))
+        if start is None or end is None or end < start or not row.get("metric"):
+            return None
+        points.append((start, end, value, row))
+    return points
+
+
+def _cumulative(rows):
+    points = _cumulative_points(rows)
+    if points is None:
+        return {"estimate_amount": None, "currency": rows[-1].get("unit"), "attribution": "unbound"}
+    keys = {
+        (r.get("metric"), r.get("unit"), r.get("temporality"), start) for start, _, _, r in points
+    }
+    valid = len(keys) == 1 and all(
+        r.get("temporality") == "cumulative" and r.get("unit") == "USD" for r in rows
+    )
+    ends = {}
+    for _, end, value, _ in sorted(points, key=lambda p: p[1]):
         if end in ends and ends[end] != value or ends and value < max(ends.values()):
             valid = False
         ends[end] = value
-    latest = max(rows, key=lambda r: r.get("interval_end", ""))
+    latest = max(points, key=lambda p: p[1])[3]
     return {
         "estimate_amount": latest["value"] if valid else None,
         "currency": latest.get("unit"),
@@ -249,7 +270,7 @@ def _checkpoint_conflicts(rows, scope):
         amounts[identity] = amount
     if conflict:
         return True
-    return None if unresolved else False
+    return None if unresolved or not amounts else False
 
 
 def _hosted(rows, sample):

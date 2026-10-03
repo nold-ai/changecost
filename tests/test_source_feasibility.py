@@ -507,3 +507,85 @@ def test_enterprise_derivative_hash_provenance():
             if evidence["sha256"] == digest:
                 assert evidence["origin"] == "synthetic"
     assert {"codex-ide", "claude-ide"} <= {p["id"] for p in data["profiles"]}
+
+
+@pytest.mark.parametrize("replacement", [True, False, "1", 1.0, -1])
+def test_replacement_reference_requires_exact_integer(replacement):
+    sample = case("correction")
+    for row in sample["records"]:
+        if "replaces_revision" in row:
+            row["replaces_revision"] = replacement
+    with pytest.raises(EvidenceError):
+        evaluate_case(sample, "replacement")
+    assert evaluate_case(case("correction"), "replacement")["current_amount"] == "0.03"
+
+
+@pytest.mark.parametrize(
+    "start,end",
+    [
+        ("bad", "also bad"),
+        ("2000-01-01", "2000-01-02"),
+        ("2000-01-01T00:00:00", "2000-01-01T00:01:00"),
+        ("2000-01-01T00:02:00Z", "2000-01-01T00:01:00Z"),
+        (None, "2000-01-01T00:01:00Z"),
+    ],
+)
+def test_invalid_cumulative_interval_is_unresolved(start, end):
+    sample = case("claude-estimated-cost")
+    for row in sample["records"]:
+        row["interval_start"], row["interval_end"] = start, end
+    assert evaluate_case(sample, "cumulative")["estimate_amount"] is None
+    assert evaluate_case(case("claude-estimated-cost"), "cumulative")["estimate_amount"] == "0.03"
+
+
+def test_cumulative_offset_instants_and_normalized_duplicate_ends():
+    sample = case("claude-estimated-cost")
+    first = copy.deepcopy(sample["records"][0])
+    first.update(
+        interval_start="2000-01-01T00:00:00Z",
+        interval_end="2000-01-01T02:01:00+02:00",
+        value="0.01",
+    )
+    second = copy.deepcopy(first)
+    second.update(
+        interval_start="1999-12-31T19:00:00-05:00",
+        interval_end="2000-01-01T00:02:00Z",
+        value="0.03",
+    )
+    sample["records"] = [second, first, copy.deepcopy(second)]
+    assert evaluate_case(sample, "cumulative")["estimate_amount"] == "0.03"
+    conflict = copy.deepcopy(second)
+    conflict.update(interval_end="2000-01-01T02:02:00+02:00", value="0.04")
+    sample["records"].append(conflict)
+    assert evaluate_case(sample, "cumulative")["estimate_amount"] is None
+
+
+@pytest.mark.parametrize("mode", ["absent", "missing", "null"])
+def test_absent_or_missing_checkpoint_quantity_is_unresolved(mode):
+    sample = case("copilot-hosted-usage-boundaries")
+    checkpoint = next(r for r in sample["records"] if r.get("type") == "session.usage_checkpoint")
+    if mode == "absent":
+        sample["records"] = [
+            r for r in sample["records"] if r.get("type") != "session.usage_checkpoint"
+        ]
+    elif mode == "missing":
+        checkpoint["data"].pop("totalNanoAiu")
+    else:
+        checkpoint["data"]["totalNanoAiu"] = None
+    result = evaluate_case(sample, "hosted")
+    assert result["checkpoint_conflict"] is None
+    assert result["final_session_nano_aiu"] is None
+    assert result["approved_profile"] is False
+
+
+def test_known_checkpoint_conflict_precedes_incomplete_evidence():
+    sample = case("copilot-hosted-usage-boundaries")
+    checkpoint = next(r for r in sample["records"] if r.get("type") == "session.usage_checkpoint")
+    incomplete = copy.deepcopy(checkpoint)
+    incomplete.pop("id")
+    conflict = copy.deepcopy(checkpoint)
+    conflict["data"]["totalNanoAiu"] += 1
+    sample["records"].extend([incomplete, conflict])
+    assert evaluate_case(sample, "hosted")["checkpoint_conflict"] is True
+    sample["records"].pop()
+    assert evaluate_case(sample, "hosted")["checkpoint_conflict"] is None

@@ -199,3 +199,15 @@ changing the evaluator to fit an expected result.
 - **WHEN** totals change across distinct event identities or repeat identically under one identity
 - **THEN** those checkpoints do not establish a conflict; different totals under the same session/event identity do establish a conflict, and missing identity leaves the conflict assessment unresolved.
 - **AND** totals remain non-additive and final session consumption remains unknown. Synthetic per-record scope metadata is distinct from native wire fields and cannot establish provider support.
+
+#### Scenario: Invalid replacement revision or cumulative interval
+
+- **GIVEN** a boolean/noninteger replacement revision or malformed, timezone-free, reversed cumulative interval
+- **WHEN** synthetic conclusions are computed
+- **THEN** invalid revision types reject safely and invalid intervals leave the estimate unresolved; valid offset timestamps are ordered by their UTC instants, with normalized starts and conflicting equal endpoints handled explicitly.
+
+#### Scenario: Absent checkpoint evidence and conflict precedence
+
+- **GIVEN** no checkpoint records, or a checkpoint missing its amount or namespaced identity
+- **WHEN** checkpoint conflicts are assessed
+- **THEN** absence or incomplete evidence leaves the conclusion unresolved unless a demonstrated same-session/event amount conflict exists; finality remains unknown and totals remain non-additive.

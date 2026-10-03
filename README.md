@@ -181,3 +181,6 @@ CLI controls exercise safe private-manifest reports, changed-hash rejection and
 matrix drift/repair; structural success does not approve native provider profiles.
 Checkpoint controls distinguish cumulative progress/replay from conflicts within
 one SDK session/event identity and leave finality unknown.
+
+Source evidence detector controls reject boolean replacement revisions, normalize
+cumulative interval timestamps to UTC, and leave absent checkpoints unresolved.

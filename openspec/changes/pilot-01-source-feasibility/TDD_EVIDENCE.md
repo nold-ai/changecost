@@ -163,3 +163,25 @@ The later tracking-only correction changes no verified Python behavior. Scoped f
 docs/index/hygiene/metadata/staged checks and independent tracking closure are required
 for its recaptured binding. Full native Linux/provider results remain pending until
 current-head remote assurance completes. See ignored closure receipts for full logs.
+
+
+### Current-head provider semantic corrections (batch 5) — 2026-10-03
+
+Codex review 5402728822 at dc2641ce4ce39b222720cc51b85a69fd1553582c
+reported boolean replacement references, unparsed cumulative interval strings and
+absent checkpoints incorrectly certifying conclusions. All three reproduced against
+the unchanged historical fixture expectations. Specification scenarios preceded
+15 controls: actual red was 11 failed / 4 passed; after minimum detector fixes all
+119 source tests pass. Faulty/repaired controls preserve original fixture bytes.
+UTC-offset ordering/equal endpoint conflicts, reversed/naive/malformed bounds, missing
+quantity and known-conflict precedence are covered. The first checkpoint-family escape
+was investigated across absence, incomplete identity/amount, replay/progression and
+conflict precedence; any further genuine escape requires replanning.
+
+The prior corrected-head Linux run 37152662363 passed both matrices, 1,251 tests,
+strict OpenSpec 11/11 and all ten required native analyzers. It is now historical
+mechanical evidence, not acceptance of the next head. CodeRabbit completed full dc264
+review with no actionable comments; Codex's three findings remain pending verified
+closure. Final scoped/staged checks, independent affected closure and fresh Linux plus
+provider evidence are required for this correction. No approval/finality expansion,
+quality thresholds/exclusions or original fixture changes were made.

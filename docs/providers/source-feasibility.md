@@ -287,3 +287,13 @@ low in uninspected profile semantics. Different versions, tiers, receiver mappin
 export intervals could change findings. No paid infrastructure is used. Remaining
 inspection duration depends on supplied artifacts. Rollback reverts code/docs while
 preserving original evidence, stash recovery and truthful issue state.
+
+### Reviewed detector boundary corrections — 2026-10-03
+
+Replacement references use exact nonnegative integer types, excluding boolean values.
+Cumulative estimates require parseable timezone-aware timestamps with ordered bounds;
+comparison uses UTC instants, including equivalent start/end offsets and replay conflicts.
+Missing or invalid intervals remain unresolved. No checkpoint records or incomplete
+checkpoint identity/amount remain unresolved unless a known same-session/event conflict
+is demonstrated. These are synthetic detector controls; final usage and provider
+approval remain unverified.

@@ -1,5 +1,9 @@
 # Changelog
 
+- Correct synthetic replacement-reference types, cumulative chronological interval
+  validation and absent checkpoint uncertainty after current-head Codex findings.
+
+
 ## Unreleased
 
 - Added development-only bounded source inspection, independently computed research cases, a canonical versioned profile register and derived matrix; kept source approval and #9 open for missing native evidence.
