@@ -3,9 +3,9 @@
 ## Context
 
 See [proposal](proposal.md) and [capability spec](specs/source-feasibility/spec.md).
-The current repository contains documentation and hygiene gates, with no product
-package or runtime. Research implementation is authorized; observed provider support
-remains unverified. See the [assessment](../../../docs/providers/source-feasibility.md).
+The Python foundation, contracts, normalized settlement and empirical Quotes are
+delivered in PRs #22/#25/#28/#32. Source-feasibility closeout was authorized on
+2026-10-03; provider support remains unverified until native evidence is inspected. See the [assessment](../../../docs/providers/source-feasibility.md).
 
 ## Goals / Non-Goals
 
@@ -85,3 +85,40 @@ rollback is a commit revert plus closing the associated issue, preserving histor
 Each requirement has Given/When/Then scenarios. Exercise negative paths and privacy
 boundaries alongside the success cases. Run strict OpenSpec validation and applicable
 repository gates; record actual results, not anticipated test or review outcomes.
+
+## Authorized closeout — 2026-10-03 (Europe/Berlin)
+
+Maintain one versioned profile register at `docs/providers/source-profiles.json`.
+Each profile names its provider/surface, version/tier, acquisition route, primary
+citations/access dates, opaque evidence references/hashes, per-capability disposition,
+field semantics and specific unresolved requirements. Derived compact Markdown is
+checked against this register; specialist reports preserve dated interpretation.
+
+Add development-only `quality.source_feasibility` tooling and independent semantic
+case evaluation under the existing pytest suite. Use existing dependencies only.
+The command validates the register/fixture bundle and accepts an optional ignored
+local evidence manifest with explicit profile, format, file, SHA-256, provenance
+and allowlisted field paths. JSON/JSONL/CSV reads are bounded to 10 MiB/file,
+10,000 records and depth 32; invalid UTF-8, duplicate members/headers, symlinks,
+unknown profiles/formats and non-finite values fail with safe location-only codes.
+Reports retain opaque evidence IDs, hashes, counts and value types, not payloads,
+identifiers, raw paths, column names, arbitrary field names or exception text.
+Inspection cannot establish semantic finality or automatically approve a profile.
+
+Historical synthetic case inputs are evaluated independently from declared expected
+results. Preserve exact Decimal arithmetic and separate unknown/zero, economic
+units, cumulative/replacement evidence and identity scopes. Detector controls
+mutate inputs or expected claims and must fail before passing when repaired.
+
+Registry approvals require independently reviewed native evidence for the named
+capability. Synthetic, reported, documentation-only and historical partial evidence
+cannot supply approval. Even a valid native shape/manifest is only structural
+evidence; the named human review must confirm version, authority, accounting
+interval, replay/reset/correction semantics and declared exclusions. No provider
+policy, adapter, public command, portable schema or database migration is added.
+
+The selected completion rule requires verified intended Copilot/Cursor profiles.
+Missing exports/finality or custom-hook input/output leave tasks and #9 open;
+complete tooling and documents may be delivered while those evidence gates remain
+blocked. Reopen #9/Todo for preparation and use In Progress during implementation.
+Preserve historical PR #21 acceptance and native parent/dependency relationships.

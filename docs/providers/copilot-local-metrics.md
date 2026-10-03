@@ -96,3 +96,10 @@ change the conclusion. Failure modes are counting overlapping totals, conflating
 host/SDK IDs and treating partial counters as final; the fixture preserves all
 three distinctions. No inference cost was incurred. Rollback removes the research
 diff; source files, databases and account settings are unchanged.
+
+
+## Closeout assessment (2026-10-03)
+
+Read-only reinspection of the same authorized source on 2026-10-03 found 367 persisted events and changed raw bytes. The selected checkpoint and turn-usage projections remained unchanged. The current event digest is in the profile register; old receipts remain private and preserved. Host and SDK identities remain distinct. No CLI/IDE native export, authoritative accounting interval, cache inclusion, reset/correction policy or terminal completeness was established. SDK documentation was rechecked on 2026-10-03; interface descriptions do not approve this installed version.
+
+See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Added development-only bounded source inspection, independently computed research cases, a canonical versioned profile register and derived matrix; kept source approval and #9 open for missing native evidence.
+
+- Prepare the authorized source-feasibility closeout with verified-profile completion,
+  a canonical register, bounded offline evidence inspection and executable research
+  conclusions. Preserve missing native evidence gates and the existing runtime policy.
+
 - Require Quote features to precede every visible lifecycle start and end,
   including end-only Interval revisions and retries. Preserve equality, valid
   historical cutoffs and immutable inspection of prior invalid narrow claims.

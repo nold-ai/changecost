@@ -175,3 +175,5 @@ lifecycle controls and content-bound delta review. Final required gates remain m
 Quote #15 runtime implementation was authorized on 2026-10-03. This checkout adds
 offline synthetic empirical estimation and historical replay; verification/publication
 remain tracked in the active change evidence. No provider collection is authorized.
+
+Source feasibility now includes [offline development evidence checks](docs/providers/source-feasibility.md#executable-closeout-checks-2026-10-03). Issue #9 remains open for native profile approval; adapters remain separate planned changes.

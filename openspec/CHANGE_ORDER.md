@@ -1,9 +1,9 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-10-02**.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-10-03**.
 The Python foundation and supplemental bounded-review workflow are delivered and
 archived. Source-feasibility research is partly implemented; its remaining inspection
-tasks keep it active despite closed #9. Core-02 (#11) merged in PR #25 and is
+tasks keep it active with #9 reopened and In Progress. Core-02 (#11) merged in PR #25 and is
 archived with synchronized main specs. Settlement reconciliation merged in PR #28
 on 2026-10-02 and is accepted/archived with synchronized main specs. Provider
 implementation and live collection require a subsequent request.
@@ -96,7 +96,8 @@ Codex and Claude Code CLI/IDE/app metrics and authorized inspection of existing
 local artifacts. [The report](../docs/providers/source-feasibility.md) records
 partial Codex/Claude observations and pending Copilot/Cursor export inspection.
 PR [#21](https://github.com/nold-ai/changecost/pull/21) merged on 2026-09-28 and
-GitHub issue #9 is now closed. Tasks 2.1/2.2 still record incomplete source inspection;
+GitHub issue #9 was closed after that partial research, then reopened on 2026-10-03
+for the authorized verified-profile closeout. Tasks 2.1/2.2 still record incomplete source inspection;
 issue closure does not establish provider compatibility or waive those evidence gates.
 This research adds no adapter story or dependency edge.
 New Codex/Claude adapters need their own subsequent scope and implementation request.
@@ -138,18 +139,16 @@ archived the change. Readback preserved all 17 requirement bodies, 55 scenarios,
 the 18 prior contract requirements and metadata. The CLI collapses an extra blank
 line; no requirement or scenario content changed.
 
-Seven active changes remain: six pilot product changes and the separate behavioral
-evidence workflow. Next in the approved product order is **provider-01-copilot-import
-(#13)**, then **provider-02-cursor-import (#14)**. Settlement is delivered, but both
-adapters still require inspected, feasibility-approved source profiles; closed #9
-does not waive that gate. **quote-01-empirical-estimation (#15)** depends only on
-settlement and can be prepared using synthetic evidence if provider inspection is
-unavailable. No provider parser, live collection or quote algorithm is delivered
-by settlement. New implementation still requires a subsequent request.
-Quotes #15 were locally prepared on 2026-10-03 against the delivered synthetic
-coverage boundary; [preparation evidence](changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md)
-records the current contract reconciliation. Selected delivery is a scoped stash,
-not a published plan or runtime implementation. Native prerequisites remain unchanged.
+The selected next work is **pilot-01-source-feasibility (#9)**: the maintainer
+reopened it on 2026-10-03 for verified native profiles and executable closeout
+checks. Provider **#13**, then **#14**, retain their approved dependency order;
+#9 remains open until inspected source profiles pass the evidence gate.
+Settlement is delivered. Quotes **#15** were prepared earlier on 2026-10-03 and
+subsequently implemented and merged in [PR #32](https://github.com/nold-ai/changecost/pull/32).
+Its separately authorized unpublished archival work is preserved outside this
+feasibility closeout. Neither synthetic Quote coverage nor settlement acceptance
+approves provider imports or live collection. Provider implementation still
+requires a subsequent request.
 See the [historical settlement preparation evidence](changes/archive/2026-10-02-settlement-01-reconciliation/PREPARATION_EVIDENCE.md)
 and [accepted implementation evidence](changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md). All pilot changes
 remain the first unreleased 0.x product; no public v2 compatibility programme is
@@ -192,6 +191,8 @@ including `token-economics`. Runtime tests and product review are not planning e
 Rollback: revert the planning commit and close abandoned issues/project while preserving
 history. No installed package, collected data or deployed infrastructure is changed.
 
-Quote #15 implementation was authorized on 2026-10-03. This checkout implements the
-synthetic-only estimator; active tasks/evidence track verification and publication.
+Quote #15 implementation was authorized and merged in PR #32 on 2026-10-03.
+The synthetic-only estimator is delivered; its archival work is separate.
 Provider approval and live calibration remain separate gates.
+
+Source feasibility #9 was reopened on 2026-10-03 for verified native profiles and executable closeout evidence. Historical PR #21 delivered partial research; it did not approve provider imports. Provider #13/#14 retain their native #9 dependency.

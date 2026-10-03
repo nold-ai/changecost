@@ -163,5 +163,10 @@
     "title": "Empirical Quotes",
     "path": "docs/quotes.md",
     "description": "Offline synthetic peer estimation, exact quantiles, feature backoff and historical replay."
+  },
+  {
+    "title": "Source profile register",
+    "path": "docs/providers/source-profiles.json",
+    "description": "Canonical per-version capabilities, digest references and unresolved native evidence."
   }
 ]

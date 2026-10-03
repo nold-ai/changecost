@@ -307,7 +307,10 @@
       "path": "docs/providers/source-feasibility.md",
       "owner": "source-research",
       "sources": [
-        "docs/providers/source-feasibility.md"
+        "docs/providers/source-feasibility.md",
+        "quality/source_*.py",
+        "tests/test_source_feasibility.py",
+        "docs/providers/source-profiles.json"
       ],
       "kind": "manual"
     },
@@ -912,6 +915,16 @@
       "owner": "empirical-quotes",
       "sources": [
         "openspec/changes/quote-01-empirical-estimation/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-01-source-feasibility/TDD_EVIDENCE.md",
+      "owner": "source-research",
+      "sources": [
+        "quality/source_*.py",
+        "tests/test_source_feasibility.py",
+        "docs/providers/source-profiles.json"
       ],
       "kind": "manual"
     }

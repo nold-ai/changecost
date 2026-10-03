@@ -1,0 +1,657 @@
+{
+  "format": "source-profiles/v1",
+  "assessment_date": "2026-10-03",
+  "notice": "Contributor-reviewed metadata register. Hashes identify received bytes, not authenticity. No approved capabilities.",
+  "profiles": [
+    {
+      "id": "copilot-hosted",
+      "provider": "Copilot",
+      "surface": "VS Code agent host",
+      "version": "VS Code 1.139.1; Chat 0.67.0; SDK 1.0.73; recorded 0.0.0",
+      "tier": "historical Personal Free (maintainer-confirmed)",
+      "acquisition": "Selected authorized existing host log and SDK event store; read-only reinspection 2026-10-03",
+      "evidence": [
+        {
+          "id": "copilot-hosted-e01",
+          "origin": "native",
+          "sha256": "f16ed268de56316932905e5e8d770596dac8751ea42470f8aadee7e5825012a7",
+          "scope": "Selected native event-store bytes at reinspection; coverage not complete"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "host_session_id": "Host namespace; explicit host log link to SDK namespace",
+        "assistant.usage": "Documented ephemeral per-call usage; absent event is unknown",
+        "session.usage_checkpoint": "Durable accumulated checkpoint, not demonstrated final settlement",
+        "turnTokenTotals": "Overlaps directTurnTokenTotals; do not add"
+      },
+      "requirements": [
+        "Demonstrate authority, duplicate identity, accounting interval, reset/correction behavior, cache inclusion and terminal completeness",
+        "Native CLI/IDE evidence is separate; no approval from hosted metadata"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "copilot-cli",
+      "provider": "Copilot",
+      "surface": "Native CLI file export",
+      "version": "uninspected",
+      "tier": "personal tier unverified",
+      "acquisition": "Existing authorized OTel JSONL only; do not enable collection",
+      "evidence": [
+        {
+          "id": "copilot-cli-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "github.copilot.nano_aiu": "Documented nano AIU; repeated root/child values cannot be blindly summed",
+        "github.copilot.cost": "Multiplier; not billed currency"
+      },
+      "requirements": [
+        "Native export with CLI version, tier, root/child identities, replay and interval/finality evidence"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "copilot-ide",
+      "provider": "Copilot",
+      "surface": "Native VS Code OTel export",
+      "version": "uninspected",
+      "tier": "personal tier unverified",
+      "acquisition": "Existing authorized IDE file export only",
+      "evidence": [
+        {
+          "id": "copilot-ide-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "session.id": "Documented editor/window scope; conversation binding unverified"
+      },
+      "requirements": [
+        "Native export with editor/extension versions, agent harness, tier, stable conversation identity and overlap/finality evidence"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "cursor-local",
+      "provider": "Cursor",
+      "surface": "macOS local store",
+      "version": "3.22.7; internal _v 18",
+      "tier": "historical Basic (maintainer-reported)",
+      "acquisition": "Selected existing local database; read-only reinspection 2026-10-03",
+      "evidence": [
+        {
+          "id": "cursor-local-e01",
+          "sha256": "3a672ecf15b5641fb8003db17475a0bc4715ad4d98b4764bf7611e32a167b03d",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e02",
+          "sha256": "89e4b199b0a2d624f0157aa3c134e9a12166c7a44e20dccb9aaf348566cdd175",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e03",
+          "sha256": "7b4c265538b59abcdecc38362c96009cf4ece501ad7a5ba28c6d7836ec6573bb",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e04",
+          "sha256": "a71e56627a35804e22d1e359e180f08c98dbe9c627e744eb8399f096ed3a3f4f",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e05",
+          "sha256": "d06ed94b301a94779fb78a58f798839d1732aae6c1b0f0bafa758e2255246ce8",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e06",
+          "sha256": "3a32c4a82226d7c4af6ee30d185830cddfca447456c4be83713fe3bac28a62d1",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e07",
+          "sha256": "0cbb724cb76d24bb94a576dddd29fbfdd7ea52ee97e8a12f1f0552f3eff67ef1",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e08",
+          "sha256": "b952a3c4edd215ad5e900b84f517e4910218e55a088e52093d37e0b02702dfaf",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e09",
+          "sha256": "476e329a6d43ee287ff2ca66b26f922744da95e7754f4495653f630e5387cf4c",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e10",
+          "sha256": "4c664ea132068f2158549fe66530b5ce26329086baef427529d4ec7ad4c48a92",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e11",
+          "sha256": "6855c465827e47af35c56811875aa6dfcac7ade7818f7c225f499089f9a88848",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e12",
+          "sha256": "4a0426aecfa2244730e2da1738fde1896313fcd0101aa505fdbf43a2d293f19f",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e13",
+          "sha256": "cf2df8d07e9a472a33e1bf18cb7fa040593340e84b7fbf8e689adbd78af41cb2",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e14",
+          "sha256": "b6f592f6b735b1a77076eb0d59297a1082595177cded23a49a2a39fdc8f575c2",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e15",
+          "sha256": "4cae4c9dad17a2f102a8e96ccdb547353d5cf23c6fab4b2c193f4ae8f2220da5",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e16",
+          "sha256": "135ad5ef629e162ce67ac8232290e07dad44f3085c8d3f8f61927ca233946714",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e17",
+          "sha256": "660589720bf7fb5f3eff3ca923ca693f371ab1be817e299fc82969f348e2ba71",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e18",
+          "sha256": "62d905a0d81dbcc7b436fa358e2fb740e19bc96dbfabdf3240e4ac18aca2459c",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e19",
+          "sha256": "a80fcd9535fee7619e2b3453db438ad006c71a44eeb59aa1ecb84d28dc135a3b",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e20",
+          "sha256": "54d09005df0331c8072b0e5de5e05125a44b0a09d10910886fa86f922af1ab0e",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e21",
+          "sha256": "4dbde5f8ab2335e2de0a36b495e51afab5e7ed19e3d4f7de78ab0b20291e6799",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e22",
+          "sha256": "5dbfb9d176781d9614e6b3120fbf7a12d6bd3f28cff6dbc332dc93ca441e33e3",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        },
+        {
+          "id": "cursor-local-e23",
+          "sha256": "f1e2341cd991ad7b77ebdd13ef58176e28b8ed392c6618893a900967602e006a",
+          "origin": "native",
+          "scope": "Selected native JSON database-column bytes; per-record digest, not whole database"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "contextTokensUsed": "Context occupancy, not consumption",
+        "usageData": "Empty in selected observations; unknown consumption",
+        "tokenCount": "Zero bubble counters observed; not demonstrated final billable usage"
+      },
+      "requirements": [
+        "Personal CSV remains uninspected",
+        "Local identity/context findings do not prove accounting authority or finality"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://prod.cursor.com/help/models-and-usage/usage-limits",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "cursor-personal-csv",
+      "provider": "Cursor",
+      "surface": "Personal usage CSV",
+      "version": "uninspected",
+      "tier": "personal tier unverified",
+      "acquisition": "Existing personal Usage export; exact UI/export route uninspected",
+      "evidence": [
+        {
+          "id": "cursor-personal-csv-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {},
+      "requirements": [
+        "Actual CSV with exact headers, app/export version, tier, range and timezone",
+        "Demonstrate included usage versus estimates versus billed charges; stable row identity, overlap and corrections"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://prod.cursor.com/help/models-and-usage/usage-limits",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "codex-app-server",
+      "provider": "Codex",
+      "surface": "Documented app-server interface",
+      "version": "0.139.0",
+      "tier": "unverified",
+      "acquisition": "Existing schema assessment; synthetic projection only",
+      "evidence": [
+        {
+          "id": "codex-app-server-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "tokenUsage.last": "Latest usage snapshot; separate from cumulative total",
+        "tokenUsage.total": "Cumulative snapshot; repeated snapshots are not additive"
+      },
+      "requirements": [
+        "Versioned native sample and authority/interval/finality decisions; account regime unverified"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://learn.chatgpt.com/docs/app-server",
+          "accessed": "2026-09-28",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "codex-desktop",
+      "provider": "Codex",
+      "surface": "Observed rollout shape",
+      "version": "0.158.0-alpha.2.1",
+      "tier": "unverified",
+      "acquisition": "Historical authorized local metadata; published synthetic shape projection",
+      "evidence": [
+        {
+          "id": "codex-desktop-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "cache_write_input_tokens": "Observed field; cache inclusion semantics unverified",
+        "token_count": "No turn_id in inspected event; adjacent turn_context is not binding proof"
+      },
+      "requirements": [
+        "Native versioned accounting/identity/finality review; no transfer from 0.139.0 interface"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://learn.chatgpt.com/docs/app-server",
+          "accessed": "2026-09-28",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "claude-2-1-275",
+      "provider": "Claude Code",
+      "surface": "Local assistant log",
+      "version": "2.1.275",
+      "tier": "unverified",
+      "acquisition": "Historical local shape assessment; conceptual metric projection",
+      "evidence": [
+        {
+          "id": "claude-2-1-275-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "message.usage": "Multiple variants for one request/message; no established final revision",
+        "claude_code.cost.usage": "Documented estimated USD metric, not billed cash"
+      },
+      "requirements": [
+        "Separate stored versions and CLI surface before approval; native finality, interval, resets and account regime"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "claude-2-1-215",
+      "provider": "Claude Code",
+      "surface": "Local assistant log",
+      "version": "2.1.215",
+      "tier": "unverified",
+      "acquisition": "Historical local shape assessment; conceptual metric projection",
+      "evidence": [
+        {
+          "id": "claude-2-1-215-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "message.usage": "Multiple variants for one request/message; no established final revision",
+        "claude_code.cost.usage": "Documented estimated USD metric, not billed cash"
+      },
+      "requirements": [
+        "Separate stored versions and CLI surface before approval; native finality, interval, resets and account regime"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "claude-2-1-257",
+      "provider": "Claude Code",
+      "surface": "Installed CLI interface",
+      "version": "2.1.257",
+      "tier": "unverified",
+      "acquisition": "Historical local shape assessment; conceptual metric projection",
+      "evidence": [
+        {
+          "id": "claude-2-1-257-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "message.usage": "Multiple variants for one request/message; no established final revision",
+        "claude_code.cost.usage": "Documented estimated USD metric, not billed cash"
+      },
+      "requirements": [
+        "Separate stored versions and CLI surface before approval; native finality, interval, resets and account regime"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "enterprise-copilot-projections",
+      "provider": "Copilot",
+      "surface": "Supplied Enterprise projections",
+      "version": "bundle v1/v2; native versions unverified",
+      "tier": "Enterprise (maintainer-reported)",
+      "acquisition": "Supplied projection bundles only",
+      "evidence": [
+        {
+          "id": "enterprise-copilot-projections-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "promptTokens": "Producer-reported integer path; repeat/cache semantics unverified",
+        "relative_ms_per_session": "Per-session origin does not establish cross-session overlap"
+      },
+      "requirements": [
+        "Sanitized hook mapping code or paired native input/upload output",
+        "Inspect receiver transformations separately; provenance/units/identity and corrections",
+        "No native OTel wire evidence; work collection reported disabled"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "enterprise-cursor-projections",
+      "provider": "Cursor",
+      "surface": "Supplied Enterprise projections",
+      "version": "bundle v1/v2; native versions unverified",
+      "tier": "Enterprise (maintainer-reported)",
+      "acquisition": "Supplied projection bundles only",
+      "evidence": [
+        {
+          "id": "enterprise-cursor-projections-e01",
+          "origin": "synthetic",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "scope": "Authored 18-case synthetic derivative; not native source or producer bundle bytes"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "promptTokens": "Producer-reported integer path; repeat/cache semantics unverified",
+        "relative_ms_per_session": "Per-session origin does not establish cross-session overlap"
+      },
+      "requirements": [
+        "Sanitized hook mapping code or paired native input/upload output",
+        "Inspect receiver transformations separately; provenance/units/identity and corrections",
+        "No native OTel wire evidence; work collection reported disabled"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://prod.cursor.com/help/models-and-usage/usage-limits",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "codex-ide",
+      "provider": "Codex",
+      "surface": "IDE integration",
+      "version": "uninspected",
+      "tier": "unverified",
+      "acquisition": "Existing authorized IDE usage export only; none supplied",
+      "evidence": [
+        {
+          "id": "codex-ide-e01",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "origin": "synthetic",
+          "scope": "Authored research cases; no native IDE inspection"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {},
+      "requirements": [
+        "Native IDE version/entrypoint, account regime, identity, usage shape, interval/finality evidence"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://learn.chatgpt.com/docs/app-server",
+          "accessed": "2026-09-28",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    },
+    {
+      "id": "claude-ide",
+      "provider": "Claude Code",
+      "surface": "IDE integration",
+      "version": "uninspected",
+      "tier": "unverified",
+      "acquisition": "Existing authorized IDE usage export only; none supplied",
+      "evidence": [
+        {
+          "id": "claude-ide-e01",
+          "sha256": "cd40d19f56709dc97cbe4b5e0b30205d543f68bd5c23fa1dfea79dc9f38f512e",
+          "origin": "synthetic",
+          "scope": "Authored research cases; no native IDE inspection"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {},
+      "requirements": [
+        "Native IDE version/entrypoint, account regime, identity, usage shape, interval/finality evidence"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-03",
+          "kind": "rolling documentation; not observed account support"
+        }
+      ]
+    }
+  ]
+}

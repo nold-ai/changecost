@@ -115,3 +115,10 @@ repeated counters added twice, and normalized keys mistaken for vendor fields.
 Keep provenance, identity and source versions explicit to mitigate them. No runtime
 collector or adapter changed. Rollback reverts the authored research diff while
 preserving all received artifacts.
+
+
+## Closeout assessment (2026-10-03)
+
+The 2026-10-03 executable controls independently compute the 18 historical semantic conclusions and retain the original fixture bytes. Producer-reported message counters still lack repeat, cache, host/SDK binding and finality evidence. Candidate string-enum versus integer-enum tests establish encoding constraints for the synthetic sample, not native wire compatibility. No supplied paired hook/receiver mapping closes the remaining gates.
+
+See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).

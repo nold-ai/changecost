@@ -198,3 +198,10 @@ Primary risks are mapping projections as wire formats, false absence and broken
 joins; mitigate with source-specific profiles and explicit evidence boundaries.
 No provider call or cost was incurred by this review. Rollback reverts the authored
 research diff; received artifacts remain unchanged and no adapter was implemented.
+
+
+## Closeout assessment (2026-10-03)
+
+The 2026-10-03 closeout retains the received originals and earlier integrity receipts. No sanitized hook mapping code, paired native input/upload output or receiver transformation code was supplied. Producer descriptions, synthetic projections and observed shapes remain separate from verified mappings. Copilot and Cursor have separate Enterprise profiles, both unapproved. Work OTel remains reported disabled; enabling it is not required for custom-hook assessment.
+
+See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).

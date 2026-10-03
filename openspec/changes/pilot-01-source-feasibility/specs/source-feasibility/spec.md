@@ -121,3 +121,74 @@ The evidence package SHALL provide synthetic or fully redacted fixtures with pro
 - **GIVEN** a regenerated bundle includes synthetic OTLP-shaped JSON, normalized usage objects or candidate CSV headers
 - **WHEN** fixture admission is reviewed
 - **THEN** arithmetic and identity checks are reported separately from official encoding/schema checks, concrete mismatches are recorded without altering received bytes, and synthetic joins or amounts do not verify the custom hook or native export compatibility.
+
+### Requirement: Canonical profile register and honest approval
+
+The closeout SHALL maintain versioned per-surface profiles with acquisition routes,
+versions/tier, dated citations, opaque evidence identity/hash, capability dispositions,
+verified field meanings and exact unresolved evidence. A deterministic compact
+matrix SHALL derive from the register. Validation SHALL NOT infer approval from
+synthetic, producer-reported or documentation-only evidence. Approved capabilities
+SHALL reference inspected native evidence and a named independent semantic review;
+structural inspection alone SHALL NOT establish accounting finality or completeness.
+The semantic attestation SHALL bind the exact profile/version/capability and evidence
+SHA-256, with explicit authority, interval, replay/reset/correction and exclusion
+decisions. This contributor attestation is not independent authentication of facts.
+
+#### Scenario: Stale matrix or fabricated approval
+
+- **GIVEN** a changed profile with an unchanged matrix, or approval citing synthetic evidence
+- **WHEN** the research checker runs
+- **THEN** it rejects the stale matrix or unsupported approval with safe diagnostics.
+
+#### Scenario: Useful partial delivery without native evidence
+
+- **GIVEN** passing tooling tests but missing intended Copilot/Cursor native source evidence
+- **WHEN** completion is assessed
+- **THEN** the report retains exact blockers, profile approval and issue #9 remain incomplete.
+
+### Requirement: Bounded private offline source inspection
+
+The development-only inspector SHALL accept explicit registered profiles and
+sanitation field paths for JSON, JSONL and CSV evidence using a local manifest.
+It SHALL verify SHA-256 before parsing, reject malformed UTF-8, duplicate JSON
+members/CSV headers, unsupported formats/profiles, non-finite numbers, symlinks,
+files over 10 MiB, over 10,000 records or nesting over 32. Original bytes SHALL
+remain unchanged. Public diagnostics/reports SHALL contain safe evidence IDs,
+hashes, counts, types and location codes without raw paths, field names, identifiers,
+payload values or exception messages. Inspection SHALL be offline and read-only. Limits SHALL apply to manifests/registers
+and actual bytes captured from the same non-symlink regular file descriptor used
+for hashing and parsing. Caller-controlled metadata SHALL not bypass output privacy.
+
+#### Scenario: Malformed or changed private evidence
+
+- **GIVEN** bad bytes, changed hashes, duplicate members/headers or excessive input
+- **WHEN** inspection runs
+- **THEN** it rejects safely, preserves source bytes and emits no private data.
+
+#### Scenario: Allowlisted metadata summary
+
+- **GIVEN** a native file with declared allowlisted metadata plus private undeclared content
+- **WHEN** a local explicit-profile inspection runs
+- **THEN** only permitted field types/counts and opaque provenance appear, with no semantic approval.
+
+### Requirement: Independent executable research conclusions
+
+All eighteen existing research cases SHALL have computed semantic conclusions
+independent of their declared expectations. Checks SHALL preserve exact units,
+Decimal amounts, missing/zero distinctions, duplicate/cumulative/replacement
+relationships, identity scopes, ephemeral/durable boundaries and synthetic/native
+provenance. Faulty/repaired controls SHALL demonstrate actual detection without
+changing the evaluator to fit an expected result.
+
+#### Scenario: Overcounted replay or fabricated money
+
+- **GIVEN** replayed roots, overlapping totals, cumulative points, replacements or a multiplier
+- **WHEN** semantic checks run against a false additive or monetary expectation
+- **THEN** they reject the wrong claim and pass the repaired expectation from unchanged inputs.
+
+#### Scenario: Uncertain source boundary
+
+- **GIVEN** context occupancy, conflicting checkpoint totals, missing identities, absent containers or rebased projections
+- **WHEN** semantic conclusions are computed
+- **THEN** consumption, finality, joins and native compatibility remain explicitly unknown where evidence cannot establish them.
