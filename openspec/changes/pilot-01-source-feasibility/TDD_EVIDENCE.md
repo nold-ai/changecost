@@ -185,3 +185,31 @@ review with no actionable comments; Codex's three findings remain pending verifi
 closure. Final scoped/staged checks, independent affected closure and fresh Linux plus
 provider evidence are required for this correction. No approval/finality expansion,
 quality thresholds/exclusions or original fixture changes were made.
+
+
+### Maintainer-approved scoped invariant replan (batch 6) — 2026-10-03
+
+At b50551f3f528c709068b6770cd0ed98d9d65a837, Codex review5402803643
+reported whitespace snapshot identities and mixed correction billing bases. The
+five-batch limit stopped fixes; the issue/PR truthfully retained REPLAN and missing
+current-head CodeRabbit acceptance. Supported Linux37154482038 passed all ten native
+analyzers and 1,266 tests on both Python versions, but did not close those defects.
+
+The maintainer explicitly approved a same-change invariant replan and seven batches /
+150 active minutes, preserving all five prior batches, failures and allowance history.
+An independent immutable-head investigation collected related malformed root/rollout/
+hosted identity labels, incomplete correction event/currency/basis and null mandatory
+revision defects before batch6. Writer investigation covers affirmative identity
+consumers and complete correction economic/revision identity; future genuine escape
+after investigation requires replanning. No runtime/product scope was expanded.
+
+Specification preceded 76 invariant controls: actual red49failed/27passed. The shared
+nonblank-string guard and stable exact correction key plus mandatory integer revision
+validation repaired them. Additional missing/list/dict label controls exercise safe
+unresolved outcomes. Original 18 fixture bytes and precise Decimal/history/replay
+expectations remain unchanged. Scoped/source/full/staged verification, independent
+affected closure and fresh Linux/provider acceptance remain required for the next head.
+No quantity, native approval, finality, adapter, portable schema, collection, quality
+threshold, coverage exclusion or review policy change was introduced.
+
+Final source control matrix: all 228 source tests pass, including the original 18 cases.

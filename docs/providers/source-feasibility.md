@@ -297,3 +297,15 @@ Missing or invalid intervals remain unresolved. No checkpoint records or incompl
 checkpoint identity/amount remain unresolved unless a known same-session/event conflict
 is demonstrated. These are synthetic detector controls; final usage and provider
 approval remain unverified.
+
+### Scoped identity and correction invariant replan — 2026-10-03
+
+Every existing affirmative identity consumer requires exact nonblank strings:
+root conversation/span, snapshot thread/turn, rollout session/version, and hosted
+namespace/checkpoint scope. Missing, null, Unicode-whitespace or nonstring labels
+cannot establish a total or positive scope claim. Valid labels retain their exact
+bytes; trimming cannot conflate different identities. Synthetic replacement chains
+require a complete stable event/currency/billing-basis key and present nonnegative
+integer revision/reference identities, excluding booleans, nulls and coercion.
+Missing or mixed economic bases remain unresolved. Quantities, precise Decimal
+amounts, finality and native-profile approval policies remain unchanged.

@@ -184,3 +184,6 @@ one SDK session/event identity and leave finality unknown.
 
 Source evidence detector controls reject boolean replacement revisions, normalize
 cumulative interval timestamps to UTC, and leave absent checkpoints unresolved.
+
+The source checker requires exact nonblank identity strings before affirmative
+scope claims, and complete stable economic-basis and revision identities for corrections.

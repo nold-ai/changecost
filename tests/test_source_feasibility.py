@@ -589,3 +589,111 @@ def test_known_checkpoint_conflict_precedes_incomplete_evidence():
     assert evaluate_case(sample, "hosted")["checkpoint_conflict"] is True
     sample["records"].pop()
     assert evaluate_case(sample, "hosted")["checkpoint_conflict"] is None
+
+
+ABSENT_IDENTITY = object()
+INVALID_ID_LABELS = [ABSENT_IDENTITY, None, "", " ", "\t\u2003", True, 3, [], {}]
+IDENTITY_CONSUMERS = [
+    ("cli-repeated-billing", "spans", "conversation", "authoritative_nano_aiu"),
+    ("cli-repeated-billing", "spans", "span", "authoritative_nano_aiu"),
+    ("codex-usage-snapshot", "snapshot", "threadId", "snapshot_total_tokens"),
+    ("codex-usage-snapshot", "snapshot", "turnId", "snapshot_total_tokens"),
+    ("codex-rollout-cache-write", "rollout", "id", "snapshot_total_tokens"),
+    ("codex-rollout-cache-write", "rollout", "cli_version", "snapshot_total_tokens"),
+    (
+        "copilot-hosted-usage-boundaries",
+        "hosted",
+        "host_session_id",
+        "identity_namespaces_distinct",
+    ),
+    ("copilot-hosted-usage-boundaries", "hosted", "sdk_session_id", "identity_namespaces_distinct"),
+]
+
+
+def _assign_identity_label(mapping, key, value):
+    if value is ABSENT_IDENTITY:
+        mapping.pop(key, None)
+    else:
+        mapping[key] = value
+
+
+@pytest.mark.parametrize("label", INVALID_ID_LABELS)
+@pytest.mark.parametrize("name,strategy,field,result_key", IDENTITY_CONSUMERS)
+def test_affirmative_identity_requires_nonblank_string(label, name, strategy, field, result_key):
+    sample = case(name)
+    if strategy == "spans":
+        for row in sample["records"]:
+            if field == "conversation":
+                _assign_identity_label(row["attributes"], "gen_ai.conversation.id", label)
+            else:
+                _assign_identity_label(row, "span_id", label)
+    elif strategy == "rollout":
+        for row in sample["records"]:
+            if row.get("type") == "session_meta":
+                _assign_identity_label(row["payload"], field, label)
+    elif strategy == "hosted":
+        _assign_identity_label(sample["identity_evidence"], field, label)
+    else:
+        for row in sample["records"]:
+            _assign_identity_label(row, field, label)
+    result = evaluate_case(sample, strategy)
+    assert result[result_key] is (False if strategy == "hosted" else None)
+    assert result["approved_profile"] is False
+    assert evaluate_case(case(name), strategy)[result_key] not in (None, False)
+
+
+@pytest.mark.parametrize("field", ["event_id", "currency", "billing_basis"])
+@pytest.mark.parametrize("label", INVALID_ID_LABELS)
+def test_correction_requires_complete_economic_identity(field, label):
+    sample = case("correction")
+    for row in sample["records"]:
+        _assign_identity_label(row, field, label)
+    assert evaluate_case(sample, "replacement")["current_amount"] is None
+    assert evaluate_case(case("correction"), "replacement")["current_amount"] == "0.03"
+
+
+@pytest.mark.parametrize("field", ["event_id", "currency", "billing_basis"])
+def test_correction_missing_or_mixed_basis_unresolved(field):
+    sample = case("correction")
+    for row in sample["records"]:
+        row.pop(field)
+    assert evaluate_case(sample, "replacement")["current_amount"] is None
+    sample = case("correction")
+    for row in sample["records"][1:]:
+        row[field] = "another-valid-label"
+    assert evaluate_case(sample, "replacement")["current_amount"] is None
+
+
+@pytest.mark.parametrize("revision", [None, True, "1", 1.0, -1])
+def test_required_revision_identity_rejects_optional_quantity_null(revision):
+    sample = case("correction")
+    sample["records"] = [sample["records"][0]]
+    sample["records"][0]["revision"] = revision
+    with pytest.raises(EvidenceError):
+        evaluate_case(sample, "replacement")
+    sample["records"][0]["revision"] = 0
+    assert evaluate_case(sample, "replacement")["current_amount"] == "0.05"
+
+
+def test_missing_revision_and_explicit_null_reference_reject():
+    sample = case("correction")
+    sample["records"] = [sample["records"][0]]
+    sample["records"][0].pop("revision")
+    with pytest.raises(EvidenceError):
+        evaluate_case(sample, "replacement")
+    sample = case("correction")
+    for row in sample["records"][1:]:
+        row["replaces_revision"] = None
+    with pytest.raises(EvidenceError):
+        evaluate_case(sample, "replacement")
+
+
+def test_exact_labels_not_trimmed_and_correction_replay_preserved():
+    sample = case("codex-usage-snapshot")
+    sample["records"][1]["threadId"] = " " + sample["records"][0]["threadId"]
+    assert evaluate_case(sample, "snapshot")["snapshot_total_tokens"] is None
+    sample = case("correction")
+    result = evaluate_case(sample, "replacement")
+    assert result["current_amount"] == "0.03"
+    assert result["retained_revision_count"] == 2
+    assert result["billed_money"] is None

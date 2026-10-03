@@ -73,6 +73,16 @@ def _decimal(value):
         raise EvidenceError("invalid-decimal") from None
 
 
+def _labels(values):
+    return all(isinstance(value, str) and value.strip() for value in values)
+
+
+def _revision(value):
+    if type(value) is not int or value < 0:
+        raise EvidenceError("invalid-quantity")
+    return value
+
+
 def _spans(rows):
     roots = {}
     conflict = False
@@ -85,12 +95,10 @@ def _spans(rows):
         ):
             identity = (attrs.get("gen_ai.conversation.id"), row.get("span_id"))
             amount = _integer(attrs.get("github.copilot.nano_aiu"))
-            if (
-                not all(identity)
-                or amount is None
-                or identity in roots
-                and roots[identity] != amount
-            ):
+            if not _labels(identity):
+                conflict = True
+                continue
+            if amount is None or identity in roots and roots[identity] != amount:
                 conflict = True
             roots[identity] = amount
     amount = sum(roots.values()) if roots and not conflict else None
@@ -118,38 +126,36 @@ def _tokens(rows):
 
 def _replacement(rows):
     revisions = {}
-    valid = True
+    scopes = [(r.get("event_id"), r.get("currency"), r.get("billing_basis")) for r in rows]
+    valid = all(_labels(scope) for scope in scopes) and len(set(scopes)) == 1
     for row in rows:
-        key = (row.get("event_id"), _integer(row.get("revision")))
+        key = _revision(row.get("revision"))
         _decimal(row.get("amount"))
         if "replaces_revision" in row:
-            _integer(row["replaces_revision"])
+            _revision(row["replaces_revision"])
         if key in revisions and revisions[key] != row:
             valid = False
         revisions[key] = row
     ordered = sorted(revisions.values(), key=lambda r: r["revision"])
-    valid = (
-        valid
-        and len({r.get("event_id") for r in rows}) == 1
-        and len({r.get("currency") for r in rows}) == 1
-    )
-    valid = valid and bool(ordered[0].get("event_id")) and bool(ordered[0].get("currency"))
     valid = valid and "replaces_revision" not in ordered[0]
     for before, after in zip(ordered, ordered[1:], strict=False):
         valid = valid and after.get("replaces_revision") == before["revision"]
     return {
         "current_amount": ordered[-1]["amount"] if valid else None,
-        "currency": ordered[-1].get("currency"),
+        "currency": ordered[-1].get("currency") if _labels([ordered[-1].get("currency")]) else None,
         "retained_revision_count": len(revisions),
     }
 
 
 def _snapshot(rows):
-    identities = {(r.get("threadId"), r.get("turnId")) for r in rows}
+    labels = [(r.get("threadId"), r.get("turnId")) for r in rows]
+    if not all(_labels(identity) for identity in labels):
+        return {"snapshot_total_tokens": None}
+    identities = set(labels)
     totals = {r["tokenUsage"]["total"].get("totalTokens") for r in rows}
     return {
         "snapshot_total_tokens": _integer(next(iter(totals)))
-        if len(totals) == 1 and len(identities) == 1 and all(next(iter(identities)))
+        if len(totals) == 1 and len(identities) == 1
         else None
     }
 
@@ -201,12 +207,12 @@ def _cumulative(rows):
 def _rollout(rows):
     events = [r["payload"] for r in rows if r.get("payload", {}).get("type") == "token_count"]
     totals = {r["info"]["total_token_usage"].get("total_tokens") for r in events}
-    sessions = {
+    sessions = [
         (r["payload"].get("id"), r["payload"].get("cli_version"))
         for r in rows
         if r.get("type") == "session_meta"
-    }
-    bound = len(sessions) == 1 and all(next(iter(sessions)))
+    ]
+    bound = bool(sessions) and all(_labels(scope) for scope in sessions) and len(set(sessions)) == 1
     return {
         "cache_write_field": "present"
         if events
@@ -248,7 +254,7 @@ def _checkpoint_identity(record, default_scope):
     if not isinstance(context, dict):
         raise EvidenceError("case-shape")
     identity = (context.get("sdk_session_id"), record.get("id"))
-    return identity if all(isinstance(v, str) and v.strip() for v in identity) else None
+    return identity if _labels(identity) else None
 
 
 def _checkpoint_conflicts(rows, scope):
@@ -277,8 +283,7 @@ def _hosted(rows, sample):
     identity = sample.get("identity_evidence", {})
     return {
         "identity_namespaces_distinct": bool(
-            identity.get("host_session_id")
-            and identity.get("sdk_session_id")
+            _labels([identity.get("host_session_id"), identity.get("sdk_session_id")])
             and identity["host_session_id"] != identity["sdk_session_id"]
         ),
         "checkpoint_conflict": _checkpoint_conflicts(rows, identity.get("sdk_session_id")),

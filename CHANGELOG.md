@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Require nonblank identities across source detectors and complete stable economic
+  basis plus exact revision identities before selecting synthetic correction amounts.
+
 - Correct synthetic replacement-reference types, cumulative chronological interval
   validation and absent checkpoint uncertainty after current-head Codex findings.
 

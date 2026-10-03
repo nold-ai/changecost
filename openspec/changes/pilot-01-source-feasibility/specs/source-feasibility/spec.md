@@ -211,3 +211,15 @@ changing the evaluator to fit an expected result.
 - **GIVEN** no checkpoint records, or a checkpoint missing its amount or namespaced identity
 - **WHEN** checkpoint conflicts are assessed
 - **THEN** absence or incomplete evidence leaves the conclusion unresolved unless a demonstrated same-session/event amount conflict exists; finality remains unknown and totals remain non-additive.
+
+#### Scenario: Complete exact identities before affirmative scope
+
+- **GIVEN** root conversation/span, snapshot thread/turn, rollout session/version or hosted host/SDK identities
+- **WHEN** an affirmative identity-dependent total or distinct-namespace claim is computed
+- **THEN** every required identity is a nonblank string, including Unicode whitespace checks; missing/null/nonstring identities leave totals or scope claims unavailable. Exact valid strings remain distinct without trimming or normalization.
+
+#### Scenario: Complete correction economic and revision identity
+
+- **GIVEN** synthetic correction revisions with event, currency and billing basis labels
+- **WHEN** current amount is selected
+- **THEN** every label is a nonblank string and the exact (event, currency, billing basis) key is stable; missing or mixed economic bases remain unresolved. Mandatory revisions and supplied replacement references are present exact nonnegative integers excluding booleans, nulls and coerced values. Replay/history and precise amounts remain unchanged; no billed money or native support is inferred.
