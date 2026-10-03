@@ -75,32 +75,37 @@ def _read(path: Path) -> bytes:
             os.close(descriptor)
 
 
+def _json(text):
+    return json.loads(text, object_pairs_hook=_pairs, parse_constant=_constant)
+
+
+def _jsonl(text):
+    lines = text.splitlines()
+    if len(lines) > MAX_RECORDS or any(not line.strip() for line in lines):
+        raise EvidenceError("record-limit-or-empty-line")
+    return [_json(line) for line in lines]
+
+
+def _csv(text):
+    reader = csv.reader(io.StringIO(text, newline=""), strict=True)
+    header = next(reader, [])
+    if not header or len(set(header)) != len(header):
+        raise EvidenceError("csv-header")
+    rows = []
+    for row in reader:
+        if len(rows) >= MAX_RECORDS or len(row) != len(header):
+            raise EvidenceError("csv-shape")
+        rows.append(dict(zip(header, row, strict=True)))
+    return rows
+
+
 def _parse(raw: bytes, fmt: str) -> Any:
     try:
         text = raw.decode("utf-8")
-        if fmt == "json":
-            value = json.loads(text, object_pairs_hook=_pairs, parse_constant=_constant)
-        elif fmt == "jsonl":
-            lines = text.splitlines()
-            if len(lines) > MAX_RECORDS or any(not line.strip() for line in lines):
-                raise EvidenceError("record-limit-or-empty-line")
-            value = [
-                json.loads(line, object_pairs_hook=_pairs, parse_constant=_constant)
-                for line in lines
-            ]
-        elif fmt == "csv":
-            reader = csv.reader(io.StringIO(text, newline=""), strict=True)
-            header = next(reader, [])
-            if not header or len(set(header)) != len(header):
-                raise EvidenceError("csv-header")
-            rows = []
-            for row in reader:
-                if len(rows) >= MAX_RECORDS or len(row) != len(header):
-                    raise EvidenceError("csv-shape")
-                rows.append(row)
-            value = [dict(zip(header, row, strict=True)) for row in rows]
-        else:
+        parser = {"json": _json, "jsonl": _jsonl, "csv": _csv}.get(fmt)
+        if parser is None:
             raise EvidenceError("unsupported-format")
+        value = parser(text)
         _bounded(value)
         return value
     except (UnicodeError, json.JSONDecodeError, csv.Error, RecursionError, OverflowError):

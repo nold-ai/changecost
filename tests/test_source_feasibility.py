@@ -247,6 +247,84 @@ def test_cli_errors_do_not_echo_arguments_and_documents_are_bounded(tmp_path):
         read_document(source)
 
 
+@pytest.mark.parametrize("mode", ["check", "matrix"])
+def test_cli_success_reports_do_not_approve_profiles(monkeypatch, capsys, mode):
+    monkeypatch.setattr(sys, "argv", ["source-check", *(["--matrix"] if mode == "matrix" else [])])
+    assert research.main() == 0
+    output = capsys.readouterr()
+    assert output.err == ""
+    if mode == "matrix":
+        assert output.out == research.render_matrix(registry()) + "\n"
+    else:
+        assert json.loads(output.out) == {"errors": [], "semantic_approval": False}
+
+
+@pytest.mark.parametrize("changed_hash", [False, True])
+def test_cli_private_manifest_report_and_hash_fault(tmp_path, monkeypatch, capsys, changed_hash):
+    request, data, source = manifest(tmp_path, b'{"usage":0,"secret":"PRIVATE-SENTINEL"}')
+    original = source.read_bytes()
+    if changed_hash:
+        request["entries"][0]["sha256"] = "0" * 64
+    register_path = tmp_path / "PRIVATE-register.json"
+    manifest_path = tmp_path / "PRIVATE-manifest.json"
+    register_path.write_text(json.dumps(data))
+    manifest_path.write_text(json.dumps(request))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["source-check", "--register", str(register_path), "--manifest", str(manifest_path)],
+    )
+    assert research.main() == int(changed_hash)
+    output = capsys.readouterr()
+    assert "PRIVATE" not in output.out + output.err
+    assert str(tmp_path) not in output.out + output.err
+    if changed_hash:
+        assert output.out == "" and output.err == "hash-mismatch\n"
+    else:
+        assert json.loads(output.out) == inspect_manifest(request, data)
+        assert output.err == ""
+    assert source.read_bytes() == original
+
+
+def test_cli_matrix_drift_fault_and_repair(tmp_path, monkeypatch, capsys):
+    register_path = ROOT / "docs/providers/source-profiles.json"
+    fixture_path = tmp_path / "docs/providers/fixtures/source-feasibility-cases.json"
+    fixture_path.parent.mkdir(parents=True)
+    fixture_path.write_text(json.dumps(CASES))
+    matrix_path = tmp_path / "docs/providers/source-feasibility.md"
+    matrix_path.write_text("PRIVATE incorrect matrix")
+    monkeypatch.setattr(research, "ROOT", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["source-check", "--register", str(register_path)])
+    assert research.main() == 1
+    assert json.loads(capsys.readouterr().out) == {
+        "errors": ["matrix-drift"],
+        "semantic_approval": False,
+    }
+    matrix_path.write_text(research.render_matrix(registry()))
+    assert research.main() == 0
+    assert json.loads(capsys.readouterr().out) == {"errors": [], "semantic_approval": False}
+
+
+@pytest.mark.parametrize("fault", ["argument", "duplicate-register", "missing-register"])
+def test_cli_rejections_keep_private_inputs_out_of_diagnostics(
+    tmp_path, monkeypatch, capsys, fault
+):
+    private_path = tmp_path / "PRIVATE-register.json"
+    arguments = ["--register", str(private_path)]
+    expected = "source-unavailable"
+    if fault == "argument":
+        arguments = ["--PRIVATE-SENTINEL"]
+        expected = "arguments-invalid"
+    elif fault == "duplicate-register":
+        private_path.write_text('{"PRIVATE":1,"PRIVATE":2}')
+        expected = "duplicate-member"
+    monkeypatch.setattr(sys, "argv", ["source-check", *arguments])
+    assert research.main() == 1
+    output = capsys.readouterr()
+    assert output.out == "" and output.err == expected + "\n"
+    assert "PRIVATE" not in output.err and str(tmp_path) not in output.err
+
+
 @pytest.mark.parametrize("sample", CASES["cases"], ids=lambda c: c["id"])
 def test_every_case_has_a_fault_and_repaired_oracle_control(sample):
     broken = copy.deepcopy(CASES)

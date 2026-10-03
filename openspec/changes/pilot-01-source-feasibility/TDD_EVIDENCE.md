@@ -63,6 +63,31 @@ Linux/provider reviews are recorded here as they finish; missing evidence is pen
 never a pass. A genuinely new schema-8 bounded session preserves its immutable
 contract, binding, review counters and logs; recovered historical receipts are retained.
 
+## Supported native failure and bounded correction (2026-10-03)
+
+Fresh Ubuntu [workflow 37144463158](https://github.com/nold-ai/changecost/actions/runs/37144463158) checked published head
+`c91bfe56d186af407563cf0fa372755fefd71a80`. Ordinary 1,234 tests and strict
+OpenSpec 11/11 passed in both Python jobs. Eight native analyzer members passed.
+Actual native assurance failed: `_profile_valid` complexity 17, `_parse` nesting
+depth 6 above 3, and source checker coverage 74.6% below 80% in Python 3.13.14.
+Python 3.11.15 targeted capsule coverage additionally timed out (UNKNOWN); its
+report contains no partial test output, so the exact cause remains unverified.
+Original reports/hashes and full logs are preserved privately. No native pass is claimed.
+
+The maintainer approved extending the same bounded session to five correction
+batches / 120 active minutes, preserving prior history and failures. Batch 3
+separates profile field-group checks and JSONL/CSV parsing without changing profile
+semantics, approval conditions, diagnostics or input limits. Eight additional
+meaningful in-process CLI checks exercise default/matrix output, private reports,
+hash rejection, matrix drift/repair and safe argument/register failures; subprocess
+checks remain. An initial test fixture unpack error failed two tests and was
+corrected without changing product behavior. Scoped tests now pass: 95 source
+tests, lint and typing. Fresh native assurance on the corrected published head is
+still required; thresholds, exclusions, test scope, dependencies and CI are unchanged.
+The aggregate staged check passed; the incremental HEAD-baseline check exposed an
+unchanged README mapping to the refactored quality sources. Its CLI control summary
+was refreshed rather than waiving the documentation freshness gate.
+
 ## Risk and rollback
 
 Confidence: high in the bounded detector approach; source approval is To-Validate.

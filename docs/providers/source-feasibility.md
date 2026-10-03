@@ -233,6 +233,11 @@ entry/field references, hashes, byte/record counts and type/missing counts. Diag
 contain fixed codes. No values, source paths, identifiers or field names are reported.
 CSV cells remain strings: passing structure establishes no numeric/unit interpretation.
 
+The test suite exercises both subprocess diagnostics and the same CLI entry point
+in process: default checks, derived matrix output, private-manifest reports, hash
+rejection, matrix drift/repair and safe malformed-input failures. These controls
+cover the publishing boundary without changing the inspection or approval contract.
+
 An approval requires a reviewed native evidence digest bound to the exact profile
 fingerprint, capability and independent reviewer, plus authority, accounting interval,
 replay, reset, correction and exclusion decisions. This validates consistency of a

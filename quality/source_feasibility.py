@@ -115,25 +115,38 @@ def _references_valid(references):
     return True
 
 
+def _labels_valid(profile):
+    return all(
+        _text(profile[k]) and not any(c in profile[k] for c in "|\r\n")
+        for k in ("provider", "surface", "version", "tier", "acquisition")
+    )
+
+
+def _capabilities_valid(capabilities):
+    return set(capabilities) == set(CAPABILITIES) and all(
+        value in DISPOSITIONS for value in capabilities.values()
+    )
+
+
+def _meanings_valid(profile):
+    return (
+        isinstance(profile["fields"], dict)
+        and all(_text(k) and _text(v) for k, v in profile["fields"].items())
+        and isinstance(profile["requirements"], list)
+        and all(_text(v) for v in profile["requirements"])
+    )
+
+
 def _profile_valid(profile, seen):
     identity = profile["id"]
     valid = bool(re.fullmatch(r"[a-z0-9-]{1,80}", identity)) and identity not in seen
     seen.add(identity)
     return (
         valid
-        and all(
-            _text(profile[k]) and not any(c in profile[k] for c in "|\r\n")
-            for k in ("provider", "surface", "version", "tier", "acquisition")
-        )
-        and (
-            set(profile["capabilities"]) == set(CAPABILITIES)
-            and all(v in DISPOSITIONS for v in profile["capabilities"].values())
-            and isinstance(profile["fields"], dict)
-            and all(_text(k) and _text(v) for k, v in profile["fields"].items())
-            and isinstance(profile["requirements"], list)
-            and all(_text(v) for v in profile["requirements"])
-            and _references_valid(profile["references"])
-        )
+        and _labels_valid(profile)
+        and _capabilities_valid(profile["capabilities"])
+        and _meanings_valid(profile)
+        and _references_valid(profile["references"])
     )
 
 

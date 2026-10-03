@@ -4,6 +4,9 @@
 
 - Added development-only bounded source inspection, independently computed research cases, a canonical versioned profile register and derived matrix; kept source approval and #9 open for missing native evidence.
 
+- Simplified source profile validation and format parsing without changing evidence
+  boundaries; added direct CLI privacy, hash rejection and matrix drift controls.
+
 - Prepare the authorized source-feasibility closeout with verified-profile completion,
   a canonical register, bounded offline evidence inspection and executable research
   conclusions. Preserve missing native evidence gates and the existing runtime policy.
