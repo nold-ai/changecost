@@ -238,6 +238,14 @@ in process: default checks, derived matrix output, private-manifest reports, has
 rejection, matrix drift/repair and safe malformed-input failures. These controls
 cover the publishing boundary without changing the inspection or approval contract.
 
+Synthetic checkpoint controls group totals by explicit SDK session scope and event
+identity. Distinct events can show cumulative progress; identical replay is not a
+conflict. Different totals for the same session/event identity are conflicting;
+missing identity leaves that assessment unresolved. The fixture container's
+`identity_evidence.sdk_session_id` supplies scope. Optional per-record
+`synthetic_context.sdk_session_id` is authored test context, not a native wire field.
+These controls neither add totals nor establish session finality or native approval.
+
 An approval requires a reviewed native evidence digest bound to the exact profile
 fingerprint, capability and independent reviewer, plus authority, accounting interval,
 replay, reset, correction and exclusion decisions. This validates consistency of a

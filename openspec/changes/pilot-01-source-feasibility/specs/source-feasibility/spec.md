@@ -192,3 +192,10 @@ changing the evaluator to fit an expected result.
 - **GIVEN** context occupancy, conflicting checkpoint totals, missing identities, absent containers or rebased projections
 - **WHEN** semantic conclusions are computed
 - **THEN** consumption, finality, joins and native compatibility remain explicitly unknown where evidence cannot establish them.
+
+#### Scenario: Checkpoint progress versus identity conflict
+
+- **GIVEN** cumulative SDK checkpoints with an explicit SDK session scope and event identity
+- **WHEN** totals change across distinct event identities or repeat identically under one identity
+- **THEN** those checkpoints do not establish a conflict; different totals under the same session/event identity do establish a conflict, and missing identity leaves the conflict assessment unresolved.
+- **AND** totals remain non-additive and final session consumption remains unknown. Synthetic per-record scope metadata is distinct from native wire fields and cannot establish provider support.

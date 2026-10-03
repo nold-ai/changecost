@@ -7,6 +7,9 @@
 - Simplified source profile validation and format parsing without changing evidence
   boundaries; added direct CLI privacy, hash rejection and matrix drift controls.
 
+- Distinguish cumulative checkpoint progress and replay from conflicting totals
+  under the same SDK session/event identity; missing identity remains unresolved.
+
 - Prepare the authorized source-feasibility closeout with verified-profile completion,
   a canonical register, bounded offline evidence inspection and executable research
   conclusions. Preserve missing native evidence gates and the existing runtime policy.

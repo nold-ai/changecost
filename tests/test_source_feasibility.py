@@ -370,6 +370,50 @@ def test_conflicting_checkpoints_are_not_terminal_usage():
     assert evaluate_case(sample, "hosted")["checkpoint_conflict"] is False
 
 
+@pytest.mark.parametrize(
+    "kind,expected",
+    [("progress", False), ("replay", False), ("conflict", True), ("other-session", False)],
+)
+def test_checkpoint_conflicts_are_scoped_to_sdk_session_and_event(kind, expected):
+    sample = case("copilot-hosted-usage-boundaries")
+    checkpoint = copy.deepcopy(sample["records"][1])
+    if kind != "replay":
+        checkpoint["data"]["totalNanoAiu"] = 400000000
+    if kind == "progress":
+        checkpoint["id"] = "event-002"
+    elif kind == "other-session":
+        # Authored scope context is not a claimed native event field.
+        checkpoint["synthetic_context"] = {"sdk_session_id": "sdk-session-002"}
+    sample["records"].append(checkpoint)
+    result = evaluate_case(sample, "hosted")
+    assert result["checkpoint_conflict"] is expected
+    assert result["final_session_nano_aiu"] is None
+    assert result["overlapping_totals_additive"] is False
+    assert result["approved_profile"] is False
+
+
+@pytest.mark.parametrize(
+    "missing", ["event", "blank-event", "session", "blank-session", "record-scope"]
+)
+def test_checkpoint_missing_identity_is_unresolved(missing):
+    sample = case("copilot-hosted-usage-boundaries")
+    checkpoint = sample["records"][1]
+    if missing == "event":
+        checkpoint.pop("id")
+    elif missing == "blank-event":
+        checkpoint["id"] = " "
+    elif missing == "session":
+        sample["identity_evidence"].pop("sdk_session_id")
+    elif missing == "blank-session":
+        sample["identity_evidence"]["sdk_session_id"] = " "
+    else:
+        checkpoint["synthetic_context"] = {}
+    result = evaluate_case(sample, "hosted")
+    assert result["checkpoint_conflict"] is None
+    assert result["final_session_nano_aiu"] is None
+    assert result["overlapping_totals_additive"] is False
+
+
 def test_parent_link_and_manifest_limits(tmp_path):
     request, data, source = manifest(tmp_path, b"{}")
     link = tmp_path / "directory-link"

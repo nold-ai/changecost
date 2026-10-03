@@ -179,3 +179,5 @@ remain tracked in the active change evidence. No provider collection is authoriz
 Source feasibility now includes [offline development evidence checks](docs/providers/source-feasibility.md#executable-closeout-checks-2026-10-03). Issue #9 remains open for native profile approval; adapters remain separate planned changes.
 CLI controls exercise safe private-manifest reports, changed-hash rejection and
 matrix drift/repair; structural success does not approve native provider profiles.
+Checkpoint controls distinguish cumulative progress/replay from conflicts within
+one SDK session/event identity and leave finality unknown.

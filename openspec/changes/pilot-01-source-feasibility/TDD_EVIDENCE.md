@@ -88,6 +88,25 @@ The aggregate staged check passed; the incremental HEAD-baseline check exposed a
 unchanged README mapping to the refactored quality sources. Its CLI control summary
 was refreshed rather than waiving the documentation freshness gate.
 
+## Checkpoint identity correction (2026-10-03)
+
+Independent review reproduced a P2 semantic defect in the published synthetic
+hosted evaluator: any differing checkpoint totals were flagged as a conflict,
+including legitimate cumulative progress across distinct event identities.
+After the spec scenario was written, nine input-derived controls produced actual
+red evidence: 7 failed / 2 passed, retained in `checkpoint-identity-red.log`.
+They cover distinct progressing events, identical replay, same-ID conflicts,
+missing event/session identities and separate SDK session namespaces.
+
+Batch 4 groups comparisons by explicit SDK session/event identity. Missing identity
+leaves the conflict assessment unresolved; no totals are added and final session
+consumption remains unknown. Optional per-record `synthetic_context.sdk_session_id`
+is authored fixture scope metadata, never a claimed native wire field. The original
+18-case fixture file remains unchanged. Scoped green: 104 source tests, lint and
+typing; actual log `checkpoint-identity-green.log`. The preceding Linux run for
+`08740b9c2ce5856a2de51466bda6cd2a042f8d61` remains historical assurance only,
+not defect-free proof of this correction. Fresh corrected-head assurance is required.
+
 ## Risk and rollback
 
 Confidence: high in the bounded detector approach; source approval is To-Validate.

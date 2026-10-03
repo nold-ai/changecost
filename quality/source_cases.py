@@ -221,22 +221,46 @@ def _context(rows):
     }
 
 
+def _checkpoint_identity(record, default_scope):
+    # This optional per-record namespace is authored fixture context, not wire data.
+    context = record.get("synthetic_context", {"sdk_session_id": default_scope})
+    if not isinstance(context, dict):
+        raise EvidenceError("case-shape")
+    identity = (context.get("sdk_session_id"), record.get("id"))
+    return identity if all(isinstance(v, str) and v.strip() for v in identity) else None
+
+
+def _checkpoint_conflicts(rows, scope):
+    amounts = {}
+    unresolved = False
+    conflict = False
+    for record in rows:
+        if record.get("type") != "session.usage_checkpoint":
+            continue
+        data = record.get("data", {})
+        if not isinstance(data, dict):
+            raise EvidenceError("case-shape")
+        amount = _integer(data.get("totalNanoAiu"))
+        identity = _checkpoint_identity(record, scope)
+        if amount is None or identity is None:
+            unresolved = True
+            continue
+        conflict = conflict or (identity in amounts and amounts[identity] != amount)
+        amounts[identity] = amount
+    if conflict:
+        return True
+    return None if unresolved else False
+
+
 def _hosted(rows, sample):
     identity = sample.get("identity_evidence", {})
-    checkpoints = [
-        r.get("data", {}).get("totalNanoAiu")
-        for r in rows
-        if r.get("type") == "session.usage_checkpoint"
-    ]
-    for value in checkpoints:
-        _integer(value)
     return {
         "identity_namespaces_distinct": bool(
             identity.get("host_session_id")
             and identity.get("sdk_session_id")
             and identity["host_session_id"] != identity["sdk_session_id"]
         ),
-        "checkpoint_conflict": len(set(checkpoints)) > 1,
+        "checkpoint_conflict": _checkpoint_conflicts(rows, identity.get("sdk_session_id")),
         "overlapping_totals_additive": False,
         "missing_ephemeral_usage_is_zero": False,
         "final_session_nano_aiu": None,
