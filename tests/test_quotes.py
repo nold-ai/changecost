@@ -1274,3 +1274,128 @@ def test_shared_pending_corrections_preserve_intrinsic_exclusion_output(tmp_path
     ]
     assert len(pending) == 8 * 8
     assert result.state == "unpriced"
+
+
+@pytest.mark.parametrize("endpoint", ["earlier", "equal", "later"])
+@pytest.mark.parametrize("attempt", ["first", "retry"])
+def test_end_only_target_work_constrains_narrow_features(tmp_path, endpoint, attempt):
+    from changecost.quotes import inspect_quote
+
+    store = Store(tmp_path / "db", clock=lambda: NOW)
+    features = dict(change_shape="bugfix", trajectory="single-pass", execution_profile="cursor-cli")
+    register_change(store, "repo", "target", **features)
+    first = register_run(
+        store,
+        RunRef(repository_id="repo", provider="synthetic", surface="fixture", run_id="target"),
+        "target",
+    )
+    prework_peer(store)
+    original = quote(store, "before-end", 1)
+    assert original.cohort == "profile"
+    run = (
+        first
+        if attempt == "first"
+        else register_run(
+            store,
+            RunRef(repository_id="repo", provider="synthetic", surface="fixture", run_id="retry"),
+            "target",
+        )
+    )
+    at = {"earlier": START, "equal": NOW, "later": NOW + timedelta(seconds=1)}[endpoint]
+    declare(store, reference(run), LifecycleDeclaration(end=at))
+    result = quote(store, "end-known", 1)
+    assert result.cohort == ("repository" if endpoint == "earlier" else "profile")
+    assert inspect_quote(store, original)["economic_validation"] == "reproduced"
+
+
+def test_old_end_only_peer_revision_remains_timing_evidence(tmp_path):
+    from changecost.quotes import inspect_quote
+
+    store = Store(tmp_path / "db", clock=lambda: NOW)
+    features = dict(change_shape="bugfix", trajectory="single-pass", execution_profile="cursor-cli")
+    register_change(store, "repo", "target", **features)
+    change = register_change(store, "repo", "peer", **features)
+    run = register_run(
+        store,
+        RunRef(repository_id="repo", provider="synthetic", surface="fixture", run_id="peer"),
+        "peer",
+    )
+    declare(store, reference(run), LifecycleDeclaration(end=START))
+    store.clock = lambda: NOW + timedelta(seconds=1)
+    declare(
+        store,
+        reference(run),
+        LifecycleDeclaration(
+            start=NOW,
+            end=NOW + timedelta(seconds=1),
+            correct_interval=True,
+            reason="bounds",
+            outcome="succeeded",
+        ),
+    )
+    ident = import_events(store, event("peer", "5", start=NOW.isoformat(), end=NOW.isoformat()))[0]
+    bind_evidence(store, ident, run.ref)
+    add_coverage(store, run.ref, ident, start=NOW, end=NOW + timedelta(seconds=1))
+    declare(store, reference(change), LifecycleDeclaration(outcome="accepted"))
+    result = quote(store, minimum=1)
+    assert result.sample_count == 1 and result.p50.amount == "5"
+    assert result.cohort == "repository"
+    assert result.estimation is not None
+    assert any(e.reason == "missing_or_late_peer_features" for e in result.estimation.exclusions)
+    assert inspect_quote(store, result)["economic_validation"] == "reproduced"
+
+
+def test_backdated_imported_end_only_evidence_preserves_original_cutoff(tmp_path):
+    from changecost.models import Bundle, Interval
+    from changecost.operations import common
+    from changecost.quotes import inspect_quote
+
+    store = Store(tmp_path / "db", clock=lambda: NOW)
+    features = dict(change_shape="bugfix", trajectory="single-pass", execution_profile="cursor-cli")
+    register_change(store, "repo", "target", **features)
+    run = register_run(
+        store,
+        RunRef(repository_id="repo", provider="synthetic", surface="fixture", run_id="target"),
+        "target",
+    )
+    prework_peer(store)
+    original = quote(store, "prior-import", 1)
+    assert original.cohort == "profile"
+    endpoint = Interval(**common("foreign-producer", NOW), run=run.ref, end=START)
+    store.import_bundle(Bundle(source=store.snapshot(), records=[endpoint]))
+    result = quote(store, "after-import", 1)
+    assert result.cohort == "repository"
+    assert reference(endpoint) in result.inputs
+    assert reference(endpoint) not in original.inputs
+    assert inspect_quote(store, original)["economic_validation"] == "reproduced"
+    assert quote(store, "prior-import", 1) == original
+
+
+def test_invalid_preexisting_narrow_quote_claim_is_not_rewritten(tmp_path):
+    from changecost.models import Bundle, CohortEvaluation, Estimation
+    from changecost.quotes import inspect_quote
+
+    store = setup(tmp_path)
+    peer(store, "peer", "5")
+    valid = quote(store, minimum=1)
+    assert valid.estimation is not None
+    unsupported_result = valid.model_copy(
+        update={
+            "record_id": "old-invalid-narrow",
+            "cohort": "profile",
+            "estimation": Estimation(
+                **{
+                    **valid.estimation.model_dump(),
+                    "cohorts": [
+                        CohortEvaluation(level="profile", count=1),
+                        CohortEvaluation(level="shape_trajectory", count=1),
+                        CohortEvaluation(level="repository", count=1),
+                    ],
+                }
+            ),
+        }
+    )
+    store.import_bundle(Bundle(source=store.snapshot(), records=[unsupported_result]))
+    before = quote_database_snapshot(store)
+    assert inspect_quote(store, unsupported_result)["economic_validation"] == "not_computed"
+    assert quote_database_snapshot(store) == before

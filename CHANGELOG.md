@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Require Quote features to precede every visible lifecycle start and end,
+  including end-only Interval revisions and retries. Preserve equality, valid
+  historical cutoffs and immutable inspection of prior invalid narrow claims.
+
 - Cache shared Quote source/series uncertainty and aggregate provenance once,
   preserving member-first temporal/file decisions and exact historical outputs.
   Bound resolved-unbound/raw processing when output is linear; retain required

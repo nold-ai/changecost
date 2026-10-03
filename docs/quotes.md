@@ -39,7 +39,10 @@ unpriced. Empirical p90 is a pilot default, not a calibrated confidence bound or
 
 Features are immutable normalized features/v1 registration snapshots. Narrow matching
 requires all relevant fields and capture/local availability before first Run registration
-and known work, including cutoff-visible normalized economics attributed to any
+and known work. Every non-null start or end across all cutoff-visible Interval
+revisions and linked attempts constrains that timing, even an older end-only
+revision later replaced by complete bounds. Equal endpoints are allowed. This also
+includes cutoff-visible normalized economics attributed to any
 linked attempt and its correction-connected inputs. Late or missing features skip narrow membership with reasons while
 repository fallback can still use otherwise complete peers. No trajectory is inferred
 from retries, outcomes or post-work reconstruction.

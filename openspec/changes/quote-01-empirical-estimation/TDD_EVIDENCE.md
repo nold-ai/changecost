@@ -363,3 +363,42 @@ over all 12 intended Python paths report zero errors and 28 advisory findings.
 These local canonical-rule preparations do not certify native capsules. Fresh
 independent full verification and published-head native/provider assurance are
 pending; preceding-head native successes remain historical evidence.
+
+## End-only feature timing correction (2026-10-03, Europe/Berlin)
+
+Fresh Codex P2 REST4173461741 was confirmed for local and imported end-only
+Intervals: an endpoint before feature capture previously admitted narrow matching.
+There is no Run.observed_end field; that reviewer subclaim was rejected. Independent
+full timing-family investigation preceded the patch and covered all visible Interval
+revisions/attempts, existing Run timing/local availability and normalized economic
+correction-connected work. The scoped maintainer-directed allowance adds one batch
+(9 total), preserving the 210-active-minute budget and all prior history.
+
+The delta spec was extended first. Real red:
+`PATH="$PWD/.venv/bin:$PATH" .venv/bin/pytest tests/test_quotes.py -k 'end_only' -q --junitxml=.changecost/workflow/quote-01-empirical-estimation/endpoint-red.xml`
+returned exit 1 at 2026-10-03T16:11:57.132294+02:00: three failures for earlier end-only
+target first/retry work and an older end-only peer revision followed by valid
+complete bounds; all wrongly chose profile instead of repository. Four equal/later
+endpoint scenarios already passed.
+
+The minimal guard checks every non-null Interval.start and Interval.end across
+all cutoff-visible revisions/attempts. Existing registration/start/economic/local
+availability guards remain in force. Green scoped command:
+`PATH="$PWD/.venv/bin:$PATH" .venv/bin/pytest tests/test_quotes.py tests/test_quote_cli.py tests/test_reconciliation.py tests/test_store.py tests/test_contracts.py tests/test_contract_cli.py tests/test_cli.py -q --junitxml=.changecost/workflow/quote-01-empirical-estimation/endpoint-green.xml`
+returned exit 0 at 2026-10-03T16:14:51.037982+02:00: 284 tests and 4 subtests in
+9.55 seconds. Backdated imported end evidence affects the new cutoff, preserves
+original valid replay and durable retry, and appears only in the new dependency
+closure. A prior bug-style narrow result remains an immutable producer claim;
+inspection truthfully rejects result mismatch without rewriting it.
+
+BasedPyright has zero errors; fresh complete canonical four-rule metrics across
+12 Python paths have zero errors and 28 advisories. Native/provider verification
+is separate and requires the upcoming published head; prior 2c successes are
+historical. Independent full affected verification remains pending at freeze.
+
+The concurrent P3 REST4173461242 requesting pending-correction provenance
+deduplication is a confirmed non-finding: the [immutable 2c scenario](https://github.com/nold-ai/changecost/blob/2c4081b934dfcbf7318b12ebe610f2eeb2077800/openspec/changes/quote-01-empirical-estimation/specs/empirical-quotes/spec.md#L249)
+requires literal repeated exclusions when audit output requires them. The existing
+8-peer/8-pending-event test retains 64 exclusions and passes in the scoped suite.
+Shared source preparation is performed once; output-sized remaining work is
+intentional. No deduplication, algorithm version or stored history change is made.

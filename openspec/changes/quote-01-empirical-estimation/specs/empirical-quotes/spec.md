@@ -247,3 +247,10 @@ original result/cutoff and conflicting reuse SHALL fail unchanged.
 - **WHEN** quote evaluates the committed snapshot
 - **THEN** shared source selection, temporal summaries and aggregate input roots are prepared once and member-dependent interaction is evaluated without repeating all shared work per peer.
 - **AND** member-first lane/file/window selection and exact historical output remain unchanged; pending corrections or whole-series exclusions retain their literal repeated provenance when the output itself requires it.
+
+#### Scenario: End-only lifecycle work constrains feature timing
+
+- **GIVEN** cutoff-visible lifecycle evidence with any non-null start or end before feature capture, including an older end-only Interval followed by a complete revision or another linked attempt
+- **WHEN** target or otherwise complete peer features are matched
+- **THEN** every visible endpoint constrains pre-work eligibility; late features skip narrow cohorts while complete peers remain usable in repository fallback.
+- **AND** equal or later endpoints are valid, cutoff-late declarations/imports cannot change an earlier valid Quote replay, and previously stored invalid results remain immutable rather than being rewritten or falsely certified.

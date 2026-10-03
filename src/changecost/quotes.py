@@ -116,7 +116,11 @@ def run_features_valid(records, run, change_availability, availability, bound, c
         if context is not None
         else [r for r in records.values() if r.kind == "interval" and r.run == run.ref]
     )
-    return not any(r.start is not None and bound > r.start for r in intervals)
+    return not any(
+        point is not None and bound > point
+        for interval in intervals
+        for point in (interval.start, interval.end)
+    )
 
 
 def feature_valid(records, change, availability, context=None):
