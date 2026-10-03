@@ -147,17 +147,17 @@ def _replacement(rows):
     }
 
 
+def _unique_total(values):
+    totals = {_integer(value) for value in values}
+    return next(iter(totals)) if len(totals) == 1 else None
+
+
 def _snapshot(rows):
+    total = _unique_total(r["tokenUsage"]["total"].get("totalTokens") for r in rows)
     labels = [(r.get("threadId"), r.get("turnId")) for r in rows]
     if not all(_labels(identity) for identity in labels):
         return {"snapshot_total_tokens": None}
-    identities = set(labels)
-    totals = {r["tokenUsage"]["total"].get("totalTokens") for r in rows}
-    return {
-        "snapshot_total_tokens": _integer(next(iter(totals)))
-        if len(totals) == 1 and len(identities) == 1
-        else None
-    }
+    return {"snapshot_total_tokens": total if len(set(labels)) == 1 else None}
 
 
 def _instant(value):
@@ -204,15 +204,18 @@ def _cumulative(rows):
     }
 
 
-def _rollout(rows):
-    events = [r["payload"] for r in rows if r.get("payload", {}).get("type") == "token_count"]
-    totals = {r["info"]["total_token_usage"].get("total_tokens") for r in events}
+def _rollout_scope(rows):
     sessions = [
         (r["payload"].get("id"), r["payload"].get("cli_version"))
         for r in rows
         if r.get("type") == "session_meta"
     ]
-    bound = bool(sessions) and all(_labels(scope) for scope in sessions) and len(set(sessions)) == 1
+    return bool(sessions) and all(_labels(scope) for scope in sessions) and len(set(sessions)) == 1
+
+
+def _rollout(rows):
+    events = [r["payload"] for r in rows if r.get("payload", {}).get("type") == "token_count"]
+    total = _unique_total(r["info"]["total_token_usage"].get("total_tokens") for r in events)
     return {
         "cache_write_field": "present"
         if events
@@ -221,18 +224,32 @@ def _rollout(rows):
         "token_event_turn_id": "present"
         if events and all(r.get("turn_id") for r in events)
         else "absent",
-        "snapshot_total_tokens": _integer(next(iter(totals)))
-        if bound and len(totals) == 1
-        else None,
+        "snapshot_total_tokens": total if _rollout_scope(rows) else None,
     }
 
 
+def _message_identity_counts(rows):
+    records = {}
+    for row in rows:
+        identity = (row.get("uuid"), row.get("requestId"), row["message"].get("id"))
+        if not _labels(identity):
+            return None, None
+        record_id, *links = identity
+        if record_id in records and records[record_id] != links:
+            return None, None
+        records[record_id] = links
+    return len({links[0] for links in records.values()}), len(
+        {links[1] for links in records.values()}
+    )
+
+
 def _messages(rows):
+    requests, messages = _message_identity_counts(rows)
     variants = {json.dumps(r["message"].get("usage"), sort_keys=True) for r in rows}
     return {
         "record_count": len(rows),
-        "request_count": len({r.get("requestId") for r in rows}),
-        "message_count": len({r["message"].get("id") for r in rows}),
+        "request_count": requests,
+        "message_count": messages,
         "usage_variant_count": len(variants),
         "additive_total": None,
         "final_usage": "unverified",

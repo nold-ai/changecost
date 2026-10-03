@@ -697,3 +697,127 @@ def test_exact_labels_not_trimmed_and_correction_replay_preserved():
     assert result["current_amount"] == "0.03"
     assert result["retained_revision_count"] == 2
     assert result["billed_money"] is None
+
+
+@pytest.mark.parametrize(
+    "name,strategy",
+    [("codex-usage-snapshot", "snapshot"), ("codex-rollout-cache-write", "rollout")],
+)
+@pytest.mark.parametrize(
+    "amounts", [(1, True), (True, 1), (120, 120.0), (120.0, 120), (1, -1), (-1, 1)]
+)
+def test_every_total_validated_before_unique_selection(name, strategy, amounts):
+    sample = case(name)
+    records = (
+        sample["records"]
+        if strategy == "snapshot"
+        else [
+            r["payload"]
+            for r in sample["records"]
+            if r.get("payload", {}).get("type") == "token_count"
+        ]
+    )
+    for row, amount in zip(records, amounts, strict=True):
+        total = (
+            row["tokenUsage"]["total"]
+            if strategy == "snapshot"
+            else row["info"]["total_token_usage"]
+        )
+        total["totalTokens" if strategy == "snapshot" else "total_tokens"] = amount
+    with pytest.raises(EvidenceError):
+        evaluate_case(sample, strategy)
+    assert evaluate_case(case(name), strategy)["snapshot_total_tokens"] == 120
+
+
+@pytest.mark.parametrize(
+    "name,strategy",
+    [("codex-usage-snapshot", "snapshot"), ("codex-rollout-cache-write", "rollout")],
+)
+@pytest.mark.parametrize(
+    "amounts,expected",
+    [((0, 0), 0), ((None, None), None), ((120, None), None), ((120, 121), None), ((120, 120), 120)],
+)
+def test_valid_zero_missing_conflict_and_replay_totals(name, strategy, amounts, expected):
+    sample = case(name)
+    records = (
+        sample["records"]
+        if strategy == "snapshot"
+        else [
+            r["payload"]
+            for r in sample["records"]
+            if r.get("payload", {}).get("type") == "token_count"
+        ]
+    )
+    for row, amount in zip(records, amounts, strict=True):
+        total = (
+            row["tokenUsage"]["total"]
+            if strategy == "snapshot"
+            else row["info"]["total_token_usage"]
+        )
+        total["totalTokens" if strategy == "snapshot" else "total_tokens"] = amount
+    assert evaluate_case(sample, strategy)["snapshot_total_tokens"] == expected
+
+
+@pytest.mark.parametrize("field", ["uuid", "requestId", "message_id"])
+@pytest.mark.parametrize("label", INVALID_ID_LABELS)
+def test_message_correlation_identity_missing_partial_rows(field, label):
+    sample = case("claude-message-revisions")
+    row = sample["records"][1]
+    mapping, key = (row["message"], "id") if field == "message_id" else (row, field)
+    _assign_identity_label(mapping, key, label)
+    result = evaluate_case(sample, "messages")
+    assert result["request_count"] is None
+    assert result["message_count"] is None
+    assert result["record_count"] == 3
+    assert result["usage_variant_count"] == 2
+    assert result["additive_total"] is None
+    repaired = evaluate_case(case("claude-message-revisions"), "messages")
+    assert repaired["request_count"] == repaired["message_count"] == 1
+
+
+def test_message_correlation_exact_replay_and_conflicting_record_mapping():
+    sample = case("claude-message-revisions")
+    sample["records"].append(copy.deepcopy(sample["records"][0]))
+    result = evaluate_case(sample, "messages")
+    assert result["record_count"] == 4
+    assert result["request_count"] == result["message_count"] == 1
+    sample["records"][-1]["requestId"] = "another-request"
+    result = evaluate_case(sample, "messages")
+    assert result["request_count"] is None and result["message_count"] is None
+    sample["records"][-1]["uuid"] = "another-record"
+    assert evaluate_case(sample, "messages")["request_count"] == 2
+
+
+def test_message_correlation_true_distinct_exact_labels():
+    sample = case("claude-message-revisions")
+    sample["records"][1]["requestId"] = "request-002"
+    sample["records"][1]["message"]["id"] = "message-002"
+    result = evaluate_case(sample, "messages")
+    assert result["record_count"] == 3
+    assert result["request_count"] == result["message_count"] == 2
+    assert result["final_usage"] == "unverified"
+
+
+@pytest.mark.parametrize(
+    "name,strategy",
+    [("codex-usage-snapshot", "snapshot"), ("codex-rollout-cache-write", "rollout")],
+)
+def test_absent_total_is_unknown_not_zero(name, strategy):
+    sample = case(name)
+    row = sample["records"][0] if strategy == "snapshot" else sample["records"][-1]["payload"]
+    total = (
+        row["tokenUsage"]["total"] if strategy == "snapshot" else row["info"]["total_token_usage"]
+    )
+    total.pop("totalTokens" if strategy == "snapshot" else "total_tokens")
+    assert evaluate_case(sample, strategy)["snapshot_total_tokens"] is None
+
+
+def test_all_message_identifiers_missing_keep_physical_rows():
+    sample = case("claude-message-revisions")
+    for row in sample["records"]:
+        row.pop("uuid")
+        row.pop("requestId")
+        row["message"].pop("id")
+    result = evaluate_case(sample, "messages")
+    assert result["request_count"] is None and result["message_count"] is None
+    assert result["record_count"] == 3 and result["usage_variant_count"] == 2

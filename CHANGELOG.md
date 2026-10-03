@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Validate every snapshot/rollout quantity before replay deduplication; leave Claude
+  correlation counts unresolved for incomplete or conflicting identities and simplify
+  rollout scope checking without changing source approval boundaries.
+
 - Require nonblank identities across source detectors and complete stable economic
   basis plus exact revision identities before selecting synthetic correction amounts.
 

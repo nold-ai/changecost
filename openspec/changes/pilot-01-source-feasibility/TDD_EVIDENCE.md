@@ -213,3 +213,33 @@ No quantity, native approval, finality, adapter, portable schema, collection, qu
 threshold, coverage exclusion or review policy change was introduced.
 
 Final source control matrix: all 228 source tests pass, including the original 18 cases.
+
+### Approved focused postescape replan (batch 7) — 2026-10-04 Europe/Berlin
+
+At 01d2472852d0f695aa29ac708174fa60e48dae62, Codex review 5402909675
+exposed numeric equality hiding invalid quantities during deduplication and missing
+Claude identities producing positive correlation counts. Independent adjudication
+classified the latter as a genuine post-investigation identity-family escape: the
+stricter repository REPLAN rule took precedence over the helper's INVESTIGATE result.
+The maintainer explicitly approved this focused repair using batch seven and the
+existing 150 active-minute allowance; no allowance or history was reset.
+
+Supported Linux run 37156281112 completed both Python versions: 1,375 ordinary
+tests and strict OpenSpec 11/11 passed; all ten native analyzers ran. Nine passed;
+Radon failed on rollout cyclomatic complexity 17. No native result was UNKNOWN.
+This retained failed run is historical evidence, not acceptance of a later head.
+
+Whole-family quantity-before-deduplication and correlation investigation preceded
+batch seven. Specification preceded 51 controls: actual red was 36 failed / 15 passed.
+Minimum repairs validate each quantity before replay collapse, require complete
+stable correlation mappings, and separate rollout metadata scope checking. Three
+additional missing-field controls bring the passing source suite to 282 tests.
+Fault/repaired controls cover boolean/integer and float/integer aliases in both
+orders, zero, unknown and unequal totals, missing/partial/nonstring identities,
+replay and conflicting links while preserving physical row counts.
+
+Original 18 fixture bytes, finality and native approval criteria remain unchanged.
+No adapters, runtime commands, schema, collection, new source fields, thresholds or
+coverage exclusions were added. Affected independent closure, full scoped/staged
+checks, fresh supported Linux and current-head provider acceptance remain pending
+for the repaired head.

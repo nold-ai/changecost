@@ -309,3 +309,19 @@ require a complete stable event/currency/billing-basis key and present nonnegati
 integer revision/reference identities, excluding booleans, nulls and coercion.
 Missing or mixed economic bases remain unresolved. Quantities, precise Decimal
 amounts, finality and native-profile approval policies remain unchanged.
+
+### Quantity and message correlation repair — 2026-10-04
+
+Snapshot and rollout detectors validate every quantity before collapsing replayed
+totals. Boolean, floating-point and negative values cannot hide behind an equal
+integer in a set. Zero remains zero, missing values remain unknown, and unequal
+valid totals remain unresolved. Rollout metadata scope is checked separately from
+quantity selection to keep functions focused.
+
+Claude request/message counts require complete nonblank record, request and message
+identities for every row and a stable record-to-request/message mapping. A missing
+identity in one row or conflicting links for one record leaves those counts
+unresolved. Exact replay preserves correlation counts. Physical record count remains
+the observed row count; usage-variant count remains a structural observation. Neither
+establishes unique requests, additive consumption or finality. Native profile
+approval remains pending the artifacts listed above.
