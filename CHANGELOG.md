@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Require complete cumulative metric identity and a single correction history scope;
+  prevent synthetic projection reference fields from asserting billing corrections.
+
 - Preserve validated registered opaque profile/evidence references in inspection
   reports and safe failure diagnostics; reject ambiguous/unsafe references without
   exposing private input or granting source approval.

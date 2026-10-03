@@ -345,3 +345,24 @@ malformed-input, hash and selector failures retain the safe pair with a fixed co
 A failed inspection emits no partial success report or unverified success hash.
 Structural success remains separate from semantic approval, accounting authority and
 finality; missing native source artifacts still block issue #9 completion.
+
+### Complete existing-conclusion inventory repair — 2026-10-04
+
+Cumulative metric labels must be exact nonblank strings before accounting series
+keys are grouped. Missing, whitespace-only, nonstring or mixed exact labels leave
+estimates unresolved; Boolean/integer aliases cannot collapse identity keys. Valid
+strings retain their original bytes. Existing Decimal validation and UTC ordering,
+reset and equal-endpoint conflict checks keep their precedence and meaning.
+
+Retained revision count requires a complete single event/currency/billing-basis
+scope. Mixed or incomplete scopes leave both the current amount and that history
+count unresolved. Within one complete scope, replay preserves distinct revision
+count even when conflicting amounts make the current amount unavailable. This
+does not add a physical-row count or a cross-event accounting policy.
+
+Unsupported Enterprise projection reference fields, including positive-looking
+amounts or correction keys, cannot demonstrate a billing correction. The existing
+not-demonstrated correction outcome, unknown consumption/money and false native
+compatibility remain conservative. Observed multipliers, unit labels, integer field
+types and cache/turn metadata presence remain observations; they do not establish
+ledger quantities, attribution, cash, finality or native source support.

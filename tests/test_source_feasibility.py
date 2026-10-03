@@ -1002,3 +1002,208 @@ def test_safe_reference_length_boundary_and_unknown_later_entry(tmp_path):
     with pytest.raises(EvidenceError) as failure:
         inspect_manifest(request, data)
     assert failure.value.public_diagnostic() == "manifest-binding"
+
+
+@pytest.mark.parametrize(
+    "labels",
+    [
+        (True, True),
+        (1, 1),
+        (1.0, 1.0),
+        (" ", " "),
+        ("\t\u2003", "\t\u2003"),
+        (None, None),
+        ("valid.metric", None),
+        (True, 1),
+        (1, True),
+        ([], {}),
+        (ABSENT_IDENTITY, "claude_code.cost.usage"),
+    ],
+)
+def test_cumulative_metric_identity_fault_and_repaired_series(labels):
+    sample = case("claude-estimated-cost")
+    for row, label in zip(sample["records"], labels, strict=True):
+        if label is ABSENT_IDENTITY:
+            row.pop("metric")
+        else:
+            row["metric"] = label
+    result = evaluate_case(sample, "cumulative")
+    assert result["estimate_amount"] is None
+    assert result["currency"] == "USD" and result["attribution"] == "unbound"
+    assert result["billed_money"] is None and result["approved_profile"] is False
+    repaired = evaluate_case(case("claude-estimated-cost"), "cumulative")
+    assert repaired["estimate_amount"] == "0.03"
+
+
+def test_cumulative_identity_exact_strings_and_validation_precedence():
+    sample = case("claude-estimated-cost")
+    sample["records"][1]["metric"] += " "
+    assert evaluate_case(sample, "cumulative")["estimate_amount"] is None
+    sample["records"][0]["metric"] = sample["records"][1]["metric"]
+    assert evaluate_case(sample, "cumulative")["estimate_amount"] == "0.03"
+    for row in sample["records"]:
+        row["value"] = "0.000000001"
+    assert evaluate_case(sample, "cumulative")["estimate_amount"] == "0.000000001"
+    for row in sample["records"]:
+        row["value"] = "0"
+    assert evaluate_case(sample, "cumulative")["estimate_amount"] == "0"
+    sample["records"][0]["metric"] = None
+    sample["records"][0]["value"] = "not-a-decimal"
+    with pytest.raises(EvidenceError, match="^invalid-decimal$"):
+        evaluate_case(sample, "cumulative")
+
+
+@pytest.mark.parametrize("reference", [None, True, 0, 1, "1", " ", [], {}])
+def test_projection_reference_presence_never_proves_billing_correction(reference):
+    sample = case("enterprise-projection-boundaries")
+    sample["records"][0].update(
+        {
+            "replaces_revision": reference,
+            "revision": 2,
+            "event_id": "event-001",
+            "amount": "0.03",
+            "currency": "USD",
+            "billing_basis": "claimed-charge",
+        }
+    )
+    result = evaluate_case(sample, "projection")
+    assert result["billing_correction_observed"] is False
+    assert result["native_wire_compatible"] is False
+    assert result["cross_session_overlap"] == "unverified"
+    assert result["consumed_tokens"] is None and result["billed_money"] is None
+    assert result["approved_profile"] is False
+    assert (
+        evaluate_case(case("enterprise-projection-boundaries"), "projection")[
+            "billing_correction_observed"
+        ]
+        is False
+    )
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("event_id", "another-event"),
+        ("event_id", None),
+        ("event_id", " "),
+        ("event_id", True),
+        ("event_id", []),
+        ("currency", "EUR"),
+        ("currency", None),
+        ("billing_basis", "another-basis"),
+        ("billing_basis", {}),
+    ],
+)
+def test_unsupported_correction_scope_cannot_claim_retained_revision_count(field, value):
+    sample = case("correction")
+    extra = copy.deepcopy(sample["records"][0])
+    extra[field] = value
+    sample["records"].append(extra)
+    result = evaluate_case(sample, "replacement")
+    assert result["current_amount"] is None
+    assert result["retained_revision_count"] is None
+    repaired = evaluate_case(case("correction"), "replacement")
+    assert repaired["current_amount"] == "0.03" and repaired["retained_revision_count"] == 2
+
+
+def test_complete_history_cardinality_separate_from_current_amount():
+    sample = case("correction")
+    sample["records"].append(copy.deepcopy(sample["records"][0]))
+    result = evaluate_case(sample, "replacement")
+    assert result["retained_revision_count"] == 2 and result["current_amount"] == "0.03"
+    sample["records"][-1]["amount"] = "0.06"
+    result = evaluate_case(sample, "replacement")
+    assert result["retained_revision_count"] == 2 and result["current_amount"] is None
+    sample = case("correction")
+    later = copy.deepcopy(sample["records"][1])
+    later.update({"revision": 3, "replaces_revision": 2, "amount": "0.02"})
+    sample["records"].append(later)
+    result = evaluate_case(sample, "replacement")
+    assert result["retained_revision_count"] == 3 and result["current_amount"] == "0.02"
+
+
+@pytest.mark.parametrize("quantity", [0, None, ABSENT_IDENTITY, True, False, -1])
+def test_inventory_context_occupancy_quantity_and_native_boundaries(quantity):
+    sample = case("cursor-context-not-consumption")
+    if quantity is ABSENT_IDENTITY:
+        sample["records"][0].pop("contextTokensUsed")
+    else:
+        sample["records"][0]["contextTokensUsed"] = quantity
+    if type(quantity) is bool or quantity == -1:
+        with pytest.raises(EvidenceError, match="^invalid-quantity$"):
+            evaluate_case(sample, "context")
+    else:
+        result = evaluate_case(sample, "context")
+        assert result["context_occupancy_tokens"] == (0 if quantity == 0 else None)
+        assert result["consumed_tokens"] is None and result["session_finality"] == "unverified"
+    assert (
+        evaluate_case(case("cursor-context-not-consumption"), "context")["context_occupancy_tokens"]
+        == 120
+    )
+
+
+@pytest.mark.parametrize("value", [True, "70", None, ABSENT_IDENTITY])
+def test_inventory_counter_type_observation_and_repaired_input(value):
+    sample = case("enterprise-message-counter-boundary")
+    metadata = sample["records"][0]["v"]["metadata"]
+    if value is ABSENT_IDENTITY:
+        metadata.pop("promptTokens")
+    else:
+        metadata["promptTokens"] = value
+    result = evaluate_case(sample, "counters")
+    assert result["field_type_evidence"] == "unverified"
+    assert result["additive_session_tokens"] is None and result["billed_money"] is None
+    repaired = evaluate_case(case("enterprise-message-counter-boundary"), "counters")
+    assert repaired["field_type_evidence"] == "producer-reported integer paths"
+    assert repaired["approved_profile"] is False
+
+
+@pytest.mark.parametrize("value", [True, "1", 2, None])
+def test_inventory_enum_scalar_observation_not_native_compatibility(value):
+    sample = case("documented-example-not-wire-evidence")
+    for row in sample["records"]:
+        row["aggregationTemporality"] = value
+    result = evaluate_case(sample, "encoding")
+    assert result["integer_enum_valid_for_delta"] is False
+    assert result["native_export_observed"] is False and result["hook_mapping_verified"] is False
+    repaired = case("documented-example-not-wire-evidence")
+    repaired["records"][0]["aggregationTemporality"] = 1
+    assert evaluate_case(repaired, "encoding")["integer_enum_valid_for_delta"] is True
+
+
+def test_inventory_rollout_field_presence_is_only_metadata():
+    sample = case("codex-rollout-cache-write")
+    events = [
+        r["payload"] for r in sample["records"] if r.get("payload", {}).get("type") == "token_count"
+    ]
+    for event in events:
+        event["info"]["total_token_usage"].pop("cache_write_input_tokens")
+    assert evaluate_case(sample, "rollout")["cache_write_field"] == "absent"
+    for event in events:
+        event["info"]["total_token_usage"]["cache_write_input_tokens"] = None
+        event["turn_id"] = True
+    result = evaluate_case(sample, "rollout")
+    assert result["cache_write_field"] == "present" and result["token_event_turn_id"] == "present"
+    assert result["snapshot_total_tokens"] == 120
+    assert result["billed_money"] is None and result["approved_profile"] is False
+
+
+@pytest.mark.parametrize("name", list(STRATEGIES))
+def test_inventory_positive_looking_claims_never_promote_native_support(name):
+    sample = case(name)
+    sample.update(
+        {
+            "provenance": "native",
+            "approved_profile": True,
+            "native_export_observed": True,
+            "hook_mapping_verified": True,
+            "billed_money": "0.01",
+        }
+    )
+    result = evaluate_case(sample, STRATEGIES[name])
+    assert result["billed_money"] is None and result["approved_profile"] is False
+    for key in ["native_export_observed", "hook_mapping_verified", "native_wire_compatible"]:
+        if key in result:
+            assert result[key] is False
+    repaired = evaluate_case(case(name), STRATEGIES[name])
+    assert repaired["billed_money"] is None and repaired["approved_profile"] is False

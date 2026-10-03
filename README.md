@@ -193,3 +193,6 @@ correlation counts require complete stable identities; physical row counts remai
 
 Inspection reports and validated-reference failures retain registered opaque profile/
 evidence keys. Unknown or unsafe references remain redacted; source approval stays separate.
+
+Cumulative estimates require exact nonblank metric identities; correction history
+counts require a complete single scope. Projection fields do not demonstrate billing corrections.

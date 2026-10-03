@@ -246,3 +246,23 @@ changing the evaluator to fit an expected result.
 - **GIVEN** Claude records with missing or malformed record/request/message identifiers, including partially valid rows
 - **WHEN** request/message correlation counts are computed
 - **THEN** those identity counts remain unresolved; physical row count and observed usage-variant count retain their structural meaning. Exact complete labels and stable record-to-request/message mapping support known distinct counts; conflicting mapping under one record identity stays unresolved. Finality/additive/native support remain unknown.
+
+#### Scenario: Complete cumulative metric series identity
+
+- **GIVEN** cumulative cost points with absent, blank, nonstring or Boolean/integer-aliased metric labels
+- **WHEN** accounting series keys are grouped
+- **THEN** metric identity is an exact nonblank string before grouping; invalid or mixed exact identities leave the estimate unresolved
+- **AND** original exact strings, Decimal quantity validation, UTC ordering/reset/conflict precedence and native approval boundaries remain unchanged.
+
+#### Scenario: Projection fields do not demonstrate billing corrections
+
+- **GIVEN** unsupported Enterprise projection rows with positive-looking replacement references, amounts or producer claims
+- **WHEN** synthetic conclusions are computed
+- **THEN** billing correction remains not demonstrated, native compatibility is false, and consumption, money and profile approval remain unverified.
+
+#### Scenario: Retained revision count requires a complete single scope
+
+- **GIVEN** correction rows with mixed or incomplete event/currency/billing-basis scopes
+- **WHEN** current amount and retained revision count are computed
+- **THEN** both remain unresolved rather than deduplicating unrelated events by bare revision
+- **AND** complete same-scope history retains distinct revisions through replay, including when conflicts make current amount unavailable.

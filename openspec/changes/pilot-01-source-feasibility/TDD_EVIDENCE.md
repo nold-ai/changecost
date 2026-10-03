@@ -278,3 +278,41 @@ and required provider completion remain pending. No adapters, public runtime com
 schema, collection, account change, paid request, threshold/exclusion or authenticated
 provenance framework was added. The registered keys are intended public opaque
 references, not authentication of source claims or human review.
+
+### Approved complete-inventory replan (batch 9) — 2026-10-04 Europe/Berlin
+
+At published18228bbf99740073d70284ac705c421e015f63c1, supported Linux
+37160043893 passed both versions:1,464tests,strict11/11,all10native members
+ran/PASS,assurancePASS,exit0,noUNKNOWN (PASS_WITH_ADVISORY). Codex5403306710
+then reported malformed cumulative metric identity producing an estimate. A retained
+full18inventory reproduction confirmed the result without changing fixture oracles;
+the earlier reduced one-case inventory failure was preserved, not called a pass.
+Independent adjudication classified this as a genuine post-investigation identity
+escape, requiring explicit REPLAN. CodeRabbit current-head completion remained
+missing; its capacity-only query reported the next availability, without starting
+or paying for a review. Earlier full review covered84f7 and was stale.
+
+Before further fixes, independent immutable-head inventory mapped all18cases,
+13strategies,123case/outputslots,49outputnames and74historicaloracle slots. It
+collected three demonstrated P2s: omitted cumulative metric identity; projection
+key presence falsely implying billing correction; and unsupported mixed-event
+history deduplicated by bare revision. The maintainer explicitly answered
+“Approve the scoped replan” for one ninth batch/+30active minutes (9/210total),
+preserving eight used batches,172.689recorded active minutes and every failure.
+The writer traced each output's guard/precedence against this inventory before
+repair. No new provider fields, supported capabilities or runtime product scope.
+
+Specification preceded30fault/repaired controls: actual red24failed/6passed.
+Minimum repair uses the shared exact nonblank metric predicate before grouping,
+keeps unsupported projection billing correction not demonstrated, and makes history
+count unavailable outside a complete single economic/event scope. Original same-scope
+revision counts, conflicts/replay and precise Decimal/UTC behavior remain intact.
+Bounded containment controls cover existing context quantities, counter/enum type
+observations, rollout field presence and all18fixed native/cash boundaries. These
+distinguish structural observations from billing/aggregation claims; they introduce
+no provider quantity policy. All380source tests pass, including unchanged18fixtures.
+
+Required affected independent closure, full local/staged checks, fresh supported
+Linux and both current-head providers remain pending for the repaired head. Native
+Copilot/Cursor/hook samples still block profile approval and issue9completion.
+Rollback preserves originals, scoped stash, Quote archive and review history.

@@ -127,7 +127,8 @@ def _tokens(rows):
 def _replacement(rows):
     revisions = {}
     scopes = [(r.get("event_id"), r.get("currency"), r.get("billing_basis")) for r in rows]
-    valid = all(_labels(scope) for scope in scopes) and len(set(scopes)) == 1
+    scope_valid = all(_labels(scope) for scope in scopes) and len(set(scopes)) == 1
+    valid = scope_valid
     for row in rows:
         key = _revision(row.get("revision"))
         _decimal(row.get("amount"))
@@ -143,7 +144,7 @@ def _replacement(rows):
     return {
         "current_amount": ordered[-1]["amount"] if valid else None,
         "currency": ordered[-1].get("currency") if _labels([ordered[-1].get("currency")]) else None,
-        "retained_revision_count": len(revisions),
+        "retained_revision_count": len(revisions) if scope_valid else None,
     }
 
 
@@ -175,7 +176,7 @@ def _cumulative_points(rows):
     for row in rows:
         value = _decimal(row.get("value"))
         start, end = _instant(row.get("interval_start")), _instant(row.get("interval_end"))
-        if start is None or end is None or end < start or not row.get("metric"):
+        if start is None or end is None or end < start or not _labels([row.get("metric")]):
             return None
         points.append((start, end, value, row))
     return points
@@ -310,13 +311,13 @@ def _hosted(rows, sample):
     }
 
 
-def _projection(rows):
+def _projection(_rows):
     return {
         "cross_session_overlap": "unverified",
         # Synthetic shape probes cannot establish native wire compatibility.
         "native_wire_compatible": False,
         "consumed_tokens": None,
-        "billing_correction_observed": any("replaces_revision" in r for r in rows),
+        "billing_correction_observed": False,
     }
 
 
