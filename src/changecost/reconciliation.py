@@ -259,10 +259,10 @@ def snapshot_records(connection, cutoff: Cutoff, records=None) -> dict:
     return {k: records[k] for k in included}
 
 
-def computation_details(records, change, scope) -> dict:
+def computation_details(records, change, scope, index=None) -> dict:
     from changecost.coverage import CoverageIndex, assess_coverage, supported_event
 
-    index = CoverageIndex(records)
+    index = index if index is not None else CoverageIndex(records)
     bindings = {run_key(r.run): r for r in index.change_bindings[key(reference(change))]}
     members = [bindings[k].run for k in sorted(bindings)]
     selection = select(records, scope, set(bindings), index)

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Reject Quote explanation when the local clock predates committed availability,
+  using one clock reading in the existing read snapshot. Preserve imported-claim
+  boundaries, immutable retries and equality with the latest availability.
+  Reuse lifecycle indexes and empty-peer diagnostics to bound zero-attempt cohort
+  work while preserving unbound evidence, corrections and historical replay.
+
 - Simplify Quote metadata validation, peer/cohort selection and historical replay
   helpers to satisfy native maintainability rules without changing estimator behavior.
   Split installed offline CLI fixtures into focused stages while retaining retry and

@@ -585,3 +585,235 @@ def test_quote_inputs_keep_unattributed_raw_evidence_without_guessing_repository
     result = quote(store, minimum=1)
     assert reference(unknown) in result.inputs
     assert result.state == "unpriced"
+
+
+def quote_inspection_claim(tmp_path, claim_kind):
+    from changecost.models import Bundle
+
+    store = setup(tmp_path)
+    peer(store, "peer", "1")
+    original = quote(store, minimum=1)
+    claim = original
+    if claim_kind == "foreign":
+        destination = Store(tmp_path / "destination", clock=lambda: NOW)
+        destination.import_bundle(store.export_bundle())
+        store = destination
+    elif claim_kind in {"legacy", "unsupported"}:
+        changes = {"record_id": claim_kind}
+        if claim_kind == "legacy":
+            changes["estimation"] = None
+        else:
+            changes["algorithm_version"] = "future/v9"
+        claim = original.model_copy(update=changes)
+        store.import_bundle(Bundle(source=store.snapshot(), records=[claim]))
+    return store, original, claim
+
+
+def quote_database_snapshot(store):
+    with store.connect(readonly=True) as connection:
+        return tuple(connection.iterdump())
+
+
+@pytest.mark.parametrize("claim_kind", ["computed", "legacy", "unsupported", "foreign"])
+@pytest.mark.parametrize("by_reference", [False, True])
+def test_quote_explanation_rejects_backward_clock_without_mutation(
+    tmp_path, claim_kind, by_reference
+):
+    from changecost.quotes import inspect_quote
+
+    store, original, claim = quote_inspection_claim(tmp_path, claim_kind)
+    later = NOW + timedelta(hours=2)
+    store.clock = lambda: later
+    register_change(store, "repo", "later")
+    before = quote_database_snapshot(store)
+    record = reference(claim) if by_reference else claim
+    store.clock = lambda: NOW + timedelta(hours=1)
+    with pytest.raises(ContractError, match="clock moved backwards"):
+        store.export_bundle()
+    with pytest.raises(ContractError, match="clock moved backwards"):
+        inspect_quote(store, record)
+    assert quote_database_snapshot(store) == before
+    if claim_kind != "foreign":
+        assert quote(store, minimum=1) == original
+        assert quote_database_snapshot(store) == before
+    store.clock = lambda: later
+    explanation = inspect_quote(store, record)
+    expected = "reproduced" if claim_kind == "computed" else "not_computed"
+    assert explanation["economic_validation"] == expected
+    assert quote_database_snapshot(store) == before
+    store.clock = lambda: later + timedelta(hours=1)
+    assert inspect_quote(store, record)["economic_validation"] == expected
+    assert quote_database_snapshot(store) == before
+
+
+def test_quote_explanation_reads_clock_once(tmp_path):
+    from changecost.quotes import inspect_quote
+
+    store = setup(tmp_path)
+    result = quote(store)
+    readings = iter([NOW])
+    store.clock = lambda: next(readings)
+    assert inspect_quote(store, result)["economic_validation"] == "reproduced"
+
+
+class CountedQuoteSnapshot(dict):
+    """Measure record traversal across the estimator rather than wall-clock timing."""
+
+    def __init__(self, records):
+        super().__init__(records)
+        self.visits = 0
+
+    def values(self):
+        self.visits += len(self)
+        return super().values()
+
+
+def empty_peers(store, count):
+    from changecost.models import Change, Features, Outcome
+    from changecost.operations import common
+
+    def operation(records, store_id, now):
+        additions = []
+        for n in range(count):
+            change = Change(
+                **common(store_id, now),
+                repository_id="repo",
+                change_id=f"empty-{n}",
+                features=Features(captured_at=now, recorded_at=now),
+            )
+            additions.append(change)
+            if n % 2:
+                additions.append(
+                    Outcome(**common(store_id, now), subject=reference(change), outcome="abandoned")
+                )
+        return additions, additions
+
+    return store.apply(operation)
+
+
+def test_zero_attempt_peer_growth_is_bounded_and_diagnostics_preserved(
+    tmp_path, monkeypatch, record_property
+):
+    from changecost import quotes
+
+    original = quotes.estimate
+    visits = []
+
+    def measured(records, *arguments):
+        counted = CountedQuoteSnapshot(records)
+        result = original(counted, *arguments)
+        visits.append(counted.visits)
+        return result
+
+    monkeypatch.setattr(quotes, "estimate", measured)
+    for count in (32, 64, 128):
+        store = setup(tmp_path / str(count))
+        records = empty_peers(store, count)
+        result = quote(store, minimum=1)
+        assert result.state == "unpriced" and result.p50.amount is None
+        assert result.sample_count == 0 and result.cohort == "repository"
+        assert result.estimation is not None
+        reasons = {(e.reference.record_id, e.reason) for e in result.estimation.exclusions}
+        for change in [r for r in records if r.kind == "change"]:
+            assert (change.record_id, "no_linked_runs") in reasons
+            assert (change.record_id, "missing_economic_evidence") in reasons
+            assert ((change.record_id, "open_change") in reasons) == (
+                int(change.change_id.split("-")[1]) % 2 == 0
+            )
+        assert {(r.kind, r.record_id) for r in records} <= {
+            (r.kind, r.record_id) for r in result.inputs
+        }
+    record_property("record_visits", visits)
+    assert visits[1] < 3 * visits[0]
+    assert visits[2] < 3 * visits[1]
+
+
+def test_empty_peer_cache_preserves_mixed_evidence_and_original_history(tmp_path):
+    from changecost.models import Evidence
+    from changecost.operations import common
+    from changecost.quotes import inspect_quote
+    from changecost.reconciliation import snapshot_records
+    from tests.test_reconciliation import locator
+
+    store = setup(tmp_path)
+    peer(store, "complete", "2")
+    original = quote(store, "priced", 1)
+    assert original.p50.amount == "2"
+    unbound = import_events(store, event("unbound", "3"))[0]
+    pending = import_events(
+        store, event("pending", "7", replaces=locator("not-arrived"), correction_reason="fix")
+    )[0]
+
+    def raw_evidence(records, store_id, now):
+        raw = Evidence(
+            **common(store_id, now),
+            provider="unverified",
+            surface="fixture",
+            profile="unknown/v1",
+            identity_scope="namespaced",
+            source_key="raw",
+        )
+        return [raw], raw
+
+    raw = store.apply(raw_evidence)
+    foreign = register_change(store, "foreign", "irrelevant")
+    baseline = quote(store, "uncertain", 1)
+    additions = empty_peers(store, 32)
+    result = quote(store, "many-empty", 1)
+    assert result.state == baseline.state == "unpriced"
+    assert result.sample_count == baseline.sample_count == 0
+    inputs = {(r.kind, r.record_id) for r in result.inputs}
+    assert {("evidence", unbound), ("evidence", pending), (raw.kind, raw.record_id)} <= inputs
+    assert (foreign.kind, foreign.record_id) not in inputs
+    assert result.estimation is not None
+    assert any(e.reason == "pending_correction" for e in result.estimation.exclusions)
+    with store.connect(readonly=True) as connection:
+        records = snapshot_records(connection, result.cutoff)
+    for candidate in [r for r in additions if r.kind == "change"]:
+        assert_empty_peer_diagnostics(records, candidate, result, inputs)
+    assert inspect_quote(store, original)["economic_validation"] == "reproduced"
+    assert_quote_subset_import(store, result, inputs, tmp_path / "subset")
+
+
+def assert_empty_peer_diagnostics(records, candidate, result, inputs):
+    from changecost.reconciliation import computation_details
+
+    details = computation_details(records, candidate, scope())
+    assert {(r.kind, r.record_id) for r in details["inputs"]} <= inputs
+    assert result.estimation is not None
+    reasons = {
+        e.reason for e in result.estimation.exclusions if e.reference == reference(candidate)
+    }
+    assert reasons == set(details["unknown_reasons"])
+
+
+def assert_quote_subset_import(store, result, inputs, destination_path):
+    from changecost.models import Bundle
+    from changecost.quotes import inspect_quote
+
+    subset = Bundle(
+        source=store.snapshot(),
+        records=[r for r in store.records() if (r.kind, r.record_id) in inputs] + [result],
+    )
+    destination = Store(destination_path, clock=lambda: NOW)
+    destination.import_bundle(loads_bundle(dumps_bundle(subset)))
+    assert inspect_quote(destination, result)["local_computation"] is False
+
+
+def test_empty_peer_cache_replays_prior_full_reconciliation_result(tmp_path, monkeypatch):
+    from changecost import quotes
+    from changecost.reconciliation import computation_details
+    from tests.test_reconciliation import locator
+
+    store = setup(tmp_path)
+    empty_peers(store, 32)
+    import_events(store, event("unbound", "3"))
+    import_events(store, event("pending", "7", replaces=locator("absent"), correction_reason="fix"))
+
+    def full_details(records, candidate, economic_scope, index, cache):
+        return computation_details(records, candidate, economic_scope)
+
+    with monkeypatch.context() as previous:
+        previous.setattr(quotes, "peer_details", full_details)
+        original = quote(store, "full-reconciliation", 1)
+    assert quotes.inspect_quote(store, original)["economic_validation"] == "reproduced"

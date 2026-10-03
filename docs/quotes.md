@@ -56,13 +56,23 @@ Stored metadata retains target features, parameters, selected exact peer totals/
 ordered cohorts, exclusions and synthetic provenance. Inputs retain consulted normalized
 and lifecycle dependencies. Explain verifies the exact stored payload and recomputes
 supported versions at its original time/sequence cutoff in one read snapshot. Later
-imports, bindings or corrections do not leak into the historical result.
+imports, bindings or corrections do not leak into the historical result. Explain reads
+the local clock once in that transaction and rejects a clock earlier than the latest
+committed local availability, including for imported or unsupported claims. Equality
+with the latest availability is allowed. Restore the clock before inspecting history;
+an identical durable computation retry still returns its original result unchanged.
 
 Portable claims remain distinct from local receipts. Older Quotes without metadata
 are not_computed; foreign/future/unavailable cutoffs or unsupported versions cannot
 certify replay. A consistent [backup](contracts.md#transactions-revisions-and-historical-limits)
 preserves local receipts; portable import establishes destination availability when it
 arrives. Keep records private and use allowlisted normalized data, never prompts or transcripts.
+
+Zero-attempt peer Changes share one lifecycle index and a constant number of empty
+reconciliation evaluations for open/terminal lifecycle presence. Each peer retains
+its own Change/outcome references and rejection reasons; repository-wide unbound
+evidence and pending corrections remain in the auditable input closure. Run-bearing
+peers retain the complete reconciliation evaluator.
 
 No package version or SQLite layout migration is introduced. Back up before changing
 checkouts; rollback uses a follow-up code revert and separate compatible backup restore,

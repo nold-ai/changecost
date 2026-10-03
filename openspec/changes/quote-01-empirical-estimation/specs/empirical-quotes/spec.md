@@ -219,3 +219,17 @@ original result/cutoff and conflicting reuse SHALL fail unchanged.
 - **GIVEN** a missing target/store, invalid selectors or metadata, a private sentinel in an undeclared field, or an injected pre-commit failure
 - **WHEN** quote or import fails, then explain inspects a stored Quote
 - **THEN** no partial Quote or receipt is published, diagnostics omit private field names/values, and explanation leaves records and local availability unchanged without network access.
+
+#### Scenario: Explanation rejects a backward local clock
+
+- **GIVEN** a stored computed, foreign, legacy or unsupported Quote and later committed local availability
+- **WHEN** explain reads it by reference or exact payload while the wall clock is earlier than that availability
+- **THEN** it captures the clock once in its existing read transaction, rejects the rollback with a safe clock diagnostic before replay eligibility, and leaves records, receipts and observations unchanged.
+- **AND** equality with the latest local availability is allowed; restoration permits the original replay, while an identical durable Quote retry preserves its original result even during clock rollback.
+
+#### Scenario: Zero-attempt cohort evaluation remains bounded
+
+- **GIVEN** many open or terminal Changes without linked attempts, including imported records and repository-wide unattributed or unresolved economic evidence
+- **WHEN** quote evaluates eligible peers from its committed snapshot
+- **THEN** growth in snapshot record visits remains near-linear for additional zero-attempt Changes; all incomplete-peer reasons, Change/outcome references and relevant unbound/correction evidence remain auditable without repeated full reconciliation for each empty peer.
+- **AND** run-bearing peers retain complete reconciliation and historical replay behavior; this adds no provider policy or arbitrary cohort-count limit.

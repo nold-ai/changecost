@@ -5,6 +5,7 @@ from contextlib import closing
 from decimal import Decimal
 from uuid import uuid4
 
+from changecost.coverage import CoverageIndex
 from changecost.economic_graph import correction_graph, economic_key
 from changecost.models import (
     Change,
@@ -174,10 +175,32 @@ def peer_features_valid(records, candidate, availability):
     )
 
 
+def zero_run_peer_details(records, candidate, scope, index, cache):
+    """Reuse common empty-membership evidence without dropping candidate lifecycle refs."""
+    outcome = index.outcomes.get(key(reference(candidate)))
+    terminal = outcome is not None
+    if terminal not in cache:
+        details = computation_details(records, candidate, scope, index)
+        cache[terminal] = details
+        return details
+    # Common evidence roots were retained when this lifecycle class was first evaluated.
+    inputs = [reference(candidate)]
+    if outcome is not None:
+        inputs.append(reference(outcome))
+    return {**cache[terminal], "inputs": inputs}
+
+
+def peer_details(records, candidate, scope, index, cache):
+    if index.change_bindings[key(reference(candidate))]:
+        return computation_details(records, candidate, scope, index)
+    return zero_run_peer_details(records, candidate, scope, index, cache)
+
+
 def evaluate_peers(records, change, scope, availability):
     peers = []
     exclusions = []
     dependencies = feature_inputs(records, change)
+    index, empty_cache = CoverageIndex(records), {}
     candidates = sorted(
         (
             r
@@ -187,7 +210,7 @@ def evaluate_peers(records, change, scope, availability):
         key=lambda r: key(reference(r)),
     )
     for candidate in candidates:
-        details = computation_details(records, candidate, scope)
+        details = peer_details(records, candidate, scope, index, empty_cache)
         dependencies.update(key(r) for r in details["inputs"])
         exclusions.extend(
             QuoteExclusion(reference=e.reference, reason=e.reason) for e in details["exclusions"]
@@ -398,11 +421,14 @@ def inspect_quote(store: Store, record: Quote | RecordRef):
         record, ref = stored_quote(records, record)
         local = key(reference(record)) in computation_refs(connection, records)
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
+        now = timestamp(store.clock())
+        if last_at is not None and timestamp(last_at) > now:
+            raise ContractError("clock moved backwards")
         eligible = (
             replay_supported(record)
             and record.cutoff.store_id == store_id
             and record.cutoff.sequence <= sequence
-            and record.cutoff.at <= timestamp(store.clock())
+            and record.cutoff.at <= now
         )
         reproduced = eligible and quote_reproduced(connection, records, record)
         observation = connection.execute(

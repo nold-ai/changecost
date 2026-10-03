@@ -217,3 +217,69 @@ suite plus four subtests passed, including both installed offline public CLI
 proofs; no behavior red was invented for this pure refactor. Supported-Linux
 native assurance, independent final verification, and fresh remote review remain
 pending for the final committed head.
+
+## Quote explanation clock guard — 2026-10-03 Europe/Berlin
+
+Confirmed remote Codex P2 annotation on commit
+`34cae162741df3979bc1210195df88865149b5e5` identified Quote explanation replay
+while the clock predates later committed local availability. Existing export and
+Settlement inspection reject this same rollback. Added the explicit delta-spec
+scenario first, then parameterized computed, legacy, unsupported and foreign
+claims across both reference and exact-payload entry points.
+
+Real red: `.venv/bin/python -m pytest tests/test_quotes.py -k 'backward_clock or reads_clock_once' -q`
+returned exit 1: all eight rollback cases failed to raise, and the one-clock test
+passed. Green with the same command returns exit 0: nine cases passed. The fix
+captures the clock once immediately after metadata in the same read transaction,
+checks `last_at`, then uses that same instant for cutoff admissibility. No second
+transaction or export/reconstruction path was introduced.
+
+The tests verify equality with latest availability, restored historical replay,
+unchanged complete database dumps (records, receipts and observations), and
+identical durable local retries before clock validation. Legacy/unsupported and
+foreign claim paths reject rollback even when replay would otherwise short-circuit.
+The complete canonical four-rule oracle over all 11 intended Python paths has
+zero errors and 18 advisory warnings; scoped type checks passed.
+
+The maintainer's renewed direct instruction to fix PR annotations authorized one
+minimum collected correction batch and a bounded additional 30 active minutes
+for this annotation's complete verification/native/provider closure: six total
+batches and 120 minutes, preserving counters and every historical failure. This
+is not a blanket 6/180 allowance. Full exact-head native CI and remote acceptance
+remain pending until the verified fix is committed and pushed; its thread will
+be resolved only after pushed fix/proof readback.
+
+Scoped green: `.venv/bin/python -m pytest tests/test_quotes.py tests/test_quote_cli.py tests/test_reconciliation.py tests/test_store.py tests/test_contracts.py tests/test_contract_cli.py tests/test_cli.py -q` returned exit 0: 248 tests and 4 subtests passed in 4.88 seconds, including installed offline Quote/retry/explanation proofs.
+
+## Collected P3 zero-attempt cohort work — 2026-10-03 Europe/Berlin
+
+The collected Codex security P3 annotation independently demonstrated quadratic
+record visits for imported bare Changes. This joins the same sixth correction
+batch before its final freeze; no additional batch or allowance was created.
+The delta spec was extended first. A public Quote-operation regression measures
+snapshot scanning work instead of wall-clock timing and checks open/terminal
+peer reasons, null quantiles, cohort state and Change/outcome provenance.
+
+Real red: `.venv/bin/python -m pytest tests/test_quotes.py -k zero_attempt_peer_growth -q`
+returned exit 1 because 32/64 peers required 9016/33368 record visits, exceeding
+the bounded doubling-growth assertion. All semantic/reference checks passed
+before the growth failure. Green with a traversal counter records 1617/3201/6369
+visits for 32/64/128 peers, below threefold growth per doubling.
+
+The minimum fix shares one CoverageIndex and reuses complete zero-membership
+reconciliation diagnostics for the constant open/terminal lifecycle classes.
+It substitutes each candidate's own Change/outcome references and preserves
+common evidence, exclusion multiplicity and flags. Run-bearing peers retain the
+same complete evaluator; no new provider policy, count cap or framework is added.
+
+Mixed regression evidence preserves a complete peer, relevant unbound normalized
+economics, pending corrections, unattributed raw Evidence, foreign-record
+exclusion, dependency-subset portable import and original historical replay.
+A separate compatibility regression computes a Quote through the prior full
+per-peer evaluator and verifies exact replay through the optimized evaluator,
+including duplicate global exclusion provenance. The complete canonical four
+maintainability passes report zero errors and 21 advisory warnings over all 11
+intended Python paths. Supported-Linux and fresh remote review remain required
+at the pushed correction head.
+
+Collected annotation scoped green: `.venv/bin/python -m pytest tests/test_quotes.py tests/test_quote_cli.py tests/test_reconciliation.py tests/test_store.py tests/test_contracts.py tests/test_contract_cli.py tests/test_cli.py -q` returned exit 0: 251 tests and 4 subtests passed. Final full-suite/native/remote acceptance is separate and pending.
