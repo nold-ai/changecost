@@ -165,7 +165,7 @@ def event_coverage_reasons(index, run, interval, events, scope, refs):
     return reasons
 
 
-def assess_coverage(index, change, members, selection, selected, scope):
+def assess_coverage(index, change, members, selection, selected, scope, compact=False):
     reasons, refs = set(), set()
     outcome = index.outcomes.get(key(reference(change)))
     if outcome is None:
@@ -184,10 +184,12 @@ def assess_coverage(index, change, members, selection, selected, scope):
         reasons.update(run_reasons)
         refs.update(run_refs)
     refs.update(key(reference(r)) for r in index.change_bindings[key(reference(change))])
-    if any(selection.runs[key(reference(e))] is None for e in selection.selected):
+    if selection.shared_unbound or any(
+        selection.runs[key(reference(e))] is None for e in selection.selected
+    ):
         reasons.add("relevant_unbound_evidence")
-    missing = unpriced_evidence(index, {run_key(run) for run in members})
-    if missing:
+    missing = unpriced_evidence(index, {run_key(run) for run in members}, shared=not compact)
+    if missing or (compact and index.raw_unbound):
         reasons.add("missing_economic_evidence")
         refs.update(missing)
     if any(economic_identity(e.component) != scope.economic for e in selected):
@@ -207,7 +209,11 @@ def lifecycle_refs(*records) -> set:
     return {key(reference(record)) for record in records if record is not None}
 
 
-def unpriced_evidence(index, members=None, repository_id=None) -> set:
+def unpriced_evidence(index, members=None, repository_id=None, shared=True) -> set:
+    if members is not None and repository_id is None and hasattr(index, "raw_by_run"):
+        return (index.raw_unbound if shared else set()) | set().union(
+            *(index.raw_by_run[m] for m in members)
+        )
     refs = set()
     for ref in index.evidence.keys() - index.economics:
         binding = index.bindings.get(ref)

@@ -146,6 +146,10 @@ does not waive that gate. **quote-01-empirical-estimation (#15)** depends only o
 settlement and can be prepared using synthetic evidence if provider inspection is
 unavailable. No provider parser, live collection or quote algorithm is delivered
 by settlement. New implementation still requires a subsequent request.
+Quotes #15 were locally prepared on 2026-10-03 against the delivered synthetic
+coverage boundary; [preparation evidence](changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md)
+records the current contract reconciliation. Selected delivery is a scoped stash,
+not a published plan or runtime implementation. Native prerequisites remain unchanged.
 See the [historical settlement preparation evidence](changes/archive/2026-10-02-settlement-01-reconciliation/PREPARATION_EVIDENCE.md)
 and [accepted implementation evidence](changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md). All pilot changes
 remain the first unreleased 0.x product; no public v2 compatibility programme is
@@ -187,3 +191,7 @@ including `token-economics`. Runtime tests and product review are not planning e
 
 Rollback: revert the planning commit and close abandoned issues/project while preserving
 history. No installed package, collected data or deployed infrastructure is changed.
+
+Quote #15 implementation was authorized on 2026-10-03. This checkout implements the
+synthetic-only estimator; active tasks/evidence track verification and publication.
+Provider approval and live calibration remain separate gates.

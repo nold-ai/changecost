@@ -2,6 +2,41 @@
 
 ## Unreleased
 
+- Require Quote features to precede every visible lifecycle start and end,
+  including end-only Interval revisions and retries. Preserve equality, valid
+  historical cutoffs and immutable inspection of prior invalid narrow claims.
+
+- Cache shared Quote source/series uncertainty and aggregate provenance once,
+  preserving member-first temporal/file decisions and exact historical outputs.
+  Bound resolved-unbound/raw processing when output is linear; retain required
+  repeated pending-correction exclusions.
+
+- Index Quote snapshot correction chains, raw evidence and feature timing once to
+  bound repeated structural/source scanning for linked peers. Preserve member-first
+  economic selection, exact exclusions, input references and historical replay.
+
+- Reject Quote explanation when the local clock predates committed availability,
+  using one clock reading in the existing read snapshot. Preserve imported-claim
+  boundaries, immutable retries and equality with the latest availability.
+  Reuse lifecycle indexes and empty-peer diagnostics to bound zero-attempt cohort
+  work while preserving unbound evidence, corrections and historical replay.
+
+- Simplify Quote metadata validation, peer/cohort selection and historical replay
+  helpers to satisfy native maintainability rules without changing estimator behavior.
+  Split installed offline CLI fixtures into focused stages while retaining retry and
+  replay proofs.
+
+- Implement offline empirical Quotes with exact nearest-rank quantiles, supported
+  complete synthetic peers, pre-run feature backoff and immutable historical replay.
+  Add compatible optional provenance metadata, atomic cross-kind operation retries
+  and typed receipt authority; retain legacy imported claims and unsupported cohorts.
+  Provider adapters, live collection and calibration remain pending.
+
+- Reconcile planned empirical quotes with delivered settlement: derive cutoff-bound
+  complete peers, preserve synthetic-only coverage and imported-claim boundaries,
+  specify compatible Quote metadata and update current review/TDD obligations.
+  Preparation only; no estimator or provider support is delivered.
+
 - Accept and archive settlement reconciliation through OpenSpec CLI 1.13.2,
   synchronizing 17 requirements into main specs. Reconcile merged verification,
   lifecycle summaries, moved links and documentation ownership while preserving

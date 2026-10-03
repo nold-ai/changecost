@@ -357,7 +357,8 @@ edits; synchronize real package versions only when an applicable policy requires
 `llms.txt` and the CLI reference are generated from local skill metadata, the
 curated `quality/index.json` inventory and the actual CLI tree. Run `make generate`
 when these inputs change and `make index BASE_REF=<base>` to check without writing.
-Keep phase/capability descriptions current; future economic commands remain planned.
+Keep phase/capability descriptions current; implemented economic commands and
+future capabilities must be distinguished.
 The normal test/CI gate checks output independently of pre-commit. Link checking
 alone does not prove semantic freshness. See the [gate guide](../development/quality-gates.md)
 for ownership/source mappings and content-bound documentation rationale records.
@@ -368,8 +369,9 @@ Pattern inspected on 2026-09-28 (Europe/Berlin): `specfact-cli-modules` at
 `tests/unit/docs/test_llms_overview_freshness.py` (freshness guard), and
 `docs/agent-rules/70-release-commit-and-docs.md` (metadata consistency).
 The generated reference now includes offline lifecycle and normalized settlement
-options. Quote/check and native provider adapters remain unimplemented; source
-policy and accepted limitations are documented with the settlement implementation.
+options and offline empirical Quote selectors. Check and native provider adapters
+remain unimplemented; synthetic source limits are documented in
+[Quotes](../quotes.md) and the settlement implementation.
 
 ## Behavioral evidence and follow-up review
 

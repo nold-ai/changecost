@@ -81,4 +81,8 @@ and was accepted for CLI archival on 2026-10-02. Its [main specification](../ope
 and [archived evidence](../openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md)
 retain the final verification sources, earlier failures and accepted limitations.
 The next provider changes still require inspected, approved source profiles;
-empirical quotes can be prepared against the delivered settlement boundary.
+empirical quotes now use the delivered settlement boundary in this checkout.
+
+Quote #15 runtime implementation was authorized on 2026-10-03. This checkout adds
+offline synthetic empirical estimation and historical replay; verification/publication
+remain tracked in the active change evidence. No provider collection is authorized.

@@ -1,4 +1,4 @@
-# Offline lifecycle and settlement CLI
+# Offline lifecycle, settlement and Quote CLI
 
 Install with the [README setup](../README.md#work-on-the-repository). Put the global
 `--db PATH` option before the subcommand. Its default is
@@ -39,16 +39,16 @@ entry does not extend work. The result reports `economic_status: not_computed`.
 producer-assertion status. Revisions are grouped by kind and ordered through their
 predecessor links from the original declaration to the latest correction, including
 equal timestamps and arbitrary IDs. Change and Run inspection requires domain selectors;
-other records use `--record-kind KIND --record-id ID`. Quote inspection reports input
-eligibility, never validates the producer's economic calculation. A future cutoff
+other records use `--record-kind KIND --record-id ID`. Quote inspection verifies stored parameters and replays supported historical inputs
+from one read snapshot; older claims without metadata remain not_computed. A future cutoff
 cannot establish observed history and returns replay_unavailable. Export is a
 consistent full bundle; it refuses an existing path and cleans up temporary output
 on a handled failure. Hard process termination may leave an unreferenced temporary
 file, but never a partial final artifact. Keep exports private.
 
 Portable import/export modes cannot be combined with selectors or other operation modes.
-`quote`, `check`, native provider imports, collection and money estimation remain
-unavailable. Computed record inspection includes local receipt status, input replay
+`check`, native provider imports and live collection remain unavailable.
+`quote` computes synthetic offline empirical amounts. Computed record inspection includes local receipt status, input replay
 eligibility and `snapshot_only` completeness. Repository remainder reports are read-only.
 A busy store reports a retryable error; wait for the other writer and repeat the
 same request. Conflicting attribution must be resolved explicitly, not retried with
@@ -59,3 +59,20 @@ Oversized observation or cutoff sequences are invalid portable input: imports ex
 2 without a traceback or rejected payload values, and preserve existing stores.
 Local transaction-sequence exhaustion also fails before new records are inserted;
 retrying an already committed operation remains valid.
+
+## Empirical Quote computation
+
+Register the target Change before quoting. Explicit repository and economic selectors
+and a caller operation ID are required. The minimum is a positive integer, default 20.
+
+```sh
+changecost --db demo.sqlite quote --repository-id demo --change-id C1 --operation-id quote-C1 --economic-kind monetary --unit USD --currency USD --basis billed
+changecost --db demo.sqlite explain --record-kind quote --record-id QUOTE_ID
+```
+
+The first example returns unpriced when demo history is incomplete; missing coverage
+is not zero. Supply `--minimum 1` only for a small synthetic demonstration, recording
+that override. Identical operation retries preserve the original cutoff/result even
+when new evidence arrives; conflicting reuse, including a settlement operation ID,
+fails unchanged. See [empirical Quotes](quotes.md) for complete-cohort, feature and
+replay semantics. These commands never collect provider data or write settlements.

@@ -48,3 +48,7 @@ Core-02 offline contracts/lifecycle implementation was explicitly authorized on
 main specs. Settlement reconciliation merged in PR #28 on 2026-10-02 and is
 accepted/archived with synchronized main specs. Provider adapters and live
 collection require a subsequent request.
+
+Quote #15 runtime implementation was authorized on 2026-10-03. This checkout adds
+offline synthetic empirical estimation and historical replay; verification/publication
+remain tracked in the active change evidence. No provider collection is authorized.

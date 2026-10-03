@@ -59,7 +59,8 @@ def render(root: Path) -> dict[str, str]:
         "`bind` registers/maps/imports; `settle` declares lifecycle, "
         "imports normalized evidence or computes;",
         "`explain` inspects/exports and reports repository remainder. "
-        "`quote`, `check` and provider adapters remain planned.",
+        "`quote` computes offline empirical estimates. "
+        "`check` and provider adapters remain planned.",
         "",
     ]
     lines += [

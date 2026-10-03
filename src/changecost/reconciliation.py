@@ -1,10 +1,12 @@
 """Bounded exact reconciliation from a single committed local snapshot."""
 
-from collections import defaultdict
+from bisect import bisect_right
+from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from decimal import Decimal
 from uuid import uuid4
 
+from changecost.coverage import CoverageIndex
 from changecost.economic_graph import (
     correction_graph,
     economic_identity,
@@ -24,7 +26,16 @@ from changecost.models import (
 from changecost.normalized import MAX_RECORDS
 from changecost.operations import change_in, common
 from changecost.serialization import ContractError
-from changecost.store import Store, available, key, read_records, reference, run_key, validate_graph
+from changecost.store import (
+    Store,
+    available,
+    computation_refs,
+    key,
+    read_records,
+    reference,
+    run_key,
+    validate_graph,
+)
 
 ALGORITHM = "settlement/v1"
 POLICY = "synthetic/v1"
@@ -63,6 +74,7 @@ class Selection:
     reasons: set[str] = field(default_factory=set)
     runs: dict = field(default_factory=dict)
     inputs: set = field(default_factory=set)
+    shared_unbound: bool = False
 
     def exclude(self, events, reason: str, unresolved: bool = True):
         self.exclusions.extend(Exclusion(reference=reference(e), reason=reason) for e in events)
@@ -92,7 +104,193 @@ def chain_members(events: dict, leaf, edges: dict) -> tuple[list, bool]:
     return chain, True
 
 
-def effective_events(records: dict, scope: EconomicScope, members=None) -> Selection:
+class SnapshotIndex(CoverageIndex):
+    """Read-only structural and source lookups for one Quote snapshot and identity."""
+
+    def __init__(self, records, scope):
+        super().__init__(records)
+        self.scope = scope
+        self.feature_cache = {}
+        self.chains_by_run, self.shared_chains = defaultdict(list), []
+        self.work_by_run, self.all_intervals = defaultdict(list), defaultdict(list)
+        self.raw_by_run, self.raw_unbound = defaultdict(set), set()
+        self.prepare_structure(records)
+        self.prepare_chains(records)
+        self.prepare_shared()
+
+    def prepare_structure(self, records):
+        for record in records.values():
+            if record.kind == "interval":
+                self.all_intervals[run_key(record.run)].append(record)
+        for ref in self.evidence.keys() - self.economics:
+            binding = self.bindings.get(ref)
+            if binding is None:
+                self.raw_unbound.add(ref)
+            else:
+                self.raw_by_run[run_key(binding.run)].add(ref)
+
+    def prepare_chains(self, records):
+        events = {economic_key(r): r for r in records.values() if isinstance(r, EconomicEvidence)}
+        edges = correction_graph(records)
+        repository_events = {
+            name: r
+            for name, r in events.items()
+            if r.source.repository_id == self.scope.repository_id
+        }
+        if len(repository_events) > MAX_RECORDS:
+            raise ContractError("economic record count limit exceeded")
+        predecessors = set(edges.values())
+        for leaf in events.keys() - predecessors:
+            chain, _resolved = chain_members(events, leaf, edges)
+            members = {
+                run_key(self.bindings[key(r.evidence)].run)
+                for r in chain
+                if key(r.evidence) in self.bindings
+            }
+            for member in members:
+                self.work_by_run[member].extend(chain)
+        for ordinal, leaf in enumerate(repository_events.keys() - predecessors):
+            chain, resolved = chain_members(repository_events, leaf, edges)
+            if chain_relevant(chain, resolved, self.scope):
+                self.add_chain(ordinal, chain, resolved)
+
+    def add_chain(self, ordinal, chain, resolved):
+        members = {
+            run_key(self.bindings[key(r.evidence)].run)
+            for r in chain
+            if key(r.evidence) in self.bindings
+        }
+        entry = (ordinal, chain, resolved)
+        if not members:
+            self.shared_chains.append(entry)
+        for member in members:
+            self.chains_by_run[member].append(entry)
+
+    def effective(self, members, shared=True):
+        entries = list(self.shared_chains) if shared else []
+        groups = (
+            self.chains_by_run.values()
+            if members is None
+            else (self.chains_by_run[member] for member in members)
+        )
+        for group in groups:
+            entries.extend(group)
+        result = Selection()
+        for _, chain, resolved in sorted(entries, key=lambda entry: entry[0]):
+            select_chain(result, chain, resolved, self.bindings, members)
+        return result
+
+    def prepare_shared(self):
+        self.shared = self.effective(set())
+        self.shared_inputs = self.shared.inputs | self.raw_unbound
+        groups = defaultdict(list)
+        for event in self.shared.selected:
+            groups[series_key(event)].append(event)
+        self.shared_series = {
+            name: SharedSeries(events, self.scope, self) for name, events in groups.items()
+        }
+        self.shared_reasons = Counter()
+        self.shared_exclusions = []
+        self.shared_unbound_groups = 0
+        for name, summary in self.shared_series.items():
+            self.shared_reasons.update(summary.cached.reasons)
+            self.shared_exclusions.extend((name, e) for e in summary.cached.exclusions)
+            self.shared_unbound_groups += bool(summary.cached.selected)
+
+    def compact_selection(self, members):
+        result = self.effective(members, False)
+        result.effective = list(result.selected)
+        groups = defaultdict(list)
+        for event in result.selected:
+            groups[series_key(event)].append(event)
+        result.selected = []
+        reasons = self.shared_reasons.copy()
+        unbound = self.shared_unbound_groups
+        result.reasons.update(self.shared.reasons)
+        result.exclusions.extend(self.shared.exclusions)
+        result.exclusions.extend(e for name, e in self.shared_exclusions if name not in groups)
+        for name, events in groups.items():
+            summary = self.shared_series.get(name)
+            if summary is None:
+                result.selected.extend(choose_series(events, result, self.scope, self))
+            else:
+                reasons.subtract(summary.cached.reasons)
+                unbound -= bool(summary.cached.selected)
+                unbound += summary.merge(events, result, self)
+        result.reasons.update(reason for reason, count in reasons.items() if count > 0)
+        result.shared_unbound = unbound > 0
+        return result
+
+
+def series_key(event):
+    return partition(event.source), event.series, event.component_key
+
+
+class SharedSeries:
+    """One fixed-scope shared group; member merges preserve original lane/file decisions."""
+
+    def __init__(self, events, scope, index):
+        self.events, self.scope = events, scope
+        self.files = {e.source.file_digest for e in events if e.source.identity_scope == "file"}
+        self.snapshots = any(e.lane == "snapshot" for e in events)
+        self.cached = Selection(runs=index.shared.runs)
+        self.cached.selected = choose_series(events, self.cached, scope, index)
+        self.overlap = overlap_digests(events)
+        self.starts, self.prefix = [], []
+        self.prepare_prefix(events)
+
+    def prepare_prefix(self, events):
+        furthest = []
+        for event in sorted(events, key=lambda e: e.start):
+            digest = event.source.file_digest
+            same = next((end for end, name in furthest if name == digest), event.end)
+            furthest = [(end, name) for end, name in furthest if name != digest]
+            furthest.append((max(same, event.end), digest))
+            furthest.sort(key=lambda pair: pair[0], reverse=True)
+            furthest = furthest[:2]
+            self.starts.append(event.start)
+            self.prefix.append(tuple(furthest))
+
+    def mixed_overlap(self, events):
+        files = {e.source.file_digest for e in events if e.source.identity_scope == "file"}
+        multiple = (
+            len(self.files) > 1
+            or len(files) > 1
+            or any(digest not in self.files for digest in files)
+            and bool(self.files)
+        )
+        if not multiple:
+            return False
+        if self.overlap or overlap_digests(events):
+            return True
+        for event in events:
+            position = bisect_right(self.starts, event.end)
+            if position and any(
+                digest != event.source.file_digest and end >= event.start
+                for end, digest in self.prefix[position - 1]
+            ):
+                return True
+        return False
+
+    def merge(self, events, result, index):
+        if self.mixed_overlap(events):
+            result.exclude([*self.events, *events], "dedupe_limited_overlap")
+            return False
+        if self.snapshots or any(e.lane == "snapshot" for e in events):
+            # A shared snapshot has no Run: complete-group diagnostics are output-bound.
+            result.runs.update((key(reference(e)), None) for e in self.events)
+            chosen = choose_series([*self.events, *events], result, self.scope, index)
+            result.selected.extend(e for e in chosen if result.runs[key(reference(e))] is not None)
+            return any(result.runs[key(reference(e))] is None for e in chosen)
+        result.exclusions.extend(self.cached.exclusions)
+        result.reasons.update(self.cached.reasons)
+        result.selected.extend(select_deltas(events, result, self.scope))
+        return bool(self.cached.selected)
+
+
+def effective_events(records: dict, scope: EconomicScope, members=None, index=None) -> Selection:
+    if isinstance(index, SnapshotIndex) and index.scope == scope:
+        return index.effective(members)
     events = {
         economic_key(r): r
         for r in records.values()
@@ -139,6 +337,10 @@ def ambiguous_file_overlap(events) -> bool:
     files = {e.source.file_digest for e in events if e.source.identity_scope == "file"}
     if len(files) <= 1:
         return False
+    return overlap_digests(events)
+
+
+def overlap_digests(events):
     # Keep the furthest endpoints for two distinct digests (including namespaced None).
     furthest = []
     for event in sorted(events, key=lambda e: e.start):
@@ -188,14 +390,18 @@ def select_deltas(events, result, scope):
     return included
 
 
-def select(records: dict, scope: EconomicScope, members=None, index=None) -> Selection:
+def select(
+    records: dict, scope: EconomicScope, members=None, index=None, compact=False
+) -> Selection:
     from changecost.coverage import CoverageIndex
 
     index = index if index is not None else CoverageIndex(records)
-    result = effective_events(records, scope, members)
+    if compact and isinstance(index, SnapshotIndex) and index.scope == scope:
+        return index.compact_selection(members)
+    result = effective_events(records, scope, members, index)
     series = defaultdict(list)
     for event in result.selected:
-        series[(partition(event.source), event.series, event.component_key)].append(event)
+        series[series_key(event)].append(event)
     result.effective = list(result.selected)
     result.selected = []
     for events in series.values():
@@ -250,20 +456,22 @@ def snapshot_records(connection, cutoff: Cutoff, records=None) -> dict:
     return {k: records[k] for k in included}
 
 
-def computation_details(records, change, scope):
+def computation_details(records, change, scope, index=None, compact=False) -> dict:
     from changecost.coverage import CoverageIndex, assess_coverage, supported_event
 
-    index = CoverageIndex(records)
+    index = index if index is not None else CoverageIndex(records)
     bindings = {run_key(r.run): r for r in index.change_bindings[key(reference(change))]}
     members = [bindings[k].run for k in sorted(bindings)]
-    selection = select(records, scope, set(bindings), index)
+    selection = select(records, scope, set(bindings), index, compact)
     selected = [
         e
         for e in selection.selected
         if selection.runs[key(reference(e))] is not None
         and run_key(selection.runs[key(reference(e))]) in bindings
     ]
-    reasons, supporting = assess_coverage(index, change, members, selection, selected, scope)
+    reasons, supporting = assess_coverage(
+        index, change, members, selection, selected, scope, compact
+    )
     totals = subtotals(selected, scope)
     reasons.update(selection.reasons)
     if any(t.unknown_count for t in totals):
@@ -298,7 +506,10 @@ def compute_settlement(store: Store, change_id: str, scope: EconomicScope, opera
         ).fetchone()
         all_records = read_records(connection)
         if existing:
-            if existing[0] != request:
+            if existing[0] != request or (
+                "computed_settlement",
+                existing[1],
+            ) not in computation_refs(connection, all_records):
                 raise ContractError("operation ID already used for a different request")
             return all_records[("computed_settlement", existing[1])]
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
@@ -310,12 +521,12 @@ def compute_settlement(store: Store, change_id: str, scope: EconomicScope, opera
         change = change_in(records, scope.repository_id, change_id)
         if change is None:
             raise ContractError("unknown Change at input cutoff")
-        local_ids = {row[0] for row in connection.execute("SELECT record_id FROM computations")}
+        local_ids = computation_refs(connection, all_records)
         local = [
             r
             for r in all_records.values()
             if isinstance(r, ComputedSettlement)
-            and r.record_id in local_ids
+            and key(reference(r)) in local_ids
             and r.change == reference(change)
         ]
         parents = {r.previous.record_id for r in local if r.previous is not None}
@@ -339,12 +550,7 @@ def inspect_computation(store: Store, record: ComputedSettlement) -> dict:
         stored = records.get(key(reference(record)))
         if stored != record:
             raise ContractError("computation does not match immutable stored record")
-        local = (
-            connection.execute(
-                "SELECT 1 FROM computations WHERE record_id=?", (record.record_id,)
-            ).fetchone()
-            is not None
-        )
+        local = key(reference(record)) in computation_refs(connection, records)
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
         now = timestamp(store.clock())
         if last_at is not None and timestamp(last_at) > now:

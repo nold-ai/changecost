@@ -282,6 +282,31 @@ def read_records(connection: sqlite3.Connection) -> dict:
     }
 
 
+def computation_refs(connection, records) -> set:
+    """Resolve receipts by typed payload and its exact validated request."""
+    from changecost.quotes import request_for
+
+    result = set()
+    for request, record_id in connection.execute("SELECT request,record_id FROM computations"):
+        settlement = records.get(("computed_settlement", record_id))
+        if isinstance(settlement, ComputedSettlement):
+            change = lookup(records, settlement.change, "change")
+            if not isinstance(change, Change):
+                raise ContractError("expected Change")
+            expected = settlement.scope.model_dump_json() + ":" + change.change_id
+            if request == expected:
+                result.add(("computed_settlement", record_id))
+        quote = records.get(("quote", record_id))
+        if isinstance(quote, Quote) and quote.estimation is not None:
+            change = lookup(records, quote.change, "change")
+            expected = request_for(
+                change, quote.p50.model_dump(exclude={"amount"}), quote.estimation.minimum
+            )
+            if request == expected:
+                result.add(("quote", record_id))
+    return result
+
+
 def initialize(connection: sqlite3.Connection) -> None:
     for statement in (
         "CREATE TABLE computations(operation_id TEXT PRIMARY KEY, "
@@ -413,7 +438,7 @@ class Store:
 
     def import_into(self, connection, bundle: Bundle):
         records = read_records(connection)
-        local_ids = {row[0] for row in connection.execute("SELECT record_id FROM computations")}
+        local_ids = computation_refs(connection, records)
         merged = merge_portable_records(records, bundle, local_ids)
         validate_graph(merged)
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
@@ -527,7 +552,7 @@ def merge_portable_records(records, bundle, local_ids):
     local_ledgers = {
         r.ledger_id
         for r in records.values()
-        if isinstance(r, ComputedSettlement) and r.record_id in local_ids
+        if isinstance(r, ComputedSettlement) and key(reference(r)) in local_ids
     }
     for record in bundle.records:
         if (
