@@ -438,3 +438,7 @@ The multiplier-only research strategy observes one record and rejects any additi
 ### Citation destination structure
 
 Reference URLs must be strings parsed with HTTPS scheme and a nonblank hostname. Hostless paths/queries/fragments, malformed brackets, nonstrings and other schemes reject safely in register/loader/matrix validation. Kind/access-date checks and exact profile approval binding remain required. This is syntax validation only: no DNS, reachability, provider authority or domain allowlist is inferred.
+
+### Canonical research byte provenance
+
+The default checker requires the existing twelve canonical profile/evidence aliases to retain synthetic origin and agree on one SHA-256. It reads bounded fixture bytes once, checks their hash before parsing and parses those same bytes; any reserialization, changed records/answers or missing/stale/conflicting alias rejects through fixed safe diagnostics. Matching any unrelated evidence hash is insufficient. Original fixture bytes and registered references remain unchanged. `check_cases(bundle)` is an explicit in-memory semantic API with no file-provenance claim; matrix-only mode validates the register without reading the fixture. No native approval is inferred.

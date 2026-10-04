@@ -210,3 +210,5 @@ Each registered evidence entry retains a nonblank provenance/coverage scope note
 The multiplier-only research strategy admits exactly one record. Fixture expectation shape and key coverage are checked before detector semantics, preserving safe structural diagnostics for compound faults.
 
 Registered citations require a parsed HTTPS destination hostname; this structural check does not probe reachability or provider authority.
+
+Default research checking binds the exact canonical fixture bytes to all twelve registered synthetic references before parsing. In-memory semantic checks and matrix-only rendering make no fixture-byte provenance claim.

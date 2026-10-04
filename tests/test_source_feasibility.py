@@ -297,7 +297,9 @@ def test_cli_matrix_drift_fault_and_repair(tmp_path, monkeypatch, capsys):
     register_path = ROOT / "docs/providers/source-profiles.json"
     fixture_path = tmp_path / "docs/providers/fixtures/source-feasibility-cases.json"
     fixture_path.parent.mkdir(parents=True)
-    fixture_path.write_text(json.dumps(CASES))
+    fixture_path.write_bytes(
+        (ROOT / "docs/providers/fixtures/source-feasibility-cases.json").read_bytes()
+    )
     matrix_path = tmp_path / "docs/providers/source-feasibility.md"
     matrix_path.write_text("PRIVATE incorrect matrix")
     monkeypatch.setattr(research, "ROOT", tmp_path)
@@ -1453,12 +1455,9 @@ def test_malformed_case_cli_has_fixed_private_diagnostics(monkeypatch, capsys, f
         sample["records"][0]["attributes"] = "private-native-payload-marker"
     else:
         sample["records"][0]["interval_start"] = "0001-01-01T00:00:00+23:59"
-    original = research.read_document
-    monkeypatch.setattr(
-        research,
-        "read_document",
-        lambda path: bundle if path.name == "source-feasibility-cases.json" else original(path),
-    )
+    # This control injects explicit in-memory semantics after real file provenance succeeds.
+    original = research.check_cases
+    monkeypatch.setattr(research, "check_cases", lambda checked_bundle: original(bundle))
     monkeypatch.setattr(sys, "argv", ["quality.source_feasibility"])
     assert research.main() == 1
     output = capsys.readouterr()
@@ -1543,12 +1542,9 @@ def test_hosted_conflict_cli_rejects_without_private_identity(monkeypatch, capsy
     other = copy.deepcopy(checkpoint)
     other["data"]["totalNanoAiu"] += 1
     sample["records"].append(other)
-    original = research.read_document
-    monkeypatch.setattr(
-        research,
-        "read_document",
-        lambda path: bundle if path.name == "source-feasibility-cases.json" else original(path),
-    )
+    # This control injects explicit in-memory semantics after real file provenance succeeds.
+    original = research.check_cases
+    monkeypatch.setattr(research, "check_cases", lambda checked_bundle: original(bundle))
     monkeypatch.setattr(sys, "argv", ["quality.source_feasibility"])
     assert research.main() == 1
     captured = capsys.readouterr()
@@ -1618,12 +1614,9 @@ def test_case_metadata_inventory_fault_repaired(fault):
 def test_case_expectation_mapping_cli_privacy(monkeypatch, capsys):
     bundle = copy.deepcopy(CASES)
     bundle["cases"][0]["expected"] = list(research.CONCLUSIONS[bundle["cases"][0]["id"]])
-    original = research.read_document
-    monkeypatch.setattr(
-        research,
-        "read_document",
-        lambda path: bundle if path.name == "source-feasibility-cases.json" else original(path),
-    )
+    # This control injects explicit in-memory semantics after real file provenance succeeds.
+    original = research.check_cases
+    monkeypatch.setattr(research, "check_cases", lambda checked_bundle: original(bundle))
     monkeypatch.setattr(sys, "argv", ["source-feasibility"])
     assert research.main() == 1
     output = capsys.readouterr()
@@ -1748,12 +1741,9 @@ def test_compound_case_metadata_cli_privacy(monkeypatch, capsys):
     sample = malformed_hosted_control("missing-id")
     sample["expected"] = "PRIVATE_EXPECTATIONS"
     bundle["cases"][13] = sample
-    original = research.read_document
-    monkeypatch.setattr(
-        research,
-        "read_document",
-        lambda path: bundle if path.name == "source-feasibility-cases.json" else original(path),
-    )
+    # This control injects explicit in-memory semantics after real file provenance succeeds.
+    original = research.check_cases
+    monkeypatch.setattr(research, "check_cases", lambda checked_bundle: original(bundle))
     monkeypatch.setattr(sys, "argv", ["source-feasibility"])
     assert research.main() == 1
     output = capsys.readouterr()
@@ -1827,3 +1817,160 @@ def test_citation_destination_structural_only_valid(url):
     data = registry()
     data["profiles"][0]["references"][0]["url"] = url
     assert research.validate_register(data) == []
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "reserialized",
+        "semantic",
+        "stale-first",
+        "stale-last",
+        "missing-first",
+        "missing-last",
+        "wrong-origin",
+    ],
+)
+def test_default_research_digest_fault_repaired(tmp_path, monkeypatch, capsys, fault):
+    data = registry()
+    raw = (ROOT / "docs/providers/fixtures/source-feasibility-cases.json").read_bytes()
+    fixture = tmp_path / "docs/providers/fixtures/source-feasibility-cases.json"
+    fixture.parent.mkdir(parents=True)
+    fixture.write_bytes(raw)
+    profile = next(
+        p
+        for p in data["profiles"]
+        if p["id"] == ("claude-ide" if fault.endswith("last") else "copilot-cli")
+    )
+    if fault == "reserialized":
+        fixture.write_text(json.dumps(CASES))
+    elif fault == "semantic":
+        changed = copy.deepcopy(CASES)
+        changed["cases"][0]["records"][0]["attributes"]["private"] = "PRIVATE_PAYLOAD"
+        fixture.write_text(json.dumps(changed))
+    elif fault.startswith("stale"):
+        profile["evidence"][0]["sha256"] = "0" * 64
+    elif fault.startswith("missing"):
+        profile["evidence"][0]["id"] += "-other"
+    else:
+        profile["evidence"][0]["origin"] = "producer"
+    register_path = tmp_path / "PRIVATE-register.json"
+    register_path.write_text(json.dumps(data))
+    matrix_path = tmp_path / "docs/providers/source-feasibility.md"
+    matrix_path.write_text(research.render_matrix(data))
+    monkeypatch.setattr(research, "ROOT", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["source-check", "--register", str(register_path)])
+    assert research.main() == 1
+    output = capsys.readouterr()
+    assert output.err.strip() == "research-provenance-invalid"
+    assert output.out == ""
+    assert "PRIVATE" not in output.out + output.err
+    assert str(tmp_path) not in output.out + output.err
+    fixture.write_bytes(raw)
+    repaired = registry()
+    register_path.write_text(json.dumps(repaired))
+    matrix_path.write_text(research.render_matrix(repaired))
+    assert research.main() == 0
+    assert json.loads(capsys.readouterr().out) == {"errors": [], "semantic_approval": False}
+
+
+def test_default_research_digest_reads_once_and_matrix_has_no_fixture(monkeypatch, capsys):
+    from quality import source_inspection
+
+    original = source_inspection._read
+    calls = []
+
+    def observed(path):
+        calls.append(path)
+        return original(path)
+
+    monkeypatch.setattr(source_inspection, "_read", observed)
+    monkeypatch.setattr(sys, "argv", ["source-check"])
+    assert research.main() == 0
+    assert sum(p.name == "source-feasibility-cases.json" for p in calls) == 1
+    capsys.readouterr()
+    calls.clear()
+    monkeypatch.setattr(sys, "argv", ["source-check", "--matrix"])
+    assert research.main() == 0
+    assert not any(p.name == "source-feasibility-cases.json" for p in calls)
+
+
+@pytest.mark.parametrize(
+    "profile_id",
+    [
+        "copilot-cli",
+        "copilot-ide",
+        "cursor-personal-csv",
+        "codex-app-server",
+        "codex-desktop",
+        "claude-2-1-275",
+        "claude-2-1-215",
+        "claude-2-1-257",
+        "enterprise-copilot-projections",
+        "enterprise-cursor-projections",
+        "codex-ide",
+        "claude-ide",
+    ],
+)
+@pytest.mark.parametrize("fault", ["stale", "missing", "origin"])
+def test_each_canonical_research_alias_is_required(profile_id, fault):
+    data = registry()
+    profile = next(p for p in data["profiles"] if p["id"] == profile_id)
+    evidence = profile["evidence"][0]
+    if fault == "stale":
+        evidence["sha256"] = "0" * 64
+    elif fault == "missing":
+        evidence["id"] += "-other"
+    else:
+        evidence["origin"] = "documentation"
+    with pytest.raises(EvidenceError, match="research-provenance-invalid"):
+        research._research_digest(data)
+    assert (
+        research._research_digest(registry())
+        == hashlib.sha256(
+            (ROOT / "docs/providers/fixtures/source-feasibility-cases.json").read_bytes()
+        ).hexdigest()
+    )
+
+
+def test_checked_document_hash_precedes_parse_and_same_read_bytes(tmp_path, monkeypatch):
+    from quality import source_inspection
+
+    path = tmp_path / "PRIVATE-source.json"
+    raw = b'{"quantity":7}'
+    path.write_bytes(raw)
+    parsed = []
+    original_parse = source_inspection._parse
+    original_read = source_inspection._read
+
+    def observed_parse(value, fmt):
+        parsed.append(value)
+        return original_parse(value, fmt)
+
+    def replace_after_read(value):
+        received = original_read(value)
+        value.write_bytes(b'{"quantity":999}')
+        return received
+
+    monkeypatch.setattr(source_inspection, "_parse", observed_parse)
+    with pytest.raises(EvidenceError, match="hash-mismatch"):
+        source_inspection.read_checked_document(path, "0" * 64)
+    assert parsed == []
+    monkeypatch.setattr(source_inspection, "_read", replace_after_read)
+    assert source_inspection.read_checked_document(path, hashlib.sha256(raw).hexdigest()) == {
+        "quantity": 7
+    }
+    assert parsed == [raw]
+
+
+@pytest.mark.parametrize(
+    "raw,diagnostic", [(b'{"x":1,"x":2}', "duplicate-member"), (b"\xff", "malformed-input")]
+)
+def test_checked_document_retains_parser_rejections(tmp_path, raw, diagnostic):
+    from quality import source_inspection
+
+    path = tmp_path / "source.json"
+    path.write_bytes(raw)
+    with pytest.raises(EvidenceError) as caught:
+        source_inspection.read_checked_document(path, hashlib.sha256(raw).hexdigest())
+    assert str(caught.value) == diagnostic

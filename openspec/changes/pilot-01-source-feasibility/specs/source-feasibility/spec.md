@@ -339,3 +339,9 @@ changing the evaluator to fit an expected result.
 - **GIVEN** registered reference URLs with no destination host, a non-HTTPS scheme, malformed parse structure or a nonstring value
 - **WHEN** the register and derived matrix validate citation metadata
 - **THEN** they reject safely; accepted references are strings parsed with an HTTPS scheme and nonblank hostname, while reference kind/date and native approval binding remain required. This structural check makes no reachability, DNS, provider authority or domain-allowlist claim.
+
+#### Scenario: Default research checks bind exact canonical fixture bytes
+
+- **GIVEN** the existing canonical research bundle and its twelve registered synthetic profile/evidence references
+- **WHEN** the default development checker accepts file-backed research evidence
+- **THEN** all twelve exact references must exist, retain synthetic origin and agree on the checked SHA-256; bounded bytes are read once, hashed before parsing and parsed from those same bytes. Reserialization, changed evidence/answers or stale/conflicting/missing aliases reject with fixed safe diagnostics. In-memory check_cases only checks semantics, and matrix-only mode does not acquire fixture provenance. Original fixture bytes remain preserved.

@@ -134,6 +134,13 @@ def read_document(path: Path) -> Any:
     return _parse(_read(path), "json")
 
 
+def read_checked_document(path: Path, expected_sha256: str) -> Any:
+    raw = _read(path)
+    if hashlib.sha256(raw).hexdigest() != expected_sha256:
+        raise EvidenceError("hash-mismatch")
+    return _parse(raw, "json")
+
+
 def _kind(value):
     if value is None:
         return "null"

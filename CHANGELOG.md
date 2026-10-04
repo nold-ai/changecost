@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Bind default research checks to canonical registered fixture bytes before parsing.
+
 - Validate registered HTTPS citation destination hosts before accepting profile metadata.
 
 - Bound multiplier-only research to one record and validate fixture metadata before semantics.

@@ -12,7 +12,12 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from quality.source_cases import STRATEGIES, evaluate_case
-from quality.source_inspection import EvidenceError, inspect_manifest, read_document
+from quality.source_inspection import (
+    EvidenceError,
+    inspect_manifest,
+    read_checked_document,
+    read_document,
+)
 
 DECISIONS = ("authority", "interval", "replay", "reset", "correction", "exclusions")
 CAPABILITIES = ("usage", "attribution", "billed_money", "finality")
@@ -93,6 +98,21 @@ CONCLUSIONS = {
 START = "<!-- source-profile-matrix:start -->"
 END = "<!-- source-profile-matrix:end -->"
 ROOT = Path(__file__).resolve().parents[1]
+
+RESEARCH_PROFILES = (
+    "copilot-cli",
+    "copilot-ide",
+    "cursor-personal-csv",
+    "codex-app-server",
+    "codex-desktop",
+    "claude-2-1-275",
+    "claude-2-1-215",
+    "claude-2-1-257",
+    "enterprise-copilot-projections",
+    "enterprise-cursor-projections",
+    "codex-ide",
+    "claude-ide",
+)
 
 
 def profile_digest(profile):
@@ -292,6 +312,31 @@ def check_cases(bundle) -> list[str]:
         return ["case-invalid"]
 
 
+def _research_digest(register):
+    entries = {(p["id"], e["id"]): e for p in register["profiles"] for e in p["evidence"]}
+    hashes = set()
+    for profile_id in RESEARCH_PROFILES:
+        evidence = entries.get((profile_id, profile_id + "-e01"))
+        if evidence is None or evidence["origin"] != "synthetic":
+            raise EvidenceError("research-provenance-invalid")
+        hashes.add(evidence["sha256"])
+    if len(hashes) != 1:
+        raise EvidenceError("research-provenance-invalid")
+    return hashes.pop()
+
+
+def _research_bundle(register):
+    expected = _research_digest(register)
+    try:
+        return read_checked_document(
+            ROOT / "docs/providers/fixtures/source-feasibility-cases.json", expected
+        )
+    except EvidenceError as error:
+        if str(error) == "hash-mismatch":
+            raise EvidenceError("research-provenance-invalid") from None
+        raise
+
+
 class _Parser(argparse.ArgumentParser):
     def error(self, message):
         raise EvidenceError("arguments-invalid")
@@ -314,9 +359,7 @@ def main() -> int:
         elif args.matrix:
             print(render_matrix(register))
         else:
-            errors = check_cases(
-                read_document(ROOT / "docs/providers/fixtures/source-feasibility-cases.json")
-            )
+            errors = check_cases(_research_bundle(register))
             if not matrix_matches(
                 (ROOT / "docs/providers/source-feasibility.md").read_text(), register
             ):
