@@ -321,3 +321,15 @@ changing the evaluator to fit an expected result.
 - **GIVEN** any registered native, synthetic, documentation or producer evidence entry
 - **WHEN** the profile register validates its evidence bindings
 - **THEN** its existing scope field must be a nonblank string describing provenance/coverage; explicit uncertainty is allowed and does not authenticate the claim. Missing or malformed scope rejects even with freshly rebound approval. Changing valid scope invalidates an old profile digest; safe structural reports never emit scope text.
+
+#### Scenario: Single-record multiplier research is not a multi-record consensus
+
+- **GIVEN** the multiplier-only strategy contains any extra record, including replay, conflicting, malformed or missing multipliers in either order
+- **WHEN** its research conclusions are computed
+- **THEN** it rejects the sample before the shared span detector; original single-record observations and other multi-span strategies remain unchanged, with billed money and completeness unknown.
+
+#### Scenario: Fixture metadata is validated before semantic conclusions
+
+- **GIVEN** malformed expectation shape or wrong conclusion keys together with conflicting/unknown hosted checkpoint evidence or malformed nested records
+- **WHEN** the research checker validates the case
+- **THEN** mapping shape rejects as case-invalid and wrong key coverage rejects as oracle-coverage before detector evaluation; valid mappings preserve exact value types and independent hosted checkpoint obligations.

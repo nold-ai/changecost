@@ -261,18 +261,18 @@ def check_cases(bundle) -> list[str]:
             return ["case-inventory"]
         errors = []
         for index, sample in enumerate(samples):
+            expected = sample["expected"]
+            if not isinstance(expected, dict):
+                return ["case-invalid"]
+            if set(expected) != set(CONCLUSIONS[sample["id"]]):
+                errors.append(f"case:{index}:oracle-coverage")
+                continue
             actual = evaluate_case(sample, STRATEGIES[sample["id"]])
             if (
                 STRATEGIES[sample["id"]] == "hosted"
                 and actual.get("checkpoint_conflict") is not False
             ):
                 errors.append(f"case:{index}:conclusion-mismatch")
-                continue
-            expected = sample["expected"]
-            if not isinstance(expected, dict):
-                return ["case-invalid"]
-            if set(expected) != set(CONCLUSIONS[sample["id"]]):
-                errors.append(f"case:{index}:oracle-coverage")
                 continue
             if any(
                 key not in actual or type(actual[key]) is not type(value) or actual[key] != value

@@ -430,3 +430,7 @@ Research fixture expectations must be mappings before key coverage or value iter
 ### Evidence scope notes
 
 Every existing evidence origin requires a nonblank string `scope` note describing provenance or coverage. Unknown completeness is a valid note, not verified native authority. Missing or malformed notes reject even with newly bound approvals. Profile digests already cover scope changes: changing a valid note requires rebinding the reviewed profile. Structural reports and public diagnostics expose opaque references, never scope text.
+
+### Multiplier cardinality and metadata precedence
+
+The multiplier-only research strategy observes one record and rejects any additional row, including replay or missing/conflicting/malformed multiplier values in either order. Other multi-span strategies retain their existing behavior; no consensus, averaging or cash conversion is inferred. Fixture expectation mapping shape and exact key coverage precede detector evaluation: compound structural faults remain `case-invalid`, and wrong keys remain `oracle-coverage`. Valid mappings still require exact conclusion types and the independent hosted checkpoint obligation.

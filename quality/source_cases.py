@@ -33,7 +33,7 @@ STRATEGIES = dict(
         [
             "spans",
             "spans",
-            "spans",
+            "single-multiplier",
             "spans",
             "single-tokens",
             "tokens",
@@ -110,6 +110,12 @@ def _spans(rows):
         "automatic_attribution": "unavailable_for_sample",
         "unbound_record_count": len(rows),
     }
+
+
+def _single_multiplier(rows):
+    if len(rows) != 1:
+        raise EvidenceError("case-shape")
+    return _spans(rows)
 
 
 def _single_tokens(rows):
@@ -365,6 +371,7 @@ def _encoding(rows):
 
 _DETECTORS = {
     "spans": _spans,
+    "single-multiplier": _single_multiplier,
     "single-tokens": _single_tokens,
     "tokens": _tokens,
     "replacement": _replacement,

@@ -206,3 +206,5 @@ counts require a complete single scope. Projection fields do not demonstrate bil
 The research checker rejects malformed expectation containers with fixed diagnostics; mapping coverage and exact conclusion types remain separate checks.
 
 Each registered evidence entry retains a nonblank provenance/coverage scope note; uncertainty notes remain claims requiring independent review and never appear in structural reports.
+
+The multiplier-only research strategy admits exactly one record. Fixture expectation shape and key coverage are checked before detector semantics, preserving safe structural diagnostics for compound faults.

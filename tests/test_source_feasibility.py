@@ -1690,3 +1690,79 @@ def test_registered_evidence_scope_report_privacy(tmp_path):
     with pytest.raises(EvidenceError) as caught:
         inspect_manifest(local, data)
     assert "PRIVATE_SCOPE_DESCRIPTION" not in caught.value.public_diagnostic()
+
+
+@pytest.mark.parametrize("extra", ["replay", 3, "malformed", True, None, "missing"])
+@pytest.mark.parametrize("reverse", [False, True])
+def test_single_multiplier_extra_record_fault_repaired(extra, reverse):
+    bundle = copy.deepcopy(CASES)
+    sample = next(s for s in bundle["cases"] if s["id"] == "multiplier-only")
+    row = copy.deepcopy(sample["records"][0])
+    if extra == "missing":
+        row["attributes"].pop("github.copilot.cost")
+    elif extra != "replay":
+        row["attributes"]["github.copilot.cost"] = extra
+    sample["records"].append(row)
+    if reverse:
+        sample["records"].reverse()
+    with pytest.raises(EvidenceError):
+        evaluate_case(sample, STRATEGIES[sample["id"]])
+    assert research.check_cases(bundle) == ["case-invalid"]
+    assert research.check_cases(CASES) == []
+    assert evaluate_case(case("multiplier-only"), STRATEGIES["multiplier-only"])["multiplier"] == 2
+    roots = case("cli-repeated-billing")
+    roots["records"].append(copy.deepcopy(roots["records"][0]))
+    assert evaluate_case(roots, STRATEGIES[roots["id"]])["authoritative_nano_aiu"] == 100
+
+
+def malformed_hosted_control(fault):
+    sample = case("copilot-hosted-usage-boundaries")
+    if fault == "missing-id":
+        sample.pop("identity_evidence")
+    elif fault == "conflict":
+        row = copy.deepcopy(sample["records"][-1])
+        row["data"]["totalNanoAiu"] += 1
+        sample["records"].append(row)
+    else:
+        sample["records"][-1]["data"] = []
+    return sample
+
+
+@pytest.mark.parametrize("fault", ["missing-id", "conflict", "nested"])
+@pytest.mark.parametrize("expected", [None, [], "malformed", True, {}, {"wrong": 1}])
+def test_case_metadata_precedes_hosted_semantics(fault, expected):
+    bundle = copy.deepcopy(CASES)
+    sample = malformed_hosted_control(fault)
+    sample["expected"] = expected
+    index = next(i for i, s in enumerate(bundle["cases"]) if s["id"] == sample["id"])
+    bundle["cases"][index] = sample
+    diagnostic = (
+        [f"case:{index}:oracle-coverage"] if isinstance(expected, dict) else ["case-invalid"]
+    )
+    assert research.check_cases(bundle) == diagnostic
+    assert research.check_cases(CASES) == []
+
+
+def test_compound_case_metadata_cli_privacy(monkeypatch, capsys):
+    bundle = copy.deepcopy(CASES)
+    sample = malformed_hosted_control("missing-id")
+    sample["expected"] = "PRIVATE_EXPECTATIONS"
+    bundle["cases"][13] = sample
+    original = research.read_document
+    monkeypatch.setattr(
+        research,
+        "read_document",
+        lambda path: bundle if path.name == "source-feasibility-cases.json" else original(path),
+    )
+    monkeypatch.setattr(sys, "argv", ["source-feasibility"])
+    assert research.main() == 1
+    output = capsys.readouterr()
+    assert json.loads(output.out) == {"errors": ["case-invalid"], "semantic_approval": False}
+    assert "PRIVATE_EXPECTATIONS" not in output.out + output.err
+    assert "Traceback" not in output.out + output.err
+
+
+def test_valid_expectations_do_not_mask_nested_detector_failure():
+    bundle = copy.deepcopy(CASES)
+    bundle["cases"][13] = malformed_hosted_control("nested")
+    assert research.check_cases(bundle) == ["case-invalid"]

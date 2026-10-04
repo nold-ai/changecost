@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Bound multiplier-only research to one record and validate fixture metadata before semantics.
+
 - Require nonblank evidence provenance scope notes without exposing them in reports.
 
 - Reject malformed research expectation containers safely before mapping iteration.
