@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Reject additional records in the single-record token research case and require
+  valid field meanings and unresolved requirements for partial source profiles.
+
 - Require complete cumulative metric identity and a single correction history scope;
   prevent synthetic projection reference fields from asserting billing corrections.
 

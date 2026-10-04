@@ -1207,3 +1207,71 @@ def test_inventory_positive_looking_claims_never_promote_native_support(name):
             assert result[key] is False
     repaired = evaluate_case(case(name), STRATEGIES[name])
     assert repaired["billed_money"] is None and repaired["approved_profile"] is False
+
+
+@pytest.mark.parametrize(
+    "extra",
+    [
+        {"input_tokens": 999, "output_tokens": 888},
+        {"input_tokens": 100, "output_tokens": 20},
+        {"input_tokens": True},
+        {"input_tokens": "bad"},
+        {},
+        {"input_tokens": 0, "output_tokens": 0},
+    ],
+)
+@pytest.mark.parametrize("reverse", [False, True])
+def test_tokens_only_rejects_extra_records_without_first_row_selection(extra, reverse):
+    sample = case("tokens-only")
+    sample["records"].append(extra)
+    if reverse:
+        sample["records"].reverse()
+    with pytest.raises(EvidenceError):
+        evaluate_case(sample, STRATEGIES["tokens-only"])
+    bundle = copy.deepcopy(CASES)
+    bundle["cases"] = [sample if c["id"] == "tokens-only" else c for c in bundle["cases"]]
+    assert research.check_cases(bundle) == ["case-invalid"]
+    repaired = evaluate_case(case("tokens-only"), STRATEGIES["tokens-only"])
+    assert (repaired["input_tokens"], repaired["output_tokens"]) == (100, 20)
+    assert repaired["billed_money"] is None and repaired["approved_profile"] is False
+
+
+@pytest.mark.parametrize(
+    "record,expected", [({}, (None, None)), ({"input_tokens": 0, "output_tokens": 0}, (0, 0))]
+)
+def test_single_token_sample_preserves_zero_and_missing(record, expected):
+    sample = case("tokens-only")
+    sample["records"] = [record]
+    result = evaluate_case(sample, STRATEGIES["tokens-only"])
+    assert (result["input_tokens"], result["output_tokens"]) == expected
+    for name in ["timestamp-only", "ambiguous-overlap"]:
+        control = case(name)
+        assert len(control["records"]) > 1
+        assert {
+            k: evaluate_case(control, STRATEGIES[name])[k] for k in control["expected"]
+        } == control["expected"]
+
+
+@pytest.mark.parametrize(
+    "fields,requirements",
+    [({}, None), (None, []), ({}, []), ({"x": " "}, None), (None, [" "]), ([], None), (None, {})],
+)
+def test_partial_profile_requires_nonempty_valid_evidence_details(fields, requirements):
+    register = json.loads((ROOT / "docs/providers/source-profiles.json").read_text())
+    profile = register["profiles"][0]
+    if fields is not None:
+        profile["fields"] = fields
+    if requirements is not None:
+        profile["requirements"] = requirements
+    assert research.validate_register(register)
+    repaired = json.loads((ROOT / "docs/providers/source-profiles.json").read_text())
+    assert research.validate_register(repaired) == []
+
+
+def test_nonpartial_profile_does_not_require_unresolved_details():
+    register = json.loads((ROOT / "docs/providers/source-profiles.json").read_text())
+    profile = register["profiles"][0]
+    profile["capabilities"] = {key: "unavailable" for key in research.CAPABILITIES}
+    profile["fields"] = {}
+    profile["requirements"] = []
+    assert research.validate_register(register) == []

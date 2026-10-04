@@ -266,3 +266,15 @@ changing the evaluator to fit an expected result.
 - **WHEN** current amount and retained revision count are computed
 - **THEN** both remain unresolved rather than deduplicating unrelated events by bare revision
 - **AND** complete same-scope history retains distinct revisions through replay, including when conflicts make current amount unavailable.
+
+#### Scenario: Single-record token sample cannot hide additional quantities
+
+- **GIVEN** the tokens-only sample has a second record, including an identical replay, conflicting quantities or malformed trailing quantities
+- **WHEN** its explicitly selected single-record strategy evaluates evidence
+- **THEN** it rejects the sample rather than returning the first record's quantities; other explicitly selected multi-record token boundary strategies remain unchanged.
+
+#### Scenario: Partial capabilities retain evidence details
+
+- **GIVEN** a profile declares any partial capability
+- **WHEN** its verified field meanings or unresolved requirements are empty or malformed
+- **THEN** the register rejects that profile; valid nonempty details remain required for partial claims, without requiring unresolved requirements on a fully resolved profile.

@@ -366,3 +366,17 @@ not-demonstrated correction outcome, unknown consumption/money and false native
 compatibility remain conservative. Observed multipliers, unit labels, integer field
 types and cache/turn metadata presence remain observations; they do not establish
 ledger quantities, attribution, cash, finality or native source support.
+
+### Token record completeness and partial profile details — 2026-10-04
+
+The `tokens-only` research case selects an explicit single-record strategy. Extra
+records, including identical replays and malformed trailing quantities, reject the
+case rather than hiding evidence behind the first row. The shared timestamp and
+overlap strategies retain their multi-record boundary observations; no token
+aggregation policy is introduced. One record still distinguishes missing from zero.
+
+Any partial capability requires nonempty valid field meanings and unresolved
+requirements in the register. Empty, whitespace-only or malformed details cannot
+sustain a partial claim. Profiles without partial capabilities do not acquire a
+new unresolved-requirements obligation. Existing native approval bindings and
+missing Copilot/Cursor/hook artifacts remain unchanged.

@@ -130,7 +130,11 @@ def _capabilities_valid(capabilities):
 
 def _meanings_valid(profile):
     return (
-        isinstance(profile["fields"], dict)
+        (
+            "partial" not in profile["capabilities"].values()
+            or bool(profile["fields"] and profile["requirements"])
+        )
+        and isinstance(profile["fields"], dict)
         and all(_text(k) and _text(v) for k, v in profile["fields"].items())
         and isinstance(profile["requirements"], list)
         and all(_text(v) for v in profile["requirements"])

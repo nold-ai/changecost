@@ -316,3 +316,32 @@ Required affected independent closure, full local/staged checks, fresh supported
 Linux and both current-head providers remain pending for the repaired head. Native
 Copilot/Cursor/hook samples still block profile approval and issue9completion.
 Rollback preserves originals, scoped stash, Quote archive and review history.
+
+## Tenth scoped correction batch — 2026-10-04 Europe/Berlin
+
+Published a2ab025 Linux37162274523 passed both3.11.15/3.13.14 with1,527tests,
+strict11/11 and all ten native analyzers ran/PASS. CodeRabbit full native summary
+5973457004 and acknowledgement5974725594 completed against that exact head,
+independently adjudicated; no normal REST submission was fabricated. Codex
+5403510573 then reported two genuine P2 defects:4175449008 ignored additional
+token records and4175449009 accepted empty partial-profile evidence details.
+Those green mechanical/provider receipts remain historical for the next head.
+
+The maintainer explicitly approved focused batchten/+30active minutes and requested
+continued reviewed fixes until green within the preserved10/240allowance. Original
+nine batches,197.917conservative active counter, post-investigation escapes and
+quota failures remain; no automatic further allowance or gate waiver is inferred.
+
+Spec-first controls produced actual13failures/9passes before code changes. The
+minimum repair assigns only tokens-only an explicit single-record strategy; the
+shared multi-record timestamp/overlap strategies remain unchanged. Partial
+capabilities require nonempty valid fields and requirements; nonpartial controls
+retain empty-details validity. Both record orders, identical replay, malformed
+trailing rows, zero/missing amounts, each/both empty or malformed detail collection
+and repaired valid controls are covered. Source tests now402pass. Original18
+fixture bytes, expected conclusions and register approvals remain unchanged.
+
+Independent affected closure, complete stagedmain/priorHEAD checks, fresh supported
+Linux and current-head provider acceptance remain pending at this checkpoint. No
+source approval, collection, adapter/runtime/schema change or issue closure follows
+from passing synthetic controls.

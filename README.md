@@ -33,7 +33,9 @@ compares supplied projections with official contracts and records their limits.
 Its [v2 review](docs/providers/enterprise-v2-schema-review.md) adds reported VS Code
 message counters and checks synthetic examples without claiming native compatibility.
 Work OTel is reported disabled; custom session-log hook output is the next evidence source.
-No provider import profile or runtime adapter is approved yet.
+No provider import profile or runtime adapter is approved yet. The token research
+case requires one record; partial source profiles retain field meanings and
+unresolved evidence requirements.
 
 ## Direction
 
