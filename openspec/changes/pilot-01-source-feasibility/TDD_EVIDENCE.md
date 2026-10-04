@@ -385,12 +385,14 @@ approval, collection, adapter/runtime/schema or issue closure is introduced.
 
 ## Collected input boundary continuation — 2026-10-04 Europe/Berlin
 
-Automaticcurrent5a80Codex5403624086 reported three P2 defects: UTC normalization
-OverflowError, Python defaultCSVfield cap below advertised input bytes, and nested
-record AttributeError escaping controlled diagnostics. They were reproduced
-read-only before changes; current5a80Linux outcomes remain historical after a
-newhead. No redundant manualCodex request or CodeRabbitfullreview was started
-against this known defectivehead, preserving the available quota.
+At5a80, active Codex findings included UTC normalization overflow and the default
+CSV field cap from delayed manual review comments4175549605/4175549607, whose
+original head was4c6e5aa, plus nested-shape comment4175563022 from automatic
+review5403624086 at5a80. All three were independently reproduced on immutable5a80
+before changes and fixed in d72ac2453973ef1c6ed796f44786d0854938fa6d. The earlier
+redundant manual request5975008606 and original/current comment-head metadata remain
+preserved. No additional manual request or CodeRabbit full review was started
+against known defective5a80; its native outcomes remain historical for later heads.
 
 The actualexisting maintaineruntilgreen request and coordinator's explicit scoped
 continuation interpretation authorize batchtwelve withUNCHANGED240active minutes.

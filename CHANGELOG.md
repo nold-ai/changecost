@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Correct historical source-review attribution across delayed manual and automatic
+  reviews, preserving original-comment and independently reproduced head identities.
+
 - Reject malformed nested source cases safely, keep UTC normalization overflow
   unresolved, and align CSV field parsing with the existing input byte bound.
 
