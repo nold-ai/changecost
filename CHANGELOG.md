@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Require the hosted research strategy to demonstrate conflict-free checkpoint
+  evidence independently of immutable historical fixture expectations.
+
 - Correct historical source-review attribution across delayed manual and automatic
   reviews, preserving original-comment and independently reproduced head identities.
 

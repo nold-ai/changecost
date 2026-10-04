@@ -37,7 +37,9 @@ No provider import profile or runtime adapter is approved yet. The token researc
 case requires one record. Supported or partial source claims retain field meanings;
 partial or unverified claims retain unresolved evidence requirements. Inspection
 keeps malformed nested cases and unrepresentable UTC endpoints controlled, and
-CSV fields share the existing input byte bound.
+CSV fields share the existing input byte bound. The hosted research bundle also
+requires a computed conflict-free checkpoint outcome; this does not approve native
+accounting authority or finality.
 
 ## Direction
 

@@ -1465,3 +1465,93 @@ def test_malformed_case_cli_has_fixed_private_diagnostics(monkeypatch, capsys, f
     assert json.loads(output.out)["semantic_approval"] is False
     assert "private-native-payload-marker" not in output.out + output.err
     assert "Traceback" not in output.out + output.err
+
+
+def mutate_hosted_oracle_control(sample, fault):
+    checkpoint = next(r for r in sample["records"] if r.get("type") == "session.usage_checkpoint")
+    if fault in {"conflict", "conflict-and-incomplete", "replay", "progression", "cross-session"}:
+        other = copy.deepcopy(checkpoint)
+        if fault != "replay":
+            other["data"]["totalNanoAiu"] += 1
+        if fault == "progression":
+            other["id"] = "another-event"
+        if fault == "cross-session":
+            other["synthetic_context"] = {"sdk_session_id": "another-synthetic-sdk-scope"}
+        sample["records"].append(other)
+        if fault == "conflict-and-incomplete":
+            sample["records"].append({"type": "session.usage_checkpoint", "data": {}})
+    elif fault == "missing-checkpoint":
+        sample["records"] = [
+            r for r in sample["records"] if r.get("type") != "session.usage_checkpoint"
+        ]
+    elif fault == "missing-amount":
+        checkpoint["data"].pop("totalNanoAiu")
+    elif fault == "missing-scope":
+        sample["identity_evidence"].pop("sdk_session_id")
+    elif fault == "missing-event":
+        checkpoint.pop("id")
+
+
+@pytest.mark.parametrize(
+    "fault,rejected",
+    [
+        ("conflict", True),
+        ("missing-checkpoint", True),
+        ("missing-amount", True),
+        ("missing-scope", True),
+        ("missing-event", True),
+        ("conflict-and-incomplete", True),
+        ("replay", False),
+        ("progression", False),
+        ("cross-session", False),
+        ("original", False),
+    ],
+)
+def test_hosted_bundle_oracle_uses_computed_checkpoint_obligation(fault, rejected):
+    bundle = copy.deepcopy(CASES)
+    sample = next(c for c in bundle["cases"] if c["id"] == "copilot-hosted-usage-boundaries")
+    expected = copy.deepcopy(sample["expected"])
+    mutate_hosted_oracle_control(sample, fault)
+    actual = evaluate_case(sample, "hosted")
+    if fault == "conflict-and-incomplete":
+        assert actual["checkpoint_conflict"] is True
+    assert actual["approved_profile"] is False and actual["final_session_nano_aiu"] is None
+    assert bool(research.check_cases(bundle)) is rejected
+    assert sample["expected"] == expected
+    assert research.check_cases(copy.deepcopy(CASES)) == []
+
+
+@pytest.mark.parametrize("computed", [True, None, 0, "false"])
+def test_hosted_bundle_requires_exact_false_not_falsy_or_declared_answers(monkeypatch, computed):
+    original = research.evaluate_case
+
+    def faulty(sample, strategy):
+        result = original(sample, strategy)
+        if strategy == "hosted":
+            result["checkpoint_conflict"] = computed
+        return result
+
+    monkeypatch.setattr(research, "evaluate_case", faulty)
+    assert research.check_cases(CASES)
+
+
+def test_hosted_conflict_cli_rejects_without_private_identity(monkeypatch, capsys):
+    bundle = copy.deepcopy(CASES)
+    sample = next(c for c in bundle["cases"] if c["id"] == "copilot-hosted-usage-boundaries")
+    checkpoint = next(r for r in sample["records"] if r.get("type") == "session.usage_checkpoint")
+    checkpoint["id"] = "private-event-marker"
+    other = copy.deepcopy(checkpoint)
+    other["data"]["totalNanoAiu"] += 1
+    sample["records"].append(other)
+    original = research.read_document
+    monkeypatch.setattr(
+        research,
+        "read_document",
+        lambda path: bundle if path.name == "source-feasibility-cases.json" else original(path),
+    )
+    monkeypatch.setattr(sys, "argv", ["quality.source_feasibility"])
+    assert research.main() == 1
+    captured = capsys.readouterr()
+    assert json.loads(captured.out)["errors"]
+    assert "private-event-marker" not in captured.out + captured.err
+    assert "Traceback" not in captured.out + captured.err

@@ -414,3 +414,33 @@ register, numeric meanings, nativeapproval/uncertainty boundaries remain unchang
 Independent affectedclosure, complete stagedmain/priorHEADproofs, fresh supported
 native and currentCodex/CodeRabbit acceptance remain pending. There is no new
 format/framework/accountingprofile/runtime/schema/collection capability.
+
+## Hosted semantic oracle continuation — 2026-10-04 Europe/Berlin
+
+At1792469, active reviewthreadPRRT_kwDOUu9-oc6otimC demonstrated that an actual
+computed checkpoint conflict was absent from checker obligations: adding the same
+SDK/eventidentity with300000001 instead of300000000 yieldedcheckpoint_conflictTrue
+butcheck_cases[]. The full inventory had mapped this slot but failed to enforce it;
+independent adjudication retained the conclusion-coverage family escape and admitted
+the review miss. Source evaluator behavior was already correct.
+
+Actualexisting maintaineruntilgreen authorization and coordinator's explicit scoped
+interpretation continuebatchthirteen withUNCHANGED240active minutes, no invented
+newreply/numericquote/extratime orhistoryreset. The proposed provider rewrite of
+historical expectedfixtures was not a user instruction; all18originalfixturebytes
+and declaredexpectation dictionaries remain immutable.
+
+Spec-first checker-level controls reproduced10fail/5pass. The minimum strategy
+acceptance guard requires actualcheckpoint_conflict exactlyFalse independent of
+fixture-declared answers. Unknown/True/falsy-type substitutions reject safely;
+canonical original, exactreplay, identifiedprogression and separate synthetic
+namespaces pass. Knownconflict plus incomplete evidence retains conflictprecedence;
+missingcheckpoint/amount/SDKscope/eventID and privateCLI diagnostics are covered.
+Final486source tests pass. A testconstructor Ruffcomplexity failure was retained
+and repaired by separating construction/assertions, without suppressions. Existing
+localRadon6.0.1 reports checkerCC13/constructor14/assertiontest9; this is a targeted
+local check, not supported native assurance.
+
+Nativeauthority/finality/approval, immutablecases, register and evaluator remain
+unchanged. Affected independentclosure, complete stagedmain/priorHEADproofs, fresh
+supported native and currentrequiredproviders remain pending for the updated head.

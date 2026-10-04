@@ -410,3 +410,15 @@ the default Python131,072field limit is not a separate supported-export policy.
 Existing total-byte, record-count, width, duplicate-header and private diagnostic
 guards remain. This development-only inspector processes inputs serially; the
 parser wrapper does not enable collection or native-profile support.
+
+### Hosted research bundle obligation — 2026-10-04
+
+The hosted strategy must compute `checkpoint_conflict` as exactly false for a
+research bundle to pass. A known conflict or unresolved checkpoint identity/amount
+uses the fixed conclusion-mismatch diagnostic even when that output was absent
+from historical fixture expectations. This is an independent strategy obligation;
+the immutable original fixture bytes and declared answers remain unchanged. Exact
+replay, distinct identified progression and explicitly synthetic separate SDK
+namespaces stay conflict-free; a known conflict retains precedence over incomplete
+records. Finality remains unknown, totals remain non-additive and source approval
+remains false. This research-case obligation establishes no new native policy.

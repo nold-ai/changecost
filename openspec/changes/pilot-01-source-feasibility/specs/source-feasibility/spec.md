@@ -302,3 +302,10 @@ changing the evaluator to fit an expected result.
 - **GIVEN** a valid CSV field or header exceeds the Python reader default but the received file remains within10MiB
 - **WHEN** bounded inspection parses it
 - **THEN** it permits the field up to the existing input bound and restores the prior parser field limit after success or failure; total-byte, row-width, duplicate-header and privacy guards remain enforced.
+
+#### Scenario: Hosted checkpoint conclusions are a strategy obligation
+
+- **GIVEN** the hosted strategy computes a checkpoint conflict or unresolved checkpoint identity/amount from a research bundle
+- **WHEN** the bundle checker assesses semantic acceptance
+- **THEN** it requires the computed checkpoint_conflict to be exactly false independently of declared fixture expectations, rejects true or unknown through a fixed conclusion diagnostic, and preserves the immutable historical fixture and all native finality/approval boundaries.
+- **AND** exact replay and distinct identified progression remain conflict-free while a known conflict retains precedence over incomplete checkpoint evidence.

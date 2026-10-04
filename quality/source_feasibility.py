@@ -261,6 +261,12 @@ def check_cases(bundle) -> list[str]:
         errors = []
         for index, sample in enumerate(samples):
             actual = evaluate_case(sample, STRATEGIES[sample["id"]])
+            if (
+                STRATEGIES[sample["id"]] == "hosted"
+                and actual.get("checkpoint_conflict") is not False
+            ):
+                errors.append(f"case:{index}:conclusion-mismatch")
+                continue
             expected = sample["expected"]
             if set(expected) != set(CONCLUSIONS[sample["id"]]):
                 errors.append(f"case:{index}:oracle-coverage")
