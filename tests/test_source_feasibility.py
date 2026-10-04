@@ -7,6 +7,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from itertools import product
 from pathlib import Path
 
 import pytest
@@ -1275,3 +1276,79 @@ def test_nonpartial_profile_does_not_require_unresolved_details():
     profile["fields"] = {}
     profile["requirements"] = []
     assert research.validate_register(register) == []
+
+
+def bind_supported_control_approvals(profile):
+    evidence = profile["evidence"][0]
+    profile["approvals"] = [
+        {
+            "capability": capability,
+            "evidence_id": evidence["id"],
+            "sha256": evidence["sha256"],
+            "profile_digest": research.profile_digest(profile),
+            "reviewer": "synthetic-control-reviewer",
+            "decisions": {key: "synthetic boundary control" for key in research.DECISIONS},
+        }
+        for capability, disposition in profile["capabilities"].items()
+        if disposition == "supported"
+    ]
+
+
+def test_all_register_dispositions_require_their_evidence_details():
+    baseline = registry()
+    for dispositions in product(["supported", "partial", "unverified", "unavailable"], repeat=4):
+        for has_fields, has_requirements in product([False, True], repeat=2):
+            data = copy.deepcopy(baseline)
+            profile = data["profiles"][0]
+            profile["capabilities"] = dict(zip(research.CAPABILITIES, dispositions, strict=True))
+            profile["fields"] = {"quantity": "synthetic control meaning"} if has_fields else {}
+            profile["requirements"] = ["synthetic unresolved boundary"] if has_requirements else []
+            bind_supported_control_approvals(profile)
+            fields_needed = any(value in {"supported", "partial"} for value in dispositions)
+            requirements_needed = any(value in {"partial", "unverified"} for value in dispositions)
+            expected_valid = (has_fields or not fields_needed) and (
+                has_requirements or not requirements_needed
+            )
+            assert (research.validate_register(data) == []) is expected_valid, (
+                dispositions,
+                has_fields,
+                has_requirements,
+            )
+
+
+@pytest.mark.parametrize("capability", research.CAPABILITIES)
+@pytest.mark.parametrize(
+    "disposition,field,value",
+    [
+        ("supported", "fields", {}),
+        ("supported", "fields", []),
+        ("supported", "fields", {"x": " "}),
+        ("unverified", "requirements", []),
+        ("unverified", "requirements", {}),
+        ("unverified", "requirements", [" "]),
+    ],
+)
+def test_required_register_details_reject_in_load_and_matrix(
+    tmp_path, capability, disposition, field, value
+):
+    data = registry()
+    profile = data["profiles"][0]
+    profile["capabilities"] = {key: "unavailable" for key in research.CAPABILITIES}
+    profile["capabilities"][capability] = disposition
+    profile[field] = value
+    bind_supported_control_approvals(profile)
+    assert research.validate_register(data)
+    path = tmp_path / "synthetic-register.json"
+    path.write_text(json.dumps(data))
+    with pytest.raises(EvidenceError):
+        research.load_register(path)
+    with pytest.raises(EvidenceError):
+        research.render_matrix(data)
+    profile[field] = (
+        {"quantity": "synthetic meaning"}
+        if field == "fields"
+        else ["synthetic unresolved boundary"]
+    )
+    bind_supported_control_approvals(profile)
+    assert research.validate_register(data) == []
+    assert research.render_matrix(data)

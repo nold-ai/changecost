@@ -345,3 +345,40 @@ Independent affected closure, complete stagedmain/priorHEAD checks, fresh suppor
 Linux and current-head provider acceptance remain pending at this checkpoint. No
 source approval, collection, adapter/runtime/schema change or issue closure follows
 from passing synthetic controls.
+
+## Full register family continuation — 2026-10-04 Europe/Berlin
+
+Published4c6e5aa native37163878156 first3.11attempt recorded targeted capsule
+UNKNOWN/sandbox_launch_failed:timeout; nine other members and ordinary1,549tests
+passed. Same-head3.13 passed all10. Pinnedmodule0.50.1 outer launcher uses300seconds
+while portable child has1200; timeout discards partialstdout, so precise cause is
+unknown. One explicitly authorized unchanged-head failed-job observation passed
+all10native members/assurancePASS/noUNKNOWN, preserving originalartifacts. No
+timeout, dependency, test selection or gate policy was changed.
+
+Automatic currentCodex5403549513 reported4175488366: supported profile meanings
+and entirely unverified unresolved requirements could be empty. A redundant manual
+Codex request5975008606 was an administrative mistake after the automatic result
+was visible; it remains in history, with no further duplicate trigger. CodeRabbit
+capacity-only5974853699 reported40minutes from00:07:18UTC; no fresh full review was
+requested against the known defective head.
+
+The actual maintainer request was to keep fixing and monitor PR review, triage,
+push and resolve via sub-agents until green. The coordinator explicitly interpreted
+that ongoing same-change authorization as a scoped register-family continuation:
+one further batch, eleven total, with the active allowance unchanged at240minutes.
+No numeric eleven quote or extra active-time approval is attributed to the user;
+all prior counters, post-investigation escapes and failures remain.
+
+An independent full register disposition investigation preceded implementation
+and admitted the partial-only closure miss. Spec-first controls failed9/passed16
+before the minimum guard repair. Finite controls cover256capability combinations
+withfourempty/nonemptydetail states, alongside24malformed/load/matrix/fault-repaired
+controls. Source tests now427pass. Any supported/partial capability requires valid
+meanings; any partial/unverified requires unresolvedrequirements. Allunavailable
+mayemptyboth; fullysupportedresolved mayemptyrequirements, preserving mandatory
+existing nativeapproval bindings. Original18fixturebytes/registercontents unchanged.
+
+Affected independent closure, complete stagedmain/priorHEAD proofs, fresh supported
+native and current providers remain pending for the updated head. No source profile
+approval, collection, adapter/runtime/schema or issue closure is introduced.

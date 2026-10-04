@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Apply source-register evidence detail requirements across every capability
+  disposition, preserving resolved-profile and native-approval boundaries.
+
 - Reject additional records in the single-record token research case and require
   valid field meanings and unresolved requirements for partial source profiles.
 

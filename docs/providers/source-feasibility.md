@@ -380,3 +380,16 @@ requirements in the register. Empty, whitespace-only or malformed details cannot
 sustain a partial claim. Profiles without partial capabilities do not acquire a
 new unresolved-requirements obligation. Existing native approval bindings and
 missing Copilot/Cursor/hook artifacts remain unchanged.
+
+### Register disposition truth table — 2026-10-04
+
+Evidence detail requirements apply independently across all four capabilities.
+Any supported or partial disposition requires nonempty valid verified field
+meanings; any partial or unverified disposition requires nonempty valid unresolved
+requirements. Entirely unavailable profiles may leave both empty. Fully resolved
+supported profiles may leave requirements empty, retaining verified meanings and
+all existing independently reviewed native approval bindings. This corrects the
+partial-only guard above; loading and matrix rendering enforce the same validator.
+Malformed containers, keys or entries remain invalid even when details are optional.
+This is register completeness validation, not proof that contributor review claims
+are authentic or that missing native sources are supported.

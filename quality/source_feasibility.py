@@ -129,15 +129,17 @@ def _capabilities_valid(capabilities):
 
 
 def _meanings_valid(profile):
+    dispositions = set(profile["capabilities"].values())
     return (
-        (
-            "partial" not in profile["capabilities"].values()
-            or bool(profile["fields"] and profile["requirements"])
-        )
-        and isinstance(profile["fields"], dict)
+        isinstance(profile["fields"], dict)
         and all(_text(k) and _text(v) for k, v in profile["fields"].items())
         and isinstance(profile["requirements"], list)
         and all(_text(v) for v in profile["requirements"])
+        and (not dispositions.intersection({"supported", "partial"}) or bool(profile["fields"]))
+        and (
+            not dispositions.intersection({"partial", "unverified"})
+            or bool(profile["requirements"])
+        )
     )
 
 

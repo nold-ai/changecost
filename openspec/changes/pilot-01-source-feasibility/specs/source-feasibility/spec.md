@@ -278,3 +278,9 @@ changing the evaluator to fit an expected result.
 - **GIVEN** a profile declares any partial capability
 - **WHEN** its verified field meanings or unresolved requirements are empty or malformed
 - **THEN** the register rejects that profile; valid nonempty details remain required for partial claims, without requiring unresolved requirements on a fully resolved profile.
+
+#### Scenario: Register details follow every capability disposition
+
+- **GIVEN** any combination of supported, partial, unverified and unavailable capabilities
+- **WHEN** the canonical register is validated, loaded or rendered as a matrix
+- **THEN** any supported or partial capability requires nonempty valid verified field meanings, and any partial or unverified capability requires nonempty valid unresolved requirements; an entirely unavailable profile may leave both empty, and a fully resolved supported profile may leave requirements empty while retaining verified fields and independent native approval bindings.
