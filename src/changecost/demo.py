@@ -7,7 +7,7 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
-from changecost.advisory import check_record
+from changecost.advisory import budget_component, check_record
 from changecost.models import (
     Bundle,
     EconomicIdentity,
@@ -111,13 +111,8 @@ def create_demo(directory: Path):
     for label, record, portable in requests:
         result = check_record(
             store,
-            record.kind,
-            record.record_id,
-            "15",
-            "monetary",
-            "USD",
-            "billed",
-            "USD",
+            reference(record),
+            budget_component("15", "monetary", "USD", "billed", "USD"),
             artifact=portable,
         )
         (directory / f"{label}.json").write_text(

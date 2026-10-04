@@ -223,3 +223,47 @@ exact-head results without a receipt-only source commit.
 Package remains 0.1.0.dev0. Rollback is a scoped follow-up revert retaining the
 accepted Quote archive, original stores/backups and historical evidence. No paid
 infrastructure, provider collection, merge, release or deployment is included.
+
+## Supported-Linux findings and maintainability correction — 2026-10-05
+
+The reviewed transport head `3b46f92482d0c9ac60b9d38684310e30b56fd399` ran
+[Repository quality #37243614107](https://github.com/nold-ai/changecost/actions/runs/37243614107)
+on both supported Python versions. Both native reports contain four blocking
+maintainability findings: `result_for` complexity 19, `check_record` ten parameters,
+and the fresh-store integration test complexity 19/138 lines. Each scoped report also
+retains 257 nonblocking warnings and nine informational findings, including
+complexity/KISS, naming and Pylint/style advisories. These are actual native
+outcomes, not macOS execution or a passing assurance claim. Each full report
+contains 1,969 warnings, 36 informational findings and the same four errors.
+Python 3.11 completed all ten native analyzers; Python 3.13 targeted coverage
+remains UNKNOWN because the sealed launch timed out. The unchanged-config retry
+still requires a fresh supported-Linux pass. Root retained the
+reports and recorded correction batch two without resetting the existing session.
+
+The correction groups the already validated RecordRef and Component inputs,
+separates exact comparison from record context/presentation, and splits the same
+fresh-store fixture into lifecycle, advisory and portable-roundtrip phases.
+Registration, outcomes, every existing assertion and serialized result field/order
+are preserved. No analyzer thresholds, dependency lock, persistence policy,
+accepted Quote archive or portable/CLI contract changed.
+
+Focused writer diagnostics after this refactor: 152 tests and four subtests pass;
+Ruff passes and BasedPyright reports zero errors. A direct comparison against the
+previous committed implementation confirms identical serialized result bytes for
+24 Quote/complete-Settlement/incomplete-Settlement combinations across quantiles,
+authority and economic compatibility. This supplements the independent contract
+oracle rather than substituting previous behavior for the specification.
+
+An isolated Radon 6.0.1 tool reports `result_for` complexity six/five parameters,
+`check_record` complexity seven/five parameters, and the coordinator integration
+test complexity one/four lines. Its phase helpers have complexity ten/five/six and
+77/52/11 lines respectively. Exact executable/module provenance and AST parameter/
+line measurements remain in ignored `native-correction-local-metrics.json`.
+The isolated tool changes no repository dependencies and is only a local diagnostic;
+it cannot replace the signed supported-Linux native gate.
+
+These writer checks are diagnostic outcomes, not rebound certification of the old
+head. Independent affected closure, refreshed complete local/staged checks and a
+new current-head supported-Linux matrix/native report remain required before
+publication acceptance and provider review. No PR was created while these native
+findings remained unresolved.

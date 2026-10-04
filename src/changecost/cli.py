@@ -436,18 +436,13 @@ def check(
     artifact: Path | None = None,
 ) -> None:
     """Read one explicit historical record and compare a compatible budget."""
-    from changecost.advisory import check_record
+    from changecost.advisory import budget_component, check_record
 
     execute(
         lambda: check_record(
             context.obj,
-            record_kind,
-            record_id,
-            budget,
-            economic_kind,
-            unit,
-            basis,
-            currency,
+            RecordRef.model_validate(dict(kind=record_kind, record_id=record_id)),
+            budget_component(budget, economic_kind, unit, basis, currency),
             quantile,
             artifact,
         )

@@ -162,17 +162,9 @@ def record_values(record, quantile):
     )
 
 
-def result_for(record, budget, quantile, verified, reasons, repository_id=None) -> dict[str, Any]:
-    declared, selected, complete, record_reasons = record_values(record, quantile)
-    reasons = list(reasons) + record_reasons
-    if not complete:
-        reasons.append("incomplete_or_unpriced")
+def comparison_details(selected, budget, verified, complete):
     identity = budget.model_dump(exclude={"amount"})
     compatible = selected is not None and {k: selected[k] for k in identity} == identity
-    if not compatible:
-        reasons.append("incompatible_economic_identity")
-    comparison = None
-    status = "unknown"
     if (
         verified
         and complete
@@ -181,7 +173,40 @@ def result_for(record, budget, quantile, verified, reasons, repository_id=None) 
         and selected["amount"] is not None
     ):
         comparison = {k: selected[k] for k in (*identity, "amount")}
-        status = compare(selected["amount"], budget.amount)
+        return comparison, compare(selected["amount"], budget.amount), compatible
+    return None, "unknown", compatible
+
+
+def record_context(record, quantile, repository_id):
+    if isinstance(record, ComputedSettlement):
+        scope = record.scope.model_dump(mode="json")
+    elif isinstance(record, Settlement):
+        scope = record.scope
+    else:
+        scope = dict(
+            repository_id=repository_id,
+            economic=record.p50.model_dump(exclude={"amount"}),
+            start=None,
+            end=None,
+        )
+    return dict(
+        scope=scope,
+        cutoff=None if isinstance(record, Settlement) else record.cutoff.model_dump(mode="json"),
+        sample_count=record.sample_count if isinstance(record, Quote) else None,
+        quantile=quantile if isinstance(record, Quote) else None,
+    )
+
+
+def result_for(record, budget, quantile, verification, repository_id=None) -> dict[str, Any]:
+    verified, reasons = verification
+    declared, selected, complete, record_reasons = record_values(record, quantile)
+    reasons = list(reasons) + record_reasons
+    if not complete:
+        reasons.append("incomplete_or_unpriced")
+    comparison, status, compatible = comparison_details(selected, budget, verified, complete)
+    if not compatible:
+        reasons.append("incompatible_economic_identity")
+    context = record_context(record, quantile, repository_id)
     return dict(
         schema="changecost/check-v1",
         status=status,
@@ -189,27 +214,14 @@ def result_for(record, budget, quantile, verified, reasons, repository_id=None) 
         budget=budget.model_dump(mode="json"),
         comparison=comparison,
         declared=declared,
-        scope=record.scope.model_dump(mode="json")
-        if isinstance(record, ComputedSettlement)
-        else (
-            record.scope
-            if isinstance(record, Settlement)
-            else dict(
-                repository_id=repository_id,
-                economic=record.p50.model_dump(exclude={"amount"}),
-                start=None,
-                end=None,
-            )
-        ),
-        cutoff=record.cutoff.model_dump(mode="json")
-        if not isinstance(record, Settlement)
-        else None,
+        scope=context["scope"],
+        cutoff=context["cutoff"],
         provenance="locally_reproduced_synthetic; provider_support_not_verified"
         if verified
         else "producer_assertion; provider_support_not_verified",
         completeness="complete" if verified and complete else "unknown",
-        sample_count=record.sample_count if isinstance(record, Quote) else None,
-        quantile=quantile if isinstance(record, Quote) else None,
+        sample_count=context["sample_count"],
+        quantile=context["quantile"],
         reasons=sorted(set(reasons)),
     )
 
@@ -228,23 +240,13 @@ def record_repository(records, record):
     return change.repository_id
 
 
-def check_record(
-    store,
-    record_kind,
-    record_id,
-    budget,
-    economic_kind,
-    unit,
-    basis,
-    currency=None,
-    quantile=None,
-    artifact=None,
-):
-    component = budget_component(budget, economic_kind, unit, basis, currency)
-    if record_kind not in {"quote", "computed_settlement", "settlement"}:
+def check_record(store, ref: RecordRef, budget: Component, quantile=None, artifact=None):
+    component = budget_component(
+        budget.amount, budget.economic_kind, budget.unit, budget.basis, budget.currency
+    )
+    if ref.kind not in {"quote", "computed_settlement", "settlement"}:
         raise ContractError("invalid record kind")
-    ref = RecordRef(kind=record_kind, record_id=record_id)
-    if quantile is not None and (record_kind != "quote" or quantile not in {"p50", "p90"}):
+    if quantile is not None and (ref.kind != "quote" or quantile not in {"p50", "p90"}):
         raise ContractError("invalid quantile")
     quantile = quantile or "p90"
     if artifact is not None:
@@ -254,8 +256,7 @@ def check_record(
             record,
             component,
             quantile,
-            False,
-            ["artifact_producer_claim"],
+            (False, ["artifact_producer_claim"]),
             record_repository(records, record),
         )
     with closing(store.connect(readonly=True)) as connection:
@@ -270,7 +271,6 @@ def check_record(
             record,
             component,
             quantile,
-            verified,
-            reasons,
+            (verified, reasons),
             record_repository(records, record),
         )

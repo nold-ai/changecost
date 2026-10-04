@@ -14,7 +14,7 @@ def invoke(tmp_path, *args):
     return runner.invoke(app, ["--db", str(tmp_path / "db.sqlite"), *args])
 
 
-def test_fresh_cli_registration_outcome_and_export(tmp_path):
+def declare_fresh_cli_lifecycle(tmp_path):
     result = invoke(
         tmp_path, "bind", "--register-change", "--repository-id", "repo", "--change-id", "c"
     )
@@ -90,6 +90,10 @@ def test_fresh_cli_registration_outcome_and_export(tmp_path):
     assert result.exit_code == 0, result.output
     assert json.loads(result.output)["record"]["record_id"] == ident
     assert json.loads(result.output)["revisions"][0]["outcome"] == "accepted"
+    return ident
+
+
+def assert_fresh_cli_advice(tmp_path):
     result = invoke(
         tmp_path,
         "quote",
@@ -142,6 +146,8 @@ def test_fresh_cli_registration_outcome_and_export(tmp_path):
     )
     assert result.exit_code == 0 and "unpriced" in result.stdout
 
+
+def assert_cli_portable_roundtrip(tmp_path):
     artifact = tmp_path / "export.json"
     assert invoke(tmp_path, "explain", "--export-artifact", str(artifact)).exit_code == 0
     original = artifact.read_bytes()
@@ -152,6 +158,12 @@ def test_fresh_cli_registration_outcome_and_export(tmp_path):
     result = invoke(destination, "bind", "--import-artifact", str(artifact))
     assert result.exit_code == 0, result.output
     assert invoke(destination, "bind", "--import-artifact", str(artifact)).exit_code == 0
+
+
+def test_fresh_cli_registration_outcome_and_export(tmp_path):
+    declare_fresh_cli_lifecycle(tmp_path)
+    assert_fresh_cli_advice(tmp_path)
+    assert_cli_portable_roundtrip(tmp_path)
 
 
 @pytest.mark.parametrize(

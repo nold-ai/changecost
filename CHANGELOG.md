@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Simplify advisory request/result construction and split the fresh-store workflow
+  proof into lifecycle, advice and portable-roundtrip phases to satisfy native
+  maintainability checks while preserving serialized results and assertions.
+
 - Add global human presentation and safe structured parser/operation errors while
   preserving existing JSON successes. Add read-only explicit Quote/Settlement budget
   advice with local receipt and historical result/completeness reproduction.

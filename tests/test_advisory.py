@@ -152,10 +152,14 @@ def settlement(tmp_path, value="10", complete=True):
 
 
 def evaluate(store, record, budget="15", **options):
-    from changecost.advisory import check_record
+    from changecost.advisory import budget_component, check_record
+    from changecost.store import reference
 
     return check_record(
-        store, record.kind, record.record_id, budget, "monetary", "USD", "billed", "USD", **options
+        store,
+        reference(record),
+        budget_component(budget, "monetary", "USD", "billed", "USD"),
+        **options,
     )
 
 
