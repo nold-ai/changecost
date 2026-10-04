@@ -426,3 +426,7 @@ remains false. This research-case obligation establishes no new native policy.
 ### Fixture expectation shape
 
 Research fixture expectations must be mappings before key coverage or value iteration. Lists (even all required names), strings, scalars and null reject with `case-invalid`; valid mappings retain exact key coverage and value type checks. This fixture metadata guard does not change source conclusions or native approvals.
+
+### Evidence scope notes
+
+Every existing evidence origin requires a nonblank string `scope` note describing provenance or coverage. Unknown completeness is a valid note, not verified native authority. Missing or malformed notes reject even with newly bound approvals. Profile digests already cover scope changes: changing a valid note requires rebinding the reviewed profile. Structural reports and public diagnostics expose opaque references, never scope text.

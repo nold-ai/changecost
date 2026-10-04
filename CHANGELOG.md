@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Require nonblank evidence provenance scope notes without exposing them in reports.
+
 - Reject malformed research expectation containers safely before mapping iteration.
 
 - Require the hosted research strategy to demonstrate conflict-free checkpoint

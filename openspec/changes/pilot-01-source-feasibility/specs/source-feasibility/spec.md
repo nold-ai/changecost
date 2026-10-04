@@ -315,3 +315,9 @@ changing the evaluator to fit an expected result.
 - **GIVEN** research fixture expectations are a list, string, scalar or null, including a list of all required conclusion names
 - **WHEN** the research checker validates the fixture
 - **THEN** it rejects with the fixed case-invalid diagnostic before key coverage or mapping iteration, without traceback or payload disclosure. Valid mapping key coverage and exact value types retain their existing checks; repaired original fixtures pass unchanged.
+
+#### Scenario: Registered evidence retains an explicit provenance scope
+
+- **GIVEN** any registered native, synthetic, documentation or producer evidence entry
+- **WHEN** the profile register validates its evidence bindings
+- **THEN** its existing scope field must be a nonblank string describing provenance/coverage; explicit uncertainty is allowed and does not authenticate the claim. Missing or malformed scope rejects even with freshly rebound approval. Changing valid scope invalidates an old profile digest; safe structural reports never emit scope text.

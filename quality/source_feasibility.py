@@ -169,6 +169,7 @@ def _evidence_valid(items):
             valid
             and bool(re.fullmatch(r"[a-f0-9]{64}", item["sha256"]))
             and item["origin"] in {"native", "synthetic", "documentation", "producer"}
+            and _text(item.get("scope"))
         )
         evidence[item["id"]] = item
     return evidence, valid

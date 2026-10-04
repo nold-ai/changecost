@@ -1630,3 +1630,63 @@ def test_case_expectation_mapping_cli_privacy(monkeypatch, capsys):
     assert json.loads(output.out) == {"errors": ["case-invalid"], "semantic_approval": False}
     assert "Traceback" not in output.out + output.err
     assert "private-value" not in output.out + output.err
+
+
+@pytest.mark.parametrize("origin", ["native", "synthetic", "documentation", "producer"])
+@pytest.mark.parametrize("scope", ["MISSING", "", "\u2003\u00a0", None, True, 7, [], {}])
+def test_registered_evidence_scope_fault_repaired(origin, scope):
+    data = registry()
+    evidence = data["profiles"][0]["evidence"][0]
+    evidence["origin"] = origin
+    if scope == "MISSING":
+        evidence.pop("scope")
+    else:
+        evidence["scope"] = scope
+    assert research.validate_register(data)
+    evidence["scope"] = "Coverage remains unknown; inspected selected bytes only"
+    assert research.validate_register(data) == []
+
+
+@pytest.mark.parametrize("scope", ["MISSING", "", None, True, {}])
+def test_native_evidence_scope_fresh_proof_fault_repaired(scope):
+    data = registry()
+    profile = data["profiles"][0]
+    if scope == "MISSING":
+        profile["evidence"][0].pop("scope")
+    else:
+        profile["evidence"][0]["scope"] = scope
+    profile["approvals"] = [approval(data)]
+    assert research.validate_register(data)
+    profile["evidence"][0]["scope"] = "Selected bytes; completeness unknown"
+    profile["approvals"] = [approval(data)]
+    assert research.validate_register(data) == []
+    profile["evidence"][0]["scope"] = "Different selected bytes; completeness unknown"
+    assert research.validate_register(data)
+    profile["approvals"] = [approval(data)]
+    assert research.validate_register(data) == []
+
+
+def test_registered_evidence_scope_load_matrix_fault_repaired(tmp_path):
+    data = registry()
+    data["profiles"][0]["evidence"][0].pop("scope")
+    path = tmp_path / "register.json"
+    path.write_text(json.dumps(data))
+    with pytest.raises(EvidenceError):
+        research.load_register(path)
+    with pytest.raises(EvidenceError):
+        research.render_matrix(data)
+    data["profiles"][0]["evidence"][0]["scope"] = "Coverage unknown"
+    path.write_text(json.dumps(data))
+    assert research.load_register(path) == data
+    assert research.render_matrix(data)
+
+
+def test_registered_evidence_scope_report_privacy(tmp_path):
+    local, data, source = manifest(tmp_path, b'{"usage":0}')
+    data["profiles"][0]["evidence"][0]["scope"] = "PRIVATE_SCOPE_DESCRIPTION"
+    report = inspect_manifest(local, data)
+    assert "PRIVATE_SCOPE_DESCRIPTION" not in json.dumps(report)
+    source.write_bytes(b"{")
+    with pytest.raises(EvidenceError) as caught:
+        inspect_manifest(local, data)
+    assert "PRIVATE_SCOPE_DESCRIPTION" not in caught.value.public_diagnostic()
