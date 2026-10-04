@@ -51,3 +51,29 @@ fixture-admission findings. No native parser or hook mapping is verified. These
 limits do not complete tasks 2.1/2.2.
 Verification and PR promotion are now separately authorized. Task 4.3 remains
 pending through review/acceptance; tasks 2.1/2.2 and archival remain incomplete.
+
+## 5. Authorized closeout preparation (2026-10-03)
+
+- [x] 5.1 Refresh main, isolate work, recover prior evidence/session and reconcile artifacts and reopened issue #9/Todo; verify native hierarchy/dependencies and preserve historical work.
+- [x] 5.2 Obtain independent obligation review, bind complete intended inputs and validate the revised plan; save/verify a scoped immutable stash with actual issue sync state.
+
+## 6. Source evidence and profile register
+
+- [x] 6.1 Reinspect authorized selected local source metadata and supplied bundles read-only; record versions, original hashes, boundary evidence and exact missing artifacts in a private receipt and public profile register.
+- [ ] 6.2 Inspect native Copilot CLI/IDE exports and personal Cursor CSV with acquisition/authority/coverage/finality evidence; independently verify intended source profiles before approval. Keep incomplete while required evidence is unavailable.
+- [ ] 6.3 Refresh Codex/Claude and Enterprise/custom-hook assessments against current primary evidence; inspect paired hook source/upload/receiver mappings when supplied and preserve unmet evidence gates.
+
+## 7. Offline checker and independent semantics
+
+- [x] 7.1 Specify and write failing register/matrix/provenance and all-18-case semantic tests, including faulty/repaired controls; record genuine red evidence before code.
+- [x] 7.2 Implement the register, derived matrix and independent semantic evaluators; verify identity, duplicate/replacement/cumulative boundaries, Decimal units and explicit unknowns.
+- [x] 7.3 Write failing sanitized JSON/JSONL/CSV hash/limit/duplicate/privacy/read-only tests, implement the bounded inspector and verify safe output without payload leakage or automatic approval.
+- [x] 7.4 Update research docs, freshness ownership/index and changelog alongside behavior; verify examples, generated references and unchanged runtime policy.
+
+## 8. Verified delivery and retained blockers
+
+- [ ] 8.1 Run applicable local/staged/strict gates, independent affected-obligation closure and fresh supported-Linux assurance; retain missing/skipped evidence as incomplete.
+- [ ] 8.2 Commit/push a focused implementation PR with current-head Codex/CodeRabbit evidence, actual issue/project readback and retained recovery history; leave #9 open while 6.2 or required evidence is incomplete.
+- [ ] 8.3 Close/archive only after inspected intended profiles and implementation acceptance pass; otherwise hand off exact native artifacts needed and keep unchecked tasks truthful.
+
+Implementation checkpoint: offline tooling is implemented and tested; native source approval, paired hook inspection and final review/acceptance remain incomplete. Task 6.3 stays pending because fresh interface assessments do not verify the missing hook mapping.

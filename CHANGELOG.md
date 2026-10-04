@@ -1,6 +1,61 @@
 # Changelog
 
+
 ## Unreleased
+
+- Bind default research checks to canonical registered fixture bytes before parsing.
+
+- Validate registered HTTPS citation destination hosts before accepting profile metadata.
+
+- Bound multiplier-only research to one record and validate fixture metadata before semantics.
+
+- Require nonblank evidence provenance scope notes without exposing them in reports.
+
+- Reject malformed research expectation containers safely before mapping iteration.
+
+- Require the hosted research strategy to demonstrate conflict-free checkpoint
+  evidence independently of immutable historical fixture expectations.
+
+- Correct historical source-review attribution across delayed manual and automatic
+  reviews, preserving original-comment and independently reproduced head identities.
+
+- Reject malformed nested source cases safely, keep UTC normalization overflow
+  unresolved, and align CSV field parsing with the existing input byte bound.
+
+- Apply source-register evidence detail requirements across every capability
+  disposition, preserving resolved-profile and native-approval boundaries.
+
+- Reject additional records in the single-record token research case and require
+  valid field meanings and unresolved requirements for partial source profiles.
+
+- Require complete cumulative metric identity and a single correction history scope;
+  prevent synthetic projection reference fields from asserting billing corrections.
+
+- Preserve validated registered opaque profile/evidence references in inspection
+  reports and safe failure diagnostics; reject ambiguous/unsafe references without
+  exposing private input or granting source approval.
+
+- Validate every snapshot/rollout quantity before replay deduplication; leave Claude
+  correlation counts unresolved for incomplete or conflicting identities and simplify
+  rollout scope checking without changing source approval boundaries.
+
+- Require nonblank identities across source detectors and complete stable economic
+  basis plus exact revision identities before selecting synthetic correction amounts.
+
+- Correct synthetic replacement-reference types, cumulative chronological interval
+  validation and absent checkpoint uncertainty after current-head Codex findings.
+
+- Added development-only bounded source inspection, independently computed research cases, a canonical versioned profile register and derived matrix; kept source approval and #9 open for missing native evidence.
+
+- Simplified source profile validation and format parsing without changing evidence
+  boundaries; added direct CLI privacy, hash rejection and matrix drift controls.
+
+- Distinguish cumulative checkpoint progress and replay from conflicting totals
+  under the same SDK session/event identity; missing identity remains unresolved.
+
+- Prepare the authorized source-feasibility closeout with verified-profile completion,
+  a canonical register, bounded offline evidence inspection and executable research
+  conclusions. Preserve missing native evidence gates and the existing runtime policy.
 
 - Require Quote features to precede every visible lifecycle start and end,
   including end-only Interval revisions and retries. Preserve equality, valid

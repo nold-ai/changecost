@@ -162,3 +162,10 @@ or real quantity was copied. The
 records the reviewed digest and structural checks. Its JSON keys are exactly the
 example contract, with no pass-through attributes or content fields. Before sharing
 a new fixture, inspect every value in addition to key and credential checks.
+
+
+## Closeout assessment (2026-10-03)
+
+The development-only inspector and all 18 executable semantic cases are documented in [source feasibility](source-feasibility.md#executable-closeout-checks-2026-10-03). Original research fixture bytes are unchanged. Faulty/repaired controls and additional missing-identity, checkpoint-conflict, reset, correction, unit and privacy cases are in tests/test_source_feasibility.py. Structural inspection reports use ordinal selectors only; private manifests retain paths/field selectors. Passing synthetic tests does not authorize any provider profile.
+
+See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).

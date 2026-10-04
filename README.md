@@ -33,7 +33,13 @@ compares supplied projections with official contracts and records their limits.
 Its [v2 review](docs/providers/enterprise-v2-schema-review.md) adds reported VS Code
 message counters and checks synthetic examples without claiming native compatibility.
 Work OTel is reported disabled; custom session-log hook output is the next evidence source.
-No provider import profile or runtime adapter is approved yet.
+No provider import profile or runtime adapter is approved yet. The token research
+case requires one record. Supported or partial source claims retain field meanings;
+partial or unverified claims retain unresolved evidence requirements. Inspection
+keeps malformed nested cases and unrepresentable UTC endpoints controlled, and
+CSV fields share the existing input byte bound. The hosted research bundle also
+requires a computed conflict-free checkpoint outcome; this does not approve native
+accounting authority or finality.
 
 ## Direction
 
@@ -175,3 +181,34 @@ lifecycle controls and content-bound delta review. Final required gates remain m
 Quote #15 runtime implementation was authorized on 2026-10-03. This checkout adds
 offline synthetic empirical estimation and historical replay; verification/publication
 remain tracked in the active change evidence. No provider collection is authorized.
+
+Source feasibility now includes [offline development evidence checks](docs/providers/source-feasibility.md#executable-closeout-checks-2026-10-03). Issue #9 remains open for native profile approval; adapters remain separate planned changes.
+CLI controls exercise safe private-manifest reports, changed-hash rejection and
+matrix drift/repair; structural success does not approve native provider profiles.
+Checkpoint controls distinguish cumulative progress/replay from conflicts within
+one SDK session/event identity and leave finality unknown.
+
+Source evidence detector controls reject boolean replacement revisions, normalize
+cumulative interval timestamps to UTC, and leave absent checkpoints unresolved.
+
+The source checker requires exact nonblank identity strings before affirmative
+scope claims, and complete stable economic-basis and revision identities for corrections.
+
+Source snapshot totals validate each quantity before replay deduplication. Claude
+correlation counts require complete stable identities; physical row counts remain observations.
+
+Inspection reports and validated-reference failures retain registered opaque profile/
+evidence keys. Unknown or unsafe references remain redacted; source approval stays separate.
+
+Cumulative estimates require exact nonblank metric identities; correction history
+counts require a complete single scope. Projection fields do not demonstrate billing corrections.
+
+The research checker rejects malformed expectation containers with fixed diagnostics; mapping coverage and exact conclusion types remain separate checks.
+
+Each registered evidence entry retains a nonblank provenance/coverage scope note; uncertainty notes remain claims requiring independent review and never appear in structural reports.
+
+The multiplier-only research strategy admits exactly one record. Fixture expectation shape and key coverage are checked before detector semantics, preserving safe structural diagnostics for compound faults.
+
+Registered citations require a parsed HTTPS destination hostname; this structural check does not probe reachability or provider authority.
+
+Default research checking binds the exact canonical fixture bytes to all twelve registered synthetic references before parsing. In-memory semantic checks and matrix-only rendering make no fixture-byte provenance claim.

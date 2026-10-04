@@ -70,3 +70,10 @@ modes are mistaking occupancy for consumption, treating zeros as free usage, and
 prematurely trusting completion; separate metrics and require final export evidence.
 Inspection incurred no inference cost. Rollback removes this research diff; source
 storage and account settings were unchanged.
+
+
+## Closeout assessment (2026-10-03)
+
+Read-only reinspection of the same authorized store on 2026-10-03 found changed bytes across 23 selected records, with empty usageData and zero bubble counters. The new digest is recorded separately in the profile register. These observations establish neither zero consumption nor a final charge. No personal usage CSV was supplied; exact headers, app/export version, tier, acquisition, range/timezone, stable identity, overlap and charge basis remain required.
+
+See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).

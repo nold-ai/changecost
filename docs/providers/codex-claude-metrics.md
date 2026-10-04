@@ -131,3 +131,10 @@ task 2.2 stays pending for Copilot/Cursor and the unresolved profile semantics.
 Future adapters need
 separate scoped changes after this evidence gate and the core reconciliation
 prerequisites; existing Copilot/Cursor adapter stories are not relabeled.
+
+
+## Closeout assessment (2026-10-03)
+
+Installed metadata was rechecked on 2026-10-03: codex-cli 0.139.0 and Claude Code 2.1.257 remain distinct from historical Desktop 0.158.0-alpha.2.1 and stored Claude 2.1.275/2.1.215 records. Each version has a separate register profile. The executable detector checks synthetic snapshots and message variants; it cannot establish native finality, reset/interval authority or account billing. Claude monitoring was rechecked on 2026-10-03; its metric interface remains separate from billed money.
+
+See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).

@@ -37,6 +37,7 @@
 - [Evidence reconciliation specification](openspec/specs/evidence-reconciliation/spec.md): Accepted normalized reconciliation, immutable computation and explicit coverage requirements synchronized by the OpenSpec archive CLI.
 - [Empirical quotes preparation](openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md): Historical preparation against delivered cutoff/coverage contracts; later runtime evidence is separate.
 - [Empirical Quotes](docs/quotes.md): Offline synthetic peer estimation, exact quantiles, feature backoff and historical replay.
+- [Source profile register](docs/providers/source-profiles.json): Canonical per-version capabilities, digest references and unresolved native evidence.
 
 ## Local skills
 

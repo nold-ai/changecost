@@ -23,7 +23,8 @@ None; no main capability specs exist yet.
 
 ## Impact
 
-Future implementation affects the standalone Python CLI and local evidence workflow.
+The authorized closeout adds development-only offline evidence validation and tests;
+public runtime commands and provider adapters remain separate work.
 Documentation: docs/providers/source-feasibility.md, docs/providers/fixtures.md, and docs/research/pilot-source-assessment.md.
 The maintainer also authorized comparison of supplied Enterprise Cursor/Copilot
 projections on 2026-09-28, without extending adapter or collection scope.
@@ -66,8 +67,20 @@ evidence and prior local database versions; do not erase financial history.
 - GitHub issue: [#9](https://github.com/nold-ai/changecost/issues/9) (native type: User Story).
 - Parent feature: [#5](https://github.com/nold-ai/changecost/issues/5) — Pilot evidence.
 - Parent epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
-- Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status Todo.
+- Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status In Progress.
 - Source: maintainer-approved pilot plan, 2026-09-28 (Europe/Berlin).
-- Tracking baseline: 2026-09-28; issue Todo, unassigned and undated. Research is
+- Tracking baseline: 2026-09-28; issue Todo, unassigned and undated. Current closeout implementation is
   underway locally; personal-source inspection remains pending. See [research evidence](RESEARCH_EVIDENCE.md).
 <!-- tracking:end -->
+
+## Authorized closeout — 2026-10-03 (Europe/Berlin)
+
+The maintainer selected verified native source profiles as the completion condition
+and authorized updated planning, GitHub synchronization, code/tests and delivery.
+PR #21 is merged historical partial research, not current completion proof. Reuse
+issue #9 and this change identity. Add a canonical profile register, derived matrix,
+bounded sanitized-file inspector and executable semantic checks for all 18 research
+cases. Preserve original private evidence and existing synthetic-only runtime policy.
+Missing native exports, accounting boundaries and paired hook mappings remain
+explicit blockers; a passing checker cannot close those tasks or approve support.
+Preparation delivery is a scoped stash followed by implementation.
