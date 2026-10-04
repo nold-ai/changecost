@@ -1766,3 +1766,64 @@ def test_valid_expectations_do_not_mask_nested_detector_failure():
     bundle = copy.deepcopy(CASES)
     bundle["cases"][13] = malformed_hosted_control("nested")
     assert research.check_cases(bundle) == ["case-invalid"]
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://",
+        "https:///path",
+        "https://?query",
+        "https://#fragment",
+        "http://example.org",
+        "file:///private/path",
+        "https://[",
+        "https://[]",
+        "https://   ",
+        None,
+        True,
+        4,
+        [],
+        {},
+    ],
+)
+def test_citation_destination_fault_repaired(tmp_path, url):
+    data = registry()
+    profile = data["profiles"][0]
+    profile["references"][0]["url"] = url
+    assert research.validate_register(data)
+    path = tmp_path / "register.json"
+    path.write_text(json.dumps(data))
+    with pytest.raises(EvidenceError):
+        research.load_register(path)
+    with pytest.raises(EvidenceError):
+        research.render_matrix(data)
+    profile["references"][0]["url"] = "https://example.org/reference?version=1#usage"
+    path.write_text(json.dumps(data))
+    assert research.load_register(path) == data
+    assert research.render_matrix(data)
+
+
+@pytest.mark.parametrize("url", ["https://", "https:///path", "https://[", None])
+def test_native_citation_fresh_binding_fault_repaired(url):
+    data = registry()
+    profile = data["profiles"][0]
+    profile["references"][0]["url"] = url
+    profile["approvals"] = [approval(data)]
+    assert research.validate_register(data)
+    profile["references"][0]["url"] = "https://example.org/first"
+    profile["approvals"] = [approval(data)]
+    assert research.validate_register(data) == []
+    profile["references"][0]["url"] = "https://example.org/second"
+    assert research.validate_register(data)
+    profile["approvals"] = [approval(data)]
+    assert research.validate_register(data) == []
+
+
+@pytest.mark.parametrize(
+    "url", ["https://example.org", "https://example.org/path?q=1#usage", "https://[::1]/reference"]
+)
+def test_citation_destination_structural_only_valid(url):
+    data = registry()
+    data["profiles"][0]["references"][0]["url"] = url
+    assert research.validate_register(data) == []

@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Validate registered HTTPS citation destination hosts before accepting profile metadata.
+
 - Bound multiplier-only research to one record and validate fixture metadata before semantics.
 
 - Require nonblank evidence provenance scope notes without exposing them in reports.

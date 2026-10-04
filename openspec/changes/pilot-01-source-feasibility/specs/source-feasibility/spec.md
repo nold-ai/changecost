@@ -333,3 +333,9 @@ changing the evaluator to fit an expected result.
 - **GIVEN** malformed expectation shape or wrong conclusion keys together with conflicting/unknown hosted checkpoint evidence or malformed nested records
 - **WHEN** the research checker validates the case
 - **THEN** mapping shape rejects as case-invalid and wrong key coverage rejects as oracle-coverage before detector evaluation; valid mappings preserve exact value types and independent hosted checkpoint obligations.
+
+#### Scenario: Citation URLs require a destination host
+
+- **GIVEN** registered reference URLs with no destination host, a non-HTTPS scheme, malformed parse structure or a nonstring value
+- **WHEN** the register and derived matrix validate citation metadata
+- **THEN** they reject safely; accepted references are strings parsed with an HTTPS scheme and nonblank hostname, while reference kind/date and native approval binding remain required. This structural check makes no reachability, DNS, provider authority or domain-allowlist claim.

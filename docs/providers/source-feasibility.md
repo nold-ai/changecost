@@ -434,3 +434,7 @@ Every existing evidence origin requires a nonblank string `scope` note describin
 ### Multiplier cardinality and metadata precedence
 
 The multiplier-only research strategy observes one record and rejects any additional row, including replay or missing/conflicting/malformed multiplier values in either order. Other multi-span strategies retain their existing behavior; no consensus, averaging or cash conversion is inferred. Fixture expectation mapping shape and exact key coverage precede detector evaluation: compound structural faults remain `case-invalid`, and wrong keys remain `oracle-coverage`. Valid mappings still require exact conclusion types and the independent hosted checkpoint obligation.
+
+### Citation destination structure
+
+Reference URLs must be strings parsed with HTTPS scheme and a nonblank hostname. Hostless paths/queries/fragments, malformed brackets, nonstrings and other schemes reject safely in register/loader/matrix validation. Kind/access-date checks and exact profile approval binding remain required. This is syntax validation only: no DNS, reachability, provider authority or domain allowlist is inferred.

@@ -9,6 +9,7 @@ import re
 import sys
 from datetime import date
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from quality.source_cases import STRATEGIES, evaluate_case
 from quality.source_inspection import EvidenceError, inspect_manifest, read_document
@@ -105,11 +106,18 @@ def _text(value):
     return isinstance(value, str) and bool(value.strip())
 
 
+def _https_destination(value):
+    if not _text(value):
+        return False
+    parsed = urlsplit(value)
+    return parsed.scheme == "https" and _text(parsed.hostname)
+
+
 def _references_valid(references):
     if not isinstance(references, list) or not references:
         return False
     for reference in references:
-        if not _text(reference["kind"]) or not reference["url"].startswith("https://"):
+        if not _text(reference["kind"]) or not _https_destination(reference["url"]):
             return False
         date.fromisoformat(reference["accessed"])
     return True

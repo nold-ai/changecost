@@ -208,3 +208,5 @@ The research checker rejects malformed expectation containers with fixed diagnos
 Each registered evidence entry retains a nonblank provenance/coverage scope note; uncertainty notes remain claims requiring independent review and never appear in structural reports.
 
 The multiplier-only research strategy admits exactly one record. Fixture expectation shape and key coverage are checked before detector semantics, preserving safe structural diagnostics for compound faults.
+
+Registered citations require a parsed HTTPS destination hostname; this structural check does not probe reachability or provider authority.
