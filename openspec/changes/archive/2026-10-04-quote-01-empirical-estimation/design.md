@@ -7,8 +7,8 @@ Reviewed 2026-10-03 (Europe/Berlin) against main
 `3009b351d5108b60e9ba8649a9ef4aa0c0feb9f9`, after settlement PR #28 and archive PR #31.
 The Python package, Typer CLI, exact portable Quote, immutable registration features,
 SQLite layout 2 and normalized reconciliation are delivered. No estimator or native
-provider parser runs. Main [contracts](../../specs/change-run-contracts/spec.md) and
-[reconciliation](../../specs/evidence-reconciliation/spec.md) are the behavior boundary;
+provider parser runs. Main [contracts](../../../specs/change-run-contracts/spec.md) and
+[reconciliation](../../../specs/evidence-reconciliation/spec.md) are the behavior boundary;
 archived designs are historical rationale, not the current implementation inventory.
 
 ## Goals / Non-Goals

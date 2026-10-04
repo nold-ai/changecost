@@ -1,4 +1,4 @@
-# Offline lifecycle, settlement and Quote CLI
+# Offline lifecycle, settlement, Quote and advisory CLI
 
 Install with the [README setup](../README.md#work-on-the-repository). Put the global
 `--db PATH` option before the subcommand. Its default is
@@ -47,7 +47,7 @@ on a handled failure. Hard process termination may leave an unreferenced tempora
 file, but never a partial final artifact. Keep exports private.
 
 Portable import/export modes cannot be combined with selectors or other operation modes.
-`check`, native provider imports and live collection remain unavailable.
+Native provider imports and live collection remain unavailable. Read-only `check` is described below.
 `quote` computes synthetic offline empirical amounts. Computed record inspection includes local receipt status, input replay
 eligibility and `snapshot_only` completeness. Repository remainder reports are read-only.
 A busy store reports a retryable error; wait for the other writer and repeat the
@@ -76,3 +76,44 @@ that override. Identical operation retries preserve the original cutoff/result e
 when new evidence arrives; conflicting reuse, including a settlement operation ID,
 fails unchanged. See [empirical Quotes](quotes.md) for complete-cohort, feature and
 replay semantics. These commands never collect provider data or write settlements.
+
+## Presentation, errors and advisory budgets
+
+Put global `--format human` before the command for readable values; `--format json`
+(or no format option) preserves existing bind/quote/settle/explain success payloads.
+Human presentation escapes terminal controls. Help/version remain offline text with
+exit 0. Technical failures, including argument parsing, emit a safe diagnostic on
+stderr, leave stdout empty and exit 2. JSON errors use `changecost/error-v1` with
+`code` and `message`; rejected values, paths, SQL and tracebacks are not displayed.
+New advice uses `changecost/check-v1`; these are internal preview tags.
+
+```sh
+changecost --db demo.sqlite --format human explain --record-kind quote --record-id QUOTE_ID
+changecost --db demo.sqlite check --record-kind quote --record-id QUOTE_ID --budget 15 --economic-kind monetary --unit USD --currency USD --basis billed
+changecost --db demo.sqlite check --record-kind quote --record-id QUOTE_ID --quantile p50 --budget 15 --economic-kind monetary --unit USD --currency USD --basis billed
+changecost --db demo.sqlite check --record-kind computed_settlement --record-id SETTLEMENT_ID --budget 15 --economic-kind monetary --unit USD --currency USD --basis billed
+changecost check --artifact bundle.json --record-kind quote --record-id QUOTE_ID --budget 15 --economic-kind monetary --unit USD --currency USD --basis billed
+```
+
+Replace the explicit record IDs with the selected immutable result. No implicit
+latest selection or aggregation occurs. Budgets are finite nonnegative Decimal
+strings with exact kind/unit/basis/currency identity, no rounding or conversion.
+Monetary budgets require currency; nonmonetary budgets omit it. Quote p90 is the
+default; p50 is explicit. Settlement quantiles are invalid. Equality and observed
+zero are within_budget. All valid advice (`within_budget`, `over_budget`, `unknown`)
+exits 0; technical failures exit 2.
+
+Numeric advice requires a supported local typed computation receipt and exact
+historical reproduction at the original cutoff. Settlement reproduction includes
+scope, subtotals, supporting inputs/exclusions, reasons and completeness; explain's
+`inputs_available` alone cannot certify a value. Later evidence never replaces that
+cutoff. Imported/legacy/artifact-only results remain unknown producer claims, even
+with declared completeness. Unpriced, incomplete, incompatible, unsupported or
+unreproducible results remain unknown on both sides of budget. Narrowed Run windows
+retain the existing partial_change_scope reason. Results separate `declared` amounts
+from verified `comparison`, expose provenance, scope/cutoff and reasons.
+
+Check creates no record, receipt, revision, observation or store. Artifact mode
+strictly validates the portable graph and performs no database access or import.
+The executable [synthetic CI walkthrough](ci.md) demonstrates complete local values
+and portable claims; provider support/calibration remain To-Validate.

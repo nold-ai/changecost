@@ -84,4 +84,10 @@ when those are required by the audit output. No cohort count cap is added.
 
 No package version or SQLite layout migration is introduced. Back up before changing
 checkouts; rollback uses a follow-up code revert and separate compatible backup restore,
-retaining original records. Advisory CI, provider adapters and calibration remain pending.
+retaining original records. Advisory checks and optional CI summaries are implemented
+locally, pending current-head verification/acceptance. Provider adapters and calibration
+remain pending.
+
+## Budget advice
+
+Read-only check defaults to p90, permits explicit p50 and requires a local typed receipt plus supported historical reproduction before numeric advice. Imported/unpriced Quotes remain unknown with declared values and provenance; see [CLI advice](cli.md#presentation-errors-and-advisory-budgets).

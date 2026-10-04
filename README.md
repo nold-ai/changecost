@@ -11,9 +11,12 @@ portable import/export. See [CLI examples](docs/cli.md), [v1 contracts](docs/con
 and [verification evidence](openspec/changes/archive/2026-09-29-core-02-change-run-contracts/TDD_EVIDENCE.md).
 [Offline normalized reconciliation](docs/settlement.md), exact subtotals and
 immutable computation merged in [PR #28](https://github.com/nold-ai/changecost/pull/28).
-This checkout implements [offline empirical Quotes](docs/quotes.md) from complete
-synthetic history; verification/publication is tracked in the active change. Native
-provider imports and calibration remain pending.
+Offline [empirical Quotes](docs/quotes.md) merged in [PR #32](https://github.com/nold-ai/changecost/pull/32)
+from complete synthetic history. Native CLI archival on 2026-10-04 synchronized the
+[accepted specification](openspec/specs/empirical-quotes/spec.md);
+[archived verification](openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/TDD_EVIDENCE.md)
+retains accepted limits. Native provider imports and calibration remain pending.
+The current branch adds [read-only advisory check](docs/cli.md#presentation-errors-and-advisory-budgets), opt-in human output and an [optional synthetic CI summary](docs/ci.md). Verified local historical values can be compared to exact budgets; imported and incomplete claims remain unknown. All valid advice exits zero; technical failures exit 2.
 Live collection requires a separate request. This repository remains private.
 
 The delivered [Python foundation](openspec/specs/python-foundation/spec.md) and
@@ -178,9 +181,10 @@ for the pinned analyzer composition and hosted-runner trust boundary.
 Contributor review can use the [behavioral evidence pilot](docs/development/behavioral-evidence.md) for bounded
 lifecycle controls and content-bound delta review. Final required gates remain mandatory.
 
-Quote #15 runtime implementation was authorized on 2026-10-03. This checkout adds
-offline synthetic empirical estimation and historical replay; verification/publication
-remain tracked in the active change evidence. No provider collection is authorized.
+Quote #15 merged in PR #32 on 2026-10-03. Native CLI archival on 2026-10-04
+synchronized the accepted offline synthetic estimation and historical replay contract
+into main specs. Archived evidence preserves verification and accepted limitations.
+Provider collection and calibration remain separate gates.
 
 Source feasibility now includes [offline development evidence checks](docs/providers/source-feasibility.md#executable-closeout-checks-2026-10-03). Issue #9 remains open for native profile approval; adapters remain separate planned changes.
 CLI controls exercise safe private-manifest reports, changed-hash rejection and

@@ -37,6 +37,52 @@ def test_fresh_cli_registration_outcome_and_export(tmp_path):
     )
     assert result.exit_code == 0, result.output
     result = invoke(
+        tmp_path,
+        "settle",
+        "--repository-id",
+        "repo",
+        "--provider",
+        "cursor",
+        "--surface",
+        "ide",
+        "--run-id",
+        "r",
+        "--run-outcome",
+        "failed",
+    )
+    assert result.exit_code == 0, result.output
+    result = invoke(
+        tmp_path,
+        "bind",
+        "--register-run",
+        "--repository-id",
+        "repo",
+        "--change-id",
+        "c",
+        "--provider",
+        "cursor",
+        "--surface",
+        "ide",
+        "--run-id",
+        "retry",
+    )
+    assert result.exit_code == 0, result.output
+    result = invoke(
+        tmp_path,
+        "settle",
+        "--repository-id",
+        "repo",
+        "--provider",
+        "cursor",
+        "--surface",
+        "ide",
+        "--run-id",
+        "retry",
+        "--run-outcome",
+        "succeeded",
+    )
+    assert result.exit_code == 0, result.output
+    result = invoke(
         tmp_path, "settle", "--repository-id", "repo", "--change-id", "c", "--outcome", "accepted"
     )
     assert result.exit_code == 0, result.output
@@ -44,6 +90,58 @@ def test_fresh_cli_registration_outcome_and_export(tmp_path):
     assert result.exit_code == 0, result.output
     assert json.loads(result.output)["record"]["record_id"] == ident
     assert json.loads(result.output)["revisions"][0]["outcome"] == "accepted"
+    result = invoke(
+        tmp_path,
+        "quote",
+        "--repository-id",
+        "repo",
+        "--change-id",
+        "c",
+        "--operation-id",
+        "cold",
+        "--economic-kind",
+        "monetary",
+        "--unit",
+        "USD",
+        "--currency",
+        "USD",
+        "--basis",
+        "billed",
+    )
+    assert result.exit_code == 0, result.output
+    quote = json.loads(result.stdout)
+    assert quote["state"] == "unpriced"
+    result = invoke(
+        tmp_path,
+        "check",
+        "--record-kind",
+        "quote",
+        "--record-id",
+        quote["record_id"],
+        "--budget",
+        "15",
+        "--economic-kind",
+        "monetary",
+        "--unit",
+        "USD",
+        "--currency",
+        "USD",
+        "--basis",
+        "billed",
+    )
+    assert result.exit_code == 0 and json.loads(result.stdout)["status"] == "unknown"
+    result = invoke(
+        tmp_path,
+        "--format",
+        "human",
+        "explain",
+        "--record-kind",
+        "quote",
+        "--record-id",
+        quote["record_id"],
+    )
+    assert result.exit_code == 0 and "unpriced" in result.stdout
+
     artifact = tmp_path / "export.json"
     assert invoke(tmp_path, "explain", "--export-artifact", str(artifact)).exit_code == 0
     original = artifact.read_bytes()

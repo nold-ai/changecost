@@ -38,7 +38,7 @@ No fabricated live measurements, collection during planning, product launch clai
 
 - [provider-01-copilot-import](../provider-01-copilot-import/proposal.md)
 - [provider-02-cursor-import](../provider-02-cursor-import/proposal.md)
-- [quote-01-empirical-estimation](../quote-01-empirical-estimation/proposal.md)
+- [quote-01-empirical-estimation](../archive/2026-10-04-quote-01-empirical-estimation/proposal.md)
 - [workflow-01-advisory-ci](../workflow-01-advisory-ci/proposal.md)
 
 Dependencies are implementation prerequisites; planning can proceed together.

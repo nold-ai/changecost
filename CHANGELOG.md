@@ -3,6 +3,21 @@
 
 ## Unreleased
 
+- Add global human presentation and safe structured parser/operation errors while
+  preserving existing JSON successes. Add read-only explicit Quote/Settlement budget
+  advice with local receipt and historical result/completeness reproduction.
+- Add an opt-in synthetic Actions example and allowlisted escaped 64 KiB summaries;
+  valid advice never suppresses technical or independent quality failures.
+
+- Reconcile advisory CLI/CI #16 planning with delivered commands, preserved JSON,
+  unknown imported claims, verified historical budget comparison and bounded safe
+  summaries; preparation history is retained alongside the separately authorized
+  local implementation pending current-head verification/acceptance.
+
+- Archive accepted PR #32 through OpenSpec CLI 1.13.2 with six empirical Quote
+  requirements and 31 scenarios synchronized into main specs; preserve historical
+  verification and provider/calibration limits.
+
 - Bind default research checks to canonical registered fixture bytes before parsing.
 
 - Validate registered HTTPS citation destination hosts before accepting profile metadata.

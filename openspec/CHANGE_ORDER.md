@@ -52,7 +52,7 @@ This adds no new issue or product-order dependency.
 | [settlement-01-reconciliation](changes/archive/2026-10-02-settlement-01-reconciliation/proposal.md) | [#12](https://github.com/nold-ai/changecost/issues/12) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#11](https://github.com/nold-ai/changecost/issues/11) `core-02-change-run-contracts` |
 | [provider-01-copilot-import](changes/provider-01-copilot-import/proposal.md) | [#13](https://github.com/nold-ai/changecost/issues/13) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [provider-02-cursor-import](changes/provider-02-cursor-import/proposal.md) | [#14](https://github.com/nold-ai/changecost/issues/14) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
-| [quote-01-empirical-estimation](changes/quote-01-empirical-estimation/proposal.md) | [#15](https://github.com/nold-ai/changecost/issues/15) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
+| [quote-01-empirical-estimation](changes/archive/2026-10-04-quote-01-empirical-estimation/proposal.md) | [#15](https://github.com/nold-ai/changecost/issues/15) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [workflow-01-advisory-ci](changes/workflow-01-advisory-ci/proposal.md) | [#16](https://github.com/nold-ai/changecost/issues/16) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#15](https://github.com/nold-ai/changecost/issues/15) `quote-01-empirical-estimation` |
 | [pilot-02-calibration-evaluation](changes/pilot-02-calibration-evaluation/proposal.md) | [#17](https://github.com/nold-ai/changecost/issues/17) | [#5](https://github.com/nold-ai/changecost/issues/5) | [#13](https://github.com/nold-ai/changecost/issues/13) `provider-01-copilot-import`, [#14](https://github.com/nold-ai/changecost/issues/14) `provider-02-cursor-import`, [#15](https://github.com/nold-ai/changecost/issues/15) `quote-01-empirical-estimation`, [#16](https://github.com/nold-ai/changecost/issues/16) `workflow-01-advisory-ci` |
 
@@ -145,8 +145,8 @@ checks. Provider **#13**, then **#14**, retain their approved dependency order;
 #9 remains open until inspected source profiles pass the evidence gate.
 Settlement is delivered. Quotes **#15** were prepared earlier on 2026-10-03 and
 subsequently implemented and merged in [PR #32](https://github.com/nold-ai/changecost/pull/32).
-Its separately authorized unpublished archival work is preserved outside this
-feasibility closeout. Neither synthetic Quote coverage nor settlement acceptance
+Its accepted contract was synchronized through the native OpenSpec CLI in this
+worktree on 2026-10-04; the archive remains local/unpublished. Neither synthetic Quote coverage nor settlement acceptance
 approves provider imports or live collection. Provider implementation still
 requires a subsequent request.
 See the [historical settlement preparation evidence](changes/archive/2026-10-02-settlement-01-reconciliation/PREPARATION_EVIDENCE.md)
@@ -192,7 +192,34 @@ Rollback: revert the planning commit and close abandoned issues/project while pr
 history. No installed package, collected data or deployed infrastructure is changed.
 
 Quote #15 implementation was authorized and merged in PR #32 on 2026-10-03.
-The synthetic-only estimator is delivered; its archival work is separate.
+The synthetic-only estimator is delivered; native CLI archival on 2026-10-04
+synchronized six requirements and 31 scenarios into
+[empirical-quotes](specs/empirical-quotes/spec.md), preserving metadata and
+[accepted evidence](changes/archive/2026-10-04-quote-01-empirical-estimation/TDD_EVIDENCE.md).
 Provider approval and live calibration remain separate gates.
 
 Source feasibility #9 was reopened on 2026-10-03 for verified native profiles and executable closeout evidence. Historical PR #21 delivered partial research; it did not approve provider imports. Provider #13/#14 retain their native #9 dependency.
+
+## Advisory workflow preparation — 2026-10-05 (Europe/Berlin)
+
+The maintainer selected **workflow-01-advisory-ci (#16)** after accepted Quotes #15.
+[Preparation evidence](changes/workflow-01-advisory-ci/PREPARATION_EVIDENCE.md)
+reconciles the delivered four command families/registration/outcomes against the
+remaining human presentation, structured errors, read-only budget check and optional
+summary example. The sole native prerequisite remains closed #15; parent #8 and
+Open/Todo status are retained. Provider #13/#14 remain separate with source gates.
+
+Imported/unverifiable producer claims return unknown with displayed declared values;
+numeric advice requires supported local historical value/completeness reproduction.
+Existing JSON success payloads remain intact, p90 is the default Quote comparison,
+and valid advice exits zero while technical failures exit 2. Future tasks remain
+unchecked. No new native edge, provider approval, live collection, runtime code,
+persistence migration or public version is added.
+
+The requested disposition is local/unpublished retention in this same worktree with
+the native Quote archive for later combined delivery. No plan-only PR or stash is
+created. Implementation needs a subsequent request and fresh binding/verification.
+
+Advisory #16 implementation and combined verification/PR delivery were explicitly
+authorized on 2026-10-05. Its preparation remains historical; implementation/current
+acceptance evidence is retained in its active change. The quote archive is preserved.

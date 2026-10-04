@@ -1,106 +1,239 @@
-# Expose advisory CLI checks and GitHub summaries
+# Advisory CLI checks and GitHub summaries
 
 ## Purpose
 
-Developers need readable and machine-consumable results from the standalone CLI without turning an unvalidated quote into a blocking budget policy.
+Complete operation-appropriate presentation and truthful read-only budget advice
+using delivered contracts, with a safe optional CI summary. Provider approval and
+calibration remain separate.
 
 ## ADDED Requirements
 
 ### Requirement: Stable human and JSON output
 
-The CLI SHALL expose the five approved command families with parseable JSON output and diagnostics on stderr.
+The CLI SHALL expose quote, bind, settle, check and explain with operation-appropriate JSON and opt-in human presentation through global --format json|human, defaulting to JSON. Existing successful JSON payloads and portable schemas SHALL remain unchanged; only new check and structured error results SHALL receive new internal version tags. Human output SHALL preserve the same values, scope, provenance and uncertainty while escaping terminal controls.
 
-#### Scenario: Machine output
+#### Scenario: Existing success payload remains stable
 
-- **GIVEN** a successful quote request using JSON
-- **WHEN** the command completes
-- **THEN** stdout parses as one versioned result including unit/basis, completeness and evidence count.
+- **GIVEN** an existing bind, quote, settle or explain operation
+- **WHEN** it completes in default or explicit JSON mode
+- **THEN** stdout contains its existing parseable payload without a universal wrapper or added economic fields, and persistence/idempotency are unchanged.
 
-#### Scenario: Bad input
+#### Scenario: Human presentation carries uncertainty
 
-- **GIVEN** a malformed artifact
-- **WHEN** a command runs in JSON mode
-- **THEN** it exits nonzero with a structured error and no misleading successful result.
+- **GIVEN** a priced or unpriced Quote, incomplete Settlement or registration result
+- **WHEN** the same operation runs with global --format human
+- **THEN** stdout renders a readable operation-appropriate result with the same available values and uncertainty; embedded terminal controls remain data.
 
-### Requirement: Reachable fresh-store workflow
+#### Scenario: New check machine output
 
-The CLI SHALL expose Change/Run registration through bind and explicit outcome
-updates through settle, following the core lifecycle contract, so a fresh store can
-reach quoting, attribution and settlement without manually authored state.
+- **GIVEN** a successful check request in JSON mode
+- **WHEN** evaluation completes
+- **THEN** stdout is one versioned result naming the selected record, budget/economic identity, scope/cutoff, provenance/completeness, applicable sample count, claimed versus verified comparison value and reasons.
 
-#### Scenario: First change from registration to settlement
+### Requirement: Safe technical errors and offline invocation
 
-- **GIVEN** an empty store and a supported synthetic provider export
-- **WHEN** the caller registers a Change, quotes it, registers/binds a Run, imports and maps its evidence, then records Run and Change outcomes
-- **THEN** every operation is reachable through the five command families; the cold-start quote is unpriced, explicit provenance is preserved, and check/explain can inspect the resulting records.
+The CLI SHALL distinguish technical failure from valid unknown advice. Invalid arguments/modes, malformed or unsupported portable schemas, unavailable stores/artifacts and missing or invalid record selection SHALL exit 2. JSON mode SHALL emit one versioned safe error with a stable code/message on stderr and no success stdout, including argument-parsing failures. Human mode SHALL emit safe diagnostics on stderr. Help/version SHALL retain text/offline exit-zero behavior; invalid invocation SHALL NOT create stores or expose rejected values, private paths, SQL or tracebacks.
+
+#### Scenario: Malformed artifact
+
+- **GIVEN** a malformed local bundle containing private rejected values
+- **WHEN** check evaluates it
+- **THEN** exit is 2, JSON stderr contains a safe structured error, stdout is empty and neither payload values nor traceback are emitted.
+
+#### Scenario: Parser failure
+
+- **GIVEN** a missing required argument, invalid option or invalid format value
+- **WHEN** the CLI parses the request
+- **THEN** exit is 2 with a safe stderr-only error; JSON is the fallback for an invalid format, and no store is created.
+
+#### Scenario: Unavailable store or artifact
+
+- **GIVEN** a missing or inaccessible requested input
+- **WHEN** check runs
+- **THEN** the input is not created, exit is 2, and no successful or unknown advisory result masks the technical failure.
+
+#### Scenario: Offline help and version
+
+- **GIVEN** no local store or network
+- **WHEN** help or version runs
+- **THEN** the existing text response succeeds with exit zero and creates no evidence/store; bare or unknown commands fail safely.
+
+### Requirement: Reachable fresh-store regression workflow
+
+The workflow SHALL reuse delivered bind registration/mapping, quote, settle normalized import/computation and explicit outcomes, then add check/explain and both presentation modes. Controlled synthetic normalized/portable coverage fixtures SHALL remain clearly synthetic. This capability SHALL NOT introduce a provider parser or coverage-authoring API, require handwritten database rows, or reinterpret delivered registration/outcome operations as unimplemented.
+
+#### Scenario: First change from registration to advice
+
+- **GIVEN** an empty store and named controlled synthetic fixtures
+- **WHEN** the caller registers/quotes a Change, registers/binds a Run, imports/maps evidence, declares outcomes, computes a Settlement and uses check/explain
+- **THEN** cold-start quoting is valid unpriced, existing provenance/retry semantics remain intact, and new advice/presentation are reachable through the five command families.
+
+#### Scenario: Retry and abandoned history remains visible
+
+- **GIVEN** a failed attempt followed by a retry or abandoned Change
+- **WHEN** the documented workflow runs
+- **THEN** existing explicit outcomes and economic history are retained; presentation and advice do not erase retry or abandoned expenditure.
+
+### Requirement: Explicit read-only record and budget selection
+
+Check SHALL require an explicit quote, computed_settlement or legacy settlement kind and record ID, selecting from one read-only local-store snapshot or a strictly validated changecost/v1 bundle supplied through --artifact. Artifact mode SHALL NOT import or open/create a database. Check SHALL NOT select latest revisions implicitly, combine records, write records/receipts/revisions/observations or establish authority from artifact contents. Budget SHALL be a finite nonnegative Decimal string with explicit kind/unit/basis and monetary currency, using the existing economic identity rules. Quote quantile selection SHALL default to p90 and permit p50; an explicit Settlement quantile SHALL be invalid.
+
+#### Scenario: Selected immutable revision
+
+- **GIVEN** multiple Settlement revisions exist
+- **WHEN** check selects one explicit record ID
+- **THEN** only that historical revision and its declared scope are evaluated, without silently selecting newer records or writing state.
+
+#### Scenario: Artifact evaluation bypasses database
+
+- **GIVEN** a valid portable bundle and a nonexistent global database path
+- **WHEN** check uses --artifact and a valid record selector
+- **THEN** the record is inspected as a producer claim, advice is unknown, and the database path is neither opened nor created.
+
+#### Scenario: Invalid selector and budget
+
+- **GIVEN** a missing/other-kind record, explicit Settlement quantile, negative/nonfinite/malformed budget or invalid economic identity
+- **WHEN** check validates the request
+- **THEN** exit is 2 with safe technical diagnostics and no store creation or writes.
+
+#### Scenario: Exact Decimal equality and zero
+
+- **GIVEN** a verified complete compatible value of 0.1 or observed 0 and an equal valid budget
+- **WHEN** check compares values
+- **THEN** status is within_budget using exact Decimal comparison, without float conversion, currency conversion or rounding.
+
+#### Scenario: Explicit quote quantile
+
+- **GIVEN** a verified priced Quote with p50 10 and p90 18 USD billed, against 15 USD billed
+- **WHEN** check runs with no quantile and then explicit p50
+- **THEN** the default is over_budget and p50 is within_budget; each result states the selected quantile and exits zero.
+
+### Requirement: Verified historical authority before numeric advice
+
+Numeric advice SHALL require a supported valid local typed computation receipt and reproduction of the selected immutable result at its original store-local cutoff. Quote validation SHALL retain the delivered historical replay boundary. Computed Settlement validation SHALL reproduce values, requested-scope completeness and supporting inputs/exclusions/reasons through the existing reconciliation evaluator; receipt or input availability alone SHALL NOT suffice. Legacy, imported/artifact-only, unsupported, future/foreign-cutoff, missing-input or result-mismatch claims SHALL return unknown with declared values/provenance and no verified comparison value. Saved/imported completeness and receipt-like fields SHALL NOT create authority. Later evidence SHALL NOT change evaluation of the selected historical result.
+
+#### Scenario: Priced imported Quote remains a claim
+
+- **GIVEN** a well-formed imported priced Quote declares 18 USD against budget 15 but lacks supported local verification
+- **WHEN** check runs
+- **THEN** status is unknown with declared amount/provenance, not over_budget, and exit is zero.
+
+#### Scenario: Forged imported completeness
+
+- **GIVEN** an imported legacy or computed Settlement declares a complete total with receipt-like portable fields
+- **WHEN** check runs
+- **THEN** status is unknown with producer-assertion provenance; supplied flags cannot establish local authority.
+
+#### Scenario: Receipt availability is insufficient
+
+- **GIVEN** a local Settlement has a receipt and available inputs but stored material values/completeness differ from historical reproduction
+- **WHEN** check runs
+- **THEN** status is unknown with mismatch reason and no verified comparison value, without changing the stored result.
+
+#### Scenario: Unavailable or unsupported replay
+
+- **GIVEN** an otherwise well-formed computation has a foreign/future cutoff, missing historical inputs or unsupported computation version
+- **WHEN** check runs
+- **THEN** advice is unknown with the applicable reason; no current-history fallback or result rewrite occurs.
+
+#### Scenario: Later correction preserves historical advice
+
+- **GIVEN** a verified historical computation is followed by a new import or correction
+- **WHEN** check selects the same original record
+- **THEN** it reproduces at the original cutoff and preserves the original advice; newer evidence is not leaked into that result.
+
+#### Scenario: Narrow scope retains existing completeness policy
+
+- **GIVEN** a reproduced Settlement uses a narrowed interval and the existing evaluator retains partial_change_scope
+- **WHEN** check compares its declared scope to a compatible budget
+- **THEN** advice is unknown with that scope/subtotal and reason; check does not filter reasons, certify narrower completeness or introduce a new coverage policy.
+
+#### Scenario: Check never alters durable evidence
+
+- **GIVEN** a local store with successful Quote/Settlement operation receipts
+- **WHEN** check succeeds, returns unknown or rejects invalid input
+- **THEN** logical records/receipts/revisions/availability remain unchanged and identical computation retries still return the original records.
 
 ### Requirement: Advisory budget semantics
 
-Budget checks SHALL remain advisory and SHALL compare only compatible known economic values. A settlement whose requested comparison scope is provisional or incomplete SHALL return unknown with the known subtotal and reason, even when that subtotal exceeds budget. Only complete compatible settlement totals or priced quote values SHALL produce within_budget or over_budget.
+Check SHALL return within_budget, over_budget or unknown, all with exit zero for valid advice. It SHALL compare only verified complete compatible values, without FX, basis conversion or credit-to-cash conversion. Unpriced or incomplete requested-scope results SHALL remain unknown, displaying available claimed amounts/known subtotals and reasons on either side of budget. Compatible complete values greater than budget SHALL be over_budget; equal or lower values SHALL be within_budget.
 
 #### Scenario: Over budget
 
-- **GIVEN** a priced p90 of 18 USD billed and budget 15 USD billed
+- **GIVEN** a locally verified priced p90 of 18 USD billed and a compatible budget of 15 USD billed
 - **WHEN** check runs
-- **THEN** status is over_budget and process exit is zero.
+- **THEN** status is over_budget with the verified value, original cutoff, provenance and sample count; exit is zero.
 
 #### Scenario: Unknown comparison
 
-- **GIVEN** an unpriced quote or credit budget against USD
+- **GIVEN** an unpriced Quote or a valid credit budget against USD billed value
 - **WHEN** check runs
-- **THEN** status is unknown with an explanation and exit zero.
+- **THEN** status is unknown with unpriced/incompatible explanation and no converted comparison value; exit is zero.
 
 #### Scenario: Missing charge below budget
 
-- **GIVEN** a settlement with 10 USD billed known, one missing USD charge and a 15 USD billed budget for the same scope
-- **WHEN** check runs
-- **THEN** status is unknown with the 10 USD subtotal and missing-charge reason, never within_budget, and exit is zero.
+- **GIVEN** 10 USD known and one missing same-unit charge, against budget 15
+- **WHEN** check evaluates that incomplete scope
+- **THEN** status is unknown with the known subtotal and missing-evidence reason, never within_budget; exit is zero.
 
 #### Scenario: Provisional subtotal above budget
 
-- **GIVEN** a provisional settlement with 20 USD billed known and an unresolved correction against a 15 USD billed budget
-- **WHEN** check runs
-- **THEN** status is unknown with its provisional subtotal and correction reason, not a claimed final over_budget result, and exit is zero.
+- **GIVEN** 20 USD known with an unresolved correction, against budget 15
+- **WHEN** check evaluates that scope
+- **THEN** status is unknown with provisional subtotal/reason, not final over_budget; exit is zero.
 
 #### Scenario: Complete settlement within budget
 
-- **GIVEN** a complete 10 USD billed settlement and a compatible 15 USD billed budget for its declared scope
+- **GIVEN** a locally reproduced complete compatible 10 USD settlement and budget 15 for its declared scope
 - **WHEN** check runs
 - **THEN** status is within_budget and exit is zero.
 
 ### Requirement: Safe standalone CI summary
 
-The CI example SHALL use local artifacts without provider credentials and SHALL render untrusted values as data.
+The example SHALL be workflow_dispatch-only and independent of required quality jobs, using local synthetic artifacts, existing pinned setup and read-only permissions without provider credentials or automatic PR/account/branch-protection changes. A Python helper SHALL validate/allowlist the new check result and write directly to GITHUB_STEP_SUMMARY, treating all labels as data. It SHALL escape HTML/Markdown/control characters and preserve benign Unicode; final UTF-8 output SHALL be at most 65,536 bytes including a visible truncation notice. Valid advice SHALL stay nonblocking while malformed result, renderer or write failures remain nonzero. No continue-on-error or shell fallback SHALL suppress technical failures.
 
 #### Scenario: Malicious display value
 
-- **GIVEN** an artifact label containing shell substitution and Markdown syntax
-- **WHEN** the summary example executes
-- **THEN** no embedded command runs and the label is safely rendered.
+- **GIVEN** a display label contains shell substitution, HTML/Markdown syntax and terminal/workflow control strings
+- **WHEN** the summary helper renders it
+- **THEN** no embedded command executes, no workflow command is emitted through stdout, and displayed values are escaped data.
+
+#### Scenario: Unicode and bounded truncation
+
+- **GIVEN** a result has large multibyte Unicode display values
+- **WHEN** the helper renders its summary
+- **THEN** final UTF-8 output is valid, at most 65,536 bytes including the visible truncation notice, with valid escapes and benign Unicode preserved.
+
+#### Scenario: Summary technical failure
+
+- **GIVEN** an invalid check-result version or unwritable summary destination
+- **WHEN** the example runs
+- **THEN** the helper/job fails nonzero instead of presenting successful budget advice or masking the failure.
 
 #### Scenario: Advisory only
 
-- **GIVEN** an over-budget valid artifact
-- **WHEN** the example workflow runs
-- **THEN** the job records advice without imposing a required budget gate.
+- **GIVEN** a valid verified over-budget result or unverifiable artifact claim
+- **WHEN** the example runs
+- **THEN** it records over_budget or unknown advice respectively with exit zero; no required budget gate or provider credential is introduced.
 
 ### Requirement: Current documented workflow and independent repository gates
 
-Implemented CLI/CI examples SHALL have ownership/source mappings and agree with
-the actual command, JSON and exit contracts. Generated command references and
-llms.txt SHALL pass the foundation's integrity checks. Advisory budget status
-SHALL NOT suppress failures in tests, documentation, metadata or workflow quality
-gates. This change SHALL reuse the foundation validators rather than introduce a
-second competing quality pipeline.
+Implemented examples SHALL match actual command, output and exit contracts, with current ownership/source mappings, generated references and llms.txt. This change SHALL reuse the foundation validators and existing required Python/native assurance; advisory statuses SHALL NOT suppress tests, docs, metadata or workflow failures. Preparation SHALL remain distinct from runtime delivery, with actual red/green and independent review evidence recorded before acceptance.
 
 #### Scenario: Stale documented command
 
-- **GIVEN** a documented workflow using a removed CLI option or an outdated JSON/exit expectation
-- **WHEN** the documented synthetic example and foundation consistency checks run
-- **THEN** they fail with the mismatched command/contract until the documentation and generated references match the implemented behavior.
+- **GIVEN** an executable example uses a removed option or outdated JSON/exit expectation
+- **WHEN** existing documentation/example and generated-reference checks run
+- **THEN** they fail until implementation, examples and generated references agree.
 
 #### Scenario: Budget advice alongside quality failure
 
-- **GIVEN** a valid over-budget artifact and a failing repository documentation or test gate
-- **WHEN** the advisory example and repository checks run
-- **THEN** budget advice remains nonblocking but the repository quality result remains failed.
+- **GIVEN** a valid over-budget result and a failing documentation/test/workflow gate
+- **WHEN** advisory and repository checks run
+- **THEN** advice stays nonblocking while the independent required quality result remains failed.
+
+#### Scenario: Missing native assurance
+
+- **GIVEN** macOS required analyzers report unsupported_controller_platform
+- **WHEN** verification is handed off
+- **THEN** the evidence remains incomplete until fresh supported-Linux assurance, without reusing an older feature/archive result as current certification.

@@ -423,6 +423,41 @@ class CliContract(unittest.TestCase):
         )
         self.assertTrue(explanation["local_computation"])
         self.assertEqual(explanation["economic_validation"], "reproduced")
+        budget = [
+            "check",
+            "--record-kind",
+            "quote",
+            "--record-id",
+            quote["record_id"],
+            "--budget",
+            "0.25",
+            "--economic-kind",
+            "monetary",
+            "--unit",
+            "USD",
+            "--currency",
+            "USD",
+            "--basis",
+            "billed",
+        ]
+        checked = json.loads(invoke("quote.sqlite", *budget))
+        self.assertEqual(checked["status"], "within_budget")
+        self.assertEqual(checked["comparison"]["amount"], "0.25")
+        self.assertIn("within_budget", invoke("quote.sqlite", "--format", "human", *budget))
+        self.assertIn("priced", invoke("quote.sqlite", "--format", "human", *args))
+        self.assertIn(
+            "reproduced",
+            invoke(
+                "quote.sqlite",
+                "--format",
+                "human",
+                "explain",
+                "--record-kind",
+                "quote",
+                "--record-id",
+                quote["record_id"],
+            ),
+        )
 
     def prove_quote_roundtrip(self, invoke, work):
         """Use only the installed public CLI and synthetic portable coverage."""

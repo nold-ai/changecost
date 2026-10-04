@@ -60,7 +60,8 @@ def render(root: Path) -> dict[str, str]:
         "imports normalized evidence or computes;",
         "`explain` inspects/exports and reports repository remainder. "
         "`quote` computes offline empirical estimates. "
-        "`check` and provider adapters remain planned.",
+        "`check` compares explicit historical records to compatible budgets, "
+        "with valid unknown advice. Provider adapters remain planned.",
         "",
     ]
     lines += [

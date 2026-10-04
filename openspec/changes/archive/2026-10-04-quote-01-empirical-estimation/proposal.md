@@ -41,12 +41,12 @@ No ML model, price database, cross-currency conversion, automatic enforcement, o
 
 ## Dependencies
 
-- [settlement-01-reconciliation](../archive/2026-10-02-settlement-01-reconciliation/proposal.md)
+- [settlement-01-reconciliation](../2026-10-02-settlement-01-reconciliation/proposal.md)
 
 Settlement is delivered in PR #28 and archived by PR #31. It satisfies the only
 implementation prerequisite. Provider adapters and source-feasibility completion
 are not prerequisites for synthetic quote verification; no provider policy is added.
-See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
+See [change order](../../../CHANGE_ORDER.md) and [source assessment](../../../../docs/research/pilot-source-assessment.md).
 
 ## Decisions and uncertainty
 

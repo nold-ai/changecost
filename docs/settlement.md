@@ -169,3 +169,7 @@ backup and matching earlier checkout; export there and import into a separate fr
 store for preview experimentation. This creates new destination history. Retain the
 old backup/checkout for original cutoff replay. No automatic migration, downgrade,
 release or cross-checkout compatibility promise is provided.
+
+## Historical budget advice
+
+Check additionally reproduces all material reconciliation fields at the original cutoff. Input availability alone is insufficient. Incomplete known subtotals above or below budget and narrowed partial_change_scope results remain unknown; see [CLI advice](cli.md#presentation-errors-and-advisory-budgets).

@@ -199,3 +199,7 @@ A compatible same-layout backup preserves authority; portable export/import does
 Foreign/future or unavailable cutoffs, unsupported algorithms/policies and result
 mismatches report replay_unavailable. Later evidence cannot alter a stored historical
 result. See [Quotes](quotes.md) for rank, cohort and feature details.
+
+## Ephemeral budget results
+
+Advisory budgets add no persisted record, receipt or schema migration. Check reads one immutable record at its historical cutoff and separates producer declarations from locally reproduced comparison values; portable artifacts never grant local authority. See [CLI advice](cli.md#presentation-errors-and-advisory-budgets).

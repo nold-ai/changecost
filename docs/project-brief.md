@@ -83,6 +83,13 @@ retain the final verification sources, earlier failures and accepted limitations
 The next provider changes still require inspected, approved source profiles;
 empirical quotes now use the delivered settlement boundary in this checkout.
 
-Quote #15 runtime implementation was authorized on 2026-10-03. This checkout adds
-offline synthetic empirical estimation and historical replay; verification/publication
-remain tracked in the active change evidence. No provider collection is authorized.
+Quote #15 merged in PR #32 on 2026-10-03. Native CLI archival on 2026-10-04
+synchronized the accepted offline synthetic estimation and historical replay contract
+into main specs. Archived evidence preserves verification and accepted limitations.
+Provider collection and calibration remain separate gates.
+
+Advisory #16 is authorized and implemented locally on 2026-10-05, pending current-head
+verification and PR acceptance. Human/JSON presentation, exact read-only budget checks
+and optional synthetic summaries retain imported-claim uncertainty and independent
+quality gates. See [advisory CLI](cli.md#presentation-errors-and-advisory-budgets) and
+[CI example](ci.md); provider approval and calibration remain separate.

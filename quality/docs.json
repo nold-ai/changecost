@@ -566,34 +566,34 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/quote-01-empirical-estimation/design.md",
+      "path": "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/design.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/quote-01-empirical-estimation/design.md"
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/quote-01-empirical-estimation/proposal.md",
+      "path": "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/proposal.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/quote-01-empirical-estimation/proposal.md"
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/quote-01-empirical-estimation/specs/empirical-quotes/spec.md",
+      "path": "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/specs/empirical-quotes/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/quote-01-empirical-estimation/specs/empirical-quotes/spec.md"
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/specs/empirical-quotes/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/quote-01-empirical-estimation/tasks.md",
+      "path": "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/tasks.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/quote-01-empirical-estimation/tasks.md"
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/tasks.md"
       ],
       "kind": "manual"
     },
@@ -738,7 +738,9 @@
       "owner": "core-contracts",
       "sources": [
         "src/changecost/cli.py",
-        "src/changecost/operations.py"
+        "src/changecost/operations.py",
+        "src/changecost/advisory.py",
+        "src/changecost/presentation.py"
       ],
       "kind": "manual"
     },
@@ -889,14 +891,14 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
-        "openspec/changes/quote-01-empirical-estimation/proposal.md",
-        "openspec/changes/quote-01-empirical-estimation/design.md",
-        "openspec/changes/quote-01-empirical-estimation/specs/empirical-quotes/spec.md",
-        "openspec/changes/quote-01-empirical-estimation/tasks.md"
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/proposal.md",
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/design.md",
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/specs/empirical-quotes/spec.md",
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/tasks.md"
       ],
       "kind": "manual"
     },
@@ -911,10 +913,10 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/quote-01-empirical-estimation/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/TDD_EVIDENCE.md",
       "owner": "empirical-quotes",
       "sources": [
-        "openspec/changes/quote-01-empirical-estimation/TDD_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     },
@@ -925,6 +927,52 @@
         "quality/source_*.py",
         "tests/test_source_feasibility.py",
         "docs/providers/source-profiles.json"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/empirical-quotes/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/specs/empirical-quotes/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/workflow-01-advisory-ci/PREPARATION_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/workflow-01-advisory-ci/PREPARATION_EVIDENCE.md",
+        "openspec/changes/workflow-01-advisory-ci/proposal.md",
+        "openspec/changes/workflow-01-advisory-ci/design.md",
+        "openspec/changes/workflow-01-advisory-ci/specs/advisory-workflow/spec.md",
+        "openspec/changes/workflow-01-advisory-ci/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/ci.md",
+      "owner": "advisory-workflow",
+      "sources": [
+        "src/changecost/summary.py",
+        "src/changecost/demo.py",
+        ".github/workflows/advisory.yml"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/workflow-01-advisory-ci/TDD_EVIDENCE.md",
+      "owner": "advisory-workflow",
+      "sources": [
+        "src/changecost/advisory.py",
+        "src/changecost/presentation.py",
+        "src/changecost/summary.py",
+        "src/changecost/demo.py",
+        "tests/test_advisory.py",
+        "tests/test_advisory_controls.py",
+        "tests/test_presentation.py",
+        "tests/test_summary.py",
+        "tests/advisory_oracle.py"
       ],
       "kind": "manual"
     }

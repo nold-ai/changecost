@@ -1,9 +1,10 @@
 # Tasks
 
 Preparation reconciled and runtime implementation explicitly authorized on 2026-10-03
-(Europe/Berlin). Scoped runtime/docs tests are passing in this checkout; full verification,
-publication and exact-head acceptance remain pending. Provider collection and archival
-are outside this request.
+(Europe/Berlin). Implementation and exact-head verification completed in merged
+PR #32 on 2026-10-03. The maintainer requested native CLI archival on 2026-10-04;
+this closeout reconciles publication checkpoints against the accepted PR evidence.
+Provider collection remains separate.
 
 ## 1. Fresh scope and obligation review
 
@@ -30,6 +31,33 @@ are outside this request.
 
 ## 5. Verification and later delivery
 
-- [ ] 5.1 Record actual failing-before/passing-after commands, timestamps, scope and outcomes in TDD_EVIDENCE.md; run strict selected OpenSpec validation, explicit-base make check and applicable staged-snapshot checks. Retain native supported-Linux capsule/Python matrix evidence; missing analyzers remain incomplete.
-- [ ] 5.2 After mechanical stabilization, close selected independent obligations and require exact-head Codex plus CodeRabbit review for persistence/import trust. Reuse already-running required reviews, preserve bounded history and verify actual provider/check evidence; do not add a generic full local/CLI scan by default or precheck live acceptance.
-- [ ] 5.3 Hand off to separately requested verification/promotion with current docs, PR/ledger acceptance evidence, actual issue sync and retained stash OID. Commit/push/PR tasks remain pending until requested and completed; archive only after explicit implementation acceptance using the OpenSpec CLI.
+- [x] 5.1 Record actual failing-before/passing-after commands, timestamps, scope and outcomes in TDD_EVIDENCE.md; run strict selected OpenSpec validation, explicit-base make check and applicable staged-snapshot checks. Retain native supported-Linux capsule/Python matrix evidence; missing analyzers remain incomplete.
+- [x] 5.2 After mechanical stabilization, close selected independent obligations and require exact-head Codex plus CodeRabbit review for persistence/import trust. Reuse already-running required reviews, preserve bounded history and verify actual provider/check evidence; do not add a generic full local/CLI scan by default or precheck live acceptance.
+- [x] 5.3 Hand off to separately requested verification/promotion with current docs, PR/ledger acceptance evidence, actual issue sync and retained stash OID. Commit/push/PR tasks remain pending until requested and completed; archive only after explicit implementation acceptance using the OpenSpec CLI.
+
+## Accepted implementation closeout — 2026-10-04 (Europe/Berlin)
+
+[PR #32](https://github.com/nold-ai/changecost/pull/32) merged on 2026-10-03
+at 17:58:36 Europe/Berlin, merge commit
+`5f43c32d09e6d1b167c352ad16cabea555d84ec2`, accepted feature head
+`b83c2dc2fd4ae292bcdf1b532858d6bac8360d40`. GitHub readback on 2026-10-04
+confirmed MERGED, both quality matrix checks successful and CodeRabbit successful.
+Issue #15 is Closed/Done; prerequisite #12 is closed.
+
+The accepted PR verification index records 1,147 tests, two installed-wheel
+offline CLI proofs, 11 strict OpenSpec validations, configured staged checks,
+independent defect/documentation closure, exact-head Codex/CodeRabbit completion
+and all six review threads resolved with retained dispositions.
+[Native run 37129770275](https://github.com/nold-ai/changecost/actions/runs/37129770275)
+passed Python 3.11.15 and 3.13.14 with all ten analyzers and full assurance.
+These are accepted feature results, not checks of this new archive/planning diff.
+Earlier red/green failures, native failures, prior-head results and accepted
+advisories remain preserved in TDD_EVIDENCE.md and the final PR index.
+
+The earlier local archive draft in another worktree remains intact and unpublished;
+its historical receipt records completed bounded history without reset. This
+worktree performs its own native archive against fresh main
+`340668e6b74bfb7ccab15efe13830555bc6dd7ef` (including merged PR #33).
+The prior preparation stash `be9e9d6613b03e83dd05de0033abb2b34ce04a89` is a
+historical recovery pointer, not asserted to exist in this worktree.
+Calibration, prediction accuracy and provider approvals remain To-Validate.
