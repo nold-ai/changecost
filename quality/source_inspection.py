@@ -97,6 +97,14 @@ def _jsonl(text):
 
 
 def _csv(text):
+    previous = csv.field_size_limit(MAX_BYTES)
+    try:
+        return _csv_rows(text)
+    finally:
+        csv.field_size_limit(previous)
+
+
+def _csv_rows(text):
     reader = csv.reader(io.StringIO(text, newline=""), strict=True)
     header = next(reader, [])
     if not header or len(set(header)) != len(header):

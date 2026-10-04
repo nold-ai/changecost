@@ -393,3 +393,20 @@ partial-only guard above; loading and matrix rendering enforce the same validato
 Malformed containers, keys or entries remain invalid even when details are optional.
 This is register completeness validation, not proof that contributor review claims
 are authentic or that missing native sources are supported.
+
+### Existing input boundary corrections — 2026-10-04
+
+UTC normalization can overflow even after timezone-aware parsing succeeds near
+years1and9999. These endpoints leave cumulative intervals unresolved, preserving
+representable timestamps, Decimal precedence and reset/conflict behavior. Wrong
+nested record containers use fixed case-shape/case-invalid diagnostics rather than
+tracebacks; repaired originals and deliberately missing evidence retain their
+existing conclusions. This does not introduce a new record schema.
+
+CSV parsing temporarily uses the existing10MiB byte bound as its field-size limit,
+then restores the previous process limit on success or failure. Valid wide headers,
+UTF8cells and quoted multiline cells within the received byte bound are accepted;
+the default Python131,072field limit is not a separate supported-export policy.
+Existing total-byte, record-count, width, duplicate-header and private diagnostic
+guards remain. This development-only inspector processes inputs serially; the
+parser wrapper does not enable collection or native-profile support.

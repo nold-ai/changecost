@@ -35,7 +35,9 @@ message counters and checks synthetic examples without claiming native compatibi
 Work OTel is reported disabled; custom session-log hook output is the next evidence source.
 No provider import profile or runtime adapter is approved yet. The token research
 case requires one record. Supported or partial source claims retain field meanings;
-partial or unverified claims retain unresolved evidence requirements.
+partial or unverified claims retain unresolved evidence requirements. Inspection
+keeps malformed nested cases and unrepresentable UTC endpoints controlled, and
+CSV fields share the existing input byte bound.
 
 ## Direction
 

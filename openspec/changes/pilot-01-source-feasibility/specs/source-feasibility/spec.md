@@ -284,3 +284,21 @@ changing the evaluator to fit an expected result.
 - **GIVEN** any combination of supported, partial, unverified and unavailable capabilities
 - **WHEN** the canonical register is validated, loaded or rendered as a matrix
 - **THEN** any supported or partial capability requires nonempty valid verified field meanings, and any partial or unverified capability requires nonempty valid unresolved requirements; an entirely unavailable profile may leave both empty, and a fully resolved supported profile may leave requirements empty while retaining verified fields and independent native approval bindings.
+
+#### Scenario: Timestamp normalization respects representable UTC bounds
+
+- **GIVEN** a syntactically valid timezone-aware interval endpoint overflows during UTC normalization
+- **WHEN** the cumulative evidence is evaluated
+- **THEN** its interval remains unresolved through the existing safe result, preserving representable timestamps, reset/conflict semantics and Decimal validation precedence.
+
+#### Scenario: Malformed nested case containers use safe diagnostics
+
+- **GIVEN** a research record has a nested container of the wrong type
+- **WHEN** any selected detector accesses that malformed shape
+- **THEN** structural rejection uses the fixed case-shape/case-invalid diagnostic without a traceback or payload, while repaired originals and deliberate missing-evidence uncertainty remain unchanged.
+
+#### Scenario: CSV fields share the advertised input byte bound
+
+- **GIVEN** a valid CSV field or header exceeds the Python reader default but the received file remains within10MiB
+- **WHEN** bounded inspection parses it
+- **THEN** it permits the field up to the existing input bound and restores the prior parser field limit after success or failure; total-byte, row-width, duplicate-header and privacy guards remain enforced.

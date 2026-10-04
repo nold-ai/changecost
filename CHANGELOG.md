@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Reject malformed nested source cases safely, keep UTC normalization overflow
+  unresolved, and align CSV field parsing with the existing input byte bound.
+
 - Apply source-register evidence detail requirements across every capability
   disposition, preserving resolved-profile and native-approval boundaries.
 

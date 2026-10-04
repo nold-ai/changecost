@@ -382,3 +382,33 @@ existing nativeapproval bindings. Original18fixturebytes/registercontents unchan
 Affected independent closure, complete stagedmain/priorHEAD proofs, fresh supported
 native and current providers remain pending for the updated head. No source profile
 approval, collection, adapter/runtime/schema or issue closure is introduced.
+
+## Collected input boundary continuation — 2026-10-04 Europe/Berlin
+
+Automaticcurrent5a80Codex5403624086 reported three P2 defects: UTC normalization
+OverflowError, Python defaultCSVfield cap below advertised input bytes, and nested
+record AttributeError escaping controlled diagnostics. They were reproduced
+read-only before changes; current5a80Linux outcomes remain historical after a
+newhead. No redundant manualCodex request or CodeRabbitfullreview was started
+against this known defectivehead, preserving the available quota.
+
+The actualexisting maintaineruntilgreen request and coordinator's explicit scoped
+continuation interpretation authorize batchtwelve withUNCHANGED240active minutes.
+No new numeric twelve quote or extra time is attributed to the user; prior
+observations, failures, counters and reviewed-boundary escapes remain. Independent
+complete affectedinput-family investigation preceded spec/tests/implementation.
+
+Initial control-construction mistakes (manifest tuple/path selection) produced a
+24fail/3pass log, retained separately. Corrected behavior controls then reproduced
+32fail/10pass before code. Minimum repairs catch UTCnormalizationOverflowError as
+unavailabletime, normalize nestedAttributeError at the existingcase dispatcher,
+and wrapCSV parsing withMAX_BYTESfieldlimit/restorationfinally. BothUTCbounds and
+intervalpositions, plannednestedconsumercontainers, wideUTF8header/cells/quoted
+multiline/repeatedparses/malformedfailure/restoration and privateCLI diagnostics
+arecovered. Two laterCLI control signature mistakes were retained/corrected using
+the actual no-argumententrypoint; final471source tests pass. Original18fixturebytes,
+register, numeric meanings, nativeapproval/uncertainty boundaries remain unchanged.
+
+Independent affectedclosure, complete stagedmain/priorHEADproofs, fresh supported
+native and currentCodex/CodeRabbit acceptance remain pending. There is no new
+format/framework/accountingprofile/runtime/schema/collection capability.

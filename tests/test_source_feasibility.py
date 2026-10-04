@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import csv
 import hashlib
 import json
 import subprocess
@@ -1352,3 +1353,115 @@ def test_required_register_details_reject_in_load_and_matrix(
     bind_supported_control_approvals(profile)
     assert research.validate_register(data) == []
     assert research.render_matrix(data)
+
+
+@pytest.mark.parametrize("timestamp", ["0001-01-01T00:00:00+23:59", "9999-12-31T23:59:59-23:59"])
+@pytest.mark.parametrize("field", ["interval_start", "interval_end"])
+def test_utc_overflow_stays_unresolved_with_repaired_interval(timestamp, field):
+    sample = case("claude-estimated-cost")
+    sample["records"][0][field] = timestamp
+    result = evaluate_case(sample, "cumulative")
+    assert result["estimate_amount"] is None and result["billed_money"] is None
+    assert evaluate_case(case("claude-estimated-cost"), "cumulative")["estimate_amount"] == "0.03"
+
+
+@pytest.mark.parametrize(
+    "name,path",
+    [
+        ("cli-repeated-billing", ["attributes"]),
+        ("codex-usage-snapshot", ["tokenUsage"]),
+        ("codex-usage-snapshot", ["tokenUsage", "total"]),
+        ("codex-rollout-cache-write", ["payload"]),
+        ("claude-message-revisions", ["message"]),
+        ("enterprise-message-counter-boundary", ["v"]),
+        ("enterprise-message-counter-boundary", ["v", "metadata"]),
+        ("codex-rollout-cache-write", ["payload", "info"]),
+        ("codex-rollout-cache-write", ["payload", "info", "total_token_usage"]),
+        ("copilot-hosted-usage-boundaries", ["identity_evidence"]),
+        ("copilot-hosted-usage-boundaries", ["data"]),
+    ],
+)
+@pytest.mark.parametrize("malformed", [[], "private-malformed-payload", None])
+def test_nested_case_mapping_faults_are_controlled(name, path, malformed):
+    sample = case(name)
+    candidates = [sample] if path[0] == "identity_evidence" else sample["records"]
+    for target in candidates:
+        try:
+            for key in path[:-1]:
+                target = target[key]
+            if path[-1] in target:
+                break
+        except KeyError:
+            continue
+    else:
+        pytest.fail("control path absent from original fixture")
+    target[path[-1]] = malformed
+    try:
+        result = evaluate_case(sample, STRATEGIES[name])
+    except EvidenceError as error:
+        assert str(error) in {"case-shape", "invalid-quantity", "invalid-decimal"}
+    else:
+        assert result["approved_profile"] is False and result["billed_money"] is None
+    bundle = copy.deepcopy(CASES)
+    bundle["cases"] = [sample if item["id"] == name else item for item in bundle["cases"]]
+    assert isinstance(research.check_cases(bundle), list)
+    repaired = evaluate_case(case(name), STRATEGIES[name])
+    assert {key: repaired[key] for key in case(name)["expected"]} == case(name)["expected"]
+
+
+@pytest.mark.parametrize("wide_header", [False, True])
+@pytest.mark.parametrize("multiline", [False, True])
+def test_wide_csv_within_byte_bound_and_parser_limit_restored(tmp_path, wide_header, multiline):
+    text = "é" * 100000 + ("\nquoted" if multiline else "")
+    header, cell = (text, "value") if wide_header else ("value", text)
+    raw = ('"' + header + '"\n"' + cell + '"\n').encode()
+    original = csv.field_size_limit()
+    csv.field_size_limit(64)
+    try:
+        local, data, _ = manifest(tmp_path, raw, "csv")
+        local["entries"][0]["fields"] = [[header]]
+        report = inspect_manifest(local, data)
+        assert report[0]["semantic_approval"] is False
+        assert csv.field_size_limit() == 64
+        assert inspect_manifest(local, data) == report
+        assert csv.field_size_limit() == 64
+    finally:
+        csv.field_size_limit(original)
+
+
+def test_csv_parser_limit_restored_after_malformed_input(tmp_path):
+    original = csv.field_size_limit()
+    csv.field_size_limit(64)
+    try:
+        local, data, _ = manifest(tmp_path, b'header\n"unterminated', "csv")
+        with pytest.raises(EvidenceError, match="malformed-input"):
+            inspect_manifest(local, data)
+        assert csv.field_size_limit() == 64
+    finally:
+        csv.field_size_limit(original)
+
+
+@pytest.mark.parametrize("fault", ["nested", "overflow"])
+def test_malformed_case_cli_has_fixed_private_diagnostics(monkeypatch, capsys, fault):
+    bundle = copy.deepcopy(CASES)
+    sample = next(
+        c
+        for c in bundle["cases"]
+        if c["id"] == ("cli-repeated-billing" if fault == "nested" else "claude-estimated-cost")
+    )
+    if fault == "nested":
+        sample["records"][0]["attributes"] = "private-native-payload-marker"
+    else:
+        sample["records"][0]["interval_start"] = "0001-01-01T00:00:00+23:59"
+    original = research.read_document
+    monkeypatch.setattr(
+        research,
+        "read_document",
+        lambda path: bundle if path.name == "source-feasibility-cases.json" else original(path),
+    )
+    monkeypatch.setattr(sys, "argv", ["quality.source_feasibility"])
+    assert research.main() == 1
+    output = capsys.readouterr()
+    assert json.loads(output.out)["semantic_approval"] is False
+    assert "private-native-payload-marker" not in output.out + output.err
+    assert "Traceback" not in output.out + output.err

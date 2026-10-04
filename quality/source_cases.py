@@ -173,7 +173,7 @@ def _instant(value):
     try:
         instant = datetime.fromisoformat(value.replace("Z", "+00:00"))
         return instant.astimezone(UTC) if instant.tzinfo is not None else None
-    except ValueError:
+    except (ValueError, OverflowError):
         return None
 
 
@@ -387,5 +387,5 @@ def evaluate_case(sample, strategy):
             raise EvidenceError("case-shape")
         result = _hosted(rows, sample) if strategy == "hosted" else _DETECTORS[strategy](rows)
         return {"billed_money": None, "approved_profile": False, **result}
-    except (KeyError, TypeError, IndexError):
+    except (KeyError, TypeError, IndexError, AttributeError):
         raise EvidenceError("case-shape") from None
