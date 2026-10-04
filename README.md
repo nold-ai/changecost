@@ -202,3 +202,5 @@ evidence keys. Unknown or unsafe references remain redacted; source approval sta
 
 Cumulative estimates require exact nonblank metric identities; correction history
 counts require a complete single scope. Projection fields do not demonstrate billing corrections.
+
+The research checker rejects malformed expectation containers with fixed diagnostics; mapping coverage and exact conclusion types remain separate checks.

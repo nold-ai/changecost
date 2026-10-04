@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Reject malformed research expectation containers safely before mapping iteration.
+
 - Require the hosted research strategy to demonstrate conflict-free checkpoint
   evidence independently of immutable historical fixture expectations.
 

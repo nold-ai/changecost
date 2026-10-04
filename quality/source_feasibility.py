@@ -268,6 +268,8 @@ def check_cases(bundle) -> list[str]:
                 errors.append(f"case:{index}:conclusion-mismatch")
                 continue
             expected = sample["expected"]
+            if not isinstance(expected, dict):
+                return ["case-invalid"]
             if set(expected) != set(CONCLUSIONS[sample["id"]]):
                 errors.append(f"case:{index}:oracle-coverage")
                 continue

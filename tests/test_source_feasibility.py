@@ -1555,3 +1555,78 @@ def test_hosted_conflict_cli_rejects_without_private_identity(monkeypatch, capsy
     assert json.loads(captured.out)["errors"]
     assert "private-event-marker" not in captured.out + captured.err
     assert "Traceback" not in captured.out + captured.err
+
+
+@pytest.mark.parametrize(
+    "value", ["required-names", [], [["private-value"]], "private-value", 3, True, None]
+)
+def test_case_expectation_mapping_fault_repaired(value):
+    bundle = copy.deepcopy(CASES)
+    sample = bundle["cases"][0]
+    sample["expected"] = (
+        list(research.CONCLUSIONS[sample["id"]]) if value == "required-names" else value
+    )
+    assert research.check_cases(bundle) == ["case-invalid"]
+    assert research.check_cases(copy.deepcopy(CASES)) == []
+
+
+@pytest.mark.parametrize(
+    "fault", ["empty", "wrong-key", "nested-value", "wrong-scalar", "bool-alias"]
+)
+def test_case_expectation_mapping_preserves_coverage_and_exact_types(fault):
+    bundle = copy.deepcopy(CASES)
+    sample = bundle["cases"][0]
+    if fault == "empty":
+        sample["expected"] = {}
+    elif fault == "wrong-key":
+        sample["expected"] = {"private-value": 1}
+    else:
+        key = next(iter(sample["expected"]))
+        sample["expected"][key] = {
+            "nested-value": ["private-value"],
+            "wrong-scalar": "private-value",
+            "bool-alias": True,
+        }[fault]
+    expected = "oracle-coverage" if fault in ("empty", "wrong-key") else "conclusion-mismatch"
+    assert research.check_cases(bundle) == [f"case:0:{expected}"]
+    assert research.check_cases(CASES) == []
+
+
+@pytest.mark.parametrize(
+    "fault", ["bundle", "cases", "sample", "missing-id", "list-id", "duplicate-id"]
+)
+def test_case_metadata_inventory_fault_repaired(fault):
+    bundle = copy.deepcopy(CASES)
+    if fault == "bundle":
+        bundle = []
+    elif fault == "cases":
+        bundle["cases"] = None
+    elif fault == "sample":
+        bundle["cases"][0] = []
+    elif fault == "missing-id":
+        del bundle["cases"][0]["id"]
+    elif fault == "list-id":
+        bundle["cases"][0]["id"] = []
+    else:
+        bundle["cases"][0]["id"] = bundle["cases"][1]["id"]
+    assert research.check_cases(bundle) == [
+        "case-inventory" if fault == "duplicate-id" else "case-invalid"
+    ]
+    assert research.check_cases(CASES) == []
+
+
+def test_case_expectation_mapping_cli_privacy(monkeypatch, capsys):
+    bundle = copy.deepcopy(CASES)
+    bundle["cases"][0]["expected"] = list(research.CONCLUSIONS[bundle["cases"][0]["id"]])
+    original = research.read_document
+    monkeypatch.setattr(
+        research,
+        "read_document",
+        lambda path: bundle if path.name == "source-feasibility-cases.json" else original(path),
+    )
+    monkeypatch.setattr(sys, "argv", ["source-feasibility"])
+    assert research.main() == 1
+    output = capsys.readouterr()
+    assert json.loads(output.out) == {"errors": ["case-invalid"], "semantic_approval": False}
+    assert "Traceback" not in output.out + output.err
+    assert "private-value" not in output.out + output.err

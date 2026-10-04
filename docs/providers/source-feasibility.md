@@ -422,3 +422,7 @@ replay, distinct identified progression and explicitly synthetic separate SDK
 namespaces stay conflict-free; a known conflict retains precedence over incomplete
 records. Finality remains unknown, totals remain non-additive and source approval
 remains false. This research-case obligation establishes no new native policy.
+
+### Fixture expectation shape
+
+Research fixture expectations must be mappings before key coverage or value iteration. Lists (even all required names), strings, scalars and null reject with `case-invalid`; valid mappings retain exact key coverage and value type checks. This fixture metadata guard does not change source conclusions or native approvals.

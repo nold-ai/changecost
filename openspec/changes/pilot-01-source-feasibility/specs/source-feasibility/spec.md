@@ -309,3 +309,9 @@ changing the evaluator to fit an expected result.
 - **WHEN** the bundle checker assesses semantic acceptance
 - **THEN** it requires the computed checkpoint_conflict to be exactly false independently of declared fixture expectations, rejects true or unknown through a fixed conclusion diagnostic, and preserves the immutable historical fixture and all native finality/approval boundaries.
 - **AND** exact replay and distinct identified progression remain conflict-free while a known conflict retains precedence over incomplete checkpoint evidence.
+
+#### Scenario: Fixture expectation metadata rejects non-mapping shapes
+
+- **GIVEN** research fixture expectations are a list, string, scalar or null, including a list of all required conclusion names
+- **WHEN** the research checker validates the fixture
+- **THEN** it rejects with the fixed case-invalid diagnostic before key coverage or mapping iteration, without traceback or payload disclosure. Valid mapping key coverage and exact value types retain their existing checks; repaired original fixtures pass unchanged.

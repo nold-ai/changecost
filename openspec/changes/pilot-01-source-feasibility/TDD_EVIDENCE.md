@@ -444,3 +444,11 @@ local check, not supported native assurance.
 Nativeauthority/finality/approval, immutablecases, register and evaluator remain
 unchanged. Affected independentclosure, complete stagedmain/priorHEADproofs, fresh
 supported native and currentrequiredproviders remain pending for the updated head.
+
+## Fixture metadata shape continuation — 2026-10-04 Europe/Berlin
+
+At85cbabe, threadPRRT_kwDOUu9-oc6otla4 showed an expectation list containing all required conclusion names passes key coverage then raises AttributeError at mapping iteration. Independent full affected fixture metadata investigation retained the existing malformed-case shape post-investigation escape; the prior detector-focused closure missed this consumer.
+
+The actual maintainer until-green request and coordinator scoped interpretation continue batch14 with UNCHANGED240 active minutes, preserving all history and without inventing a numeric human reply or extra time. Spec-first controls failed4/passed15 before repair. The minimum explicit expectation-dict guard precedes set/items; valid mapping key coverage and exact value types remain unchanged. Fault/repaired controls cover all JSON expectation types, bad keys/value types, malformed outer inventories and safe CLI rejection. Original18 fixture bytes/expectation dictionaries, hosted oracle, evaluator, register and native boundaries remain unchanged.
+
+Final505 source tests pass. Independent affected closure, complete staged main/priorHEAD proofs, fresh supported native and current required providers remain pending.
