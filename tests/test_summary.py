@@ -668,3 +668,66 @@ def test_local_unpriced_optional_amount_cli(tmp_path, missing, existing):
     assert "Status: unknown" in destination.read_text()
     if existing:
         assert destination.read_text().startswith("previous\n")
+
+
+IDENTIFIER_FIELDS = [
+    (kind, field)
+    for kind in ("quote", "computed_settlement", "settlement")
+    for field in ("record_id", "reason")
+] + [("settlement", "scope")]
+
+
+def identifier_result(kind):
+    value = result("safe")
+    if kind == "computed_settlement":
+        value = verified_result(kind, "within_budget")
+        value.update(
+            status="unknown",
+            comparison=None,
+            completeness="unknown",
+            provenance="producer_assertion; provider_support_not_verified",
+            reasons=["safe"],
+        )
+    if kind == "settlement":
+        value.update(
+            record={"kind": kind, "record_id": "safe"},
+            scope="safe",
+            cutoff=None,
+            quantile=None,
+            sample_count=None,
+        )
+    return value
+
+
+def set_identifier_case(value, field, label):
+    mapping = value["record"] if field == "record_id" else value
+    name = "reasons" if field == "reason" else field
+    if label == "missing":
+        mapping.pop(name)
+    else:
+        mapping[name] = [label] if field == "reason" else label
+
+
+@pytest.mark.parametrize(("kind", "field"), IDENTIFIER_FIELDS)
+@pytest.mark.parametrize("invalid", [None, "", " \t\n", False, 1, {}, [], "missing"])
+@pytest.mark.parametrize("existing", [False, True])
+def test_summary_identifier_contract_cli(tmp_path, kind, field, invalid, existing):
+    value = identifier_result(kind)
+    set_identifier_case(value, field, invalid)
+    assert_rejected_summary(tmp_path, value, existing)
+
+
+@pytest.mark.parametrize(("kind", "field"), IDENTIFIER_FIELDS)
+@pytest.mark.parametrize(
+    "label", ["世界", "e\u0301", "  padded  ", "<b>$(touch canary)\x1b", "x" * 10000]
+)
+def test_summary_identifier_valid_data_controls(kind, field, label):
+    from copy import deepcopy
+
+    from changecost.summary import render_summary
+
+    value = identifier_result(kind)
+    set_identifier_case(value, field, label)
+    before = deepcopy(value)
+    assert render_summary(value)
+    assert value == before

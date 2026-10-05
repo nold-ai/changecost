@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Match producer nonblank identifiers for CI summary record IDs, reasons and
+  legacy Settlement scope; preserve valid labels and reject invalid input safely.
+
 - Require selected local results to belong to the committed metadata sequence
   before advisory or inspection trust decisions; retain equal and later snapshots.
 

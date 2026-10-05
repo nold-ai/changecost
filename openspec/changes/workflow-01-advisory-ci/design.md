@@ -199,3 +199,8 @@ strict positive sequence cannot exceed the metadata sequence. Check and both
 computation inspectors validate this bound before legacy/receipt/version decisions.
 A result's original cutoff intentionally precedes its own insertion; validating
 that original anchor does not replace the committed-snapshot membership check.
+
+The summary reuses the producer's existing Identifier validator for legacy scope,
+record ID and each reason. Missing/null/blank values fail before output access;
+valid nonblank labels retain original Unicode, whitespace, controls and length,
+with escaping/bounded output unchanged. Numeric advice still permits empty reasons.

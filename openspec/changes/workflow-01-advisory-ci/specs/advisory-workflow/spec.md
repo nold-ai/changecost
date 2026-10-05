@@ -364,3 +364,8 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **THEN** check and both computation inspectors fail safely with exit 2 before trust or version shortcuts, with empty success stdout and unchanged store bytes
 - **AND** equality with the committed sequence and later appended records remain valid; artifact mode does not consult local metadata
 - **AND** committed upper bounds retain the strict nonnegative integer contract; malformed bounds produce safe technical errors before output
+
+#### Scenario: Summary identifiers match producer contracts
+- **WHEN** a check result has a missing, null or blank legacy Settlement scope, record ID or reason identifier
+- **THEN** the summary rejects it through the existing safe technical error before opening the destination
+- **AND** valid nonblank Unicode, padded, long and control-containing labels remain unchanged as data and safely escaped; no new taxonomy, normalization or length limit is introduced

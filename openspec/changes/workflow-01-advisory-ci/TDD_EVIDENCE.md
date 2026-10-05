@@ -828,3 +828,31 @@ guard-omission controls detecting both-kind advice/inspection escapes. Exact nat
 preflight found no blocking complexity or Pylint error/fatal diagnostics. These
 are host results: all ten sealed native analyzers remain unsupported on macOS;
 replacement-head Linux/provider acceptance is still required before PR completion.
+
+## PR #34 summary Identifier correction (2026-10-05)
+
+Current-head CODE review of c2d2c85 found missing/null/blank legacy scope accepted
+by the summary despite the producer's nonblank Identifier contract. Independent
+whole-family audit confirmed adjacent blank record-ID and reason gaps across all
+three result kinds through actual producer/consumer and console controls. Valid
+Unicode, padding, controls and long strings are allowed by the producer and remain
+unchanged; no schema taxonomy, normalization or length limit is added.
+
+Specification and tests preceded implementation. The 112-case focused console run
+failed 32 and passed 80 in 7.70 seconds before correction. The helper now reuses
+models.identifier for legacy scope, record ID and each reason, preserving numeric
+empty reasons and existing escaping/output limits. All 724 advisory/summary tests
+passed in 23.98 seconds, including 35 valid-data controls, fixed stderr/empty stdout,
+and absent/existing destination preservation. Full gates, independent closure and
+replacement-head supported-Linux/provider acceptance remain required. No records,
+archive evidence, paid billing or persisted schemas changed. Rollback reverts the
+correction and preserves the native Quote archive and historical evidence.
+
+Frozen epoch96 full verification passed 2,585 tests in 61.20 seconds, all
+host-supported gates and all 11 strict OpenSpec items. Independent closure ran
+724 affected tests, eight main/HEAD documentation checks and three actual guard
+omission controls; no remaining findings. Native-tool host preflight found no
+blocking metrics or non-import Pylint error/fatal rows. Long-label test identities
+were inspected against collector limits with no demonstrated limit breach; actual
+supported-Linux reports and current-head provider reviews remain required.
+All ten native analyzers are still unsupported/incomplete on this macOS controller.

@@ -75,3 +75,10 @@ fails local writes. Sources accessed 2026-10-05 (Europe/Berlin):
 [script injection](https://docs.github.com/en/actions/concepts/security/script-injections).
 Synthetic arithmetic validates the workflow, not provider approval or prediction
 calibration. No budget enforcement is introduced.
+
+Summary record IDs, each reason and legacy Settlement scope use the producer's
+existing nonblank Identifier contract. Missing, null, empty or whitespace-only
+identifiers fail before output access with the fixed safe technical error. Numeric
+advice still permits an empty reasons list. Valid nonblank Unicode, padded, long
+and control-containing labels are preserved as data and escaped within the existing
+64 KiB output bound; no new taxonomy, normalization or identifier length limit applies.

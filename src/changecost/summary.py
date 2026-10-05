@@ -11,7 +11,7 @@ from itertools import chain
 from pathlib import Path
 
 from changecost.advisory import compare
-from changecost.models import Component, Cutoff, EconomicScope
+from changecost.models import Component, Cutoff, EconomicScope, identifier
 from changecost.serialization import reject_constant, unique_members
 
 LIMIT = 65_536
@@ -77,8 +77,10 @@ def validate_details(value):
             raise ValueError("missing computation scope or cutoff")
         EconomicScope.model_validate(scope)
         Cutoff.model_validate(value["cutoff"])
-    elif value.get("cutoff") is not None or (scope is not None and not isinstance(scope, str)):
-        raise ValueError("invalid legacy scope")
+    else:
+        if value.get("cutoff") is not None:
+            raise ValueError("invalid legacy cutoff")
+        identifier(scope)
 
 
 def validate_result(value):
@@ -87,12 +89,13 @@ def validate_result(value):
     if value.get("status") not in ("within_budget", "over_budget", "unknown"):
         raise ValueError("invalid advisory status")
     record = value.get("record")
-    if (
-        not isinstance(record, dict)
-        or record.get("kind") not in ("quote", "computed_settlement", "settlement")
-        or not isinstance(record.get("record_id"), str)
+    if not isinstance(record, dict) or record.get("kind") not in (
+        "quote",
+        "computed_settlement",
+        "settlement",
     ):
         raise ValueError("invalid record")
+    identifier(record.get("record_id"))
     if record["kind"] == "settlement" and value["status"] != "unknown":
         raise ValueError("legacy settlement cannot have verified advice")
     budget = validate_component(value.get("budget"), budget=True)
@@ -111,8 +114,10 @@ def validate_result(value):
 
 def validate_reasons(value):
     reasons = value.get("reasons")
-    if not isinstance(reasons, list) or any(not isinstance(reason, str) for reason in reasons):
+    if not isinstance(reasons, list):
         raise ValueError("invalid reasons")
+    for reason in reasons:
+        identifier(reason)
     if value["status"] == "unknown" and not reasons:
         raise ValueError("unknown advice requires reasons")
 
