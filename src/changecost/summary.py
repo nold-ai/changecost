@@ -75,7 +75,9 @@ def validate_details(value):
     if kind != "settlement":
         if not isinstance(scope, dict) or value.get("cutoff") is None:
             raise ValueError("missing computation scope or cutoff")
-        EconomicScope.model_validate(scope)
+        scope = EconomicScope.model_validate(scope)
+        if kind == "quote" and scope.start is not None:
+            raise ValueError("invalid Quote scope")
         Cutoff.model_validate(value["cutoff"])
     else:
         if value.get("cutoff") is not None:

@@ -31,6 +31,8 @@ Current implementation evidence is recorded in [TDD_EVIDENCE.md](TDD_EVIDENCE.md
 - [x] 4.4 Verify stale option/output expectations and summary/workflow defects fail the appropriate existing gates, then repair; prove valid over-budget advice never masks unrelated repository quality failures.
 - [x] 4.5 Reject positive sample counts on locally reproduced unpriced Quote summaries before destination access; retain actual zero-sample results, imported declared counts and priced outputs. Extend the real-producer regression with absent/existing destination and public error checks, record red/green and guard-removal controls, then verify the affected scope.
 
+- [x] 4.6 Reject windowed Quote summary projections before destination access; preserve actual local/imported null or missing bounds, p50/p90, observed-zero/unpriced results and supported computed Settlement windows. Record real-producer/artifact red/green, guard-removal and affected quality/review evidence.
+
 ## 5. Verification and later delivery
 
 - [ ] 5.1 Record actual red/green commands, scope, timestamps, independent oracle/controls and native report digests in TDD_EVIDENCE.md. Run selected/all strict OpenSpec and explicit-base/manifest make check plus applicable staged checks; retain supported-Linux native/Python matrix evidence and report unavailable tooling as incomplete.

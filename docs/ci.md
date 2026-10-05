@@ -108,3 +108,8 @@ A positive sample count contradicts that producer result and fails with the fixe
 safe technical error before creating or appending to the summary destination.
 Imported assertions may retain positive declared counts and remain unverified;
 valid priced local results, including observed-zero amounts, retain their counts.
+
+Quote check projections have null time-window bounds, including imported claims.
+The summary rejects windowed Quote projections before writing; omitted bounds
+retain their null defaults. Computed Settlement summaries retain supported
+windows from their computation scope.

@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Reject fabricated time windows in Quote summary projections, preserving null
+  bounds on local/imported claims and supported computed Settlement windows.
+
 - Reduce complexity in the unpriced Quote regression test by extracting accepted
   output assertions, preserving all producer cases and public-process checks.
 

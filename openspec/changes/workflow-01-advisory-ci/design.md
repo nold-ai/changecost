@@ -257,3 +257,10 @@ uses the existing safe technical error. Imported assertions retain schema-valid
 declared counts without verified comparison authority; priced local outputs and
 their existing positive-count checks are preserved. No minimum-cohort rule,
 persisted schema or economic-policy change is introduced.
+
+PR #34 Quote-scope correction: Quote records have no time-window fields;
+record_context synthesizes null bounds for every Quote projection, including
+portable imported claims. The summary validates EconomicScope first, then
+requires a null start for Quote results. Its paired-bound contract also enforces
+a null end. This rejects fabricated intervals without changing persisted schemas
+or imported-record handling, and preserves computed Settlement windows.

@@ -1215,3 +1215,39 @@ test-module AST, preserving cases, subprocess calls and assertions; all 97
 inputs were inspected and runtime/config/archive bytes remain unchanged.
 Fresh Linux and provider acceptance remains required after publication. Rollback restores this test
 refactor only while preserving the published summary and registry fixes.
+
+## PR #34 Quote summary scope boundary — 2026-10-06
+
+Run 37387883711 at 0ea173f passed both matrix jobs. Independent native audit
+confirmed all ten analyzers, 2,790 unique tests plus four subtests and matching
+source/coverage fingerprints. These accepted reports retain their source binding.
+Current CODE review then identified a genuine P2: EconomicScope accepts a valid
+interval on a Quote summary even though the Quote producer rejects windows and
+all local/imported check projections synthesize null bounds. Independent
+real-producer/public-process reproduction accepted all eight paired-window
+mutations; eight null-bound controls passed. Quote records have no window fields,
+so rejecting windows on projections preserves legitimate imported records.
+
+Spec/design/tasks were updated before regression tests or implementation. The
+planned minimum guard applies after typed EconomicScope validation, whose paired
+bound rule makes null start enforce null end too. Regressions use actual priced,
+observed-zero and unpriced Quote records, p50/p90, local and portable-artifact
+projections, safe public errors and absent/existing destinations. Generic invalid
+windows, null/missing positives and actual windowed computed Settlements remain
+controls. At epoch 152, the new tests produced 48 expected paired/equal Quote-window
+failures and 22 passing null/missing, generic-invalid and computed-window controls
+in 0.62 seconds. At epoch 153, all 503 summary tests passed in 2.92 seconds.
+An isolated snapshot with only the new scope guard removed reproduced the same
+48 failures and 22 controls in 0.70 seconds; its summary source matched 0ea173f.
+Pinned Radon measures validate_details at 13 and new test/helper functions at
+1–4, below the blocking threshold of 15. Signed KISS reports only one nonblocking
+six-parameter test warning. These host diagnostics grant no native waiver.
+Frozen epoch 154 passed all 2,860 tests in 30.80 seconds, installed-wheel
+checks, dependency audit, every host-supported gate and all 11 strict OpenSpec
+items. Aggregate exit two remains incomplete solely for ten unsupported macOS
+native analyzers. Independent affected closure found no defects across all nine
+paths and confirmed all 97 fingerprints, preserved imported claims and computed
+windows, and unchanged producer/archive bytes. Original red/green and fault
+proofs retain their bindings. Rollback restores only this correction while preserving earlier fixes,
+accepted archive and historical evidence; fresh Linux/provider evidence remains
+required after publication.

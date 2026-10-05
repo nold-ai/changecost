@@ -983,3 +983,81 @@ def test_summary_identifier_valid_data_controls(kind, field, label):
     before = deepcopy(value)
     assert render_summary(value)
     assert value == before
+
+
+QUOTE_SCOPE_CASES = [
+    (state, quantile, imported)
+    for state in ("priced", "zero", "unpriced")
+    for quantile in ("p50", "p90")
+    for imported in (False, True)
+]
+
+
+def quote_scope_projection(tmp_path, case):
+    from changecost.quotes import compute_quote
+    from tests.test_advisory import evaluate
+    from tests.test_quotes import peer, setup
+    from tests.test_reconciliation import scope
+
+    state, quantile, imported = case
+    store = setup(tmp_path)
+    amounts = {"priced": ("10", "20"), "zero": ("0", "0"), "unpriced": ()}[state]
+    for number, value in enumerate(amounts):
+        peer(store, str(number), value)
+    record = compute_quote(store, "target", scope(), "quote-scope", minimum=2)
+    artifact = tmp_path / "quote-artifact.json"
+    artifact.write_text(store.export_bundle().model_dump_json(by_alias=True))
+    return evaluate(store, record, quantile=quantile, artifact=artifact if imported else None)
+
+
+@pytest.mark.parametrize("case", QUOTE_SCOPE_CASES)
+@pytest.mark.parametrize("equal", [False, True])
+@pytest.mark.parametrize("existing", [False, True])
+def test_quote_summary_window_rejected(tmp_path, case, equal, existing, monkeypatch, capsys):
+    from changecost.summary import render_summary
+    from tests.test_reconciliation import NOW, START
+
+    value = quote_scope_projection(tmp_path, case)
+    assert render_summary(value)
+    value["scope"].update(start=START.isoformat(), end=(START if equal else NOW).isoformat())
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
+
+
+@pytest.mark.parametrize("case", QUOTE_SCOPE_CASES)
+def test_quote_summary_missing_window_bounds(tmp_path, case):
+    from changecost.summary import render_summary
+
+    value = quote_scope_projection(tmp_path, case)
+    assert value["scope"]["start"] is None and value["scope"]["end"] is None
+    assert render_summary(value)
+    del value["scope"]["start"], value["scope"]["end"]
+    assert render_summary(value)
+
+
+@pytest.mark.parametrize(
+    "bounds",
+    [
+        {"start": "2026-09-01T00:00:00Z"},
+        {"end": "2026-09-02T00:00:00Z"},
+        {"start": "2026-09-02T00:00:00Z", "end": "2026-09-01T00:00:00Z"},
+        {"start": "invalid", "end": "2026-09-02T00:00:00Z"},
+    ],
+)
+@pytest.mark.parametrize("existing", [False, True])
+def test_quote_summary_invalid_window_bounds(tmp_path, bounds, existing, monkeypatch, capsys):
+    value = result("invalid-window")
+    value["scope"].update(bounds)
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
+
+
+@pytest.mark.parametrize("equal", [False, True])
+def test_computed_summary_preserves_window(tmp_path, equal):
+    from changecost.summary import render_summary
+    from tests.test_advisory import evaluate, settlement
+    from tests.test_reconciliation import NOW, START, compute
+
+    store, _ = settlement(tmp_path)
+    record = compute(store, op="windowed", start=START, end=START if equal else NOW)
+    value = evaluate(store, record)
+    assert value["scope"]["start"] is not None and value["scope"]["end"] is not None
+    assert render_summary(value)

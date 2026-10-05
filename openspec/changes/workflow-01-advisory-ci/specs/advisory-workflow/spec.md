@@ -402,3 +402,8 @@ rejects unavailable metadata before numeric advice.
 - **GIVEN** a local or imported selected Quote or computed Settlement and multiple metadata rows
 - **WHEN** explain inspects it in human or JSON mode
 - **THEN** the command returns safe error 2, prints no success output and leaves the store unchanged
+
+#### Scenario: Quote summary scope retains the producer boundary
+- **WHEN** a Quote check result declares a non-null time window under either local or imported provenance
+- **THEN** the summary command rejects it with the safe technical error before destination access, since Quote projections have null window bounds
+- **AND** null or omitted Quote bounds remain valid for priced, observed-zero and unpriced results under p50 or p90, while supported windowed computed Settlement results remain valid
