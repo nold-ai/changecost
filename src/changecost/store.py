@@ -43,6 +43,14 @@ from changecost.serialization import ContractError
 ADAPTER = TypeAdapter(PortableRecord)
 
 
+def metadata_row(connection):
+    """Read one metadata row without replacing unavailable historical timestamps."""
+    rows = connection.execute("SELECT store_id,sequence,last_at FROM metadata").fetchmany(2)
+    if len(rows) != 1:
+        raise ContractError("invalid local store metadata")
+    return rows[0]
+
+
 def reference(record: PortableRecord) -> RecordRef:
     return RecordRef(kind=record.kind, record_id=record.record_id)
 
@@ -514,7 +522,7 @@ class Store:
         connection = self.connect(readonly=True)
         try:
             connection.execute("BEGIN")
-            store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
+            store_id, sequence, last_at = metadata_row(connection)
             now = timestamp(self.clock())
             if last_at and now < timestamp(last_at):
                 raise ContractError("clock moved backwards")

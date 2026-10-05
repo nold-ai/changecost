@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+- Reject missing or duplicate metadata before local Quote/Settlement inspection and
+  bundle export; preserve unavailable historical timestamps and read-only errors.
+- Exercise 238 malformed-summary cases through the public entrypoint with isolated
+  arguments/environment; retain real-process coverage and every original case.
+
 - Retain slowest-test durations and bounded host resource context while investigating
   repeated native coverage timeouts; preserve every test, analyzer and deadline.
 

@@ -26,6 +26,7 @@ from changecost.store import (
     key,
     lookup,
     merge_portable_records,
+    metadata_row,
     original_computation_cutoff,
     read_records,
     record_availability,
@@ -102,10 +103,9 @@ def settlement_reproduced(connection, records, record):
 
 
 def metadata_snapshot(connection, now):
-    rows = connection.execute("SELECT store_id,sequence,last_at FROM metadata").fetchmany(2)
-    if len(rows) != 1 or rows[0][2] is None:
+    store_id, sequence, last_at = metadata_row(connection)
+    if last_at is None:
         raise ContractError("invalid local store metadata")
-    store_id, sequence, last_at = rows[0]
     # Existing cutoff/identifier/integer/timestamp validators define this boundary.
     cutoff = Cutoff.model_validate(dict(store_id=store_id, sequence=sequence, at=last_at))
     if cutoff.at > now:

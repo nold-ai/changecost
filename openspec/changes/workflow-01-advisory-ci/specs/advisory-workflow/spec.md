@@ -383,3 +383,17 @@ Only the scope identity may have an empty subtotal with null amount and zero unk
 - **WHEN** a check result has a missing, null or blank legacy Settlement scope, record ID or reason identifier
 - **THEN** the summary rejects it through the existing safe technical error before opening the destination
 - **AND** valid nonblank Unicode, padded, long and control-containing labels remain unchanged as data and safely escaped; no new taxonomy, normalization or length limit is introduced
+### Requirement: Singleton metadata before selected inspection
+
+Selected Quote and computed Settlement explanations SHALL require exactly one
+local metadata row before granting replay or local computation authority. Missing
+or multiple rows SHALL produce the existing safe technical error with exit 2,
+empty stdout and no store changes in human and JSON modes. Existing typed metadata
+guards remain applicable. A missing committed timestamp at a positive sequence
+SHALL retain the accepted inspection replay_unavailable behavior; check still
+rejects unavailable metadata before numeric advice.
+
+#### Scenario: Duplicate metadata cannot grant inspection authority
+- **GIVEN** a local or imported selected Quote or computed Settlement and multiple metadata rows
+- **WHEN** explain inspects it in human or JSON mode
+- **THEN** the command returns safe error 2, prints no success output and leaves the store unchanged

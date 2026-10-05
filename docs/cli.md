@@ -153,3 +153,10 @@ portable artifact advice never consults the local store.
 Human output escapes Unicode line and paragraph separators U+2028/U+2029,
 preventing label values from creating text line boundaries. JSON output retains
 the original record values; ordinary Unicode and spaces remain data.
+
+Local Quote and computed Settlement inspection requires exactly one metadata row.
+Missing or duplicate metadata is a technical error (exit 2, empty stdout) in both
+formats. Bundle export applies the same cardinality guard before inspection.
+Positive-sequence inspection with an unavailable committed timestamp still reports
+replay unavailable; budget check cannot certify that history. These reads do not
+repair or modify the store.

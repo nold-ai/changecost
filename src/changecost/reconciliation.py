@@ -31,6 +31,7 @@ from changecost.store import (
     available,
     computation_refs,
     key,
+    metadata_row,
     original_computation_cutoff,
     read_records,
     record_availability,
@@ -563,7 +564,7 @@ def inspect_computation(store: Store, record: ComputedSettlement) -> dict:
         if stored != record:
             raise ContractError("computation does not match immutable stored record")
         local = key(reference(record)) in computation_refs(connection, records)
-        store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
+        store_id, sequence, last_at = metadata_row(connection)
         now = timestamp(store.clock())
         if last_at is not None and timestamp(last_at) > now:
             raise ContractError("clock moved backwards")

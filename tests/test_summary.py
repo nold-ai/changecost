@@ -189,6 +189,37 @@ def verified_result(kind, status):
     return value
 
 
+@pytest.mark.parametrize(
+    "kind,status", [("quote", "over_budget"), ("computed_settlement", "within_budget")]
+)
+@pytest.mark.parametrize("existing", [False, True])
+def test_numeric_summary_process_success(tmp_path, kind, status, existing):
+    import os
+    import subprocess
+    import sys
+
+    payload, destination = tmp_path / "result.json", tmp_path / "summary"
+    payload.write_text(json.dumps(verified_result(kind, status)))
+    if existing:
+        destination.write_text("previous\n")
+    checked = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert checked.returncode == 0 and checked.stdout == "" and checked.stderr == ""
+    rendered = destination.read_text()
+    expected_status = {"over_budget": "over&#95;budget", "within_budget": "within&#95;budget"}[
+        status
+    ]
+    expected_kind = {"quote": "quote", "computed_settlement": "computed&#95;settlement"}[kind]
+    assert f"Status: {expected_status}" in rendered and f"kind: {expected_kind}" in rendered
+    if existing:
+        assert rendered.startswith("previous\n")
+
+
 @pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
 @pytest.mark.parametrize("status", ["within_budget", "over_budget"])
 def test_summary_rejects_legacy_numeric_authority(kind, status):
@@ -539,14 +570,20 @@ DECLARATION_FAULTS = [
 
 @pytest.mark.parametrize("kind,fault", DECLARATION_FAULTS)
 @pytest.mark.parametrize("existing", [False, True])
-def test_selected_declaration_cli_preserves_destination(tmp_path, kind, fault, existing):
-    assert_rejected_summary(tmp_path, contradictory_declaration(kind, fault), existing)
+def test_selected_declaration_cli_preserves_destination(
+    tmp_path, kind, fault, existing, monkeypatch, capsys
+):
+    assert_rejected_summary(
+        tmp_path, contradictory_declaration(kind, fault), existing, monkeypatch, capsys
+    )
 
 
-def assert_rejected_summary(tmp_path, value, existing):
+def assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys):
+    """Exercise the public parser and output boundary; process smokes remain separate."""
     import os
-    import subprocess
     import sys
+
+    from changecost.summary import main
 
     payload = tmp_path / "result.json"
     payload.write_text(json.dumps(value))
@@ -554,15 +591,18 @@ def assert_rejected_summary(tmp_path, value, existing):
     original = b"Earlier summary\n"
     if existing:
         destination.write_bytes(original)
-    rejected = subprocess.run(
-        [sys.executable, "-m", "changecost.summary", str(payload)],
-        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
-        capture_output=True,
-        text=True,
-    )
-    assert rejected.returncode == 2
-    assert rejected.stdout == ""
-    assert rejected.stderr == "cannot render or write advisory summary\n"
+    previous_argv, previous_destination = list(sys.argv), os.environ.get("GITHUB_STEP_SUMMARY")
+    with monkeypatch.context() as invocation:
+        invocation.setattr(sys, "argv", ["changecost.summary", str(payload)])
+        invocation.setenv("GITHUB_STEP_SUMMARY", str(destination))
+        with pytest.raises(SystemExit) as rejected:
+            main()
+        assert rejected.value.code == 2
+    output = capsys.readouterr()
+    assert output.out == ""
+    assert output.err == "cannot render or write advisory summary\n"
+    assert sys.argv == previous_argv
+    assert os.environ.get("GITHUB_STEP_SUMMARY") == previous_destination
     assert destination.read_bytes() == original if existing else not destination.exists()
 
 
@@ -599,12 +639,12 @@ def test_quote_unknown_pair_must_remain_coherent(fault):
 @pytest.mark.parametrize("spoofed_reason", [False, True])
 @pytest.mark.parametrize("existing", [False, True])
 def test_unknown_cannot_conceal_complete_compatible(
-    tmp_path, kind, status, spoofed_reason, existing
+    tmp_path, kind, status, spoofed_reason, existing, monkeypatch, capsys
 ):
     value = verified_result(kind, status)
     value.update(status="unknown", comparison=None)
     value["reasons"] = ["incompatible_economic_identity"] if spoofed_reason else []
-    assert_rejected_summary(tmp_path, value, existing)
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 def local_unknown_complete(kind):
@@ -627,7 +667,7 @@ def local_unknown_complete(kind):
     ],
 )
 @pytest.mark.parametrize("existing", [False, True])
-def test_unknown_consistency_preserves_destination(tmp_path, fault, existing):
+def test_unknown_consistency_preserves_destination(tmp_path, fault, existing, monkeypatch, capsys):
     value = local_unknown_complete("quote" if fault.startswith("quote") else "computed_settlement")
     if fault == "quote_null_complete":
         value["declared"] = result("null")["declared"]
@@ -646,7 +686,7 @@ def test_unknown_consistency_preserves_destination(tmp_path, fault, existing):
     if fault == "empty_reasons":
         value = result("unknown")
         value["reasons"] = []
-    assert_rejected_summary(tmp_path, value, existing)
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
@@ -682,13 +722,13 @@ def local_incomplete_settlement():
 
 @pytest.mark.parametrize("extra", [False, True])
 @pytest.mark.parametrize("existing", [False, True])
-def test_imported_subtotal_requires_count_cli(tmp_path, extra, existing):
+def test_imported_subtotal_requires_count_cli(tmp_path, extra, existing, monkeypatch, capsys):
     value = local_incomplete_settlement()
     value["provenance"] = "producer_assertion; provider_support_not_verified"
     if extra:
         value["declared"].append(value["declared"][0] | {"unit": "EUR", "currency": "EUR"})
     value["declared"][-1].pop("unknown_count")
-    assert_rejected_summary(tmp_path, value, existing)
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize(
@@ -734,7 +774,7 @@ def test_imported_subtotal_claims_remain_unknown(shape):
 )
 @pytest.mark.parametrize("extra", [False, True])
 @pytest.mark.parametrize("existing", [False, True])
-def test_incomplete_local_subtotal_shape_cli(tmp_path, fault, extra, existing):
+def test_incomplete_local_subtotal_shape_cli(tmp_path, fault, extra, existing, monkeypatch, capsys):
     value = local_incomplete_settlement()
     other = value["declared"][0] | {"unit": "EUR", "currency": "EUR"}
     if extra:
@@ -751,7 +791,7 @@ def test_incomplete_local_subtotal_shape_cli(tmp_path, fault, extra, existing):
         value["declared"][-1 if extra else 0].pop("unknown_count")
     else:
         value["declared"][-1 if extra else 0]["unknown_count"] = fault
-    assert_rejected_summary(tmp_path, value, existing)
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize("amount,count", [(None, 0), (None, 2), ("0", 0), ("10", 2)])
@@ -774,7 +814,7 @@ def test_incomplete_local_subtotal_producer_controls(amount, count, extra):
 
 
 @pytest.mark.parametrize("existing", [False, True])
-def test_incomplete_local_empty_additional_group_cli(tmp_path, existing):
+def test_incomplete_local_empty_additional_group_cli(tmp_path, existing, monkeypatch, capsys):
     value = local_incomplete_settlement()
     value["declared"].append(
         value["declared"][0]
@@ -785,13 +825,15 @@ def test_incomplete_local_empty_additional_group_cli(tmp_path, existing):
             "unknown_count": 0,
         }
     )
-    assert_rejected_summary(tmp_path, value, existing)
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize("status", ["within_budget", "over_budget", "unknown"])
 @pytest.mark.parametrize("amount,count", [("10", 1), (None, 0), (None, 1)])
 @pytest.mark.parametrize("existing", [False, True])
-def test_complete_local_subtotal_groups_cli(tmp_path, status, amount, count, existing):
+def test_complete_local_subtotal_groups_cli(
+    tmp_path, status, amount, count, existing, monkeypatch, capsys
+):
     value = (
         local_unknown_complete("computed_settlement")
         if status == "unknown"
@@ -806,7 +848,7 @@ def test_complete_local_subtotal_groups_cli(tmp_path, status, amount, count, exi
             "unknown_count": count,
         }
     )
-    assert_rejected_summary(tmp_path, value, existing)
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize("missing", [(0,), (0, 1)])
@@ -878,10 +920,12 @@ def set_identifier_case(value, field, label):
 @pytest.mark.parametrize(("kind", "field"), IDENTIFIER_FIELDS)
 @pytest.mark.parametrize("invalid", [None, "", " \t\n", False, 1, {}, [], "missing"])
 @pytest.mark.parametrize("existing", [False, True])
-def test_summary_identifier_contract_cli(tmp_path, kind, field, invalid, existing):
+def test_summary_identifier_contract_cli(
+    tmp_path, kind, field, invalid, existing, monkeypatch, capsys
+):
     value = identifier_result(kind)
     set_identifier_case(value, field, invalid)
-    assert_rejected_summary(tmp_path, value, existing)
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize(("kind", "field"), IDENTIFIER_FIELDS)

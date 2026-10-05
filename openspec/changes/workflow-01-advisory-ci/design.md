@@ -218,7 +218,22 @@ duplicate or unmatched groups accepted by the record model and remain unknown.
 Only locally reproduced results apply scope/grouping/completeness invariants.
 Human and summary rendering escape U+2028/U+2029 mandatory text separators;
 other Unicode and exact JSON record values remain intact.
-# Native timeout investigation
+## Native timeout investigation
+
+The next bounded correction preserves every existing case while running the 238
+shared malformed-summary cases through the same public main entrypoint in-process.
+Scope argv/environment changes to each invocation; require exact SystemExit 2,
+empty stdout, fixed stderr and unchanged absent/existing destinations. Retain all
+101 other process cases and add numeric Quote/Settlement success process smokes.
+The local unchanged corpus took 16.21 seconds; this is a measured contributor,
+not proof of the native timeout cause. Full fresh signed Linux coverage is required.
+
+Selected Quote and computed Settlement inspection must reject missing or multiple
+metadata rows before trust decisions, as check already does. Share only the exact
+single-row lookup across check, both inspectors and the bundle export that
+precedes computed Settlement inspection. Preserve existing typed validation and positive-sequence
+inspection's missing-timestamp replay_unavailable result; do not substitute a
+current timestamp or strengthen that accepted unavailable-history contract.
 
 Both signed coverage analyzers for commit 95457ed timed out at 300 seconds;
 the other nine analyzers passed. Four pytest workers did not establish native

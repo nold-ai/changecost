@@ -981,3 +981,47 @@ affected review found no defects and inspected the full gate log and all 96
 input fingerprints. Aggregate make exited 2 solely for ten unsupported macOS
 native analyzers. This supports diagnostic publication only; the actual Linux
 coverage recurrence remains unresolved, with no native exception or waiver.
+
+## PR #34 metadata and summary startup correction — 2026-10-05
+
+CODE comment 4186682582 exposed duplicate metadata accepting local inspection
+claims while check rejected the same store. The fetchone pattern predates main;
+this correction aligns the currently modified inspection authority contract.
+Independent upfront review approved only a singleton-row lookup shared by check,
+both inspectors and the export preceding computed Settlement inspection. Write
+and import paths and the accepted unavailable-timestamp inspection remain intact.
+
+Spec-first epoch115 introduced 80 metadata controls: 16 failed and 64 passed in
+1.06 seconds before the correction. The first implementation run was not freshly
+bound and is retained only as failed diagnostic evidence: 8 failed, 886 passed.
+It exposed the export reader and four incorrect underscore golden expectations.
+The export lookup and expectations were corrected, then source frozen at epoch116
+before rerunning: all 894 affected tests passed in 14.94 seconds. Eight duplicate
+metadata controls also execute the real CLI and require matching safe stderr.
+
+The 238 shared malformed-summary cases preserve their original IDs and assertions
+through public summary.main with scoped argv/environment restoration and exact
+SystemExit 2. All 101 other subprocess cases remain; four numeric success process
+smokes were added. The same 238-case local serial benchmark passed in 0.27 seconds
+(0.365 seconds elapsed), versus unchanged-source 16.21 seconds (16.376 elapsed).
+This measures a startup contributor only; it does not prove the Linux timeout cause.
+All 2,695 original cases remain, with 84 new controls expected in the full suite.
+
+Actual prior commit 2029a7a passed all ten native analyzers on Python 3.11.15 with
+2,695 unique tests and combined controller coverage 97.3134%; Python 3.13.14 still
+timed out solely in coverage at 300 seconds. Those immutable reports remain bound
+to that commit. Fresh full gates, independent closure, both signed Linux jobs and
+current provider reviews are required. No analyzer, deadline, threshold or paid
+infrastructure changes. Rollback restores this correction only, preserving the
+accepted Quote archive and failed evidence. Provider approval/calibration remain
+To-Validate; CodeRabbit allowance/account approval remains separately pending.
+
+Frozen epoch117's restricted aggregate run passed 2,779 tests in 33.71 seconds
+and all 11 strict OpenSpec items, but failed on sandbox hook permissions and
+dependency DNS. The permitted rerun passed 2,779 tests in 33.19 seconds, installed
+wheel checks, audit, documentation/generated references and every host-supported
+gate. Aggregate exit 2 remains incomplete solely for ten unsupported macOS native
+analyzers. Independent affected review verified all 96 inputs and preserved case
+identities; isolated omission controls demonstrate both duplicate-metadata escapes
+without the guard. Original epoch116 proof stays bound separately from epoch117
+document adoption. This supports publishing the candidate, not native acceptance.

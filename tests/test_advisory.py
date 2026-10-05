@@ -545,21 +545,40 @@ def test_missing_monetary_and_nonmonetary_currency(tmp_path):
     assert not list(tmp_path.iterdir())
 
 
-@pytest.mark.parametrize(
-    "fault",
-    [
-        "missing",
-        "multiple",
-        "sequence-text",
-        "sequence-float",
-        "sequence-negative",
-        "sequence-overflow",
-        "store-id-blank",
-        "store-id-bytes",
-        "date-invalid",
-        "date-integer",
-    ],
-)
+METADATA_FAULTS = [
+    "missing",
+    "multiple",
+    "sequence-text",
+    "sequence-float",
+    "sequence-negative",
+    "sequence-overflow",
+    "store-id-blank",
+    "store-id-bytes",
+    "date-invalid",
+    "date-integer",
+]
+
+
+def corrupt_metadata(connection, fault):
+    if fault == "missing":
+        connection.execute("DELETE FROM metadata")
+    elif fault == "multiple":
+        connection.execute("INSERT INTO metadata SELECT * FROM metadata")
+    else:
+        field, value = {
+            "sequence-text": ("sequence", "private-sequence"),
+            "sequence-float": ("sequence", 1.5),
+            "sequence-negative": ("sequence", -1),
+            "sequence-overflow": ("sequence", str(2**64)),
+            "store-id-blank": ("store_id", ""),
+            "store-id-bytes": ("store_id", b"private"),
+            "date-invalid": ("last_at", "private-date"),
+            "date-integer": ("last_at", 42),
+        }[fault]
+        connection.execute(f"UPDATE metadata SET {field}=?", (value,))
+
+
+@pytest.mark.parametrize("fault", METADATA_FAULTS)
 @pytest.mark.parametrize("authority", ["local", "no-receipt"])
 def test_corrupt_metadata_safe_error_no_write(tmp_path, fault, authority):
     import subprocess
@@ -569,22 +588,7 @@ def test_corrupt_metadata_safe_error_no_write(tmp_path, fault, authority):
     with store.connect() as connection:
         if authority == "no-receipt":
             connection.execute("DELETE FROM computations")
-        if fault == "missing":
-            connection.execute("DELETE FROM metadata")
-        elif fault == "multiple":
-            connection.execute("INSERT INTO metadata SELECT * FROM metadata")
-        else:
-            field, value = {
-                "sequence-text": ("sequence", "private-sequence"),
-                "sequence-float": ("sequence", 1.5),
-                "sequence-negative": ("sequence", -1),
-                "sequence-overflow": ("sequence", str(2**64)),
-                "store-id-blank": ("store_id", ""),
-                "store-id-bytes": ("store_id", b"private"),
-                "date-invalid": ("last_at", "private-date"),
-                "date-integer": ("last_at", 42),
-            }[fault]
-            connection.execute(f"UPDATE metadata SET {field}=?", (value,))
+        corrupt_metadata(connection, fault)
     before = store.path.read_bytes()
     arguments = ["--db", str(store.path), *check_args(record)]
     output = runner.invoke(app, arguments)
@@ -597,6 +601,44 @@ def test_corrupt_metadata_safe_error_no_write(tmp_path, fault, authority):
     assert console.returncode == 2 and console.stdout == ""
     assert json.loads(console.stderr)["schema"] == "changecost/error-v1"
     assert "private" not in console.stderr and "Traceback" not in console.stderr
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("fault", METADATA_FAULTS)
+@pytest.mark.parametrize("authority", ["local", "no-receipt"])
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("format", ["json", "human"])
+def test_inspection_metadata_errors_are_safe(tmp_path, fault, authority, kind, format):
+    import subprocess
+    import sys
+
+    store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
+    with store.connect() as connection:
+        if authority == "no-receipt":
+            connection.execute("DELETE FROM computations")
+        corrupt_metadata(connection, fault)
+    before = store.path.read_bytes()
+    arguments = [
+        "--db",
+        str(store.path),
+        "--format",
+        format,
+        "explain",
+        "--record-kind",
+        kind,
+        "--record-id",
+        record.record_id,
+    ]
+    output = runner.invoke(app, arguments)
+    assert output.exit_code == 2 and output.stdout == ""
+    if format == "json":
+        assert json.loads(output.stderr)["schema"] == "changecost/error-v1"
+    assert output.stderr and "private" not in output.stderr and "Traceback" not in output.stderr
+    if fault == "multiple":
+        console = subprocess.run(
+            [sys.executable, "-m", "changecost", *arguments], capture_output=True, text=True
+        )
+        assert console.returncode == 2 and console.stdout == "" and console.stderr == output.stderr
     assert store.path.read_bytes() == before
 
 
