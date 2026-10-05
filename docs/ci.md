@@ -102,3 +102,9 @@ duplicate or unmatched groups accepted by the record model and remain unknown.
 Only locally reproduced results apply scope/grouping/completeness invariants.
 Human and summary rendering escape U+2028/U+2029 mandatory text separators;
 other Unicode and exact JSON record values remain intact.
+
+Locally reproduced unpriced Quotes have paired null quantiles and zero samples.
+A positive sample count contradicts that producer result and fails with the fixed
+safe technical error before creating or appending to the summary destination.
+Imported assertions may retain positive declared counts and remain unverified;
+valid priced local results, including observed-zero amounts, retain their counts.

@@ -29,6 +29,7 @@ Current implementation evidence is recorded in [TDD_EVIDENCE.md](TDD_EVIDENCE.md
 - [x] 4.2 Add the allowlisted Python renderer and workflow_dispatch-only example with read-only permissions and existing pinned setup; verify artifact claims remain unknown, local verified synthetic advice is reachable, technical failures remain nonzero and no required gate/account setting is changed.
 - [x] 4.3 Update executable synthetic walkthroughs and planned-versus-delivered status in docs/cli.md, new docs/ci.md and README; document claim trust, scope/cutoff, exits, safe summary and retention/rollback. Update ownership/index mappings, generated references and Unreleased changelog; keep 0.1.0.dev0.
 - [x] 4.4 Verify stale option/output expectations and summary/workflow defects fail the appropriate existing gates, then repair; prove valid over-budget advice never masks unrelated repository quality failures.
+- [x] 4.5 Reject positive sample counts on locally reproduced unpriced Quote summaries before destination access; retain actual zero-sample results, imported declared counts and priced outputs. Extend the real-producer regression with absent/existing destination and public error checks, record red/green and guard-removal controls, then verify the affected scope.
 
 ## 5. Verification and later delivery
 

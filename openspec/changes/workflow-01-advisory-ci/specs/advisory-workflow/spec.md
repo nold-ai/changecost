@@ -369,6 +369,11 @@ Only the scope identity may have an empty subtotal with null amount and zero unk
 - **WHEN** the summary helper validates it
 - **THEN** reasons is nonempty. Locally reproduced Quote completeness agrees with its finite versus null quantile pair. Every locally complete result has a nonnull complete selected declaration, even if unknown. Locally complete unknown requires an actually incompatible budget identity and the incompatible_economic_identity reason; a compatible complete result cannot conceal numeric advice by changing status and clearing comparison. Incomplete computed results may retain known subtotals, and valid imported, legacy, unpriced and incompatible unknown results remain accepted. Invalid combinations fail safely before destination access.
 
+#### Scenario: Local unpriced Quote sample counts match producer semantics
+- **GIVEN** locally reproduced unknown Quote advice with paired null quantiles
+- **WHEN** its sample count is positive
+- **THEN** the summary exits two with empty stdout and the fixed safe diagnostic before creating or changing its destination. Local unpriced Quotes require zero samples. Imported producer assertions may retain nonnegative declared sample counts, including positive counts, without gaining verified comparison authority; valid priced local Quotes retain positive counts, including observed-zero amounts.
+
 #### Scenario: Optional null amount remains safe for local unpriced advice
 - **WHEN** a locally reproduced unpriced unknown Quote omits an optional amount field
 - **THEN** the summary validates the existing null amount semantics without a traceback and preserves normal append behavior

@@ -1148,3 +1148,41 @@ This correction repairs bootstrap reproducibility only. Native coverage
 and current provider acceptance remain incomplete; the accepted Quote archive
 is unchanged. Rollback restores this registry/documentation correction without
 discarding earlier implementation, archive or failure evidence.
+
+## PR #34 local unpriced Quote sample counts — 2026-10-06
+
+Current f8982e1 passed both Linux matrix jobs in run 37382300736. Independent
+native audit confirmed all ten analyzers, all 2,779 collected/called tests and
+matching source/coverage hashes in each report. This closes the current missing
+native-evidence blocker; prior timeout causes remain unknown, with no deterministic
+reliability-fix claim. These reports remain bound to the pre-correction source.
+
+CODE review 5421415307 then identified a genuine P2: locally reproduced unpriced
+Quote summaries accepted a forged positive sample count. Independent reproduction
+used actual compute_quote/check output with null p50/p90 and zero samples; changing
+only the count to one or two made the public summary command append it. The local
+Quote model and producer require an empty unpriced sample set. Imported claims may
+retain positive schema-valid declared counts and must remain accepted as unknown.
+
+The specification/design/tasks were updated before tests or implementation.
+The intended correction extends the real unpriced Quote test with local versus
+imported provenance, zero/one/two samples and absent/existing destinations. Invalid
+local positives must return safe exit two with empty stdout and leave the output
+unchanged. At epoch 138, the actual extended test returned four expected failures
+for local positive counts and eight passing local-zero/imported controls. The
+minimum implementation adds the count check to the existing local Quote
+completeness condition. At epoch 139 all 433 summary tests passed in 2.86 seconds.
+An isolated current-test snapshot with only that new guard removed reproduced
+the same four failures and eight passing controls; its production summary bytes
+matched the pre-fix implementation. The exact rendered count is asserted for
+accepted cases, and rejected cases preserve absent or existing destinations.
+Frozen epoch 140 passed all 2,790 tests in 42.15 seconds, installed-wheel checks,
+dependency audit, every host-supported gate and all 11 strict OpenSpec items.
+Aggregate exit two remains incomplete solely for the ten unsupported macOS native
+analyzers. Independent affected closure found no defects across all nine changed
+paths, confirmed the complete 97-input fingerprint set and unchanged archive,
+and independently passed the twelve real-producer cases. Original red/green and
+guard-removal evidence retains its original bindings. Rollback restores only this
+summary-validation correction; the immutable registry repair, accepted Quote
+archive and prior evidence remain intact. Fresh Linux and provider evidence is
+required after publication.

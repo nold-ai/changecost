@@ -247,3 +247,13 @@ never print arbitrary input, environment values or runtime payloads. These host
 observations cannot replace signed coverage or establish its timeout cause.
 No second suite, dependency, runner upgrade, test selection or deadline change
 is introduced. Rollback removes only the diagnostic configuration and collector.
+
+## Review correction: unpriced Quote sample counts
+
+The supported local Quote producer uses an empty peer sample set when both
+quantiles are null. The summary's local-completeness branch therefore also requires
+sample_count zero for an unpriced Quote. This guard runs before output access and
+uses the existing safe technical error. Imported assertions retain schema-valid
+declared counts without verified comparison authority; priced local outputs and
+their existing positive-count checks are preserved. No minimum-cohort rule,
+persisted schema or economic-policy change is introduced.

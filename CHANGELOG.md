@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Reject positive sample counts on locally reproduced unpriced Quote summaries
+  before output writes; preserve imported declared counts and valid priced results.
+
 - Pin the official review-module registry to an immutable commit so native signed
   0.50.1 installation survives later registry releases, including its dependencies.
 

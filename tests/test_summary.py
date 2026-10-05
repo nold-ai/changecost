@@ -427,7 +427,14 @@ def test_summary_real_unknown_local_completeness(tmp_path, complete):
     assert render_summary(output)
 
 
-def test_summary_real_unpriced_quote(tmp_path):
+@pytest.mark.parametrize("imported", [False, True])
+@pytest.mark.parametrize("sample_count", [0, 1, 2])
+@pytest.mark.parametrize("existing", [False, True])
+def test_summary_real_unpriced_quote(tmp_path, imported, sample_count, existing):
+    import os
+    import subprocess
+    import sys
+
     from changecost.quotes import compute_quote
     from changecost.summary import render_summary
     from tests.test_advisory import evaluate
@@ -438,7 +445,37 @@ def test_summary_real_unpriced_quote(tmp_path):
     record = compute_quote(store, "target", scope(), "unpriced", minimum=2)
     output = evaluate(store, record)
     assert output["status"] == "unknown" and output["completeness"] == "unknown"
+    assert output["sample_count"] == 0
     assert render_summary(output)
+    output["sample_count"] = sample_count
+    if imported:
+        output["provenance"] = "producer_assertion; provider_support_not_verified"
+    source, destination = tmp_path / "result.json", tmp_path / "summary.md"
+    source.write_text(json.dumps(output))
+    previous = b"Previous summary\n"
+    if existing:
+        destination.write_bytes(previous)
+    checked = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(source)],
+        env={**os.environ, "GITHUB_STEP_SUMMARY": str(destination)},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if not imported and sample_count > 0:
+        assert checked.returncode == 2 and checked.stdout == ""
+        assert checked.stderr == "cannot render or write advisory summary\n"
+        if existing:
+            assert destination.read_bytes() == previous
+        else:
+            assert not destination.exists()
+    else:
+        assert checked.returncode == 0 and checked.stdout == "" and checked.stderr == ""
+        rendered = destination.read_text()
+        assert f"sample_count: {sample_count}\n\n" in rendered
+        assert "Status: unknown\n\n" in rendered
+        if existing:
+            assert rendered.startswith(previous.decode())
 
 
 @pytest.mark.parametrize("kind", ["quote", "computed_settlement"])

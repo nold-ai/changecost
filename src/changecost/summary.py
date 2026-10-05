@@ -131,7 +131,7 @@ def validate_local_completeness(value, budget):
     complete = value["completeness"] == "complete"
     if value["record"]["kind"] == "quote":
         priced = validate_component(value["declared"][0]).amount is not None
-        if complete != priced:
+        if complete != priced or (not priced and value["sample_count"] != 0):
             raise ValueError("invalid local Quote completeness")
     else:
         validate_local_subtotals(value)
