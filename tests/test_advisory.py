@@ -1,6 +1,7 @@
 """Explicit budget advice, historical authority and no-write acceptance."""
 
 import json
+from contextlib import closing
 from decimal import Decimal
 
 import pytest
@@ -181,7 +182,7 @@ def test_settlement_complete_and_partial_both_sides(tmp_path, value, complete):
 def tamper(store, record, **updates):
     """Fault injection into an existing valid local record; never a fixture authority shortcut."""
     changed = record.model_copy(update=updates)
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         connection.execute(
             "UPDATE records SET payload=? WHERE kind=? AND id=?",
             (changed.model_dump_json(by_alias=True), record.kind, record.record_id),
@@ -284,7 +285,7 @@ def test_missing_committed_timestamp_cannot_grant_authority(
     from changecost.serialization import ContractError
 
     store, record = cutoff_timestamp_fixture(tmp_path, kind, "equal")
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         connection.execute("UPDATE metadata SET last_at=NULL")
         if zero_sequence:
             connection.execute("UPDATE metadata SET sequence=0")
@@ -331,11 +332,11 @@ def test_local_authority_and_replay_rejections(tmp_path, kind, mutation):
         )
         record = tamper(store, record, **updates)
     elif mutation == "missing_receipt":
-        with store.connect() as connection:
+        with closing(store.connect()) as connection, connection:
             connection.execute("DELETE FROM computations WHERE record_id=?", (record.record_id,))
     else:
         dependency = record.inputs[0]
-        with store.connect() as connection:
+        with closing(store.connect()) as connection, connection:
             connection.execute(
                 "UPDATE records SET sequence=? WHERE kind=? AND id=?",
                 (2**62, dependency.kind, dependency.record_id),
@@ -585,7 +586,7 @@ def test_corrupt_metadata_safe_error_no_write(tmp_path, fault, authority):
     import sys
 
     store, record = priced(tmp_path)
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         if authority == "no-receipt":
             connection.execute("DELETE FROM computations")
         corrupt_metadata(connection, fault)
@@ -613,7 +614,7 @@ def test_inspection_metadata_errors_are_safe(tmp_path, fault, authority, kind, f
     import sys
 
     store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         if authority == "no-receipt":
             connection.execute("DELETE FROM computations")
         corrupt_metadata(connection, fault)
@@ -653,7 +654,7 @@ def test_original_cutoff_bound_to_result_availability(tmp_path, kind, boundary, 
     if boundary in {"later", "time"}:
         store.clock = lambda: original.at + timedelta(minutes=1)
         peer(store, "unrelated-later", "999")
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         own_sequence = connection.execute(
             "SELECT sequence FROM records WHERE kind=? AND id=?", (kind, record.record_id)
         ).fetchone()[0]
@@ -699,7 +700,7 @@ def test_corrupt_result_availability_safe_cli(
         "sequence": "UPDATE records SET sequence=? WHERE kind=? AND id=?",
         "available_at": "UPDATE records SET available_at=? WHERE kind=? AND id=?",
     }[column]
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         connection.execute(statement, (value, kind, record.record_id))
     before = store.path.read_bytes()
     args = (
@@ -724,7 +725,7 @@ def test_settlement_operation_receipt_identity(tmp_path, clone_receipt):
     assert compute(store) == record
     altered = tamper(store, record, operation_id="different-operation")
     if clone_receipt:
-        with store.connect() as connection:
+        with closing(store.connect()) as connection, connection:
             connection.execute(
                 "INSERT INTO computations SELECT ?,request,record_id FROM computations "
                 "WHERE operation_id=?",
@@ -818,7 +819,7 @@ def test_duplicate_receipts_deny_authority(tmp_path, kind, matching_request, ent
 
     store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
     assert evaluate(store, record)["comparison"] is not None
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         request, record_id = connection.execute(
             "SELECT request,record_id FROM computations WHERE record_id=?", (record.record_id,)
         ).fetchone()
@@ -861,7 +862,7 @@ def availability_trust_fixture(tmp_path, kind, trust_state):
         else:
             record = tamper(store, record, policy_version="unsupported/v99")
     if trust_state in ("missing", "duplicate"):
-        with store.connect() as connection:
+        with closing(store.connect()) as connection, connection:
             if trust_state == "missing":
                 connection.execute(
                     "DELETE FROM computations WHERE record_id=?", (record.record_id,)
@@ -885,7 +886,7 @@ def test_legacy_selected_availability_precedes_claim(tmp_path, output_format, co
         "sequence": "UPDATE records SET sequence=? WHERE kind=? AND id=?",
         "available_at": "UPDATE records SET available_at=? WHERE kind=? AND id=?",
     }[column]
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         connection.execute(query, ("private-corrupt-value", record.kind, record.record_id))
     before = store.path.read_bytes()
     output = runner.invoke(
@@ -906,7 +907,7 @@ def test_selected_result_outside_committed_sequence(
     tmp_path, kind, operation, output_format, trust_state
 ):
     store, record = availability_trust_fixture(tmp_path, kind, trust_state)
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         sequence = connection.execute(
             "SELECT sequence FROM records WHERE kind=? AND id=?", (kind, record.record_id)
         ).fetchone()[0]
@@ -927,7 +928,7 @@ def test_selected_result_outside_committed_sequence(
 def test_legacy_claim_outside_committed_sequence(tmp_path, output_format):
     store, _ = priced(tmp_path)
     record = legacy_claim(store)
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         sequence = connection.execute(
             "SELECT sequence FROM records WHERE kind='settlement' AND id=?", (record.record_id,)
         ).fetchone()[0]
@@ -949,7 +950,7 @@ def test_selected_committed_sequence_boundary(tmp_path, kind, operation, output_
     store, record = availability_trust_fixture(tmp_path, kind, "supported")
     if later:
         peer(store, "later-committed", "999")
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         selected = connection.execute(
             "SELECT sequence FROM records WHERE kind=? AND id=?", (kind, record.record_id)
         ).fetchone()[0]
@@ -976,7 +977,7 @@ def test_committed_sequence_requires_strict_integer(
     tmp_path, kind, operation, output_format, fault
 ):
     store, record = availability_trust_fixture(tmp_path, kind, "supported")
-    with store.connect() as connection:
+    with closing(store.connect()) as connection, connection:
         sequence = connection.execute("SELECT sequence FROM metadata").fetchone()[0]
         value = {"fractional": sequence + 0.5, "negative": -1, "text": "private-invalid-sequence"}[
             fault

@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Close caller-owned SQLite connections in advisory fault-injection tests on success
+  and exceptions, preserving their transaction behavior and all test cases.
+
 - Reject missing or duplicate metadata before local Quote/Settlement inspection and
   bundle export; preserve unavailable historical timestamps and read-only errors.
 - Exercise 238 malformed-summary cases through the public entrypoint with isolated

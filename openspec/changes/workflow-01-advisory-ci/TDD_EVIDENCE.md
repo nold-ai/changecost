@@ -1025,3 +1025,36 @@ analyzers. Independent affected review verified all 96 inputs and preserved case
 identities; isolated omission controls demonstrate both duplicate-metadata escapes
 without the guard. Original epoch116 proof stays bound separately from epoch117
 document adoption. This supports publishing the candidate, not native acceptance.
+
+
+## PR #34 advisory test resource cleanup — 2026-10-05
+
+Controlled unsealed macOS calibration completed all 2,779 tests with the unchanged
+signed coverage helper and observer: 34.067 seconds without instrumentation and
+37.158 seconds including instrumented export (0.428 seconds). All four workers
+contributed to combined coverage. These diagnostics do not establish Linux capsule
+acceptance or explain its 300-second timeout; both current native jobs remain
+UNKNOWN. The instrumented run reported 678 unclosed SQLite connection warnings.
+Warning locations identify garbage collection, not allocation ownership.
+
+Independent source review identified 16 caller-owned advisory test contexts using
+SQLite's transaction context without closing the connection. Production readers
+already close their connections. An ignored detector invokes the actual existing
+metadata corruption test normally and with only its mutation helper replaced by a
+raising sentinel. Before cleanup, one connection remains open in each path:
+16 of 17 and 15 of 16 are closed; the detector exits 1. Explicit contextlib.closing
+now surrounds the original transaction context, preserving commit/rollback semantics
+and every existing assertion and test identity. No product API, warning suppression,
+native analyzer, deadline, dependency or coverage-policy change is involved.
+
+The frozen epoch121 detector passed: all 17 normal and 16 exceptional connections
+closed. Full host gates passed all 2,779 tests in 33.09 seconds, wheel checks and
+all 11 strict OpenSpec items; aggregate exit 2 remains incomplete solely for ten
+unsupported macOS native analyzers. Independent AST review confirmed all sixteen
+contexts retain their original bodies and transaction semantics. A second unsealed
+instrumented run passed every test in 36.33 seconds, with 75 warnings versus 678
+before cleanup; its export took 0.430 seconds. Remaining historical test warnings
+and the Linux timeout are separate limitations. Linux coverage and current provider
+acceptance remain incomplete; fresh candidate CI is required.
+Rollback restores these test contexts only, preserving the Quote archive and
+all historical failure evidence. No release or version change is needed.
