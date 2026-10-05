@@ -211,3 +211,10 @@ when completeness is unknown. Null amounts and positive unknown counts remain
 valid incomplete advice. Summary validation checks structure without store access;
 JSON alone cannot authenticate a declared historical amount.
  Complete local advice requires known amounts and zero unknown counts in every group; only the scope group may be empty with null amount and zero unknown count.
+
+Every computed Settlement declaration requires typed nonnegative unknown_count
+metadata, including portable unverified claims. Such claims may retain empty,
+duplicate or unmatched groups accepted by the record model and remain unknown.
+Only locally reproduced results apply scope/grouping/completeness invariants.
+Human and summary rendering escape U+2028/U+2029 mandatory text separators;
+other Unicode and exact JSON record values remain intact.

@@ -149,3 +149,7 @@ selected records and preserving store bytes. The original cutoff-to-insertion
 anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
 the committed snapshot. Equality and later committed appends remain supported;
 portable artifact advice never consults the local store.
+
+Human output escapes Unicode line and paragraph separators U+2028/U+2029,
+preventing label values from creating text line boundaries. JSON output retains
+the original record values; ordinary Unicode and spaces remain data.

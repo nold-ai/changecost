@@ -14,7 +14,7 @@ development dependencies; analyzer coverage and type-checking rules remain intac
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package.
 The test group locks pytest-xdist 3.8.0; repository pytest configuration runs the
-complete suite with two local workers using load distribution. Each worker retains
+complete suite with four local workers using load distribution. Each worker retains
 its isolated fixtures. The signed native observer supports distributed collection
 and terminal reports, while the coverage adapter combines worker coverage and
 rejects worker errors or missing coverage. Selection, required analyzers, enforcement
@@ -650,3 +650,12 @@ actual supported-Linux native completion remains required. Official
 [parallel execution guidance](https://pylint.readthedocs.io/en/v4.0.7/user_guide/configuration/all-options.html#jobs)
 accessed 2026-10-05 (Europe/Berlin); the installed 4.0.7 implementation and signed
 module 0.50.1 configuration projection were inspected separately.
+
+The four-worker configuration followed repeated signed coverage timeouts on both
+Python matrix legs. A same-source host run passed all 2,657 tests in 34.97 seconds
+with four workers versus 63.09 seconds with two. The earlier improperly configured
+benchmark remains failed evidence. This host timing does not establish Linux
+performance or acceptance; actual fresh signed reports must retain every collected
+and called test, combined coverage, controller observations and complete worker
+evidence. The repository is private and actual hosted CPU count was not recorded.
+No runner upgrade, dependency, selection, threshold or deadline change is made.

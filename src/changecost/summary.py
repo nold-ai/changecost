@@ -21,7 +21,7 @@ ECONOMIC = ("amount", "economic_kind", "unit", "basis", "currency")
 
 def escaped_tokens(value):
     for char in str(value):
-        if unicodedata.category(char) in {"Cc", "Cf", "Cs"}:
+        if unicodedata.category(char) in {"Cc", "Cf", "Cs", "Zl", "Zp"}:
             yield f"\\u{ord(char):04x}"
         elif char in "&<>\"'\\`*_{}[]()#+-.!|~":
             yield f"&#{ord(char)};"
@@ -105,7 +105,10 @@ def validate_result(value):
     if not isinstance(declared, list):
         raise ValueError("invalid declarations")
     for component in declared:
-        validate_component(component)
+        if record["kind"] == "computed_settlement":
+            validate_subtotal(component)
+        else:
+            validate_component(component)
     if record["kind"] == "quote":
         validate_quote_declarations(value)
     validate_local_completeness(value, budget)
@@ -144,17 +147,23 @@ def validate_local_completeness(value, budget):
         raise ValueError("complete unknown advice requires economic incompatibility")
 
 
+def validate_subtotal(component):
+    if not isinstance(component, dict):
+        raise ValueError("invalid subtotal")
+    return Subtotal.model_validate(
+        dict(
+            economic={key: component.get(key) for key in ECONOMIC if key != "amount"},
+            amount=component.get("amount"),
+            unknown_count=component.get("unknown_count"),
+        )
+    )
+
+
 def validate_local_subtotals(value):
     identities = set()
     scope = tuple(EconomicScope.model_validate(value["scope"]).economic.model_dump().items())
     for component in value["declared"]:
-        subtotal = Subtotal.model_validate(
-            dict(
-                economic={key: component.get(key) for key in ECONOMIC if key != "amount"},
-                amount=component.get("amount"),
-                unknown_count=component.get("unknown_count"),
-            )
-        )
+        subtotal = validate_subtotal(component)
         identity = tuple(subtotal.economic.model_dump().items())
         if value["completeness"] == "complete" and (
             subtotal.amount is None or subtotal.unknown_count != 0

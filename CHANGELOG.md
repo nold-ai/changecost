@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Require completeness counts in imported computed Settlement summaries while
+  retaining valid unverified claims; escape Unicode line/paragraph separators in
+  human and CI presentation. Run the complete suite with four locked workers.
+
 - Validate local computed Settlement subtotal structure even for incomplete advice;
   preserve null amounts, positive unknown counts and separate economic groups.
 

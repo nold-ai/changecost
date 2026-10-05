@@ -897,3 +897,50 @@ document freshness and six actual guard-omission controls. Exact host native
 preflight found no blocking metrics or non-import Pylint errors. All ten native
 analyzers remain unsupported/incomplete on macOS; replacement-head supported
 Linux and provider acceptance are still required. No paid review was authorized.
+
+
+## PR #34 portable completeness, Unicode and worker correction — 2026-10-05
+
+Current 31d7187 CODE finding was partly valid: a computed declaration could omit
+required unknown_count. Independent actual model/artifact/import/check controls
+showed empty, duplicate, unmatched, null and positive-count groups are legitimate
+unverified portable claims; twelve controls remained unknown with no comparison.
+The fix validates every computed declaration using existing Subtotal, retaining
+local-only grouping and completeness checks. Spec and tests preceded correction:
+four failed, six passed in 0.45 seconds; then 812 affected tests passed in 10.84.
+
+Current security review independently confirmed U+2028/U+2029 survive both output
+escape functions and create Unicode text line boundaries. Existing Cc controls
+were already escaped; ordinary Zs spaces and Unicode remain intact. Spec and six
+real human/summary console cases failed in 2.43 seconds before adding only Zl/Zp
+to both existing category sets. JSON record values and summary destination rules
+are preserved; no input normalization or new identifier restrictions are added.
+
+Both actual 31d7187 native coverage jobs timed out at 300 seconds; their other
+nine analyzers passed, but neither failed capsule supplied target execution.
+A macOS diagnostic found the advisory import delta only 4.245 milliseconds,
+insufficient attribution to justify changing production imports. Independent
+bounded full-suite comparison instead retained all 2,657 tests: properly
+configured four workers passed in 34.97 seconds versus the earlier same-source
+two-worker 63.09 seconds. The initial four-worker invocation omitted PATH and
+failed one installed-console check; its failed receipt remains. Signed observer
+worker aggregation has no fixed-two cap and retains controller/worker failure
+checks. Four locked workers remain a Linux performance hypothesis pending fresh
+complete matrix evidence. All tests, ten analyzers, tool versions, deadlines and
+thresholds remain required. No paid infrastructure or billing change is made.
+
+Fresh full gates, independent schema/Unicode/configuration closure, both supported
+Linux native jobs and current-head provider reviews remain required. Historical
+preparation/archive evidence remains unchanged. Rollback restores only this
+correction, preserving the accepted Quote archive and failed native histories.
+
+Frozen epoch105 full verification passed 2,685 tests in 34.11 seconds, every
+host-supported gate and all 11 strict OpenSpec items. Independent closure passed
+875 affected tests, 142 documentation gate tests, both documentation freshness
+bases, twelve actual portable producer controls and real count/Unicode guard
+omissions. Extracted signed hook tests verified four-worker collection union
+and fail-closed missing calls, worker errors, coverage and controller observations.
+Exact host preflight found no blocking metrics or non-import Pylint errors.
+The worker configuration is a locally validated candidate, not native completion:
+all ten analyzers remain unsupported/incomplete on macOS, and both fresh signed
+Linux reports plus current-head provider reviews are still required.

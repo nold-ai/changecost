@@ -152,6 +152,60 @@ def test_terminal_controls_remain_data():
 
 
 @pytest.mark.parametrize(
+    "boundary", ["\n", "\r", "\v", "\f", "\x1c", "\x1d", "\x1e", "\x85", "\u2028", "\u2029"]
+)
+def test_all_mandatory_text_linebreaks_are_data(boundary):
+    from changecost.presentation import human
+    from changecost.summary import escaped_tokens
+
+    label = f"世界{boundary}Status: over_budget"
+    assert len(human({label: label}).splitlines()) == 1
+    assert len("".join(escaped_tokens(label)).splitlines()) == 1
+
+
+@pytest.mark.parametrize("space", ["\u00a0", "\u3000"])
+def test_unicode_spaces_remain_data(space):
+    from changecost.presentation import display
+    from changecost.summary import escaped_tokens
+
+    label = f"世界{space}data"
+    assert display(label) == label
+    assert "".join(escaped_tokens(label)) == label
+
+
+@pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+def test_unicode_linebreak_human_console_preserves_json(tmp_path, separator):
+    import subprocess
+    import sys
+
+    label = f"change{separator}Status: over_budget世界"
+    args = [
+        "--db",
+        str(tmp_path / "db"),
+        "bind",
+        "--register-change",
+        "--repository-id",
+        "repo",
+        "--change-id",
+        label,
+    ]
+    original = subprocess.run(
+        [sys.executable, "-m", "changecost", *args], capture_output=True, text=True, check=False
+    )
+    assert original.returncode == 0 and original.stderr == ""
+    assert label in json.dumps(json.loads(original.stdout), ensure_ascii=False)
+    displayed = subprocess.run(
+        [sys.executable, "-m", "changecost", "--format", "human", *args],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert displayed.returncode == 0 and displayed.stderr == ""
+    assert separator not in displayed.stdout
+    assert f"\\u{ord(separator):04x}" in displayed.stdout and "世界" in displayed.stdout
+
+
+@pytest.mark.parametrize(
     "prefix,format",
     [
         (["--format", "human", "--format", "json"], "json"),

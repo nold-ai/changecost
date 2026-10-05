@@ -40,6 +40,33 @@ def result(label):
     }
 
 
+@pytest.mark.parametrize("separator", ["\u2028", "\u2029"])
+@pytest.mark.parametrize("existing", [False, True])
+def test_unicode_linebreak_summary_console(tmp_path, separator, existing):
+    import os
+    import subprocess
+    import sys
+
+    source, destination = tmp_path / "result.json", tmp_path / "summary.md"
+    value = result(f"label{separator}Status: over_budget世界")
+    source.write_text(json.dumps(value))
+    if existing:
+        destination.write_text("previous\n")
+    checked = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(source)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert checked.returncode == 0 and checked.stdout == "" and checked.stderr == ""
+    rendered = destination.read_text()
+    assert separator not in rendered
+    assert f"\\u{ord(separator):04x}" in rendered and "世界" in rendered
+    if existing:
+        assert rendered.startswith("previous\n")
+
+
 def test_summary_escapes_and_unicode(tmp_path):
     from changecost.summary import render_summary, write_summary
 
@@ -651,6 +678,42 @@ def local_incomplete_settlement():
         reasons=["incomplete_or_unpriced"],
     )
     return value
+
+
+@pytest.mark.parametrize("extra", [False, True])
+@pytest.mark.parametrize("existing", [False, True])
+def test_imported_subtotal_requires_count_cli(tmp_path, extra, existing):
+    value = local_incomplete_settlement()
+    value["provenance"] = "producer_assertion; provider_support_not_verified"
+    if extra:
+        value["declared"].append(value["declared"][0] | {"unit": "EUR", "currency": "EUR"})
+    value["declared"][-1].pop("unknown_count")
+    assert_rejected_summary(tmp_path, value, existing)
+
+
+@pytest.mark.parametrize(
+    "shape", ["empty", "duplicate", "unmatched", "null", "extra_null", "positive"]
+)
+def test_imported_subtotal_claims_remain_unknown(shape):
+    from changecost.summary import render_summary
+
+    value = local_incomplete_settlement()
+    value["provenance"] = "producer_assertion; provider_support_not_verified"
+    if shape == "empty":
+        value["declared"] = []
+    elif shape == "duplicate":
+        value["declared"].append(dict(value["declared"][0]))
+    elif shape == "unmatched":
+        value["declared"][0]["basis"] = "other"
+    elif shape == "null":
+        value["declared"][0]["amount"] = None
+    elif shape == "extra_null":
+        value["declared"].append(
+            value["declared"][0] | {"unit": "EUR", "currency": "EUR", "amount": None}
+        )
+    else:
+        value["declared"][0]["unknown_count"] = 1
+    assert "Status: unknown" in render_summary(value)
 
 
 @pytest.mark.parametrize(

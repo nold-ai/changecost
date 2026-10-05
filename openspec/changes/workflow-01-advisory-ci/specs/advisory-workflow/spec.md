@@ -331,6 +331,12 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 
 #### Scenario: Incomplete local Settlement declarations retain producer structure
 
+All computed Settlement summary declarations, including unverified producer claims, SHALL retain mandatory nonnegative integer unknown_count metadata. Unverified claims may retain empty, duplicate or unmatched economic groups accepted by the portable record model; those declarations SHALL NOT gain local reproduction or numeric advice through summary rendering.
+
+Verification SHALL retain every test, combined worker coverage and controller/test observations with four locked pytest workers, all ten native analyzers and the existing native deadline. Missing, failed or incomplete worker evidence SHALL NOT pass.
+
+Human and summary presentation SHALL escape Unicode line and paragraph separators U+2028/U+2029 alongside existing controls. User labels SHALL NOT introduce text line boundaries; valid Unicode and spaces remain data, and JSON record values remain exact.
+
 - **GIVEN** a locally reproduced computed Settlement with unknown completeness
 - **WHEN** the summary validates its declarations
 - **THEN** each subtotal has an explicit nonnegative integer unknown_count, economic identities are unique, and exactly one subtotal matches the declared scope. Missing or ambiguous scope subtotals, missing counts and duplicate identities fail safely before destination access. Null amounts, positive unknown counts and additional economic groups remain valid incomplete advice. Locally complete results require known amounts and zero unknown counts for every economic group, even with an incompatible budget and unknown advisory status. The summary validates result structure without accessing the store or authenticating amounts from JSON alone.

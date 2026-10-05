@@ -13,7 +13,8 @@ from typer.exceptions import Exit
 
 def display(value: str) -> str:
     return "".join(
-        f"\\u{ord(c):04x}" if unicodedata.category(c) in {"Cc", "Cf", "Cs"} else c for c in value
+        f"\\u{ord(c):04x}" if unicodedata.category(c) in {"Cc", "Cf", "Cs", "Zl", "Zp"} else c
+        for c in value
     )
 
 
