@@ -172,4 +172,10 @@ release or cross-checkout compatibility promise is provided.
 
 ## Historical budget advice
 
-Check additionally reproduces all material reconciliation fields at the original cutoff. Input availability alone is insufficient. Incomplete known subtotals above or below budget and narrowed partial_change_scope results remain unknown; see [CLI advice](cli.md#presentation-errors-and-advisory-budgets).
+Check additionally reproduces all material reconciliation fields at the original cutoff.
+Both check and computation inspection require its time to be no later than the latest
+committed metadata timestamp; an advanced wall clock cannot grant authority. Equality
+and older historical cutoffs remain eligible. Missing timestamps cannot certify replay,
+and a populated store with no committed timestamp returns check's safe technical error.
+Input availability alone is insufficient. Incomplete known subtotals above or below budget
+and narrowed partial_change_scope results remain unknown; see [CLI advice](cli.md#presentation-errors-and-advisory-budgets).

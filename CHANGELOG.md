@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+- Bound advisory and Quote/Settlement replay authority to the latest committed store
+  timestamp, including after the wall clock advances; missing committed timestamps
+  cannot certify replay. Flatten diagnostic fault-test branches while preserving
+  every case and native quality requirements.
+
 - Retain bounded privacy-safe, identity-matched project-runtime metadata alongside
   native CI evidence to diagnose capsule timeouts without changing analyzers,
   deadlines, test selection or quality requirements.

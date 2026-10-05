@@ -92,27 +92,35 @@ def corrupt_runtime_file(fixture_values, fault):
     path = target / "project-runtime.json"
     if fault == "missing":
         path.unlink()
-    elif fault == "identity":
+        return
+    if fault == "identity":
         descriptor["payload"] = {}
         path.write_text(json.dumps(descriptor))
-    elif fault == "symlink":
+        return
+    if fault == "symlink":
         path.rename(target / "other")
         path.symlink_to(target / "other")
-    elif fault == "hardlink":
+        return
+    if fault == "hardlink":
         (target / "other").hardlink_to(path)
-    elif fault == "directory":
+        return
+    if fault == "directory":
         path.unlink()
         path.mkdir()
-    elif fault == "oversize":
+        return
+    if fault == "oversize":
         path.write_bytes(b"x" * (16 * 1024 * 1024 + 1))
-    elif fault == "ambiguous":
+        return
+    if fault == "ambiguous":
         other = cache / ("d" * 64)
         other.mkdir()
         (other / path.name).write_bytes(path.read_bytes())
-    elif fault == "cache-link":
+        return
+    if fault == "cache-link":
         cache.rename(cache.parent / "real-cache")
         cache.symlink_to(cache.parent / "real-cache", target_is_directory=True)
-    elif fault == "parent-link":
+        return
+    if fault == "parent-link":
         target.rename(cache / "real-dir")
         target.symlink_to(cache / "real-dir", target_is_directory=True)
 
@@ -124,16 +132,19 @@ def corrupt_runtime_metadata(fixture_values, fault):
         data = json.loads(report.read_text())
         data["scope_evidence"]["project_runtime"]["environment_id"] = "linux-x86_64-cp311"
         report.write_text(json.dumps(data))
-    elif fault == "duplicate":
+        return
+    if fault == "duplicate":
         report.write_text('{"schema_version":"1.6","schema_version":"1.6"}')
-    elif fault == "invalid-name":
+        return
+    if fault == "invalid-name":
         descriptor["inventory"]["installed"][0]["metadata"]["name"] = "https://CANARY"
         seal(descriptor)
         path.write_text(json.dumps(descriptor))
         data = json.loads(report.read_text())
         data["scope_evidence"]["project_runtime"]["identity"] = descriptor["identity"]
         report.write_text(json.dumps(data))
-    elif fault == "nonfinite":
+        return
+    if fault == "nonfinite":
         report.write_text('{"value":NaN}')
 
 

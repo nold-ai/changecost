@@ -224,6 +224,61 @@ Package remains 0.1.0.dev0. Rollback is a scoped follow-up revert retaining the
 accepted Quote archive, original stores/backups and historical evidence. No paid
 infrastructure, provider collection, merge, release or deployment is included.
 
+## PR #34 cutoff authority and diagnostic helper correction — 2026-10-05
+
+The actual current-head provider review identified a missing committed-timestamp
+authority bound: a locally receipted Quote or computed Settlement could claim a
+cutoff later than metadata.last_at but before an advanced wall clock. Independent
+reproduction confirmed numeric advice for both record families; the separate
+portable-graph report was rejected as a false positive using existing complete
+RunRef validation. Upfront review traced the same timestamp assumption through
+check, Quote inspection and computed Settlement inspection. The maintainer
+explicitly extended the existing bounded session by 60 active minutes and two
+correction batches before this work; previous counters and failures remain intact.
+
+New specification and 18 regression cases were written before runtime edits.
+Root captured `pr34-correction-red-packet.json` before execution. The actual red
+selection returned **10 failed, eight passed, 69 deselected in 0.49 seconds**:
+future committed cutoffs failed both direct paths and JSON/human CLI cases, and
+populated stores with missing committed timestamps wrongly retained authority.
+Equality and genuinely older cutoffs already passed. This red evidence is bound
+to its original source/test inputs and is not reused as final certification.
+
+The minimum correction keeps all existing store identity, sequence, receipt,
+wall-clock and original historical replay guards and adds the committed metadata
+timestamp upper bound across all three authority entrypoints. Missing timestamps
+cannot certify inspection; a populated store without one returns check's existing
+safe technical error. It changes no database layout, receipts, success schema,
+comparison arithmetic or accepted Quote archive. Each new case checks unchanged
+store bytes; the existing claim/artifact and real-target historical/oracle controls
+remain part of the affected regression selection.
+
+PR head `2009a11831c7b2a83b659d44470c2a771fb2134a` additionally ran
+[Repository quality #37248663915](https://github.com/nold-ai/changecost/actions/runs/37248663915).
+Both host suites passed 1,943 tests and two installed-wheel proofs; both native
+coverage analyzers executed successfully with no UNKNOWN rows. The sole native
+blocker on each job was the diagnostic fault helper's nine-level `elif` AST nesting.
+Both privacy-safe metadata collectors succeeded. This does not make the failed
+native reports passing, and does not establish the earlier timeout's cause.
+
+The diagnostic helper refactor retains all nine file faults and four metadata
+faults, using flat guards with returns. The installed signed 0.50.1 analyzer's
+actual AST nesting functions measure depths nine/four before and one/one after;
+its source digest and exact measured inputs are preserved in ignored
+`pr34-native-ast-metrics.json`. These local metrics supplement the required fresh
+supported-Linux native execution; no thresholds, test selection, vendor code or
+deadlines were changed. Root captured `pr34-correction-green-packet.json` before
+executing the repaired regression selection: all 18 new cases passed in 0.86
+seconds. The broader affected selection passed 364 tests and four subtests in
+13.35 seconds, including all 21 diagnostic controls and the existing Quote,
+reconciliation, presentation, summary, fresh-store and installed-package tests.
+Writer formatting/lint pass and BasedPyright reports zero errors. These results
+retain their original green binding; later evidence/rationale text changes do not
+rebind the prior reports. Independent affected closure, refreshed complete local/
+staged checks and actual current-head Linux/native/provider acceptance remain
+required. Rollback reverts only the correction diff; archived Quote evidence,
+original stores and previous reports are preserved.
+
 ## Supported-Linux findings and maintainability correction — 2026-10-05
 
 The reviewed transport head `3b46f92482d0c9ac60b9d38684310e30b56fd399` ran

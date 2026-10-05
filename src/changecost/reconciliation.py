@@ -561,6 +561,8 @@ def inspect_computation(store: Store, record: ComputedSettlement) -> dict:
             local
             and cutoff.store_id == store_id
             and cutoff.sequence <= sequence
+            and last_at is not None
+            and cutoff.at <= timestamp(last_at)
             and cutoff.at <= now
         ):
             snapshot = snapshot_records(connection, cutoff, records)

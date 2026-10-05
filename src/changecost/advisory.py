@@ -88,6 +88,8 @@ def metadata_snapshot(connection, now):
     cutoff = Cutoff.model_validate(
         dict(store_id=store_id, sequence=sequence, at=now if last_at is None else last_at)
     )
+    if cutoff.sequence > 0 and last_at is None:
+        raise ContractError("invalid local store metadata")
     if cutoff.at > now:
         raise ContractError("clock moved backwards")
     return cutoff
@@ -109,6 +111,7 @@ def local_verification(connection, records, record, metadata, now):
     if (
         cutoff.store_id != metadata.store_id
         or cutoff.sequence > metadata.sequence
+        or cutoff.at > metadata.at
         or cutoff.at > now
     ):
         return False, ["foreign_or_future_cutoff"]

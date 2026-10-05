@@ -189,6 +189,108 @@ def tamper(store, record, **updates):
     return changed
 
 
+def cutoff_timestamp_fixture(tmp_path, kind, boundary):
+    from datetime import timedelta
+
+    store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
+    original = record.cutoff.at
+    store.clock = lambda: original + timedelta(minutes=2)
+    if boundary == "future":
+        record = tamper(
+            store,
+            record,
+            cutoff=record.cutoff.model_copy(update={"at": original + timedelta(minutes=1)}),
+        )
+    elif boundary == "older":
+        peer(store, "later-timestamp", "999")
+    return store, record
+
+
+def inspect_selected_computation(store, record):
+    from changecost.quotes import inspect_quote
+    from changecost.reconciliation import inspect_computation
+
+    return (
+        inspect_quote(store, record)
+        if isinstance(record, Quote)
+        else inspect_computation(store, record)
+    )
+
+
+def assert_cutoff_advice(output, unavailable):
+    assert bool(output["comparison"] is None) == unavailable
+    assert output["declared"]
+    if unavailable:
+        assert output["status"] == "unknown"
+        assert "foreign_or_future_cutoff" in output["reasons"]
+    else:
+        assert output["status"] in {"within_budget", "over_budget"}
+
+
+def assert_cutoff_inspection(output, unavailable, kind):
+    assert output["local_computation"] is True
+    assert output["replay_eligibility"] == (
+        "replay_unavailable" if unavailable else "inputs_available"
+    )
+    if kind == "quote":
+        assert output["economic_validation"] == ("not_computed" if unavailable else "reproduced")
+    else:
+        assert output["current_eligibility"] == "snapshot_only"
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("boundary", ["future", "equal", "older"])
+@pytest.mark.parametrize("entrypoint", ["check", "inspect"])
+def test_committed_cutoff_timestamp_authority(tmp_path, kind, boundary, entrypoint):
+    store, record = cutoff_timestamp_fixture(tmp_path, kind, boundary)
+    before = store.path.read_bytes()
+    if entrypoint == "check":
+        assert_cutoff_advice(evaluate(store, record), boundary == "future")
+    else:
+        assert_cutoff_inspection(
+            inspect_selected_computation(store, record), boundary == "future", kind
+        )
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("format", ["json", "human"])
+def test_future_committed_cutoff_cli_unknown_no_write(tmp_path, kind, format):
+    store, record = cutoff_timestamp_fixture(tmp_path, kind, "future")
+    before = store.path.read_bytes()
+    prefix = ["--db", str(store.path), "--format", format]
+    checked = runner.invoke(app, [*prefix, *check_args(record)])
+    explained = runner.invoke(
+        app, [*prefix, "explain", "--record-kind", kind, "--record-id", record.record_id]
+    )
+    assert checked.exit_code == explained.exit_code == 0
+    assert not checked.stderr and not explained.stderr
+    if format == "json":
+        assert_cutoff_advice(json.loads(checked.stdout), True)
+        assert_cutoff_inspection(json.loads(explained.stdout), True, kind)
+    else:
+        assert "status: unknown" in checked.stdout
+        assert "replay_eligibility: replay_unavailable" in explained.stdout
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+def test_missing_committed_timestamp_cannot_grant_authority(tmp_path, kind):
+    from changecost.serialization import ContractError
+
+    store, record = cutoff_timestamp_fixture(tmp_path, kind, "equal")
+    with store.connect() as connection:
+        connection.execute("UPDATE metadata SET last_at=NULL")
+    before = store.path.read_bytes()
+    with pytest.raises(ContractError):
+        evaluate(store, record)
+    assert_cutoff_inspection(inspect_selected_computation(store, record), True, kind)
+    checked = runner.invoke(app, ["--db", str(store.path), *check_args(record)])
+    assert checked.exit_code == 2 and not checked.stdout
+    assert json.loads(checked.stderr)["schema"] == "changecost/error-v1"
+    assert store.path.read_bytes() == before
+
+
 @pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
 @pytest.mark.parametrize(
     "mutation", ["unsupported", "foreign", "future", "mismatch", "missing_input", "missing_receipt"]

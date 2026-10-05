@@ -104,7 +104,12 @@ zero are within_budget. All valid advice (`within_budget`, `over_budget`, `unkno
 exits 0; technical failures exit 2.
 
 Numeric advice requires a supported local typed computation receipt and exact
-historical reproduction at the original cutoff. Settlement reproduction includes
+historical reproduction at the original cutoff. Its time cannot exceed the latest
+committed local metadata timestamp, even when the wall clock has advanced; equality
+and earlier historical cutoffs remain eligible. The same boundary applies to Quote
+and computed Settlement explain. A populated store missing its committed metadata
+timestamp is invalid for check; inspection cannot certify replay without that timestamp.
+Settlement reproduction includes
 scope, subtotals, supporting inputs/exclusions, reasons and completeness; explain's
 `inputs_available` alone cannot certify a value. Later evidence never replaces that
 cutoff. Imported/legacy/artifact-only results remain unknown producer claims, even

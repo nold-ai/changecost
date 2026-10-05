@@ -112,6 +112,26 @@ Check SHALL require an explicit quote, computed_settlement or legacy settlement 
 
 Numeric advice SHALL require a supported valid local typed computation receipt and reproduction of the selected immutable result at its original store-local cutoff. Quote validation SHALL retain the delivered historical replay boundary. Computed Settlement validation SHALL reproduce values, requested-scope completeness and supporting inputs/exclusions/reasons through the existing reconciliation evaluator; receipt or input availability alone SHALL NOT suffice. Legacy, imported/artifact-only, unsupported, future/foreign-cutoff, missing-input or result-mismatch claims SHALL return unknown with declared values/provenance and no verified comparison value. Saved/imported completeness and receipt-like fields SHALL NOT create authority. Later evidence SHALL NOT change evaluation of the selected historical result.
 
+The selected cutoff time SHALL NOT exceed the latest committed local metadata timestamp, even when it precedes an advanced wall clock and its sequence/store identity remain valid. Equality and earlier historical cutoffs SHALL remain eligible for reproduction. Quote and computed Settlement inspection SHALL apply the same committed timestamp authority boundary; unavailable timestamps SHALL NOT grant replay eligibility. A populated local store with no committed metadata timestamp SHALL be an invalid store for check and return the controlled technical error without writes.
+
+#### Scenario: Advanced wall clock cannot authorize a future committed cutoff
+
+- **GIVEN** a locally receipted Quote or computed Settlement claims a cutoff later than the latest committed store timestamp but earlier than the current wall clock
+- **WHEN** check or explain inspects that selected record
+- **THEN** check returns unknown with declared values and no verified comparison; explain returns replay_unavailable and Quote economic validation is not_computed; valid advisory/inspection responses exit zero without writes.
+
+#### Scenario: Equality and older committed cutoffs remain historical
+
+- **GIVEN** a locally receipted reproducible record has a cutoff equal to the latest committed timestamp or earlier than later committed history
+- **WHEN** check or explain selects that original record
+- **THEN** the original historical result retains numeric advice and replay eligibility without substituting current history.
+
+#### Scenario: Missing committed timestamp is not authority
+
+- **GIVEN** a populated local store has a local computation receipt but its committed metadata timestamp is absent
+- **WHEN** check or explain inspects the record
+- **THEN** check returns a controlled technical error with empty stdout and exit two; explain cannot certify replay eligibility; neither operation changes the store.
+
 #### Scenario: Priced imported Quote remains a claim
 
 - **GIVEN** a well-formed imported priced Quote declares 18 USD against budget 15 but lacks supported local verification

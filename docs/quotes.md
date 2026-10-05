@@ -58,7 +58,10 @@ fails unchanged. Invalid inputs or failure before commit leave no partial Quote/
 Stored metadata retains target features, parameters, selected exact peer totals/support,
 ordered cohorts, exclusions and synthetic provenance. Inputs retain consulted normalized
 and lifecycle dependencies. Explain verifies the exact stored payload and recomputes
-supported versions at its original time/sequence cutoff in one read snapshot. Later
+supported versions at its original time/sequence cutoff in one read snapshot. The cutoff
+time must not exceed the latest committed metadata timestamp; an advanced wall clock
+does not authorize a future committed cutoff. Equality and older historical cutoffs
+remain eligible, while a missing committed timestamp cannot certify replay. Later
 imports, bindings or corrections do not leak into the historical result. Explain reads
 the local clock once in that transaction and rejects a clock earlier than the latest
 committed local availability, including for imported or unsupported claims. Equality

@@ -125,8 +125,12 @@ but committed after the captured snapshot is excluded. This is a snapshot bounda
 not a claim of an exact physical commit timestamp. Clock regression fails writes
 and snapshot capture; it cannot detect arbitrary external tampering or clock jumps.
 Foreign, time-only or future cutoffs cannot prove local replay. A cutoff time must
-not exceed the current committed snapshot's time, even when its store ID and
-sequence are otherwise valid. Importing old evidence now
+not exceed the current committed snapshot's metadata timestamp, even when its store ID
+and sequence are otherwise valid or the wall clock has advanced. Check and Quote/computed
+Settlement inspection enforce this bound; equality and older historical cutoffs remain
+eligible. Missing metadata timestamps cannot certify replay. A populated local store
+with no committed timestamp is invalid for check and returns its safe technical error.
+Importing old evidence now
 never reconstructs earlier destination knowledge.
 
 `Store.backup(new_path)` uses SQLite's consistent backup API and preserves identity,

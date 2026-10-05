@@ -484,6 +484,8 @@ def inspect_quote(store: Store, record: Quote | RecordRef):
             replay_supported(record)
             and record.cutoff.store_id == store_id
             and record.cutoff.sequence <= sequence
+            and last_at is not None
+            and record.cutoff.at <= timestamp(last_at)
             and record.cutoff.at <= now
         )
         reproduced = eligible and quote_reproduced(connection, records, record)
