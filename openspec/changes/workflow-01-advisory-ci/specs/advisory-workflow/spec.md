@@ -212,6 +212,14 @@ Check SHALL return within_budget, over_budget or unknown, all with exit zero for
 
 The example SHALL be workflow_dispatch-only and independent of required quality jobs, using local synthetic artifacts, existing pinned setup and read-only permissions without provider credentials or automatic PR/account/branch-protection changes. A Python helper SHALL validate/allowlist the new check result and write directly to GITHUB_STEP_SUMMARY, treating all labels as data. It SHALL escape HTML/Markdown/control characters and preserve benign Unicode; final UTF-8 output SHALL be at most 65,536 bytes including a visible truncation notice. Valid advice SHALL stay nonblocking while malformed result, renderer or write failures remain nonzero. No continue-on-error or shell fallback SHALL suppress technical failures.
 
+The helper SHALL enforce record-kind authority: legacy settlement results SHALL only have unknown status with no verified comparison. A payload relabeled from a valid numeric Quote or computed Settlement to legacy settlement SHALL fail validation before opening or appending to the summary destination.
+
+#### Scenario: Legacy kind cannot claim verified numeric advice
+
+- **GIVEN** an otherwise valid within_budget or over_budget Quote/computed-Settlement result is relabeled as legacy settlement
+- **WHEN** the summary helper runs
+- **THEN** it exits 2 with empty stdout and a safe diagnostic, leaves an existing summary unchanged and creates no absent summary; valid legacy unknown advice remains accepted.
+
 #### Scenario: Malicious display value
 
 - **GIVEN** a display label contains shell substitution, HTML/Markdown syntax and terminal/workflow control strings
@@ -223,6 +231,12 @@ The example SHALL be workflow_dispatch-only and independent of required quality 
 - **GIVEN** a result has large multibyte Unicode display values
 - **WHEN** the helper renders its summary
 - **THEN** final UTF-8 output is valid, at most 65,536 bytes including the visible truncation notice, with valid escapes and benign Unicode preserved.
+
+#### Scenario: Malformed summary enum values
+
+- **GIVEN** status, record kind, quantile or completeness contains a JSON list or object instead of a permitted value
+- **WHEN** the summary helper runs
+- **THEN** it exits 2 with empty stdout and the fixed safe diagnostic without exposing private input or a traceback, leaves existing summary bytes unchanged and creates no absent destination.
 
 #### Scenario: Summary technical failure
 

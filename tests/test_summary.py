@@ -128,3 +128,112 @@ def test_renderer_technical_failures_subprocess(tmp_path):
         command, env=dict(env, GITHUB_STEP_SUMMARY=str(tmp_path)), capture_output=True
     )
     assert unwritable.returncode == 2 and not unwritable.stdout
+
+
+def verified_result(kind, status):
+    value = result("verified")
+    value.update(
+        status=status,
+        record={"kind": kind, "record_id": "verified"},
+        comparison=value["budget"] | {"amount": "10" if status == "within_budget" else "20"},
+        cutoff={"store_id": "local", "at": "2026-10-05T00:00:00Z", "sequence": 1},
+        provenance="locally_reproduced_synthetic; provider_support_not_verified",
+        completeness="complete",
+        quantile="p90" if kind == "quote" else None,
+        reasons=[],
+    )
+    return value
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("status", ["within_budget", "over_budget"])
+def test_summary_rejects_legacy_numeric_authority(kind, status):
+    from changecost.summary import render_summary
+
+    value = verified_result(kind, status)
+    assert render_summary(value)
+    value["record"]["kind"] = "settlement"
+    with pytest.raises(ValueError):
+        render_summary(value)
+
+
+def test_summary_accepts_legacy_unknown():
+    from changecost.summary import render_summary
+
+    value = result("legacy")
+    value["record"]["kind"] = "settlement"
+    value["quantile"] = None
+    assert render_summary(value)
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("status", ["within_budget", "over_budget"])
+@pytest.mark.parametrize("existing", [False, True])
+def test_legacy_numeric_cli_preserves_summary(tmp_path, kind, status, existing):
+    import os
+    import subprocess
+    import sys
+
+    value = verified_result(kind, status)
+    value["record"]["kind"] = "settlement"
+    payload = tmp_path / "result.json"
+    payload.write_text(json.dumps(value))
+    destination = tmp_path / "summary"
+    original = b"Earlier summary: \xe4\xb8\x96\xe7\x95\x8c\n"
+    if existing:
+        destination.write_bytes(original)
+    rejected = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+    )
+    assert rejected.returncode == 2
+    assert rejected.stdout == ""
+    assert rejected.stderr == "cannot render or write advisory summary\n"
+    if existing:
+        assert destination.read_bytes() == original
+    else:
+        assert not destination.exists()
+
+
+@pytest.mark.parametrize(
+    "field,malformed",
+    [
+        (field, malformed)
+        for field in ("status", "record_kind", "quantile", "completeness")
+        for malformed in (["private-canary"], {"private-canary": "secret"}, True, 0)
+    ]
+    + [(field, None) for field in ("status", "record_kind", "completeness")],
+)
+@pytest.mark.parametrize("existing", [False, True])
+def test_summary_malformed_enum_safe_cli(tmp_path, field, malformed, existing):
+    import os
+    import subprocess
+    import sys
+
+    value = result("valid")
+    if field == "record_kind":
+        value["record"]["kind"] = malformed
+    else:
+        value[field] = malformed
+    payload = tmp_path / "result.json"
+    payload.write_text(json.dumps(value))
+    destination = tmp_path / "summary"
+    original = b"Earlier advisory summary\n"
+    if existing:
+        destination.write_bytes(original)
+    rejected = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+    )
+    assert rejected.returncode == 2
+    assert rejected.stdout == ""
+    assert rejected.stderr == "cannot render or write advisory summary\n"
+    assert "private-canary" not in rejected.stderr
+    if existing:
+        assert destination.read_bytes() == original
+    else:
+        assert not destination.exists()

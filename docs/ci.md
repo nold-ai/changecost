@@ -28,13 +28,18 @@ fresh-store/installed-wheel tests also exercise failed attempts, retries, import
 explain and human/JSON presentation through the public CLI.
 
 The helper validates the versioned check result, renders only allowlisted fields
-and writes directly to GITHUB_STEP_SUMMARY. Labels are data: HTML, Markdown and
+and writes directly to GITHUB_STEP_SUMMARY. Legacy Settlement results must remain
+unknown with no verified comparison; relabeling numeric Quote or computed-Settlement
+advice as legacy is rejected before opening the destination, preserving existing
+summary bytes and leaving absent destinations uncreated. Labels are data: HTML, Markdown and
 control characters are escaped; benign Unicode is preserved. Final UTF-8 output per
 render is bounded to 65,536 bytes including a visible truncation notice; truncation
 preserves characters and escapes. It emits no workflow commands or shell-expanded
 labels. Inputs never enter executable scripts through expression interpolation.
 
-Valid over-budget/unknown advice exits zero. Malformed results, renderer errors and
+Valid over-budget/unknown advice exits zero. Malformed enum values, including JSON
+arrays and objects, produce the fixed safe error before output opens. Malformed
+results, renderer errors and
 summary-write failures exit nonzero; neither continue-on-error nor shell fallbacks
 mask technical failures. Independent repository quality gates retain their failures.
 The workflow does not upload raw records or automatically comment on PRs. Keep local

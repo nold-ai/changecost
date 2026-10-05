@@ -51,7 +51,7 @@ def validate_details(value):
     sample = value.get("sample_count")
     if sample is not None and (type(sample) is not int or sample < 0):
         raise ValueError("invalid sample count")
-    if value.get("quantile") not in {None, "p50", "p90"}:
+    if value.get("quantile") not in (None, "p50", "p90"):
         raise ValueError("invalid quantile")
     if value.get("cutoff") is not None:
         Cutoff.model_validate(value["cutoff"])
@@ -67,15 +67,17 @@ def validate_details(value):
 def validate_result(value):
     if not isinstance(value, dict) or value.get("schema") != "changecost/check-v1":
         raise ValueError("invalid check result")
-    if value.get("status") not in {"within_budget", "over_budget", "unknown"}:
+    if value.get("status") not in ("within_budget", "over_budget", "unknown"):
         raise ValueError("invalid advisory status")
     record, reasons = value.get("record"), value.get("reasons")
     if (
         not isinstance(record, dict)
-        or record.get("kind") not in {"quote", "computed_settlement", "settlement"}
+        or record.get("kind") not in ("quote", "computed_settlement", "settlement")
         or not isinstance(record.get("record_id"), str)
     ):
         raise ValueError("invalid record")
+    if record["kind"] == "settlement" and value["status"] != "unknown":
+        raise ValueError("legacy settlement cannot have verified advice")
     budget = validate_component(value.get("budget"), budget=True)
     if not isinstance(reasons, list) or any(not isinstance(r, str) for r in reasons):
         raise ValueError("invalid reasons")

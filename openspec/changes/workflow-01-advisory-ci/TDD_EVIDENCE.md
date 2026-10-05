@@ -350,3 +350,64 @@ parent replacement, byte bounds and exclusive/write-error output. A real-target
 canonical-identity bypass must fail the same detector while the repaired boundary
 passes. Fresh binding, independent closure and supported-Linux execution remain
 required; successful collection alone cannot establish native assurance.
+
+
+## PR #34 legacy-kind summary authority — 2026-10-05
+
+An independent provider finding and upfront obligation review confirmed that the
+summary validator accepted otherwise valid numeric Quote/computed-Settlement
+advice after only its record kind was changed to legacy Settlement. That kind has
+no local numeric authority. Correction batch four preserves the prior successful
+head's supported-Linux evidence as history rather than rebinding it to this change.
+
+The active specification was revised before production. Under the root's captured
+red binding (input generation 36), the 13-case regression selection produced
+12 failures and one pass in 0.70 seconds: all four producer-kind/status mutations
+were accepted incorrectly, as were eight CLI mutations covering absent/existing
+destinations. Valid legacy unknown advice already passed. Each direct mutation
+first confirms the unmodified numeric producer result is accepted. The CLI checks
+require exit 2, empty stdout, the fixed safe diagnostic, and unchanged existing
+bytes or an absent destination remaining absent.
+
+The minimal validator guard rejects numeric legacy status after record-kind
+validation, before formatting or opening output. No producer, persistence,
+economic arithmetic, accepted archive or native policy changes. Green execution,
+independent affected review and fresh current-head gates remain pending at this
+point; no unexecuted result is claimed.
+
+
+Root captured green input generation 37 before execution. All 13 regressions pass
+in 0.71 seconds; the full affected summary/advisory/control/public-CLI suite,
+including the synthetic demo, passes 121 tests and four subtests in 7.13 seconds.
+The first affected-suite command referenced nonexistent test_demo.py and collected
+no tests; the corrected selection above provides the actual passing evidence.
+Ruff passes. Both HEAD and explicit-main documentation gates pass after retaining
+historical reasons and refreshing only ten actual stale source-bound rationales.
+The installed signed 0.50.1 AST nesting function measures the added helper/tests
+at depths zero through one; the amended validator remains depth one. Exact tool
+and file metrics are retained in ignored pr34-summary-ast-metrics.json. These
+writer diagnostics do not replace independent closure or fresh native assurance.
+Rollback reverts this scoped validator/spec/test/documentation diff; persisted
+stores and accepted Quote archive require no migration or modification.
+
+
+The same batch's independent affected review found malformed status, record-kind
+and quantile arrays/objects could trigger an unhashable-value traceback. Under
+captured red generation 39, the 16-case CLI matrix produced 12 failures and four
+passes in 1.23 seconds; completeness arrays/objects were already handled safely.
+Every case checks the fixed diagnostic, exit 2, no private-canary disclosure, empty
+stdout and destination integrity. Three enum allowlists now use tuples so all JSON
+value types can be rejected through the existing validation error path without
+adding branches. Null/bool/number rejection controls were added after that red run;
+no failing evidence is claimed for those additions. Existing accepted unknown
+legacy advice with a null quantile remains a positive control. Green validation
+and fresh independent/native assurance are pending for these additional bytes.
+
+
+Under captured green generation 40, all 38 expanded malformed-enum CLI cases pass
+in 2.97 seconds, and the full affected suite (including the 13 legacy-authority
+regressions and synthetic demo) passes 159 tests and four subtests in 10.12 seconds.
+The three tuple replacements preserve validator complexity and nesting. Current
+source-bound rationale fingerprints are refreshed for the same ten owned documents;
+accepted archive bytes and prior failed/successful native reports remain unchanged.
+Independent closure and fresh current-head gates remain required.
