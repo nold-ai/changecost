@@ -142,7 +142,7 @@ Supported local producers SHALL anchor the original cutoff to the selected resul
 
 #### Scenario: Missing committed timestamp is not authority
 
-- **GIVEN** a populated local store has a local computation receipt but its committed metadata timestamp is absent
+- **GIVEN** a populated local store has selected records but its committed metadata timestamp is absent, even if its metadata sequence is corrupted to zero or its receipt is absent
 - **WHEN** check or explain inspects the record
 - **THEN** check returns a controlled technical error with empty stdout and exit two; explain cannot certify replay eligibility; neither operation changes the store.
 

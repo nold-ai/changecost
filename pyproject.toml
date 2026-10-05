@@ -46,6 +46,9 @@ testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-ra -n 2 --dist load"
 
+[tool.pylint.main]
+jobs = 2
+
 [tool.specfact.code-review]
 native_tools = ["git"]
 

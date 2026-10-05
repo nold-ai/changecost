@@ -3,6 +3,12 @@
 
 ## Unreleased
 
+- Run full Pylint analysis with two supported local processes, retaining all
+  source files, required checkers and the sealed 30-second deadline.
+
+- Reject missing committed timestamps for record checks even when corrupt store
+  metadata reports sequence zero; preserve safe errors and read-only behavior.
+
 - Bind computed Settlement receipt and retry operation IDs; reject missing or
   contradictory computation scopes and wrong-kind summary details before writing.
 

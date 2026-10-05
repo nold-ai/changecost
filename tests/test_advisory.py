@@ -275,19 +275,34 @@ def test_future_committed_cutoff_cli_unknown_no_write(tmp_path, kind, format):
 
 
 @pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
-def test_missing_committed_timestamp_cannot_grant_authority(tmp_path, kind):
+@pytest.mark.parametrize("zero_sequence", [False, True])
+@pytest.mark.parametrize("format", ["json", "human"])
+@pytest.mark.parametrize("receipt", [False, True])
+def test_missing_committed_timestamp_cannot_grant_authority(
+    tmp_path, kind, zero_sequence, format, receipt
+):
     from changecost.serialization import ContractError
 
     store, record = cutoff_timestamp_fixture(tmp_path, kind, "equal")
     with store.connect() as connection:
         connection.execute("UPDATE metadata SET last_at=NULL")
+        if zero_sequence:
+            connection.execute("UPDATE metadata SET sequence=0")
+        if not receipt:
+            connection.execute("DELETE FROM computations")
     before = store.path.read_bytes()
     with pytest.raises(ContractError):
         evaluate(store, record)
-    assert_cutoff_inspection(inspect_selected_computation(store, record), True, kind)
-    checked = runner.invoke(app, ["--db", str(store.path), *check_args(record)])
+    inspected = inspect_selected_computation(store, record)
+    assert inspected["local_computation"] is receipt
+    assert inspected["replay_eligibility"] == "replay_unavailable"
+    checked = runner.invoke(app, ["--db", str(store.path), "--format", format, *check_args(record)])
     assert checked.exit_code == 2 and not checked.stdout
-    assert json.loads(checked.stderr)["schema"] == "changecost/error-v1"
+    if format == "json":
+        assert json.loads(checked.stderr)["schema"] == "changecost/error-v1"
+    else:
+        assert checked.stderr
+    assert "Traceback" not in checked.stderr
     assert store.path.read_bytes() == before
 
 

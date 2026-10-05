@@ -111,7 +111,9 @@ Its time cannot exceed the latest
 committed local metadata timestamp, even when the wall clock has advanced; equality
 and earlier historical cutoffs remain eligible. The same boundary applies to Quote
 and computed Settlement explain. A populated store missing its committed metadata
-timestamp is invalid for check; inspection cannot certify replay without that timestamp.
+timestamp is invalid for check even if metadata sequence is corrupted to zero or
+no local receipt remains; record checks never substitute the wall clock for a missing
+committed timestamp. Inspection cannot certify replay without that timestamp.
 Computed Settlement receipts also bind the payload operation ID to the local receipt
 primary key. Retrying an operation rejects a mismatched stored operation ID even
 if another receipt references that result. Settlement reproduction includes

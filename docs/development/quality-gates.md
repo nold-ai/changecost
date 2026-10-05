@@ -638,3 +638,15 @@ no signed vendor patch, analyzer timeout, test selection, quality threshold or
 required member was changed. Native assurance stays incomplete until actual
 current-head full reports pass. Revert this collector/workflow addition to roll
 back metadata retention, preserving original failure evidence.
+
+
+Pylint's full source analysis uses two local processes via the supported
+`tool.pylint.main.jobs = 2` setting. The installed signed module preserves this
+ordinary configuration while enforcing its complete file/checker projection and
+30-second Pylint deadline. Pylint 4.0.7 merges worker checker results; aggregation
+of duplicate-code messages can differ between worker counts. This setting adds no
+ignored files/checkers or deadline exception. The measured host timing is diagnostic;
+actual supported-Linux native completion remains required. Official
+[parallel execution guidance](https://pylint.readthedocs.io/en/v4.0.7/user_guide/configuration/all-options.html#jobs)
+accessed 2026-10-05 (Europe/Berlin); the installed 4.0.7 implementation and signed
+module 0.50.1 configuration projection were inspected separately.

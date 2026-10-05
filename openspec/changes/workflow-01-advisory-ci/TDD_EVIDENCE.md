@@ -604,3 +604,65 @@ types, docs/index/metadata/workflow, all 2,111 tests in 54.28 seconds, both whee
 checks, dependency audit and all eleven strict OpenSpec items. Its aggregate exit
 remains two solely for the ten unsupported macOS native analyzers. Supported Linux
 and required provider reviews remain mandatory after publication.
+
+
+## Missing timestamp at reported sequence zero — 2026-10-05
+
+CODE review `5414125875` on `a44368b` identified a genuine remaining metadata
+boundary: corrupt populated stores with both sequence zero and last_at null
+received advisory unknown instead of a technical error. Independent upfront
+family review reproduced both computation kinds and human/JSON output and
+confirmed metadata_snapshot serves only local record checks. The minimum repair
+requires an existing committed timestamp regardless of reported sequence; no
+wall-clock substitution or broader database-integrity validator is needed. Empty
+record checks still fail safely for unavailable targets; registration and offline
+help/version remain unaffected. The explicit until-fixed authorization covers the
+renewed family plan and correction batch nine without resetting history/counters.
+
+The extended sixteen-case test initially had six test-author assumption failures
+(receipt-absent inspection and human diagnostic capitalization), retained separately.
+After correcting those expectations, the genuine pre-implementation run had eight
+failures/eight passes in 0.36 seconds: only sequence-zero missing timestamps bypassed
+the guard. Cases retain both kinds/formats and present/absent local receipts, plus
+unchanged store bytes and unavailable inspection. Fresh full gates, independent
+closure and hosted current-head reviews remain necessary.
+
+
+Metadata verification passed all 2,125 tests in 51.50 seconds, both wheel checks,
+dependency audit, eleven strict items and non-native gates. Independent closure
+passed 151 advisory cases, eight document/config checks, real guard omissions and
+fresh empty-store/registration/offline controls; archive and all 96 inputs remain
+bound. Mac native analyzers remain unsupported.
+
+On prior committed `a44368b`, actual Linux run `37305831841` failed both jobs solely
+because the signed Pylint subprocess exceeded its 30-second deadline; the other
+nine native analyzers passed, including all 2,111 unique coverage cases without
+worker/collection errors. Independent diagnosis verified signed module 0.50.1
+projects ordinary Pylint jobs=2 into its generated-rcfile command, retains every
+file/checker and uses the ordinary picklable PyLinter. Exact cached Pylint 4.0.7
+uses ProcessPoolExecutor/dill and checker map/reduce. A bounded macOS diagnostic
+over all 58 Python inputs measured jobs1 at 9.019 seconds and jobs2 at 6.886;
+error/warning counts matched, while duplicate-code aggregate counts differed by
+one. It had dependency-environment errors and omitted two rejected false-switch
+spellings, so it is neither a sealed-runtime reproduction nor proof of root cause
+or a passing analyzer. Original failed reconstruction is retained.
+
+The supported jobs=2 configuration is a measured candidate, not a native pass.
+No checker suppression, test/file selection, vendor source, enforcement policy,
+inner 30-second or outer 300-second deadline changes. Fresh full quality, independent
+configuration projection/process-merge closure and actual Linux evidence remain
+required after this configuration input changes. The maintainer's explicit
+until-fixed approval covers this scoped performance remedy; prior counters and
+failures remain retained.
+
+
+Final frozen configuration verification passed all 2,125 tests in 51.56 seconds,
+lock/hygiene/lint/types/docs/index/metadata/workflow, both wheel checks, dependency
+audit (no known vulnerabilities) and eleven strict items. Independent configuration
+review confirmed the signed full-file/checker projection retains --jobs=2 and
+unchanged deadlines; independent document review passed eight fresh checks with
+metadata code/test/archive bytes identical to the earlier actual omission proof.
+The make aggregate remains two solely because all ten native analyzers are
+unsupported on macOS. Exact staged closure and fresh supported-Linux/current-head
+provider completion remain mandatory; the performance candidate is not certified
+by host diagnostics or these local gates.
