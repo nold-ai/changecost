@@ -40,7 +40,11 @@ labels. Inputs never enter executable scripts through expression interpolation.
 Valid over-budget/unknown advice exits zero. Provenance outside the two
 check-producer values or completeness outside
 complete/unknown, fail safely. Producer assertions have unknown completeness;
-local reproduction requires a computation kind and a cutoff. Valid unknown advice
+local reproduction requires a computation kind and a cutoff. Quote and computed
+Settlement results require an EconomicScope mapping; numeric comparison identity
+must match that scope. Quotes require p50/p90 and a nonnegative integer sample count;
+computed and legacy Settlements carry null quantile/sample count. Legacy advice
+also requires a null cutoff. Valid unknown advice
 may retain complete local reproduction when only the budget identity is incompatible.
 Malformed enum containers, including JSON
 arrays and objects, produce the fixed safe error before output opens. Malformed

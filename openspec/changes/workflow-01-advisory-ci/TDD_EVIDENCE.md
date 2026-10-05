@@ -530,3 +530,77 @@ are host/local proofs: all ten native analyzers remain unsupported on macOS and
 fresh exact-head Linux coverage/provider completion remains required. This final
 evidence-only paragraph is separately checked before staging; source proofs retain
 their generation 57 binding rather than claiming tests were rerun after prose.
+
+
+## Operation receipt and summary scope correction — 2026-10-05
+
+Current-head CODE review `5413700381` identified two genuine P2 defects on
+`4535f4e`: Settlement receipt resolution omitted the persisted operation primary
+key, and the summary accepted missing/legacy scopes for numeric computation advice.
+Independent family review additionally reproduced contradictory USD/EUR scope and
+an original-ID retry authorized by a cloned receipt. The maintainer's explicit
+until-fixed approval authorizes this renewed family plan; prior counters and escapes
+remain retained.
+
+Before implementation, the new 26-case receipt/scope selection ran serially:
+22 failed and four passed in 1.84 seconds. The four already-passing cases reject
+missing numeric cutoffs, so they are controls rather than new red evidence. Changes
+bind computed payload operation IDs to receipt keys and directly to retry requests;
+Quotes retain their existing request binding without inventing an operation field.
+Computation summaries require typed scope/cutoff and operation-appropriate
+quantile/sample fields; numeric scope economic identity must match comparison.
+The summary fixture now reflects real producer scope/cutoff/sample shape; its
+existing missing-cutoff negative sets absence explicitly. An initial green run
+caught that fixture assumption (407 passes/two failures), retained as test-author
+correction evidence rather than a product defect.
+
+The previous head's Linux run `37301916602` passed both Python jobs and all ten
+native analyzers with exactly 2,075 unique complete test cases in each artifact.
+Those results demonstrate the parallel full-suite timeout fix, not acceptance of
+this new source diff. Fresh full gates, independent closure and current-head Linux
+and required provider reviews remain necessary. No schema migration, analyzer,
+test-selection/deadline waiver, provider collection or paid infrastructure is added.
+
+
+Independent closure of the operation-specific validator caught a new legacy-cutoff
+regression before publication: unlike actual legacy producer output (null cutoff),
+non-null mappings passed and scalar/container values escaped via AttributeError.
+A ten-case real console regression first produced eight failures/two valid-null
+passes in 0.80 seconds. Legacy cutoff now requires null before any rendering or
+summary destination access. This remains a recorded family escape in batch eight;
+no prior investigation or counter is erased. The first full local run passed
+2,101 tests in 53.72 seconds, wheel checks, dependency audit and strict validation;
+all macOS native analyzers remained unsupported/incomplete. These pre-repair
+results are retained, and final post-repair checks are required.
+
+
+The post-legacy-repair full local suite passed 2,111 tests (all selected), wheel,
+dependency audit and strict validation. Independent exact-tool Radon 6.0.1
+inspection then measured compute_settlement at CC16, above signed module 0.50.1's
+error boundary (>15). Before publication the retry validation was extracted into
+one focused helper retaining the same transaction, request, typed record, operation
+ID and receipt-membership checks. This is a recorded native-maintainability finding,
+not a threshold waiver; extracted-helper controls and fresh full gates are required.
+
+
+Final extracted-helper verification passed all 2,111 tests in 55.93 seconds, wheel
+checks, dependency audit (no known vulnerabilities), all eleven strict OpenSpec
+items. An overlong SQL test literal still failed lint in the full and staged gates;
+its adjacent-string wrap preserves the same SQL and is checked before publication.
+Independent closure passed 250 affected
+tests, eight documentation/generated-index/metadata/workflow checks across both
+explicit bases, actual omission controls and unchanged archive fingerprints. Exact
+Radon 6.0.1 measurements are computation CC13 and retry helper CC6; signed native
+Linux execution and fresh provider reviews remain pending. All ten macOS native
+analyzers remain unsupported/incomplete; publication is needed to obtain supported
+Linux evidence under the maintainer's explicit until-fixed authorization.
+
+The retained full/staged lint failures are not passing gates. Final reruns after
+the test-literal wrap must confirm lint and exact staged contents; no line-limit
+exception or analyzer waiver was introduced.
+
+After the literal wrap, the final explicit-base make check passed lint, hygiene,
+types, docs/index/metadata/workflow, all 2,111 tests in 54.28 seconds, both wheel
+checks, dependency audit and all eleven strict OpenSpec items. Its aggregate exit
+remains two solely for the ten unsupported macOS native analyzers. Supported Linux
+and required provider reviews remain mandatory after publication.

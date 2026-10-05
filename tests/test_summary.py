@@ -19,11 +19,19 @@ def result(label):
         },
         "comparison": None,
         "declared": [],
-        "scope": None,
-        "cutoff": None,
+        "scope": {
+            "repository_id": "repo",
+            "economic": {
+                "economic_kind": "monetary",
+                "unit": "USD",
+                "basis": "billed",
+                "currency": "USD",
+            },
+        },
+        "cutoff": {"store_id": "local", "at": "2026-10-05T00:00:00Z", "sequence": 1},
         "provenance": "producer_assertion; provider_support_not_verified",
         "completeness": "unknown",
-        "sample_count": None,
+        "sample_count": 0,
         "quantile": "p90",
         "reasons": [label],
     }
@@ -140,6 +148,7 @@ def verified_result(kind, status):
         provenance="locally_reproduced_synthetic; provider_support_not_verified",
         completeness="complete",
         quantile="p90" if kind == "quote" else None,
+        sample_count=0 if kind == "quote" else None,
         reasons=[],
     )
     return value
@@ -163,6 +172,9 @@ def test_summary_accepts_legacy_unknown():
     value = result("legacy")
     value["record"]["kind"] = "settlement"
     value["quantile"] = None
+    value["sample_count"] = None
+    value["scope"] = "legacy"
+    value["cutoff"] = None
     assert render_summary(value)
 
 
@@ -308,6 +320,8 @@ def test_summary_impossible_authority_combinations(tmp_path, claim, existing):
         value["completeness"] = "complete"
     else:
         value["provenance"] = "locally_reproduced_synthetic; provider_support_not_verified"
+    if claim == "local_missing_cutoff":
+        value["cutoff"] = None
     if claim == "legacy_local":
         value["record"]["kind"] = "settlement"
         value["cutoff"] = verified_result("quote", "within_budget")["cutoff"]
@@ -359,3 +373,94 @@ def test_summary_real_unpriced_quote(tmp_path):
     output = evaluate(store, record)
     assert output["status"] == "unknown" and output["completeness"] == "unknown"
     assert render_summary(output)
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize(
+    "mutation", ["missing", "legacy", "economic", "cutoff", "quantile", "sample"]
+)
+@pytest.mark.parametrize("existing", [False, True])
+def test_summary_computation_scope_contract(tmp_path, kind, mutation, existing):
+    import os
+    import subprocess
+    import sys
+
+    from changecost.summary import render_summary
+
+    value = verified_result(kind, "within_budget")
+    assert render_summary(value)
+    if mutation == "missing":
+        value["scope"] = None
+    elif mutation == "legacy":
+        value["scope"] = "legacy"
+    elif mutation == "economic":
+        value["scope"]["economic"]["currency"] = "EUR"
+        value["scope"]["economic"]["unit"] = "EUR"
+    elif mutation == "cutoff":
+        value["cutoff"] = None
+    elif mutation == "quantile":
+        value["quantile"] = None if kind == "quote" else "p90"
+    else:
+        value["sample_count"] = None if kind == "quote" else 0
+    payload = tmp_path / "result.json"
+    payload.write_text(json.dumps(value))
+    destination = tmp_path / "summary"
+    original = b"Earlier summary: unchanged\n"
+    if existing:
+        destination.write_bytes(original)
+    rejected = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+    )
+    assert rejected.returncode == 2
+    assert rejected.stdout == ""
+    assert rejected.stderr == "cannot render or write advisory summary\n"
+    assert destination.read_bytes() == original if existing else not destination.exists()
+
+
+@pytest.mark.parametrize(
+    "cutoff",
+    [
+        None,
+        "private-cutoff",
+        [],
+        True,
+        {"store_id": "local", "at": "2026-10-05T00:00:00Z", "sequence": 1},
+    ],
+)
+@pytest.mark.parametrize("existing", [False, True])
+def test_summary_legacy_cutoff_contract(tmp_path, cutoff, existing):
+    import os
+    import subprocess
+    import sys
+
+    value = result("legacy")
+    value.update(
+        record={"kind": "settlement", "record_id": "legacy"},
+        scope="legacy",
+        sample_count=None,
+        quantile=None,
+        cutoff=cutoff,
+    )
+    payload = tmp_path / "result.json"
+    payload.write_text(json.dumps(value))
+    destination = tmp_path / "summary"
+    original = b"Earlier summary unchanged\n"
+    if existing:
+        destination.write_bytes(original)
+    checked = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+    )
+    assert checked.stdout == ""
+    if cutoff is None:
+        assert checked.returncode == 0 and checked.stderr == ""
+        assert destination.exists()
+    else:
+        assert checked.returncode == 2
+        assert checked.stderr == "cannot render or write advisory summary\n"
+        assert destination.read_bytes() == original if existing else not destination.exists()

@@ -287,14 +287,16 @@ def computation_refs(connection, records) -> set:
     from changecost.quotes import request_for
 
     result = set()
-    for request, record_id in connection.execute("SELECT request,record_id FROM computations"):
+    for operation_id, request, record_id in connection.execute(
+        "SELECT operation_id,request,record_id FROM computations"
+    ):
         settlement = records.get(("computed_settlement", record_id))
         if isinstance(settlement, ComputedSettlement):
             change = lookup(records, settlement.change, "change")
             if not isinstance(change, Change):
                 raise ContractError("expected Change")
             expected = settlement.scope.model_dump_json() + ":" + change.change_id
-            if request == expected:
+            if request == expected and operation_id == settlement.operation_id:
                 result.add(("computed_settlement", record_id))
         quote = records.get(("quote", record_id))
         if isinstance(quote, Quote) and quote.estimation is not None:

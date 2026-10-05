@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Bind computed Settlement receipt and retry operation IDs; reject missing or
+  contradictory computation scopes and wrong-kind summary details before writing.
+
 - Bind original local computation cutoffs to each result's own insertion sequence
   and availability time across advice and historical inspection. Reject unsupported
   summary authority values and impossible provenance/completeness combinations.

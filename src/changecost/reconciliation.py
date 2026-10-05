@@ -494,6 +494,23 @@ def computation_details(records, change, scope, index=None, compact=False) -> di
     )
 
 
+def settlement_retry(connection, records, operation_id, request):
+    existing = connection.execute(
+        "SELECT request,record_id FROM computations WHERE operation_id=?", (operation_id,)
+    ).fetchone()
+    if existing is None:
+        return None
+    record = records.get(("computed_settlement", existing[1]))
+    if (
+        existing[0] != request
+        or not isinstance(record, ComputedSettlement)
+        or record.operation_id != operation_id
+        or key(reference(record)) not in computation_refs(connection, records)
+    ):
+        raise ContractError("operation ID already used for a different request")
+    return record
+
+
 def compute_settlement(store: Store, change_id: str, scope: EconomicScope, operation_id: str):
     from changecost.models import identifier
 
@@ -502,17 +519,10 @@ def compute_settlement(store: Store, change_id: str, scope: EconomicScope, opera
     identifier(change_id)
     request = scope.model_dump_json() + ":" + change_id
     with store.transaction() as connection:
-        existing = connection.execute(
-            "SELECT request,record_id FROM computations WHERE operation_id=?", (operation_id,)
-        ).fetchone()
         all_records = read_records(connection)
-        if existing:
-            if existing[0] != request or (
-                "computed_settlement",
-                existing[1],
-            ) not in computation_refs(connection, all_records):
-                raise ContractError("operation ID already used for a different request")
-            return all_records[("computed_settlement", existing[1])]
+        existing = settlement_retry(connection, all_records, operation_id, request)
+        if existing is not None:
+            return existing
         store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
         now = timestamp(store.clock())
         if last_at is not None and timestamp(last_at) > now:

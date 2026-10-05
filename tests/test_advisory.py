@@ -640,3 +640,29 @@ def test_corrupt_result_availability_safe_cli(tmp_path, kind, operation, format,
     assert checked.stderr
     assert "private-corrupt" not in checked.stderr and "Traceback" not in checked.stderr
     assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("clone_receipt", [False, True])
+def test_settlement_operation_receipt_identity(tmp_path, clone_receipt):
+    from changecost.serialization import ContractError
+    from tests.test_reconciliation import compute
+
+    store, record = settlement(tmp_path)
+    assert evaluate(store, record)["status"] == "within_budget"
+    assert compute(store) == record
+    altered = tamper(store, record, operation_id="different-operation")
+    if clone_receipt:
+        with store.connect() as connection:
+            connection.execute(
+                "INSERT INTO computations SELECT ?,request,record_id FROM computations "
+                "WHERE operation_id=?",
+                (altered.operation_id, record.operation_id),
+            )
+    before = store.path.read_bytes()
+    if not clone_receipt:
+        output = evaluate(store, altered)
+        assert output["status"] == "unknown" and output["comparison"] is None
+        assert not inspect_selected_computation(store, altered)["local_computation"]
+    with pytest.raises(ContractError):
+        compute(store)
+    assert store.path.read_bytes() == before

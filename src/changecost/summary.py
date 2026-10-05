@@ -10,7 +10,7 @@ from itertools import chain
 from pathlib import Path
 
 from changecost.advisory import compare
-from changecost.models import Component, Cutoff
+from changecost.models import Component, Cutoff, EconomicScope
 from changecost.serialization import reject_constant, unique_members
 
 LIMIT = 65_536
@@ -64,19 +64,20 @@ def validate_authority(value):
 def validate_details(value):
     validate_authority(value)
     sample = value.get("sample_count")
-    if sample is not None and (type(sample) is not int or sample < 0):
-        raise ValueError("invalid sample count")
-    if value.get("quantile") not in (None, "p50", "p90"):
-        raise ValueError("invalid quantile")
-    if value.get("cutoff") is not None:
-        Cutoff.model_validate(value["cutoff"])
+    kind = value["record"]["kind"]
+    if kind == "quote":
+        if type(sample) is not int or sample < 0 or value.get("quantile") not in ("p50", "p90"):
+            raise ValueError("invalid Quote details")
+    elif sample is not None or value.get("quantile") is not None:
+        raise ValueError("invalid Settlement details")
     scope = value.get("scope")
-    if scope is not None and not isinstance(scope, (str, dict)):
-        raise ValueError("invalid scope")
-    if isinstance(scope, dict):
-        from changecost.models import EconomicScope
-
+    if kind != "settlement":
+        if not isinstance(scope, dict) or value.get("cutoff") is None:
+            raise ValueError("missing computation scope or cutoff")
         EconomicScope.model_validate(scope)
+        Cutoff.model_validate(value["cutoff"])
+    elif value.get("cutoff") is not None or (scope is not None and not isinstance(scope, str)):
+        raise ValueError("invalid legacy scope")
 
 
 def validate_result(value):
@@ -124,6 +125,8 @@ def validate_comparison(value, budget):
             budget.amount is None
             or checked.amount is None
             or checked.model_dump(exclude={"amount"}) != budget.model_dump(exclude={"amount"})
+            or checked.model_dump(exclude={"amount"})
+            != EconomicScope.model_validate(value["scope"]).economic.model_dump()
             or compare(checked.amount, budget.amount) != value["status"]
         ):
             raise ValueError("invalid comparison")

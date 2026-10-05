@@ -112,7 +112,9 @@ committed local metadata timestamp, even when the wall clock has advanced; equal
 and earlier historical cutoffs remain eligible. The same boundary applies to Quote
 and computed Settlement explain. A populated store missing its committed metadata
 timestamp is invalid for check; inspection cannot certify replay without that timestamp.
-Settlement reproduction includes
+Computed Settlement receipts also bind the payload operation ID to the local receipt
+primary key. Retrying an operation rejects a mismatched stored operation ID even
+if another receipt references that result. Settlement reproduction includes
 scope, subtotals, supporting inputs/exclusions, reasons and completeness; explain's
 `inputs_available` alone cannot certify a value. Later evidence never replaces that
 cutoff. Imported/legacy/artifact-only results remain unknown producer claims, even

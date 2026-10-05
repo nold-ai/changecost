@@ -303,3 +303,15 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **GIVEN** macOS required analyzers report unsupported_controller_platform
 - **WHEN** verification is handed off
 - **THEN** the evidence remains incomplete until fresh supported-Linux assurance, without reusing an older feature/archive result as current certification.
+
+#### Scenario: Settlement receipt binds the operation identity
+
+- **GIVEN** a local computed Settlement has a receipt but its payload operation ID differs from that receipt's primary key
+- **WHEN** check or historical inspection evaluates it, or the original operation is retried
+- **THEN** check returns unknown without a verified value, inspection cannot certify local replay, and retry rejects the inconsistent operation without writing; a second receipt for the altered ID cannot authorize retry under the original ID.
+
+#### Scenario: Summary preserves operation-specific scope and fields
+
+- **GIVEN** a check-v1 Quote or computed Settlement result
+- **WHEN** the summary helper validates it
+- **THEN** its scope is a valid EconomicScope mapping and its cutoff is present; Quotes declare p50/p90 and a nonnegative integer sample count, while computed and legacy Settlements have null quantile/sample count; legacy cutoff is null. Numeric comparison economic identity matches the computation scope. Missing, legacy-string or contradictory numeric scopes and wrong-kind fields cause a safe exit two before any summary write; valid incompatible-budget unknown and unpriced results remain accepted.
