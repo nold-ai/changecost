@@ -380,6 +380,19 @@ turn an unavailable analyzer into a pass or disable the CI gate.
 
 ## Hosted capsule prerequisite
 
+The review-module installation step sets `SPECFACT_REGISTRY_INDEX_URL` to the
+[official registry at da006b47](https://github.com/nold-ai/specfact-cli-modules/blob/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json)
+(checked 2026-10-06). The rolling index replaced its 0.50.1 entry with 0.51.0;
+the existing version argument then failed before analysis with “not found in
+registry” in PR #34 run 37372912712, attempt 3. Pinning the registry restores the
+exact signed 0.50.1 release through SpecFact CLI 0.55.4's supported registry
+override. Relative bundle URLs and recursive dependencies use that same commit;
+the native installer retains checksum, signature, publisher and compatibility
+validation. No installation bypass or module modification is used. This repairs
+bootstrap availability; it does not explain or resolve the separate native
+coverage timeout. Rollback removes the registry pin, which leaves older-release
+installation dependent on the rolling index again.
+
 CI pins Ubuntu 24.04 and assigns a fresh job-local capsule cache under RUNNER_TEMP.
 Before review, it loads an AppArmor profile granting `userns` to that cache's
 `**/opt/specfact/bin/bwrap-static` launcher. Installation and all analyzers remain

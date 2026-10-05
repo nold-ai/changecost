@@ -1101,3 +1101,50 @@ Native coverage and provider acceptance remain incomplete, with no deadline,
 analyzer, threshold, dependency or paid-service change.
 The accepted Quote archive retains its original bytes and historical evidence.
 Rollback restores only this fixture/documentation diff; no version change is needed.
+
+## PR #34 immutable review-module installation — 2026-10-06
+
+At b62bfa3, run 37372912712 attempt 2 executed all 2,779 host tests on both
+matrix versions. The Python 3.11 job passed all ten native analyzers; the 3.13
+job returned UNKNOWN only for native coverage at its 300-second outer timeout.
+Both admitted native runtimes reported CPython 3.13.11 with identical packages
+and member graphs. The passing native report records all 2,779 collected/called
+tests; neither report supplies native phase timings. The timeout cause remains
+unknown and no historical pass supplies the failed job's evidence.
+
+One independently scoped unchanged-head repeat failed earlier: attempt 3 job
+112000657419 returned “not found in registry” for the unchanged 0.50.1 install
+command. Repository checking was skipped, so artifacts retained from attempt 2
+cannot certify attempt 3. The official rolling registry now selects 0.51.0.
+Its verified signed package retains the same outer deadline and supplies no
+demonstrated remedy for this failure; no upgrade was made.
+
+The CLI's supported `SPECFACT_REGISTRY_INDEX_URL` override now selects official
+commit da006b47af16a6f6ab68452eb01f0ba5edc8f451, containing the exact 0.50.1
+tarball with SHA-256
+`61489b8b3e9596082f738d093987fe0427815b2a6148cfae678a996878d117e7`.
+The native verifier accepted its required checksum and signature. The same
+immutable directory supplies recursive module bundles. Existing install arguments,
+tool versions, signature enforcement, tests, analyzers and deadlines are preserved.
+Independent upfront review inspected the complete resolver/dependency/trust path.
+CONTRIBUTING.md was explicitly added to the combined 97-path scope before edits;
+existing review counters and failure histories were retained.
+
+The actual canonical CLI install passed with exit 0 in 2.17 seconds in a fresh
+temporary project, using a byte-identical isolated copy of CLI 0.55.4 so dependency
+installation could not alter the contributor tool environment. It installed review
+0.50.1, codebase 0.41.16, project 0.41.27 and requirements 0.5.1. Every registry
+identity, required checksum/signature and recomputed install checksum matched;
+the review payload exactly matched the historical signed package. No downloaded
+review or analyzer was executed for this installation proof. Frozen epoch 133
+passed all 2,779 tests in 38.74 seconds, wheel checks, dependency audit, every
+other host-supported gate and all 11 strict OpenSpec items. The aggregate exit 2
+remains incomplete solely for ten unsupported macOS native analyzers. Initial
+manifest and sandbox-access failures remain recorded; the successful host checks
+used the corrected existing-file manifest and required tool/network access with
+unchanged source bytes. Independent closure found no defects in the six changed
+paths and confirmed all 97 typed inputs and unchanged archive bytes.
+This correction repairs bootstrap reproducibility only. Native coverage
+and current provider acceptance remain incomplete; the accepted Quote archive
+is unchanged. Rollback restores this registry/documentation correction without
+discarding earlier implementation, archive or failure evidence.

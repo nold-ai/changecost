@@ -137,7 +137,17 @@ Follow [README setup](README.md#work-on-the-repository). Install actionlint 1.7.
 (for example `go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12`) and
 put its binary on PATH. Install separate review tooling with
 `uv tool install specfact-cli==0.55.4`, then
-`specfact module install nold-ai/specfact-code-review --version 0.50.1`.
+use the immutable official registry with the native installer:
+
+```sh
+SPECFACT_REGISTRY_INDEX_URL=https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json \
+  specfact module install nold-ai/specfact-code-review --version 0.50.1
+```
+
+The rolling registry lists the latest module version, so the version argument
+alone does not preserve installation of an older release. This source pin also
+resolves recursive module bundles from the same official commit; the installer
+still verifies their checksums, signatures and compatibility.
 SpecFact remains outside package/runtime dependencies. Linux x86-64 is required
 by its current analyzer capsules; missing coverage blocks full validation.
 

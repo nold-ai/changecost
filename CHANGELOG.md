@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Pin the official review-module registry to an immutable commit so native signed
+  0.50.1 installation survives later registry releases, including its dependencies.
+
 - Reuse one immutable post-computation store snapshot per Quote growth-test fixture,
   retaining every candidate assertion and fixture size while avoiding repeated reads.
 
