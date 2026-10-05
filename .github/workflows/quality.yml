@@ -114,6 +114,11 @@ jobs:
         env:
           UV_PYTHON: ${{ matrix.python }}
         run: /usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check
+      - name: Collect privacy-safe runtime metadata
+        if: always()
+        env:
+          UV_PYTHON: ${{ matrix.python }}
+        run: .venv/bin/python -m quality.runtime_diagnostics .specfact/code-review.json "$HOME/.cache/specfact/code-review/project-runtimes-v2" .specfact/runtime-diagnostic.json
       - name: Preserve native review evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -122,6 +127,7 @@ jobs:
           path: |
             .specfact/code-review*.json
             .specfact/review-binding.json
+            .specfact/runtime-diagnostic.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 7

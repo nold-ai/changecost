@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Retain bounded privacy-safe, identity-matched project-runtime metadata alongside
+  native CI evidence to diagnose capsule timeouts without changing analyzers,
+  deadlines, test selection or quality requirements.
+
 - Simplify advisory request/result construction and split the fresh-store workflow
   proof into lifecycle, advice and portable-roundtrip phases to satisfy native
   maintainability checks while preserving serialized results and assertions.

@@ -598,3 +598,31 @@ is neither a native pass nor a reason to attempt local capsule execution repeate
 
 Contributor review can use the [behavioral evidence pilot](behavioral-evidence.md) for bounded
 lifecycle controls and content-bound delta review. Final required gates remain mandatory.
+
+## Privacy-safe runtime timeout diagnostics
+
+The existing Repository quality workflow collects a small metadata diagnostic
+before its always-run evidence upload, including when native review fails. It
+matches the report's supported `project-runtime-layer-v2` identity to one bounded,
+one-level cache descriptor and verifies the canonical descriptor digest/context.
+The collector reads metadata only, follows no linked ancestors/files, rejects
+hardlinked/nonregular/oversized/ambiguous metadata and rejects duplicate/nonfinite
+JSON. Descriptor content is not an authenticated host attestation.
+
+The diagnostic allowlists only runtime/project/worker identities, fixed local-build
+provenance, bounded ASCII Python markers, package names/versions/requested flags,
+and the pytest-observe member graph's package names/versions/dependency names.
+It excludes project/payload/source metadata, URLs, raw requirements, environment
+variables, arguments, logs, imports and executables. Inputs are capped at 16 MiB,
+cache candidates at 256, package/dependency lists at 1,000 and final JSON at 65,536
+bytes. Output is exclusive and no-follow. Invalid/unavailable metadata or write
+failure emits a safe nonzero diagnostic; evidence upload still runs and cannot
+mask the original quality failure. Successful collection certifies only the
+metadata match, never native analysis or capsule performance.
+
+This was added after a supported-Python-3.13 capsule coverage timeout persisted
+while Python 3.11 completed. It supplies dependency/runtime evidence for diagnosis;
+no signed vendor patch, analyzer timeout, test selection, quality threshold or
+required member was changed. Native assurance stays incomplete until actual
+current-head full reports pass. Revert this collector/workflow addition to roll
+back metadata retention, preserving original failure evidence.

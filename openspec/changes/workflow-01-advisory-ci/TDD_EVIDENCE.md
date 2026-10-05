@@ -267,3 +267,31 @@ head. Independent affected closure, refreshed complete local/staged checks and a
 new current-head supported-Linux matrix/native report remain required before
 publication acceptance and provider review. No PR was created while these native
 findings remained unresolved.
+
+## Runtime metadata diagnostic boundary — 2026-10-05
+
+The corrected supported-Linux run #37245363690 removed all four blocking
+maintainability findings. Python 3.11 completed all ten native members; Python 3.13
+again reached the unchanged sealed coverage launch deadline. Both host suites,
+wheel proofs and strict specs pass; this mixed result remains incomplete native
+assurance. A renewed independent obligation review authorized a bounded metadata
+collector before retrying that boundary, not a signed-vendor patch or timeout/
+test-selection/quality waiver.
+
+The development-only collector matches the report runtime identity to exactly one
+canonical-hash/context-verified cache descriptor through no-follow directory/file
+descriptors. It uploads only bounded allowlisted package/version/requested facts,
+fixed Python markers and pytest-observe dependency names, excluding URLs, raw
+requirements, project/payload/source data, arguments, logs and executable bytes.
+Always-run diagnostic/upload steps preserve the original gate failure; collector
+errors remain nonzero. Its detailed limits and rollback are in the gate guide.
+
+Initial 16 missing-capability cases failed before implementation and then passed.
+Those writer reports ran before the new input binding was captured and are retained
+explicitly **unbound**; they are diagnostic chronology, not current-head acceptance.
+Expanded meaningful tests cover privacy canaries, canonical/context mismatches,
+duplicate/nonfinite JSON, linked/oversized/nonregular metadata, cache ambiguity,
+parent replacement, byte bounds and exclusive/write-error output. A real-target
+canonical-identity bypass must fail the same detector while the repaired boundary
+passes. Fresh binding, independent closure and supported-Linux execution remain
+required; successful collection alone cannot establish native assurance.
