@@ -315,3 +315,22 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **GIVEN** a check-v1 Quote or computed Settlement result
 - **WHEN** the summary helper validates it
 - **THEN** its scope is a valid EconomicScope mapping and its cutoff is present; Quotes declare p50/p90 and a nonnegative integer sample count, while computed and legacy Settlements have null quantile/sample count; legacy cutoff is null. Numeric comparison economic identity matches the computation scope. Missing, legacy-string or contradictory numeric scopes and wrong-kind fields cause a safe exit two before any summary write; valid incompatible-budget unknown and unpriced results remain accepted.
+
+
+#### Scenario: Generated provenance matches the original cutoff
+
+- **GIVEN** a locally receipted Quote or computed Settlement
+- **WHEN** its origin store or recorded/effective timestamp differs from the supported producer's original cutoff
+- **THEN** check returns unknown with no verified value and historical inspection cannot certify replay, without changing the store. Origin equals cutoff store and both generated timestamps equal cutoff time; opaque record IDs remain unrestricted.
+
+#### Scenario: Reproduce a Settlement's original predecessor
+
+- **GIVEN** a later locally computed Settlement with available local predecessors for the same Change at its original cutoff
+- **WHEN** its previous reference and ledger identity are coherently changed to re-root the revision while leaving numeric details unchanged
+- **THEN** check returns unknown without a verified value or store writes. Replay reproduces the producer's predecessor selection across economic scopes at that cutoff, retains the predecessor's ledger identity, and ignores later computations; the first ledger's opaque ID needs no independent authentication.
+
+#### Scenario: Numeric summary agrees with selected declarations
+
+- **GIVEN** a numeric check-v1 result
+- **WHEN** the selected declaration is absent, ambiguous, incomplete or disagrees with the verified comparison
+- **THEN** summary validation exits two safely before destination access. Quotes carry exactly two ordered p50/p90 components with the same scope identity, paired null or finite amounts and p50 no greater than p90; numeric advice requires a positive sample count and comparison equal to the selected quantile. Computed Settlements require exactly one scope-matching subtotal, explicit unknown_count zero and a nonnull matching amount. Decimal equality is exact without conversion or rounding; observed zero and minimum-one Quotes remain valid. Unknown unpriced/imported/legacy results retain their operation-specific declarations.

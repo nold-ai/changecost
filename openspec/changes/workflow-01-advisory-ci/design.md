@@ -168,3 +168,14 @@ original stores/backups, accepted archive and evidence.
 The maintainer requested implementation, independent/local review and combined PR
 delivery on 2026-10-05. Historical preparation remains unchanged evidence; current
 red/green outcomes are recorded separately in [TDD evidence](TDD_EVIDENCE.md).
+
+
+## Review correction: producer headers, predecessors and selected values
+
+Supported generated headers bind origin and both generated timestamps to their
+original cutoff through the existing shared eligibility guard. Advisory Settlement
+replay also reconstructs the receipted same-Change predecessor at that cutoff,
+across scopes, retaining its ledger identity without authenticating opaque first IDs.
+Summary validation binds numeric comparison to the selected p50/p90 pair or single
+complete scope subtotal using exact Decimal equality. Unknown producer results and
+minimum-one Quotes remain supported; no persisted schema or budget policy changes.

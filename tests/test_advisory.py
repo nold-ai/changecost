@@ -681,3 +681,72 @@ def test_settlement_operation_receipt_identity(tmp_path, clone_receipt):
     with pytest.raises(ContractError):
         compute(store)
     assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("field", ["origin_store_id", "recorded_at", "effective_at"])
+@pytest.mark.parametrize("output_format", ["json", "human"])
+def test_generated_header_replay_authority(tmp_path, kind, field, output_format):
+    from datetime import timedelta
+
+    store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
+    assert evaluate(store, record)["comparison"] is not None
+    changed = tamper(
+        store,
+        record,
+        **{
+            field: "foreign"
+            if field == "origin_store_id"
+            else record.cutoff.at - timedelta(seconds=1)
+        },
+    )
+    before = store.path.read_bytes()
+    output = runner.invoke(
+        app, ["--db", str(store.path), "--format", output_format, *check_args(changed)]
+    )
+    assert output.exit_code == 0, output.output
+    if output_format == "json":
+        value = json.loads(output.stdout)
+        assert value["status"] == "unknown" and value["comparison"] is None
+    else:
+        assert "unknown" in output.stdout
+    inspected = inspect_selected_computation(store, changed)
+    assert inspected.get("replay_eligibility") == "replay_unavailable"
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("different_scope", [False, True])
+def test_settlement_replay_rejects_coherent_rerooting(tmp_path, different_scope):
+    store, first = settlement(tmp_path)
+    from changecost.reconciliation import compute_settlement
+
+    second_scope = scope()
+    if different_scope:
+        second_scope = second_scope.model_copy(
+            update={"economic": second_scope.economic.model_copy(update={"basis": "other"})}
+        )
+    # Scope changes do not create a different revision chain for the same Change.
+    second = compute_settlement(store, "change", second_scope, "second")
+    assert second.previous is not None and second.previous.record_id == first.record_id
+    if not different_scope:
+        assert evaluate(store, second)["comparison"] is not None
+    changed = tamper(store, second, previous=None, ledger_id="coherently-new-ledger")
+    before = store.path.read_bytes()
+    result = evaluate(store, changed)
+    assert result["status"] == "unknown" and result["comparison"] is None
+    assert "historical_inputs_unavailable_or_result_mismatch" in result["reasons"]
+    assert store.path.read_bytes() == before
+
+
+def test_settlement_predecessor_replay_ignores_later_computations(tmp_path):
+    from tests.test_reconciliation import compute
+
+    store, first = settlement(tmp_path)
+    second = compute(store, op="second")
+    third = compute(store, op="third")
+    before = store.path.read_bytes()
+    assert third.previous is not None
+    assert third.previous.record_id == second.record_id
+    for record in (first, second, third):
+        assert evaluate(store, record)["comparison"] is not None
+    assert store.path.read_bytes() == before

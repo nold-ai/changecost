@@ -666,3 +666,46 @@ The make aggregate remains two solely because all ten native analyzers are
 unsupported on macOS. Exact staged closure and fresh supported-Linux/current-head
 provider completion remain mandatory; the performance candidate is not certified
 by host diagnostics or these local gates.
+
+
+## Producer/declaration correction (2026-10-05, Europe/Berlin)
+
+Current 424fa6f Linux run 37308660635 passed all ten native analyzers in both
+Python jobs and all 2,125 unique coverage cases. CodeRabbit completed its full
+review without actionable comments and Codex security reported none. Codex code
+found two genuine P2s: generated provenance and selected declaration consistency.
+Independent upfront family review also reproduced coherent re-rooting of a later
+Settlement, which changes previous and ledger identity together while preserving
+numeric details. All three are collected in correction batch ten.
+
+Specs were revised before tests. Initial tests accidentally used a nonexistent
+inspection result key and placed an economic basis at the scope's top level; those
+oracles were corrected before certification. The final actual red run against
+original 424fa6f production bytes failed 45 cases, passed five and deselected 264
+in 2.40 seconds. Those failures include both JSON/human generated headers, same
+and different economic scope re-rooting, absent/existing summary destinations,
+missing/mismatched/ambiguous/incomplete declarations and incoherent Quote pairs.
+
+The minimal correction uses the shared generated-header eligibility guard,
+historical receipted same-Change predecessor selection and operation-specific
+summary declarations. Opaque first ledger IDs remain unrestricted; no migration
+or generic authentication is introduced. The corrected advisory/summary suite
+passed all 314 cases in 11.62 seconds, including historical predecessors unchanged
+by later computations, exact Decimal equality/zero, minimum-one samples and
+existing producer/imported/legacy/unpriced controls. The original failed runs are
+retained as diagnostic history, not substituted for genuine red evidence.
+Fresh full checks, independent current-input closure, staged verification and
+new supported-Linux/provider evidence remain required for this correction.
+
+
+First full correction checks passed 2,175 tests in 52.61 seconds, types, lint,
+documentation/index/metadata/workflow and all eleven strict items. The restricted
+host prevented hygiene read/write access to skill files and build/audit network
+access; these are incomplete, not passes. Preflight additionally caught chained
+elif nesting nine in a new fault-injection test helper; mutually exclusive branches
+were flattened before supported native verification. Runtime metrics stayed within
+policy (maximum complexity fifteen, advisory warning). Independent epoch78 review
+passed 314 affected tests in 6.58 seconds, eight documentation/config checks,
+selected strict validation and five real guard-omission controls, with no runtime
+defect found. It remains historical partial closure until the final frozen helper
+correction, full gates and hosted reviews are bound.

@@ -71,13 +71,33 @@ def artifact_records(path):
     return records
 
 
+def settlement_predecessor_reproduced(connection, snapshot, record):
+    local_ids = computation_refs(connection, snapshot)
+    local = [
+        candidate
+        for candidate in snapshot.values()
+        if isinstance(candidate, ComputedSettlement)
+        and key(reference(candidate)) in local_ids
+        and candidate.change == record.change
+    ]
+    parents = {
+        candidate.previous.record_id for candidate in local if candidate.previous is not None
+    }
+    previous = next((candidate for candidate in local if candidate.record_id not in parents), None)
+    if previous is None:
+        return record.previous is None
+    return record.previous == reference(previous) and record.ledger_id == previous.ledger_id
+
+
 def settlement_reproduced(connection, records, record):
     snapshot = snapshot_records(connection, record.cutoff, records)
     if not all(key(ref) in snapshot for ref in [record.change, *record.inputs]):
         return False
     details = computation_details(snapshot, snapshot[key(record.change)], record.scope)
     # The evaluator returns the complete deterministic evidence projection, without new IDs.
-    return all(details[name] == getattr(record, name) for name in MATERIAL)
+    return settlement_predecessor_reproduced(connection, snapshot, record) and all(
+        details[name] == getattr(record, name) for name in MATERIAL
+    )
 
 
 def metadata_snapshot(connection, now):

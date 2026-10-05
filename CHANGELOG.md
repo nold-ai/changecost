@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Bind advisory replay to generated origin/timestamps and the original Settlement
+  predecessor; reject CI numeric summaries that contradict selected declarations.
+
 - Run full Pylint analysis with two supported local processes, retaining all
   source files, required checkers and the sealed 30-second deadline.
 

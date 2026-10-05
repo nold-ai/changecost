@@ -42,7 +42,14 @@ check-producer values or completeness outside
 complete/unknown, fail safely. Producer assertions have unknown completeness;
 local reproduction requires a computation kind and a cutoff. Quote and computed
 Settlement results require an EconomicScope mapping; numeric comparison identity
-must match that scope. Quotes require p50/p90 and a nonnegative integer sample count;
+must match that scope and the selected declared amount using exact Decimal equality.
+Quotes carry exactly two ordered p50/p90 declarations with matching scope identity,
+paired null or finite amounts and p50 <= p90. Numeric advice requires positive
+samples (minimum one is supported) and the selected quantile's amount. Computed
+Settlements require exactly one scope-matching subtotal with explicit unknown_count
+zero and a nonnull matching amount; observed zero remains valid. Missing, duplicate,
+incomplete or contradictory declarations fail before opening the destination.
+Quotes require p50/p90 and a nonnegative integer sample count;
 computed and legacy Settlements carry null quantile/sample count. Legacy advice
 also requires a null cutoff. Valid unknown advice
 may retain complete local reproduction when only the budget identity is incompatible.

@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import unicodedata
+from decimal import Decimal
 from itertools import chain
 from pathlib import Path
 
@@ -103,7 +104,52 @@ def validate_result(value):
         raise ValueError("invalid declarations")
     for component in declared:
         validate_component(component)
+    if record["kind"] == "quote":
+        validate_quote_declarations(value)
     validate_comparison(value, budget)
+
+
+def validate_quote_declarations(value):
+    declared = value["declared"]
+    if len(declared) != 2:
+        raise ValueError("invalid Quote declarations")
+    p50, p90 = [validate_component(component) for component in declared]
+    identity = EconomicScope.model_validate(value["scope"]).economic.model_dump()
+    if any(component.model_dump(exclude={"amount"}) != identity for component in (p50, p90)):
+        raise ValueError("invalid Quote declaration identity")
+    if (p50.amount is None) != (p90.amount is None):
+        raise ValueError("invalid Quote declaration pair")
+    if (
+        p50.amount is not None
+        and p90.amount is not None
+        and (value["sample_count"] == 0 or Decimal(p50.amount) > Decimal(p90.amount))
+    ):
+        raise ValueError("invalid priced Quote declarations")
+
+
+def selected_declaration(value):
+    if value["record"]["kind"] == "quote":
+        return value["declared"][0 if value["quantile"] == "p50" else 1]
+    identity = EconomicScope.model_validate(value["scope"]).economic.model_dump()
+    matching = [
+        component
+        for component in value["declared"]
+        if validate_component(component).model_dump(exclude={"amount"}) == identity
+    ]
+    if len(matching) != 1 or matching[0].get("unknown_count") != 0:
+        raise ValueError("invalid selected subtotal")
+    return matching[0]
+
+
+def validate_selected_comparison(value, checked):
+    declared = validate_component(selected_declaration(value))
+    if (
+        declared.amount is None
+        or checked.amount is None
+        or declared.model_dump(exclude={"amount"}) != checked.model_dump(exclude={"amount"})
+        or Decimal(declared.amount) != Decimal(checked.amount)
+    ):
+        raise ValueError("comparison differs from selected declaration")
 
 
 def validate_comparison(value, budget):
@@ -121,6 +167,7 @@ def validate_comparison(value, budget):
         ):
             raise ValueError("invalid verified comparison")
         checked = validate_component(comparison)
+        validate_selected_comparison(value, checked)
         if (
             budget.amount is None
             or checked.amount is None

@@ -326,6 +326,9 @@ def original_computation_cutoff(connection, record) -> bool:
     return (
         record.cutoff.sequence == availability.sequence - 1
         and record.cutoff.at == availability.available_at
+        and record.origin_store_id == record.cutoff.store_id
+        and record.recorded_at == record.cutoff.at
+        and record.effective_at == record.cutoff.at
     )
 
 

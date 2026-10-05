@@ -107,6 +107,8 @@ Numeric advice requires a supported local typed computation receipt and exact
 historical reproduction at the original cutoff. Supported local computations insert
 their result at cutoff sequence plus one and at the cutoff time; check and both
 historical inspectors verify these anchors against the result's own availability.
+The generated origin store equals the cutoff store, and both recorded/effective
+timestamps equal the cutoff time.
 Its time cannot exceed the latest
 committed local metadata timestamp, even when the wall clock has advanced; equality
 and earlier historical cutoffs remain eligible. The same boundary applies to Quote
@@ -117,7 +119,10 @@ committed timestamp. Inspection cannot certify replay without that timestamp.
 Computed Settlement receipts also bind the payload operation ID to the local receipt
 primary key. Retrying an operation rejects a mismatched stored operation ID even
 if another receipt references that result. Settlement reproduction includes
-scope, subtotals, supporting inputs/exclusions, reasons and completeness; explain's
+scope, subtotals, supporting inputs/exclusions, reasons and completeness. It also
+reproduces the receipted same-Change predecessor at that cutoff across scopes,
+preserving its ledger identity and ignoring later computations. A first ledger ID
+remains opaque; this is deterministic replay, not generic payload authentication. Explain's
 `inputs_available` alone cannot certify a value. Later evidence never replaces that
 cutoff. Imported/legacy/artifact-only results remain unknown producer claims, even
 with declared completeness. Unpriced, incomplete, incompatible, unsupported or

@@ -18,7 +18,10 @@ def result(label):
             "currency": "USD",
         },
         "comparison": None,
-        "declared": [],
+        "declared": [
+            dict(amount=None, economic_kind="monetary", unit="USD", basis="billed", currency="USD")
+            for _ in range(2)
+        ],
         "scope": {
             "repository_id": "repo",
             "economic": {
@@ -148,8 +151,13 @@ def verified_result(kind, status):
         provenance="locally_reproduced_synthetic; provider_support_not_verified",
         completeness="complete",
         quantile="p90" if kind == "quote" else None,
-        sample_count=0 if kind == "quote" else None,
+        sample_count=1 if kind == "quote" else None,
         reasons=[],
+    )
+    value["declared"] = (
+        [value["comparison"] | {"amount": "0"}, dict(value["comparison"])]
+        if kind == "quote"
+        else [value["comparison"] | {"unknown_count": 0}]
     )
     return value
 
@@ -464,3 +472,92 @@ def test_summary_legacy_cutoff_contract(tmp_path, cutoff, existing):
         assert checked.returncode == 2
         assert checked.stderr == "cannot render or write advisory summary\n"
         assert destination.read_bytes() == original if existing else not destination.exists()
+
+
+def contradictory_declaration(kind, fault):
+    value = verified_result(kind, "within_budget")
+    selected = 1 if kind == "quote" else 0
+    if fault == "empty":
+        value["declared"] = []
+    if fault == "amount":
+        value["declared"][selected]["amount"] = "11"
+    if fault == "identity":
+        value["declared"][selected]["basis"] = "other"
+    if fault == "null":
+        value["declared"][selected]["amount"] = None
+    if fault == "duplicate":
+        value["declared"].append(dict(value["declared"][selected]))
+    if fault == "selection":
+        value["quantile"] = "p50"
+    if fault == "samples":
+        value["sample_count"] = 0
+    if fault == "incomplete":
+        value["declared"][0]["unknown_count"] = 1
+    if fault == "missing_completeness":
+        del value["declared"][0]["unknown_count"]
+    return value
+
+
+DECLARATION_FAULTS = [
+    (kind, fault)
+    for kind in ("quote", "computed_settlement")
+    for fault in ("empty", "amount", "identity", "null", "duplicate")
+] + [
+    ("quote", "selection"),
+    ("quote", "samples"),
+    ("computed_settlement", "incomplete"),
+    ("computed_settlement", "missing_completeness"),
+]
+
+
+@pytest.mark.parametrize("kind,fault", DECLARATION_FAULTS)
+@pytest.mark.parametrize("existing", [False, True])
+def test_selected_declaration_cli_preserves_destination(tmp_path, kind, fault, existing):
+    import os
+    import subprocess
+    import sys
+
+    payload = tmp_path / "result.json"
+    payload.write_text(json.dumps(contradictory_declaration(kind, fault)))
+    destination = tmp_path / "summary"
+    original = b"Earlier summary\n"
+    if existing:
+        destination.write_bytes(original)
+    rejected = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+    )
+    assert rejected.returncode == 2
+    assert rejected.stdout == ""
+    assert rejected.stderr == "cannot render or write advisory summary\n"
+    assert destination.read_bytes() == original if existing else not destination.exists()
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("amount", ["0", "10.00"])
+def test_selected_declaration_exact_decimal_controls(kind, amount):
+    from changecost.summary import render_summary
+
+    value = verified_result(kind, "within_budget")
+    value["comparison"]["amount"] = amount
+    selected = 1 if kind == "quote" else 0
+    value["declared"][selected]["amount"] = "0.00" if amount == "0" else "10"
+    assert render_summary(value)
+
+
+@pytest.mark.parametrize("fault", ["inverted", "mixed_null", "scope"])
+def test_quote_unknown_pair_must_remain_coherent(fault):
+    from changecost.summary import render_summary
+
+    value = result("unknown")
+    if fault == "inverted":
+        value["declared"][0]["amount"] = "20"
+        value["declared"][1]["amount"] = "10"
+    elif fault == "mixed_null":
+        value["declared"][0]["amount"] = "10"
+    else:
+        value["declared"][0]["basis"] = "other"
+    with pytest.raises(ValueError):
+        render_summary(value)
