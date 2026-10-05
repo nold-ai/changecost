@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Reduce complexity in the unpriced Quote regression test by extracting accepted
+  output assertions, preserving all producer cases and public-process checks.
+
 - Reject positive sample counts on locally reproduced unpriced Quote summaries
   before output writes; preserve imported declared counts and valid priced results.
 

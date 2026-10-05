@@ -1186,3 +1186,32 @@ guard-removal evidence retains its original bindings. Rollback restores only thi
 summary-validation correction; the immutable registry repair, accepted Quote
 archive and prior evidence remain intact. Fresh Linux and provider evidence is
 required after publication.
+
+## PR #34 unpriced Quote test complexity — 2026-10-06
+
+Fresh run 37385729674 at 775ff06 ran all ten native analyzers in both jobs.
+Radon alone failed: the expanded real-producer test has cyclomatic complexity 18,
+above the signed rule's error threshold of 15. The other nine analyzers passed,
+including all 2,790 unique tests plus four subtests with matching source and
+coverage fingerprints. The prior timeout did not recur in this run. These
+reports remain bound to 775ff06 and do not certify a later correction.
+
+Independent upfront review selected the minimum refactor: extract only the
+accepted-output assertions into a focused helper, retaining all twelve case IDs,
+the real producer/public subprocess, exact sample/status assertions, rejection
+diagnostics and absent/existing destination checks. Runtime behavior, test
+selection, thresholds, signed tool versions and archive bytes remain unchanged.
+Pinned Radon 6.0.1 measures the test at 13 and the helper at 6; the signed
+KISS implementation reports no findings for either. These host diagnostics
+do not substitute for native acceptance. All 433 summary tests passed in
+3.68 seconds at epoch 145. Removing only the production sample-count guard
+in an isolated current-test snapshot again produced four expected local-positive
+failures and eight passing controls in 0.70 seconds. Frozen epoch 146 passed all 2,790 tests in 35.18 seconds, installed-wheel
+checks, dependency audit, every host-supported gate and all 11 strict OpenSpec
+items. Aggregate exit two remains incomplete solely for the ten unsupported
+macOS native analyzers. Independent affected closure found no defects and
+confirmed that inlining the extracted helper reproduces the entire prior
+test-module AST, preserving cases, subprocess calls and assertions; all 97
+inputs were inspected and runtime/config/archive bytes remain unchanged.
+Fresh Linux and provider acceptance remains required after publication. Rollback restores this test
+refactor only while preserving the published summary and registry fixes.

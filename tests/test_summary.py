@@ -470,12 +470,16 @@ def test_summary_real_unpriced_quote(tmp_path, imported, sample_count, existing)
         else:
             assert not destination.exists()
     else:
-        assert checked.returncode == 0 and checked.stdout == "" and checked.stderr == ""
-        rendered = destination.read_text()
-        assert f"sample_count: {sample_count}\n\n" in rendered
-        assert "Status: unknown\n\n" in rendered
-        if existing:
-            assert rendered.startswith(previous.decode())
+        assert_unpriced_summary_accepted(checked, destination, sample_count, previous, existing)
+
+
+def assert_unpriced_summary_accepted(checked, destination, sample_count, previous, existing):
+    assert checked.returncode == 0 and checked.stdout == "" and checked.stderr == ""
+    rendered = destination.read_text()
+    assert f"sample_count: {sample_count}\n\n" in rendered
+    assert "Status: unknown\n\n" in rendered
+    if existing:
+        assert rendered.startswith(previous.decode())
 
 
 @pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
