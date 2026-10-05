@@ -103,3 +103,11 @@ unsupported-version or receipt trust shortcuts. Malformed sequence/timestamp row
 fail with safe technical diagnostics rather than leaking raw row values or
 returning a successful unknown claim. Check and explain remain read-only; portable
 artifact advice never accesses the local database.
+
+Selected local result availability must not exceed the committed metadata sequence.
+Check and both computation inspectors validate that strict integer bound before
+receipt/version trust decisions, returning safe technical errors for unavailable
+selected records and preserving store bytes. The original cutoff-to-insertion
+anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
+the committed snapshot. Equality and later committed appends remain supported;
+portable artifact advice never consults the local store.

@@ -293,9 +293,13 @@ def test_missing_committed_timestamp_cannot_grant_authority(
     before = store.path.read_bytes()
     with pytest.raises(ContractError):
         evaluate(store, record)
-    inspected = inspect_selected_computation(store, record)
-    assert inspected["local_computation"] is receipt
-    assert inspected["replay_eligibility"] == "replay_unavailable"
+    if zero_sequence:
+        with pytest.raises(ContractError):
+            inspect_selected_computation(store, record)
+    else:
+        inspected = inspect_selected_computation(store, record)
+        assert inspected["local_computation"] is receipt
+        assert inspected["replay_eligibility"] == "replay_unavailable"
     checked = runner.invoke(app, ["--db", str(store.path), "--format", format, *check_args(record)])
     assert checked.exit_code == 2 and not checked.stdout
     if format == "json":
@@ -848,3 +852,101 @@ def test_legacy_selected_availability_precedes_claim(tmp_path, output_format, co
     assert output.exit_code == 2 and output.stdout == ""
     assert output.stderr and "private-corrupt" not in output.stderr
     assert "Traceback" not in output.stderr and store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("operation", ["check", "explain"])
+@pytest.mark.parametrize("output_format", ["json", "human"])
+@pytest.mark.parametrize(
+    "trust_state", ["supported", "algorithm", "policy", "missing", "duplicate"]
+)
+def test_selected_result_outside_committed_sequence(
+    tmp_path, kind, operation, output_format, trust_state
+):
+    store, record = availability_trust_fixture(tmp_path, kind, trust_state)
+    with store.connect() as connection:
+        sequence = connection.execute(
+            "SELECT sequence FROM records WHERE kind=? AND id=?", (kind, record.record_id)
+        ).fetchone()[0]
+        connection.execute("UPDATE metadata SET sequence=?", (sequence - 1,))
+    before = store.path.read_bytes()
+    args = (
+        check_args(record)
+        if operation == "check"
+        else ["explain", "--record-kind", kind, "--record-id", record.record_id]
+    )
+    checked = runner.invoke(app, ["--db", str(store.path), "--format", output_format, *args])
+    assert checked.exit_code == 2 and checked.stdout == ""
+    assert "Traceback" not in checked.stderr
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("output_format", ["json", "human"])
+def test_legacy_claim_outside_committed_sequence(tmp_path, output_format):
+    store, _ = priced(tmp_path)
+    record = legacy_claim(store)
+    with store.connect() as connection:
+        sequence = connection.execute(
+            "SELECT sequence FROM records WHERE kind='settlement' AND id=?", (record.record_id,)
+        ).fetchone()[0]
+        connection.execute("UPDATE metadata SET sequence=?", (sequence - 1,))
+    before = store.path.read_bytes()
+    checked = runner.invoke(
+        app, ["--db", str(store.path), "--format", output_format, *check_args(record)]
+    )
+    assert checked.exit_code == 2 and checked.stdout == ""
+    assert "Traceback" not in checked.stderr
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("operation", ["check", "explain"])
+@pytest.mark.parametrize("output_format", ["json", "human"])
+@pytest.mark.parametrize("later", [False, True])
+def test_selected_committed_sequence_boundary(tmp_path, kind, operation, output_format, later):
+    store, record = availability_trust_fixture(tmp_path, kind, "supported")
+    if later:
+        peer(store, "later-committed", "999")
+    with store.connect() as connection:
+        selected = connection.execute(
+            "SELECT sequence FROM records WHERE kind=? AND id=?", (kind, record.record_id)
+        ).fetchone()[0]
+        committed = connection.execute("SELECT sequence FROM metadata").fetchone()[0]
+    assert (committed > selected) if later else (committed == selected)
+    before = store.path.read_bytes()
+    args = (
+        check_args(record)
+        if operation == "check"
+        else ["explain", "--record-kind", kind, "--record-id", record.record_id]
+    )
+    checked = runner.invoke(app, ["--db", str(store.path), "--format", output_format, *args])
+    assert checked.exit_code == 0 and checked.stderr == ""
+    if operation == "check" and output_format == "json":
+        assert json.loads(checked.stdout)["status"] != "unknown"
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("operation", ["check", "explain"])
+@pytest.mark.parametrize("output_format", ["json", "human"])
+@pytest.mark.parametrize("fault", ["fractional", "negative", "text"])
+def test_committed_sequence_requires_strict_integer(
+    tmp_path, kind, operation, output_format, fault
+):
+    store, record = availability_trust_fixture(tmp_path, kind, "supported")
+    with store.connect() as connection:
+        sequence = connection.execute("SELECT sequence FROM metadata").fetchone()[0]
+        value = {"fractional": sequence + 0.5, "negative": -1, "text": "private-invalid-sequence"}[
+            fault
+        ]
+        connection.execute("UPDATE metadata SET sequence=?", (value,))
+    before = store.path.read_bytes()
+    args = (
+        check_args(record)
+        if operation == "check"
+        else ["explain", "--record-kind", kind, "--record-id", record.record_id]
+    )
+    checked = runner.invoke(app, ["--db", str(store.path), "--format", output_format, *args])
+    assert checked.exit_code == 2 and checked.stdout == ""
+    assert "Traceback" not in checked.stderr and "private-invalid-sequence" not in checked.stderr
+    assert store.path.read_bytes() == before

@@ -358,3 +358,9 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 #### Scenario: Optional null amount remains safe for local unpriced advice
 - **WHEN** a locally reproduced unpriced unknown Quote omits an optional amount field
 - **THEN** the summary validates the existing null amount semantics without a traceback and preserves normal append behavior
+
+#### Scenario: Selected local record belongs to the committed snapshot
+- **WHEN** the selected local result availability sequence exceeds committed metadata sequence, including a reset to the result cutoff
+- **THEN** check and both computation inspectors fail safely with exit 2 before trust or version shortcuts, with empty success stdout and unchanged store bytes
+- **AND** equality with the committed sequence and later appended records remain valid; artifact mode does not consult local metadata
+- **AND** committed upper bounds retain the strict nonnegative integer contract; malformed bounds produce safe technical errors before output

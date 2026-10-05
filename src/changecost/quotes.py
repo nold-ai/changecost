@@ -482,7 +482,7 @@ def inspect_quote(store: Store, record: Quote | RecordRef):
         now = timestamp(store.clock())
         if last_at is not None and timestamp(last_at) > now:
             raise ContractError("clock moved backwards")
-        if record_availability(connection, record, store_id) is None:
+        if record_availability(connection, record, store_id, maximum_sequence=sequence) is None:
             raise ContractError("selected availability is unavailable")
         eligible = (
             replay_supported(record)

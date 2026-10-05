@@ -33,6 +33,7 @@ from changecost.store import (
     key,
     original_computation_cutoff,
     read_records,
+    record_availability,
     reference,
     run_key,
     validate_graph,
@@ -566,6 +567,8 @@ def inspect_computation(store: Store, record: ComputedSettlement) -> dict:
         now = timestamp(store.clock())
         if last_at is not None and timestamp(last_at) > now:
             raise ContractError("clock moved backwards")
+        if record_availability(connection, record, store_id, maximum_sequence=sequence) is None:
+            raise ContractError("selected availability is unavailable")
         cutoff = record.cutoff
         eligible = False
         if (

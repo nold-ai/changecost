@@ -141,3 +141,11 @@ Check creates no record, receipt, revision, observation or store. Artifact mode
 strictly validates the portable graph and performs no database access or import.
 The executable [synthetic CI walkthrough](ci.md) demonstrates complete local values
 and portable claims; provider support/calibration remain To-Validate.
+
+Selected local result availability must not exceed the committed metadata sequence.
+Check and both computation inspectors validate that strict integer bound before
+receipt/version trust decisions, returning safe technical errors for unavailable
+selected records and preserving store bytes. The original cutoff-to-insertion
+anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
+the committed snapshot. Equality and later committed appends remain supported;
+portable artifact advice never consults the local store.

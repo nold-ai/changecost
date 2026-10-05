@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Require selected local results to belong to the committed metadata sequence
+  before advisory or inspection trust decisions; retain equal and later snapshots.
+
 - Validate selected local availability before trust/version shortcuts; reject
   contradictory complete or unexplained unknown CI advice before output writes.
 

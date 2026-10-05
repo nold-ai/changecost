@@ -313,7 +313,7 @@ def computation_refs(connection, records) -> set:
     return result
 
 
-def record_availability(connection, record, store_id):
+def record_availability(connection, record, store_id, *, maximum_sequence=None):
     """Validate selected stored availability before any computation trust decision."""
     row = connection.execute(
         "SELECT available_at,sequence FROM records WHERE kind=? AND id=?",
@@ -321,12 +321,19 @@ def record_availability(connection, record, store_id):
     ).fetchone()
     if row is None:
         return None
-    return Observation(
+    observation = Observation(
         reference=reference(record),
         store_id=store_id,
         available_at=row[0],
         sequence=row[1],
     )
+    if maximum_sequence is not None and (
+        type(maximum_sequence) is not int
+        or maximum_sequence < 0
+        or observation.sequence > maximum_sequence
+    ):
+        raise ContractError("selected availability exceeds committed sequence")
+    return observation
 
 
 def original_computation_cutoff(connection, record) -> bool:

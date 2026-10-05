@@ -288,7 +288,12 @@ def check_record(store, ref: RecordRef, budget: Component, quantile=None, artifa
         records = read_records(connection)
         validate_graph(records)
         record = selected_record(records, ref)
-        if record_availability(connection, record, metadata.store_id) is None:
+        if (
+            record_availability(
+                connection, record, metadata.store_id, maximum_sequence=metadata.sequence
+            )
+            is None
+        ):
             raise ContractError("selected availability is unavailable")
         verified, reasons = local_verification(connection, records, record, metadata, now)
         return result_for(

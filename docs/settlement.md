@@ -182,3 +182,11 @@ and older historical cutoffs remain eligible. Missing timestamps cannot certify 
 and a populated store with no committed timestamp returns check's safe technical error.
 Input availability alone is insufficient. Incomplete known subtotals above or below budget
 and narrowed partial_change_scope results remain unknown; see [CLI advice](cli.md#presentation-errors-and-advisory-budgets).
+
+Selected local result availability must not exceed the committed metadata sequence.
+Check and both computation inspectors validate that strict integer bound before
+receipt/version trust decisions, returning safe technical errors for unavailable
+selected records and preserving store bytes. The original cutoff-to-insertion
+anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
+the committed snapshot. Equality and later committed appends remain supported;
+portable artifact advice never consults the local store.

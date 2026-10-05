@@ -212,3 +212,11 @@ result. See [Quotes](quotes.md) for rank, cohort and feature details.
 ## Ephemeral budget results
 
 Advisory budgets add no persisted record, receipt or schema migration. Check reads one immutable record at its historical cutoff and separates producer declarations from locally reproduced comparison values; portable artifacts never grant local authority. See [CLI advice](cli.md#presentation-errors-and-advisory-budgets).
+
+Selected local result availability must not exceed the committed metadata sequence.
+Check and both computation inspectors validate that strict integer bound before
+receipt/version trust decisions, returning safe technical errors for unavailable
+selected records and preserving store bytes. The original cutoff-to-insertion
+anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
+the committed snapshot. Equality and later committed appends remain supported;
+portable artifact advice never consults the local store.

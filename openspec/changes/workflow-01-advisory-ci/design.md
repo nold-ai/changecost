@@ -193,3 +193,9 @@ validation without changing normal serialized availability. Summary unknown stat
 requires reasons; local completeness follows the Quote pair and selected complete
 value. Complete local unknown is possible only for an actually incompatible budget
 with its reason. Partial computed scopes can retain a known subtotal while unknown.
+
+Selected local availability must belong to the committed metadata snapshot: its
+strict positive sequence cannot exceed the metadata sequence. Check and both
+computation inspectors validate this bound before legacy/receipt/version decisions.
+A result's original cutoff intentionally precedes its own insertion; validating
+that original anchor does not replace the committed-snapshot membership check.

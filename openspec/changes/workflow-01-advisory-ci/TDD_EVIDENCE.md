@@ -798,3 +798,33 @@ Independent review ran 495 affected controls and found no remaining runtime defe
 it caught a stale incremental Quote documentation binding, corrected in the active
 Quote guide before final documentation/staged adoption. Fresh Linux and provider
 acceptance remain separate current-head requirements.
+
+## PR #34 committed-sequence correction (2026-10-05)
+
+Fresh CODE review of 63ee4aa found metadata reset to a result cutoff could exclude
+the selected insertion yet grant numeric advice. Independent upfront reproduction
+confirmed eight public JSON/human check/inspection escapes across both kinds.
+The shared selected availability upper bound is validated before trust decisions;
+the original result cutoff anchor stays separate and unchanged. Specification and
+tests preceded implementation: 42 focused cases failed in 0.88 seconds. After
+the shared bound and matching zero-sequence inspection assertions, all 577 affected
+advisory/summary cases passed in 16.36 seconds, including strict integer bounds,
+legacy/unsupported/missing/duplicate receipt cases and equality/later-append controls.
+The first integration run had eight obsolete zero-sequence inspection expectations;
+these now require the specified safe unavailable-snapshot error. No stores changed.
+
+Independent triage found CodeRabbit's equal-feature-endpoint comment to be a
+non-finding: accepted specs allow equality; feature timing AST is unchanged from
+main, and tuple(timestamp, sequence) ordering already rejects post-Run registration.
+Nine actual end-only/import/replay controls passed. Accepted archive bytes remain
+unchanged. Full verification, independent closure and replacement-head Linux/provider
+acceptance remain required. Rollback reverts this correction while preserving the
+native Quote archive and historical review evidence.
+
+Frozen epoch92 full verification passed 2,438 tests in 58.23 seconds, all
+host-supported gates and 11 strict OpenSpec items. Independent closure passed 581
+affected controls, eight documentation checks against main and HEAD, and actual
+guard-omission controls detecting both-kind advice/inspection escapes. Exact native
+preflight found no blocking complexity or Pylint error/fatal diagnostics. These
+are host results: all ten sealed native analyzers remain unsupported on macOS;
+replacement-head Linux/provider acceptance is still required before PR completion.
