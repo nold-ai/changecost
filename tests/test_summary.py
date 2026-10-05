@@ -642,6 +642,110 @@ def test_known_subtotal_can_remain_locally_incomplete():
     assert render_summary(value)
 
 
+def local_incomplete_settlement():
+    value = verified_result("computed_settlement", "within_budget")
+    value.update(
+        status="unknown",
+        comparison=None,
+        completeness="unknown",
+        reasons=["incomplete_or_unpriced"],
+    )
+    return value
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "empty",
+        "unrelated",
+        "duplicate_scope",
+        "duplicate_extra",
+        "missing",
+        None,
+        True,
+        -1,
+        "1",
+        [],
+        {},
+    ],
+)
+@pytest.mark.parametrize("extra", [False, True])
+@pytest.mark.parametrize("existing", [False, True])
+def test_incomplete_local_subtotal_shape_cli(tmp_path, fault, extra, existing):
+    value = local_incomplete_settlement()
+    other = value["declared"][0] | {"unit": "EUR", "currency": "EUR"}
+    if extra:
+        value["declared"].append(other)
+    if fault == "empty":
+        value["declared"] = []
+    elif fault == "unrelated":
+        value["declared"] = [other]
+    elif fault == "duplicate_scope":
+        value["declared"].append(dict(value["declared"][0]))
+    elif fault == "duplicate_extra":
+        value["declared"].extend([dict(other), dict(other)])
+    elif fault == "missing":
+        value["declared"][-1 if extra else 0].pop("unknown_count")
+    else:
+        value["declared"][-1 if extra else 0]["unknown_count"] = fault
+    assert_rejected_summary(tmp_path, value, existing)
+
+
+@pytest.mark.parametrize("amount,count", [(None, 0), (None, 2), ("0", 0), ("10", 2)])
+@pytest.mark.parametrize("extra", [False, True])
+def test_incomplete_local_subtotal_producer_controls(amount, count, extra):
+    from changecost.summary import render_summary
+
+    value = local_incomplete_settlement()
+    value["declared"][0].update(amount=amount, unknown_count=count)
+    if extra:
+        value["declared"].append(
+            value["declared"][0]
+            | {
+                "unit": "EUR",
+                "currency": "EUR",
+                "unknown_count": count if amount is not None else 1,
+            }
+        )
+    assert render_summary(value)
+
+
+@pytest.mark.parametrize("existing", [False, True])
+def test_incomplete_local_empty_additional_group_cli(tmp_path, existing):
+    value = local_incomplete_settlement()
+    value["declared"].append(
+        value["declared"][0]
+        | {
+            "unit": "EUR",
+            "currency": "EUR",
+            "amount": None,
+            "unknown_count": 0,
+        }
+    )
+    assert_rejected_summary(tmp_path, value, existing)
+
+
+@pytest.mark.parametrize("status", ["within_budget", "over_budget", "unknown"])
+@pytest.mark.parametrize("amount,count", [("10", 1), (None, 0), (None, 1)])
+@pytest.mark.parametrize("existing", [False, True])
+def test_complete_local_subtotal_groups_cli(tmp_path, status, amount, count, existing):
+    value = (
+        local_unknown_complete("computed_settlement")
+        if status == "unknown"
+        else verified_result("computed_settlement", status)
+    )
+    value["declared"].append(
+        value["declared"][0]
+        | {
+            "unit": "EUR",
+            "currency": "EUR",
+            "amount": amount,
+            "unknown_count": count,
+        }
+    )
+    assert_rejected_summary(tmp_path, value, existing)
+
+
 @pytest.mark.parametrize("missing", [(0,), (0, 1)])
 @pytest.mark.parametrize("existing", [False, True])
 def test_local_unpriced_optional_amount_cli(tmp_path, missing, existing):

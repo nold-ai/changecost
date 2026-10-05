@@ -856,3 +856,44 @@ blocking metrics or non-import Pylint error/fatal rows. Long-label test identiti
 were inspected against collector limits with no demonstrated limit breach; actual
 supported-Linux reports and current-head provider reviews remain required.
 All ten native analyzers are still unsupported/incomplete on this macOS controller.
+
+
+## PR #34 incomplete local subtotal correction — 2026-10-05
+
+CODE review of 6202fb6 identified an incomplete-result return bypassing subtotal
+shape checks. Independent upfront review reproduced missing/duplicate/nonmatching
+scope declarations, missing counts and duplicate additional groups. The actual
+producer always seeds one scope group, groups economic identities uniquely and
+requires strict nonnegative integer counts. Empty evidence can legitimately yield
+a null amount with count zero; positive counts and additional groups remain valid.
+
+Spec and real CLI cases preceded source correction: 20 failed, 32 passed in
+2.12 seconds. The minimum fix reuses Subtotal validation for all local computed
+declarations and requires unique identities including the scope before the
+incomplete return. All 782 advisory/summary tests passed in 14.67 seconds. This
+checks result structure; it does not authenticate arbitrary amounts from JSON.
+
+Current 6202fb6 Linux evidence remains historical: Python 3.13 all ten native
+analyzers passed; Python 3.11 coverage timed out at its existing 300-second limit,
+while its other nine analyzers passed. Neither the timeout nor provider findings
+are waived. Fresh full gates, independent closure and both supported-Linux jobs
+plus current-head provider reviews remain required after this source correction.
+Rollback reverts only this correction while preserving the accepted Quote archive.
+
+Independent closure collected two adjacent gaps before publication: complete
+local advice could contain incomplete additional groups, and incomplete advice
+could contain an impossible empty additional group. Added spec and real CLI
+cases failed 18 in 0.90 seconds and two in 1.96 seconds, respectively. The scope
+is the only seeded empty group; complete results require known amounts and zero
+unknown counts throughout. Valid incomplete additional null groups retain positive
+unknown counts. Initial epoch100 full test run passed 2,637 tests in 63.68 seconds,
+but sandbox permissions/network and stale rationale digests prevented passing
+other host gates. Those failed receipts remain; final frozen checks must rerun.
+
+Final frozen epoch101 full verification passed 2,657 tests in 63.09 seconds,
+all host-supported gates and all 11 strict OpenSpec items. Independent closure
+passed 847 affected tests plus four subtests, 142 documentation checks, main/HEAD
+document freshness and six actual guard-omission controls. Exact host native
+preflight found no blocking metrics or non-import Pylint errors. All ten native
+analyzers remain unsupported/incomplete on macOS; replacement-head supported
+Linux and provider acceptance are still required. No paid review was authorized.

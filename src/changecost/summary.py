@@ -11,7 +11,7 @@ from itertools import chain
 from pathlib import Path
 
 from changecost.advisory import compare
-from changecost.models import Component, Cutoff, EconomicScope, identifier
+from changecost.models import Component, Cutoff, EconomicScope, Subtotal, identifier
 from changecost.serialization import reject_constant, unique_members
 
 LIMIT = 65_536
@@ -130,6 +130,8 @@ def validate_local_completeness(value, budget):
         priced = validate_component(value["declared"][0]).amount is not None
         if complete != priced:
             raise ValueError("invalid local Quote completeness")
+    else:
+        validate_local_subtotals(value)
     if not complete:
         return
     selected = validate_component(selected_declaration(value))
@@ -140,6 +142,31 @@ def validate_local_completeness(value, budget):
         or "incompatible_economic_identity" not in value["reasons"]
     ):
         raise ValueError("complete unknown advice requires economic incompatibility")
+
+
+def validate_local_subtotals(value):
+    identities = set()
+    scope = tuple(EconomicScope.model_validate(value["scope"]).economic.model_dump().items())
+    for component in value["declared"]:
+        subtotal = Subtotal.model_validate(
+            dict(
+                economic={key: component.get(key) for key in ECONOMIC if key != "amount"},
+                amount=component.get("amount"),
+                unknown_count=component.get("unknown_count"),
+            )
+        )
+        identity = tuple(subtotal.economic.model_dump().items())
+        if value["completeness"] == "complete" and (
+            subtotal.amount is None or subtotal.unknown_count != 0
+        ):
+            raise ValueError("incomplete subtotal in complete result")
+        if identity != scope and subtotal.amount is None and subtotal.unknown_count == 0:
+            raise ValueError("empty non-scope subtotal")
+        if identity in identities:
+            raise ValueError("duplicate subtotal identity")
+        identities.add(identity)
+    if scope not in identities:
+        raise ValueError("missing scope subtotal")
 
 
 def validate_quote_declarations(value):

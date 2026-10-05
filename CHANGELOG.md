@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Validate local computed Settlement subtotal structure even for incomplete advice;
+  preserve null amounts, positive unknown counts and separate economic groups.
+
 - Match producer nonblank identifiers for CI summary record IDs, reasons and
   legacy Settlement scope; preserve valid labels and reject invalid input safely.
 

@@ -329,6 +329,14 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **WHEN** its previous reference and ledger identity are coherently changed to re-root the revision while leaving numeric details unchanged
 - **THEN** check returns unknown without a verified value or store writes. Replay reproduces the producer's predecessor selection across economic scopes at that cutoff, retains the predecessor's ledger identity, and ignores later computations; the first ledger's opaque ID needs no independent authentication.
 
+#### Scenario: Incomplete local Settlement declarations retain producer structure
+
+- **GIVEN** a locally reproduced computed Settlement with unknown completeness
+- **WHEN** the summary validates its declarations
+- **THEN** each subtotal has an explicit nonnegative integer unknown_count, economic identities are unique, and exactly one subtotal matches the declared scope. Missing or ambiguous scope subtotals, missing counts and duplicate identities fail safely before destination access. Null amounts, positive unknown counts and additional economic groups remain valid incomplete advice. Locally complete results require known amounts and zero unknown counts for every economic group, even with an incompatible budget and unknown advisory status. The summary validates result structure without accessing the store or authenticating amounts from JSON alone.
+
+Only the scope identity may have an empty subtotal with null amount and zero unknown count. A non-scope null subtotal SHALL have a positive unknown count, because additional groups come from selected events.
+
 #### Scenario: Numeric summary agrees with selected declarations
 
 - **GIVEN** a numeric check-v1 result

@@ -204,3 +204,10 @@ The summary reuses the producer's existing Identifier validator for legacy scope
 record ID and each reason. Missing/null/blank values fail before output access;
 valid nonblank labels retain original Unicode, whitespace, controls and length,
 with escaping/bounded output unchanged. Numeric advice still permits empty reasons.
+
+Local computed Settlement declarations retain unique economic identity groups,
+explicit nonnegative integer unknown counts and exactly one scope subtotal even
+when completeness is unknown. Null amounts and positive unknown counts remain
+valid incomplete advice. Summary validation checks structure without store access;
+JSON alone cannot authenticate a declared historical amount.
+ Complete local advice requires known amounts and zero unknown counts in every group; only the scope group may be empty with null amount and zero unknown count.
