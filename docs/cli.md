@@ -103,7 +103,8 @@ default; p50 is explicit. Settlement quantiles are invalid. Equality and observe
 zero are within_budget. All valid advice (`within_budget`, `over_budget`, `unknown`)
 exits 0; technical failures exit 2.
 
-Numeric advice requires a supported local typed computation receipt and exact
+Numeric advice requires exactly one raw receipt for the selected result, a supported
+typed request/payload match and exact
 historical reproduction at the original cutoff. Supported local computations insert
 their result at cutoff sequence plus one and at the cutoff time; check and both
 historical inspectors verify these anchors against the result's own availability.
@@ -117,7 +118,9 @@ timestamp is invalid for check even if metadata sequence is corrupted to zero or
 no local receipt remains; record checks never substitute the wall clock for a missing
 committed timestamp. Inspection cannot certify replay without that timestamp.
 Computed Settlement receipts also bind the payload operation ID to the local receipt
-primary key. Retrying an operation rejects a mismatched stored operation ID even
+primary key. Identical or conflicting receipt aliases deny local authority before
+request matching for both computation kinds, including check, inspection and retry.
+Unrelated results retain their own receipt authority. Retrying an operation rejects a mismatched stored operation ID even
 if another receipt references that result. Settlement reproduction includes
 scope, subtotals, supporting inputs/exclusions, reasons and completeness. It also
 reproduces the receipted same-Change predecessor at that cutoff across scopes,

@@ -6,7 +6,7 @@ import json
 import os
 import sqlite3
 import tempfile
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import UTC, datetime
@@ -282,14 +282,18 @@ def read_records(connection: sqlite3.Connection) -> dict:
     }
 
 
+def unique_computation_receipts(connection):
+    rows = list(connection.execute("SELECT operation_id,request,record_id FROM computations"))
+    counts = Counter(record_id for _, _, record_id in rows)
+    return [row for row in rows if counts[row[2]] == 1]
+
+
 def computation_refs(connection, records) -> set:
     """Resolve receipts by typed payload and its exact validated request."""
     from changecost.quotes import request_for
 
     result = set()
-    for operation_id, request, record_id in connection.execute(
-        "SELECT operation_id,request,record_id FROM computations"
-    ):
+    for operation_id, request, record_id in unique_computation_receipts(connection):
         settlement = records.get(("computed_settlement", record_id))
         if isinstance(settlement, ComputedSettlement):
             change = lookup(records, settlement.change, "change")

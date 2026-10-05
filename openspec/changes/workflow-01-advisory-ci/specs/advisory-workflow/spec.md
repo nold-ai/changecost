@@ -334,3 +334,10 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **GIVEN** a numeric check-v1 result
 - **WHEN** the selected declaration is absent, ambiguous, incomplete or disagrees with the verified comparison
 - **THEN** summary validation exits two safely before destination access. Quotes carry exactly two ordered p50/p90 components with the same scope identity, paired null or finite amounts and p50 no greater than p90; numeric advice requires a positive sample count and comparison equal to the selected quantile. Computed Settlements require exactly one scope-matching subtotal, explicit unknown_count zero and a nonnull matching amount. Decimal equality is exact without conversion or rounding; observed zero and minimum-one Quotes remain valid. Unknown unpriced/imported/legacy results retain their operation-specific declarations.
+
+
+#### Scenario: Ambiguous local computation receipt ownership
+
+- **GIVEN** two raw computation receipts reference one Quote or computed Settlement result, with equal or conflicting requests
+- **WHEN** check, inspection or either operation ID's retry evaluates it
+- **THEN** check is unknown with no verified value, inspection denies local computation authority and retries reject without writes. Receipt multiplicity is checked before filtering request or payload operation matches; a matching cloned receipt cannot legitimize an altered Settlement operation ID. Exactly one typed matching receipt remains supported, and unrelated result receipts do not invalidate it.

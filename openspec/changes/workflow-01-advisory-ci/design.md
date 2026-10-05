@@ -179,3 +179,9 @@ across scopes, retaining its ledger identity without authenticating opaque first
 Summary validation binds numeric comparison to the selected p50/p90 pair or single
 complete scope subtotal using exact Decimal equality. Unknown producer results and
 minimum-one Quotes remain supported; no persisted schema or budget policy changes.
+
+
+Local computation authority requires exactly one raw receipt per result ID before
+request/payload matching. Identical aliases and conflicting aliases are ambiguous
+for both computation kinds, including inspection, retry and historical predecessor
+selection. This uses the existing receipt table without a database/schema change.

@@ -541,7 +541,7 @@ def test_selected_declaration_exact_decimal_controls(kind, amount):
     from changecost.summary import render_summary
 
     value = verified_result(kind, "within_budget")
-    value["comparison"]["amount"] = amount
+    value["comparison"] = value["budget"] | {"amount": amount}
     selected = 1 if kind == "quote" else 0
     value["declared"][selected]["amount"] = "0.00" if amount == "0" else "10"
     assert render_summary(value)

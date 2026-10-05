@@ -674,10 +674,9 @@ def test_settlement_operation_receipt_identity(tmp_path, clone_receipt):
                 (altered.operation_id, record.operation_id),
             )
     before = store.path.read_bytes()
-    if not clone_receipt:
-        output = evaluate(store, altered)
-        assert output["status"] == "unknown" and output["comparison"] is None
-        assert not inspect_selected_computation(store, altered)["local_computation"]
+    output = evaluate(store, altered)
+    assert output["status"] == "unknown" and output["comparison"] is None
+    assert not inspect_selected_computation(store, altered)["local_computation"]
     with pytest.raises(ContractError):
         compute(store)
     assert store.path.read_bytes() == before
@@ -749,4 +748,40 @@ def test_settlement_predecessor_replay_ignores_later_computations(tmp_path):
     assert third.previous.record_id == second.record_id
     for record in (first, second, third):
         assert evaluate(store, record)["comparison"] is not None
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("matching_request", [False, True])
+@pytest.mark.parametrize("entrypoint", ["check", "inspect", "retry"])
+def test_duplicate_receipts_deny_authority(tmp_path, kind, matching_request, entrypoint):
+    from changecost.quotes import compute_quote
+    from changecost.serialization import ContractError
+    from tests.test_reconciliation import compute
+
+    store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
+    assert evaluate(store, record)["comparison"] is not None
+    with store.connect() as connection:
+        request, record_id = connection.execute(
+            "SELECT request,record_id FROM computations WHERE record_id=?", (record.record_id,)
+        ).fetchone()
+        connection.execute(
+            "INSERT INTO computations VALUES (?,?,?)",
+            ("receipt-alias", request if matching_request else "conflicting-request", record_id),
+        )
+    before = store.path.read_bytes()
+    if entrypoint == "check":
+        output = evaluate(store, record)
+        assert output["status"] == "unknown" and output["comparison"] is None
+        assert "no_local_computation_receipt" in output["reasons"]
+    if entrypoint == "inspect":
+        assert not inspect_selected_computation(store, record)["local_computation"]
+    if entrypoint == "retry":
+        operations = ["quote-operation" if kind == "quote" else "op", "receipt-alias"]
+        for operation in operations:
+            with pytest.raises(ContractError):
+                if kind == "quote":
+                    compute_quote(store, "target", scope(), operation, minimum=2)
+                else:
+                    compute(store, op=operation)
     assert store.path.read_bytes() == before

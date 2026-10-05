@@ -709,3 +709,58 @@ passed 314 affected tests in 6.58 seconds, eight documentation/config checks,
 selected strict validation and five real guard-omission controls, with no runtime
 defect found. It remains historical partial closure until the final frozen helper
 correction, full gates and hosted reviews are bound.
+
+
+## Native fixture inference correction (2026-10-05, Europe/Berlin)
+
+Exact committed 24e0ea7 Linux run 37313402805 failed both jobs solely on
+Pylint E1137 at tests/test_summary.py:544: the new control mutates comparison
+after a helper's initially null unknown result is updated to a complete numeric
+result. Pylint retains the initial null inference. The other nine native analyzers
+passed and both coverage reports contain exactly all 2,175 passing unique cases,
+without errors, deselections, xfails or controller attribution diagnostics. Host
+suites passed in 93.20 and 96.27 seconds. This is RAN/FAIL, not another timeout
+or a native pass. Original native/log/source bindings remain preserved.
+
+The control now assigns the complete numeric comparison mapping explicitly,
+preserving the same exact-zero/Decimal behavior and independent assertion. No
+runtime, algorithm, store, archive, policy, tool, deadline or suppression changes.
+Correction batch eleven retains all previous counters and the maintainer's
+explicit until-fixed approval. Fresh checks and exact-head native/provider
+acceptance remain required; prior passing reviews do not certify this revision.
+
+
+The same batch collected the completed 24e0ea7 CODE review's new receipt-alias
+P2 before publication. Independent upfront review executed seven real-store
+variants: sole positives, matching/conflicting alias negatives for both kinds and
+a changed Settlement operation ID with a matching cloned receipt. Both check and
+inspection still granted authority, and alias retries could return the same result.
+This is a genuine replay-authority gap, not a harmless duplicate operation.
+
+The spec/design were revised before extending the previously skipped clone
+assertions and adding both-kind check/inspection/retry matrices. Genuine red
+evidence failed thirteen cases and passed one in 0.33 seconds, with 164 deselected.
+The shared receipt resolver now counts all raw rows per result ID before typed
+request/op matching, accepting exactly one. No import, persistence or schema
+change. The corrected advisory/summary suite and fresh full/independent/staged
+checks must certify the complete collected batch; current native/provider
+acceptance remains pending. The exact Pylint 4.0.7 host diagnostic reproduces
+E1137 before the fixture fix and removes it afterwards. Its remaining unresolved
+import diagnostics are not a sealed native pass. Original reports remain bound.
+
+
+The corrected affected suite passed all 326 cases in 12.61 seconds. Full explicit
+main-base gates passed all 2,187 tests in 51.82 seconds, lock, hygiene, lint, types,
+docs/index/metadata/workflow, both build checks, audit without known vulnerabilities
+and eleven strict items; aggregate two remains solely unsupported macOS native
+analyzers. Independent review passed 326 affected cases in 7.56 seconds and both
+real uniqueness-guard omission controls. Incremental HEAD-base metadata caught a
+missing new Unreleased entry (main-base validation masked the old batch entry);
+the changelog was corrected before final certification.
+
+Signed-tool-compatible host preflight finds no blocking CC/KISS metrics and no
+non-import Pylint errors across all five changed runtime/test files. One unresolved
+host import remains, so these diagnostics are not native acceptance. Runtime/test
+bytes remain bound to those real runs while the final changelog/TDD-only correction
+receives fresh documentation and staged verification. Fresh Linux/providers remain
+required; no earlier passing head certifies this commit.

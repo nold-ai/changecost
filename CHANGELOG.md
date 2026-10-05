@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+- Reject duplicate or conflicting local computation receipts before granting
+  advisory, inspection or retry authority for Quotes and computed Settlements.
+- Clarify the exact Decimal summary control fixture for native Pylint inference
+  without suppressing checks or changing runtime behavior.
+
 - Bind advisory replay to generated origin/timestamps and the original Settlement
   predecessor; reject CI numeric summaries that contradict selected declarations.
 
