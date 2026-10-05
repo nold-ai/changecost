@@ -52,7 +52,12 @@ incomplete or contradictory declarations fail before opening the destination.
 Quotes require p50/p90 and a nonnegative integer sample count;
 computed and legacy Settlements carry null quantile/sample count. Legacy advice
 also requires a null cutoff. Valid unknown advice
-may retain complete local reproduction when only the budget identity is incompatible.
+must give nonempty reasons. It may retain complete local reproduction only with
+a nonnull selected complete declaration, an actually incompatible budget identity
+and the incompatible_economic_identity reason. Complete compatible advice cannot
+be concealed as unknown. Locally reproduced Quote completeness follows its paired
+finite or null declarations. Locally incomplete Settlement advice may retain known
+subtotals; imported and unpriced unknown claims remain valid.
 Malformed enum containers, including JSON
 arrays and objects, produce the fixed safe error before output opens. Malformed
 results, JSON nesting beyond the decoder's recursion limit, renderer errors and

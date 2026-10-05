@@ -86,7 +86,7 @@ def validate_result(value):
         raise ValueError("invalid check result")
     if value.get("status") not in ("within_budget", "over_budget", "unknown"):
         raise ValueError("invalid advisory status")
-    record, reasons = value.get("record"), value.get("reasons")
+    record = value.get("record")
     if (
         not isinstance(record, dict)
         or record.get("kind") not in ("quote", "computed_settlement", "settlement")
@@ -96,8 +96,7 @@ def validate_result(value):
     if record["kind"] == "settlement" and value["status"] != "unknown":
         raise ValueError("legacy settlement cannot have verified advice")
     budget = validate_component(value.get("budget"), budget=True)
-    if not isinstance(reasons, list) or any(not isinstance(r, str) for r in reasons):
-        raise ValueError("invalid reasons")
+    validate_reasons(value)
     validate_details(value)
     declared = value.get("declared")
     if not isinstance(declared, list):
@@ -106,7 +105,36 @@ def validate_result(value):
         validate_component(component)
     if record["kind"] == "quote":
         validate_quote_declarations(value)
+    validate_local_completeness(value, budget)
     validate_comparison(value, budget)
+
+
+def validate_reasons(value):
+    reasons = value.get("reasons")
+    if not isinstance(reasons, list) or any(not isinstance(reason, str) for reason in reasons):
+        raise ValueError("invalid reasons")
+    if value["status"] == "unknown" and not reasons:
+        raise ValueError("unknown advice requires reasons")
+
+
+def validate_local_completeness(value, budget):
+    if value["provenance"] != "locally_reproduced_synthetic; provider_support_not_verified":
+        return
+    complete = value["completeness"] == "complete"
+    if value["record"]["kind"] == "quote":
+        priced = validate_component(value["declared"][0]).amount is not None
+        if complete != priced:
+            raise ValueError("invalid local Quote completeness")
+    if not complete:
+        return
+    selected = validate_component(selected_declaration(value))
+    if selected.amount is None:
+        raise ValueError("complete advice requires a selected value")
+    if value["status"] == "unknown" and (
+        selected.model_dump(exclude={"amount"}) == budget.model_dump(exclude={"amount"})
+        or "incompatible_economic_identity" not in value["reasons"]
+    ):
+        raise ValueError("complete unknown advice requires economic incompatibility")
 
 
 def validate_quote_declarations(value):

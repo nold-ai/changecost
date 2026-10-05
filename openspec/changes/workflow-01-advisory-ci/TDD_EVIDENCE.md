@@ -764,3 +764,37 @@ host import remains, so these diagnostics are not native acceptance. Runtime/tes
 bytes remain bound to those real runs while the final changelog/TDD-only correction
 receives fresh documentation and staged verification. Fresh Linux/providers remain
 required; no earlier passing head certifies this commit.
+
+## PR #34 availability and unknown-summary correction (2026-10-05)
+
+Current-head Codex identified availability validation bypassed by unsupported
+versions and complete compatible advice concealed as unknown. Independent whole-family
+inspection covered receipt/policy/legacy shortcuts and producer-valid unknown results.
+Specification and regressions preceded implementation: the focused pre-fix run
+failed 114 cases and passed 83 (294 deselected). The corrected full advisory/summary
+selection passed all 491 cases in 15.11 seconds. Invalid availability returns safe
+exit 2 with empty stdout and unchanged stores across JSON/human check/explain;
+summary rejection preserves absent/existing destinations. Genuine incompatible,
+imported, incomplete and unpriced unknown controls remain accepted.
+
+The shared typed Observation validation runs before trust decisions. Summary guards
+require reasons and consistent local completeness/selected declarations, without
+new persistence, budget conversion, gate waivers or changed accepted archives.
+Full scoped gates, independent closure, supported-Linux analyzers and replacement-head
+provider reviews remain pending until their actual evidence is recorded. Rollback
+reverts only this correction; the native Quote archive and earlier evidence remain.
+
+Independent epoch87 review caught an introduced raw optional-amount lookup. Four
+new console controls failed before correction (exit 1/traceback); the guard now
+uses the validated Component amount, preserving optional null semantics and normal
+append behavior. The initial full check passed 2,352 tests in 55.15 seconds and all
+host-supported gates; all ten native analyzers were incomplete on macOS. That run
+is historical after this small correction; replacement verification follows.
+
+Replacement full verification passed 2,356 tests (see the ignored exact-bound
+batch12-final-full-check.log), all host-supported gates and all 11 strict OpenSpec
+items. Native analyzers remain unsupported/incomplete on this macOS controller.
+Independent review ran 495 affected controls and found no remaining runtime defects;
+it caught a stale incremental Quote documentation binding, corrected in the active
+Quote guide before final documentation/staged adoption. Fresh Linux and provider
+acceptance remain separate current-head requirements.

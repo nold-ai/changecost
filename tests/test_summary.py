@@ -513,12 +513,16 @@ DECLARATION_FAULTS = [
 @pytest.mark.parametrize("kind,fault", DECLARATION_FAULTS)
 @pytest.mark.parametrize("existing", [False, True])
 def test_selected_declaration_cli_preserves_destination(tmp_path, kind, fault, existing):
+    assert_rejected_summary(tmp_path, contradictory_declaration(kind, fault), existing)
+
+
+def assert_rejected_summary(tmp_path, value, existing):
     import os
     import subprocess
     import sys
 
     payload = tmp_path / "result.json"
-    payload.write_text(json.dumps(contradictory_declaration(kind, fault)))
+    payload.write_text(json.dumps(value))
     destination = tmp_path / "summary"
     original = b"Earlier summary\n"
     if existing:
@@ -561,3 +565,106 @@ def test_quote_unknown_pair_must_remain_coherent(fault):
         value["declared"][0]["basis"] = "other"
     with pytest.raises(ValueError):
         render_summary(value)
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("status", ["within_budget", "over_budget"])
+@pytest.mark.parametrize("spoofed_reason", [False, True])
+@pytest.mark.parametrize("existing", [False, True])
+def test_unknown_cannot_conceal_complete_compatible(
+    tmp_path, kind, status, spoofed_reason, existing
+):
+    value = verified_result(kind, status)
+    value.update(status="unknown", comparison=None)
+    value["reasons"] = ["incompatible_economic_identity"] if spoofed_reason else []
+    assert_rejected_summary(tmp_path, value, existing)
+
+
+def local_unknown_complete(kind):
+    value = verified_result(kind, "within_budget")
+    value.update(status="unknown", comparison=None, reasons=["incompatible_economic_identity"])
+    value["budget"] = value["budget"] | {"unit": "EUR", "currency": "EUR"}
+    return value
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "quote_null_complete",
+        "quote_finite_unknown",
+        "subtotal_empty",
+        "subtotal_null",
+        "subtotal_incomplete",
+        "subtotal_duplicate",
+        "empty_reasons",
+    ],
+)
+@pytest.mark.parametrize("existing", [False, True])
+def test_unknown_consistency_preserves_destination(tmp_path, fault, existing):
+    value = local_unknown_complete("quote" if fault.startswith("quote") else "computed_settlement")
+    if fault == "quote_null_complete":
+        value["declared"] = result("null")["declared"]
+        value["sample_count"] = 0
+    if fault == "quote_finite_unknown":
+        value["completeness"] = "unknown"
+        value["reasons"] = ["incomplete_or_unpriced"]
+    if fault == "subtotal_empty":
+        value["declared"] = []
+    if fault == "subtotal_null":
+        value["declared"][0]["amount"] = None
+    if fault == "subtotal_incomplete":
+        value["declared"][0]["unknown_count"] = 1
+    if fault == "subtotal_duplicate":
+        value["declared"].append(dict(value["declared"][0]))
+    if fault == "empty_reasons":
+        value = result("unknown")
+        value["reasons"] = []
+    assert_rejected_summary(tmp_path, value, existing)
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+def test_complete_unknown_actual_incompatibility_control(kind):
+    from changecost.summary import render_summary
+
+    assert render_summary(local_unknown_complete(kind))
+
+
+def test_known_subtotal_can_remain_locally_incomplete():
+    from changecost.summary import render_summary
+
+    value = verified_result("computed_settlement", "within_budget")
+    value.update(
+        status="unknown",
+        comparison=None,
+        completeness="unknown",
+        reasons=["incomplete_or_unpriced"],
+    )
+    assert render_summary(value)
+
+
+@pytest.mark.parametrize("missing", [(0,), (0, 1)])
+@pytest.mark.parametrize("existing", [False, True])
+def test_local_unpriced_optional_amount_cli(tmp_path, missing, existing):
+    import os
+    import subprocess
+    import sys
+
+    value = result("incomplete_or_unpriced")
+    value["provenance"] = "locally_reproduced_synthetic; provider_support_not_verified"
+    for index in missing:
+        value["declared"][index].pop("amount")
+    source, destination = tmp_path / "result.json", tmp_path / "summary.md"
+    source.write_text(json.dumps(value))
+    if existing:
+        destination.write_text("previous\n")
+    checked = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(source)],
+        env={**os.environ, "GITHUB_STEP_SUMMARY": str(destination)},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert checked.returncode == 0 and checked.stdout == "" and checked.stderr == ""
+    assert "Status: unknown" in destination.read_text()
+    if existing:
+        assert destination.read_text().startswith("previous\n")

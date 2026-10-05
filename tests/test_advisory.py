@@ -368,17 +368,13 @@ def test_scope_and_completeness_mismatch(tmp_path):
     assert evaluate(store, record)["comparison"] is None
 
 
-def test_legacy_claim_and_unpriced_quote(tmp_path):
+def legacy_claim(store):
     from changecost.models import Component, Settlement
     from changecost.operations import common
     from changecost.store import reference
-    from tests.test_quotes import quote
 
-    store = setup(tmp_path)
-    q = quote(store)
-    assert evaluate(store, q)["status"] == "unknown"
     change = next(r for r in store.records() if r.kind == "change")
-    legacy = Settlement(
+    record = Settlement(
         **common("producer", store.clock()),
         change=reference(change),
         components=[
@@ -392,8 +388,17 @@ def test_legacy_claim_and_unpriced_quote(tmp_path):
         inputs=[reference(change)],
         unknown_reasons=[],
     )
-    store.apply(lambda records, store_id, now: ([legacy], legacy))
-    output = evaluate(store, legacy)
+    store.apply(lambda records, store_id, now: ([record], record))
+    return record
+
+
+def test_legacy_claim_and_unpriced_quote(tmp_path):
+    from tests.test_quotes import quote
+
+    store = setup(tmp_path)
+    q = quote(store)
+    assert evaluate(store, q)["status"] == "unknown"
+    output = evaluate(store, legacy_claim(store))
     assert output["status"] == "unknown" and output["declared"][0]["amount"] == "18"
 
 
@@ -628,7 +633,7 @@ def test_original_cutoff_bound_to_result_availability(tmp_path, kind, boundary, 
 @pytest.mark.parametrize("operation", ["check", "explain"])
 @pytest.mark.parametrize("format", ["json", "human"])
 @pytest.mark.parametrize(
-    "column,value",
+    "corruption",
     [
         ("sequence", "private-corrupt-sequence"),
         ("sequence", 1.5),
@@ -636,8 +641,14 @@ def test_original_cutoff_bound_to_result_availability(tmp_path, kind, boundary, 
         ("available_at", "private-corrupt-availability"),
     ],
 )
-def test_corrupt_result_availability_safe_cli(tmp_path, kind, operation, format, column, value):
-    store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
+@pytest.mark.parametrize(
+    "trust_state", ["supported", "algorithm", "policy", "missing", "duplicate"]
+)
+def test_corrupt_result_availability_safe_cli(
+    tmp_path, kind, operation, format, corruption, trust_state
+):
+    column, value = corruption
+    store, record = availability_trust_fixture(tmp_path, kind, trust_state)
     statement = {
         "sequence": "UPDATE records SET sequence=? WHERE kind=? AND id=?",
         "available_at": "UPDATE records SET available_at=? WHERE kind=? AND id=?",
@@ -785,3 +796,55 @@ def test_duplicate_receipts_deny_authority(tmp_path, kind, matching_request, ent
                 else:
                     compute(store, op=operation)
     assert store.path.read_bytes() == before
+
+
+def availability_trust_fixture(tmp_path, kind, trust_state):
+    store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
+    if trust_state == "algorithm":
+        record = tamper(store, record, algorithm_version="unsupported/v99")
+    if trust_state == "policy":
+        if isinstance(record, Quote):
+            assert record.estimation is not None
+            record = tamper(
+                store,
+                record,
+                estimation=record.estimation.model_copy(
+                    update={"policy_version": "unsupported/v99"}
+                ),
+            )
+        else:
+            record = tamper(store, record, policy_version="unsupported/v99")
+    if trust_state in ("missing", "duplicate"):
+        with store.connect() as connection:
+            if trust_state == "missing":
+                connection.execute(
+                    "DELETE FROM computations WHERE record_id=?", (record.record_id,)
+                )
+            else:
+                connection.execute(
+                    "INSERT INTO computations SELECT ?,request,record_id FROM computations "
+                    "WHERE record_id=?",
+                    ("availability-alias", record.record_id),
+                )
+    return store, record
+
+
+@pytest.mark.parametrize("output_format", ["json", "human"])
+@pytest.mark.parametrize("column", ["sequence", "available_at"])
+def test_legacy_selected_availability_precedes_claim(tmp_path, output_format, column):
+    store = setup(tmp_path)
+    record = legacy_claim(store)
+    assert evaluate(store, record)["status"] == "unknown"
+    query = {
+        "sequence": "UPDATE records SET sequence=? WHERE kind=? AND id=?",
+        "available_at": "UPDATE records SET available_at=? WHERE kind=? AND id=?",
+    }[column]
+    with store.connect() as connection:
+        connection.execute(query, ("private-corrupt-value", record.kind, record.record_id))
+    before = store.path.read_bytes()
+    output = runner.invoke(
+        app, ["--db", str(store.path), "--format", output_format, *check_args(record)]
+    )
+    assert output.exit_code == 2 and output.stdout == ""
+    assert output.stderr and "private-corrupt" not in output.stderr
+    assert "Traceback" not in output.stderr and store.path.read_bytes() == before

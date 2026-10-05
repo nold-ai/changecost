@@ -28,6 +28,7 @@ from changecost.store import (
     merge_portable_records,
     original_computation_cutoff,
     read_records,
+    record_availability,
     reference,
     validate_graph,
 )
@@ -287,6 +288,8 @@ def check_record(store, ref: RecordRef, budget: Component, quantile=None, artifa
         records = read_records(connection)
         validate_graph(records)
         record = selected_record(records, ref)
+        if record_availability(connection, record, metadata.store_id) is None:
+            raise ContractError("selected availability is unavailable")
         verified, reasons = local_verification(connection, records, record, metadata, now)
         return result_for(
             record,

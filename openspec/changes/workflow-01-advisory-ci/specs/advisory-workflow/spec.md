@@ -341,3 +341,20 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **GIVEN** two raw computation receipts reference one Quote or computed Settlement result, with equal or conflicting requests
 - **WHEN** check, inspection or either operation ID's retry evaluates it
 - **THEN** check is unknown with no verified value, inspection denies local computation authority and retries reject without writes. Receipt multiplicity is checked before filtering request or payload operation matches; a matching cloned receipt cannot legitimize an altered Settlement operation ID. Exactly one typed matching receipt remains supported, and unrelated result receipts do not invalidate it.
+
+
+#### Scenario: Selected availability errors precede trust shortcuts
+
+- **GIVEN** a local selected record has malformed availability time or sequence
+- **WHEN** check evaluates it as legacy, unsupported, missing-receipt or ambiguous-receipt advice, or an unsupported Quote is explained
+- **THEN** the selected typed Observation is validated before trust/version shortcuts: CLI exits two with empty stdout, safe stderr and unchanged store bytes, without displaying malformed private values. Valid unsupported/unverifiable records still give unknown advice with exit zero. Artifact mode performs no database access.
+
+#### Scenario: Unknown summary retains consistent producer semantics
+
+- **GIVEN** an unknown check-v1 result
+- **WHEN** the summary helper validates it
+- **THEN** reasons is nonempty. Locally reproduced Quote completeness agrees with its finite versus null quantile pair. Every locally complete result has a nonnull complete selected declaration, even if unknown. Locally complete unknown requires an actually incompatible budget identity and the incompatible_economic_identity reason; a compatible complete result cannot conceal numeric advice by changing status and clearing comparison. Incomplete computed results may retain known subtotals, and valid imported, legacy, unpriced and incompatible unknown results remain accepted. Invalid combinations fail safely before destination access.
+
+#### Scenario: Optional null amount remains safe for local unpriced advice
+- **WHEN** a locally reproduced unpriced unknown Quote omits an optional amount field
+- **THEN** the summary validates the existing null amount semantics without a traceback and preserves normal append behavior

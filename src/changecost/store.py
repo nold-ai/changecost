@@ -313,20 +313,27 @@ def computation_refs(connection, records) -> set:
     return result
 
 
-def original_computation_cutoff(connection, record) -> bool:
-    """Supported producers insert one result immediately after its captured cutoff."""
-    observation = connection.execute(
+def record_availability(connection, record, store_id):
+    """Validate selected stored availability before any computation trust decision."""
+    row = connection.execute(
         "SELECT available_at,sequence FROM records WHERE kind=? AND id=?",
         key(reference(record)),
     ).fetchone()
-    if observation is None:
-        return False
-    availability = Observation(
+    if row is None:
+        return None
+    return Observation(
         reference=reference(record),
-        store_id=record.cutoff.store_id,
-        available_at=observation[0],
-        sequence=observation[1],
+        store_id=store_id,
+        available_at=row[0],
+        sequence=row[1],
     )
+
+
+def original_computation_cutoff(connection, record) -> bool:
+    """Supported producers insert one result immediately after its captured cutoff."""
+    availability = record_availability(connection, record, record.cutoff.store_id)
+    if availability is None:
+        return False
     return (
         record.cutoff.sequence == availability.sequence - 1
         and record.cutoff.at == availability.available_at

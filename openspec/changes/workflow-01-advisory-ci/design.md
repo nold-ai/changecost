@@ -185,3 +185,11 @@ Local computation authority requires exactly one raw receipt per result ID befor
 request/payload matching. Identical aliases and conflicting aliases are ambiguous
 for both computation kinds, including inspection, retry and historical predecessor
 selection. This uses the existing receipt table without a database/schema change.
+
+
+Selected local availability is a technical input boundary, checked before legacy,
+receipt or version trust shortcuts. Quote inspection uses the same typed-row
+validation without changing normal serialized availability. Summary unknown status
+requires reasons; local completeness follows the Quote pair and selected complete
+value. Complete local unknown is possible only for an actually incompatible budget
+with its reason. Partial computed scopes can retain a known subtotal while unknown.

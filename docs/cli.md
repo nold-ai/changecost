@@ -103,6 +103,10 @@ default; p50 is explicit. Settlement quantiles are invalid. Equality and observe
 zero are within_budget. All valid advice (`within_budget`, `over_budget`, `unknown`)
 exits 0; technical failures exit 2.
 
+Selected local availability is validated before legacy, receipt or unsupported
+version shortcuts. Malformed availability remains a safe technical error, even
+when the selected claim would otherwise be unknown; artifact mode stays database-free.
+
 Numeric advice requires exactly one raw receipt for the selected result, a supported
 typed request/payload match and exact
 historical reproduction at the original cutoff. Supported local computations insert

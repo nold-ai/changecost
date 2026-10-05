@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Validate selected local availability before trust/version shortcuts; reject
+  contradictory complete or unexplained unknown CI advice before output writes.
+
 - Reject duplicate or conflicting local computation receipts before granting
   advisory, inspection or retry authority for Quotes and computed Settlements.
 - Clarify the exact Decimal summary control fixture for native Pylint inference

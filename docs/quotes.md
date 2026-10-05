@@ -97,3 +97,9 @@ remain pending.
 ## Budget advice
 
 Read-only check defaults to p90, permits explicit p50 and requires a local typed receipt plus supported historical reproduction before numeric advice. Imported/unpriced Quotes remain unknown with declared values and provenance; see [CLI advice](cli.md#presentation-errors-and-advisory-budgets).
+
+Selected local Quote availability is validated as a typed Observation before
+unsupported-version or receipt trust shortcuts. Malformed sequence/timestamp rows
+fail with safe technical diagnostics rather than leaking raw row values or
+returning a successful unknown claim. Check and explain remain read-only; portable
+artifact advice never accesses the local database.
