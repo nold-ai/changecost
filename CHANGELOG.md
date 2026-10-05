@@ -3,6 +3,12 @@
 
 ## Unreleased
 
+- Bind original local computation cutoffs to each result's own insertion sequence
+  and availability time across advice and historical inspection. Reject unsupported
+  summary authority values and impossible provenance/completeness combinations.
+- Run the complete pytest suite with two locked local workers and combined native
+  coverage, preserving every required analyzer and the signed launcher's deadline.
+
 - Reject JSON nesting beyond the summary decoder's recursion limit with a safe
   technical error, preserving existing summary bytes and absent destinations.
 

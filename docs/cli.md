@@ -104,7 +104,10 @@ zero are within_budget. All valid advice (`within_budget`, `over_budget`, `unkno
 exits 0; technical failures exit 2.
 
 Numeric advice requires a supported local typed computation receipt and exact
-historical reproduction at the original cutoff. Its time cannot exceed the latest
+historical reproduction at the original cutoff. Supported local computations insert
+their result at cutoff sequence plus one and at the cutoff time; check and both
+historical inspectors verify these anchors against the result's own availability.
+Its time cannot exceed the latest
 committed local metadata timestamp, even when the wall clock has advanced; equality
 and earlier historical cutoffs remain eligible. The same boundary applies to Quote
 and computed Settlement explain. A populated store missing its committed metadata

@@ -125,6 +125,11 @@ but committed after the captured snapshot is excluded. This is a snapshot bounda
 not a claim of an exact physical commit timestamp. Clock regression fails writes
 and snapshot capture; it cannot detect arbitrary external tampering or clock jumps.
 Foreign, time-only or future cutoffs cannot prove local replay. A cutoff time must
+match the selected local result's own availability time, and its sequence must be
+exactly one before that result's insertion sequence, as both supported producers
+commit one result after capturing their input cutoff. These anchors apply to
+check and both historical inspectors without changing persisted receipts.
+A cutoff time must
 not exceed the current committed snapshot's metadata timestamp, even when its store ID
 and sequence are otherwise valid or the wall clock has advanced. Check and Quote/computed
 Settlement inspection enforce this bound; equality and older historical cutoffs remain

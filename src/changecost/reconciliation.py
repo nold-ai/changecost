@@ -31,6 +31,7 @@ from changecost.store import (
     available,
     computation_refs,
     key,
+    original_computation_cutoff,
     read_records,
     reference,
     run_key,
@@ -564,6 +565,7 @@ def inspect_computation(store: Store, record: ComputedSettlement) -> dict:
             and last_at is not None
             and cutoff.at <= timestamp(last_at)
             and cutoff.at <= now
+            and original_computation_cutoff(connection, record)
         ):
             snapshot = snapshot_records(connection, cutoff, records)
             eligible = all(key(ref) in snapshot for ref in record.inputs)

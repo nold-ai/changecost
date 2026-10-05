@@ -452,3 +452,81 @@ proof tests and all 11 strict OpenSpec items. The full explicit-base check also
 identified the unchanged behavioral-evidence guide as stale; it now documents the
 seed isolation mechanism and is rechecked independently. The ten native analyzers
 remain unsupported on macOS; this local result does not certify Linux assurance.
+
+## Original-cutoff and summary authority review — 2026-10-05
+
+Fresh Codex review of 6a7d6ee identified cutoff and summary authority defects;
+independent whole-family triage reproduced both. The cutoff could advance to its
+own result insertion or later unrelated history without changing replay values.
+Unknown summary advice accepted unsupported provenance/completeness strings.
+Both supported local producers atomically capture sequence N and time T, then
+insert their one result at N+1 and T. The shared original-cutoff predicate now
+checks those anchors in advice and both inspectors, retaining existing receipt,
+version, metadata/clock and replay requirements without a receipt/schema change.
+
+Under captured input generation 51, the 20-case initial selection produced 16
+failures and four passes in 0.64 seconds: 12 cutoff mutations and four summary
+string claims were accepted; earlier-cutoff controls already rejected mismatches.
+The broader consumer authority matrix under generation 52 produced 22 failures
+and four passes in 1.18 seconds. Six additional cases covered impossible producer
+completeness and local claims with missing cutoff or legacy kind. The legacy case
+was subsequently strengthened to include a valid cutoff, isolating the kind
+condition; no initial red result is claimed for that stronger control.
+
+The consumer accepts only the two actual producer provenance strings and
+complete/unknown completeness. Producer assertions cannot claim complete local
+validation; local authority requires a computation kind and cutoff. Actual
+incompatible-budget, incomplete and unpriced producer outputs remain positive
+controls. The old abbreviated test provenance was corrected to actual output.
+
+The first two-worker affected run under generation 53 passed 416 tests in 14.06
+seconds. It covers original cutoffs, no-write behavior, summary controls, historical
+Quote/Settlement replay and behavioral packets. Full-suite and final independent
+closure remain required; subsequent documentation/stronger-control edits need
+fresh binding rather than retroactively changing that report.
+
+## Full-suite parallel execution — 2026-10-05
+
+The 6a7d6ee Linux run passed all ten analyzers on Python 3.11 but timed out in
+coverage on Python 3.13; all 2,014 host tests passed in 100.59 and 153.39 seconds
+respectively, with nine other native analyzers passing and zero blocking findings.
+The signed 0.50.1 source explicitly supports xdist collection and terminal reports,
+rejects worker errors/incomplete targets, and combines controller coverage.
+Pytest-xdist 3.8.0 and execnet 2.1.2 are locked test tooling, outside runtime package
+dependencies. Pytest config now runs two local workers with load distribution.
+No test selection, required analyzer, enforcement or deadline changes. Host success
+cannot prove native subprocess/plugin compatibility or timeout resolution; fresh
+complete distributed target execution and combined native coverage must pass on
+both Linux jobs. The prepared 59-test packet-seed experiment remains ignored
+investigation evidence and was not adopted. Rollback restores this scoped code,
+test/config and documentation diff; accepted archives and stores remain unchanged.
+
+Final initial parallel verification at generation 54 passed all 2,043 tests in
+53.91 seconds, both wheel proofs and 11 strict OpenSpec items; the fresh dependency
+audit found no known vulnerabilities. Independent review nevertheless found the
+new availability predicate performed arithmetic on an unvalidated SQLite field.
+This was corrected within the same unpublished batch. Under captured generation
+55, 32 human/JSON check/explain controls produced 18 failures and 14 passes in
+0.48 seconds, covering text/fractional/nonpositive sequence and invalid time.
+No passing-before behavior is misreported as a new defect.
+
+The existing Observation validator now checks the selected row's strict integer
+sequence (1..MAX_SEQUENCE), typed reference and timestamp before cutoff arithmetic.
+Under generation 56, all 448 affected tests pass in 15.20 seconds, including all
+32 error/no-write/private-canary controls, original anchors and supported summary
+combinations. A subsequent test-only edit uses fixed SQL statements for each
+allowlisted fault column; final full checks and independent closure use its new
+fingerprint. Native macOS evidence remains incomplete; final Linux execution and
+all current-head provider reviews remain pending.
+
+Final frozen generation 57 passed all 2,075 tests in 52.94 seconds, both wheel
+proofs, dependency audit (no known vulnerabilities) and all 11 strict OpenSpec
+items. Independent defect/security closure passed 214 affected tests in 4.82
+seconds, eight documentation/navigation/metadata/workflow checks and actual
+omission controls for each repaired boundary. All accepted archive bytes were
+conserved. Independent config adoption confirmed 2,075 unique collected IDs,
+unchanged runtime dependencies and original signed adapter fault controls. These
+are host/local proofs: all ten native analyzers remain unsupported on macOS and
+fresh exact-head Linux coverage/provider completion remains required. This final
+evidence-only paragraph is separately checked before staging; source proofs retain
+their generation 57 binding rather than claiming tests were rerun after prose.

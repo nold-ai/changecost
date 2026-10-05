@@ -307,6 +307,26 @@ def computation_refs(connection, records) -> set:
     return result
 
 
+def original_computation_cutoff(connection, record) -> bool:
+    """Supported producers insert one result immediately after its captured cutoff."""
+    observation = connection.execute(
+        "SELECT available_at,sequence FROM records WHERE kind=? AND id=?",
+        key(reference(record)),
+    ).fetchone()
+    if observation is None:
+        return False
+    availability = Observation(
+        reference=reference(record),
+        store_id=record.cutoff.store_id,
+        available_at=observation[0],
+        sequence=observation[1],
+    )
+    return (
+        record.cutoff.sequence == availability.sequence - 1
+        and record.cutoff.at == availability.available_at
+    )
+
+
 def initialize(connection: sqlite3.Connection) -> None:
     for statement in (
         "CREATE TABLE computations(operation_id TEXT PRIMARY KEY, "

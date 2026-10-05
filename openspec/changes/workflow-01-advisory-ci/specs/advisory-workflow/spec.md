@@ -114,7 +114,21 @@ Numeric advice SHALL require a supported valid local typed computation receipt a
 
 The selected cutoff time SHALL NOT exceed the latest committed local metadata timestamp, even when it precedes an advanced wall clock and its sequence/store identity remain valid. Equality and earlier historical cutoffs SHALL remain eligible for reproduction. Quote and computed Settlement inspection SHALL apply the same committed timestamp authority boundary; unavailable timestamps SHALL NOT grant replay eligibility. A populated local store with no committed metadata timestamp SHALL be an invalid store for check and return the controlled technical error without writes.
 
-#### Scenario: Advanced wall clock cannot authorize a future committed cutoff
+Supported local producers SHALL anchor the original cutoff to the selected result's own availability: cutoff sequence equals its insertion sequence minus one, and cutoff time equals its availability time. The receipt, supported version and replay checks SHALL retain this anchor in advisory check and both historical inspectors, even after unrelated later history advances local metadata. No new receipt or persisted budget schema is required.
+
+#### Scenario: Mutated result cutoff cannot acquire historical authority
+
+- **GIVEN** a receipted local result has its cutoff altered to its own insertion, later unrelated history, an earlier equivalent snapshot, or another committed time
+- **WHEN** check or either historical inspector evaluates it
+- **THEN** it has no numeric advice or replay eligibility, while the unchanged original remains eligible after later history; reads leave the store unchanged.
+
+#### Scenario: Corrupt selected result availability is a safe technical failure
+
+- **GIVEN** selected local computation availability has a noninteger or nonpositive sequence, or an invalid timestamp
+- **WHEN** check or explain validates that original-cutoff anchor in human or JSON mode
+- **THEN** it exits 2 with empty stdout and a safe stderr diagnostic, without exposing the corrupt value or traceback or writing the store.
+
+#### Scenario: Advanced wall clock cannot authorize a future committed cutoff time
 
 - **GIVEN** a locally receipted Quote or computed Settlement claims a cutoff later than the latest committed store timestamp but earlier than the current wall clock
 - **WHEN** check or explain inspects that selected record
@@ -232,7 +246,17 @@ The helper SHALL enforce record-kind authority: legacy settlement results SHALL 
 - **WHEN** the helper renders its summary
 - **THEN** final UTF-8 output is valid, at most 65,536 bytes including the visible truncation notice, with valid escapes and benign Unicode preserved.
 
-#### Scenario: Malformed summary enum values
+The summary helper SHALL accept only the two producer provenance values, `locally_reproduced_synthetic; provider_support_not_verified` and `producer_assertion; provider_support_not_verified`, and completeness `complete` or `unknown`. Unknown advice may retain complete local reproduction when the budget identity is incompatible, or unknown local completeness for incomplete/unpriced results. Arbitrary strings SHALL NOT create provenance or completeness authority.
+
+Producer assertions SHALL have unknown completeness. Local reproduction SHALL require a computation kind with a declared cutoff; a legacy Settlement or missing cutoff SHALL NOT claim local reproduction.
+
+#### Scenario: Unsupported provenance or completeness claim
+
+- **GIVEN** an unknown result contains an unsupported provenance or completeness value
+- **WHEN** the summary helper runs
+- **THEN** it exits 2 with empty stdout and the fixed safe diagnostic, without creating or changing the summary destination; valid producer combinations remain accepted.
+
+#### Scenario: Malformed summary enum containers
 
 - **GIVEN** status, record kind, quantile or completeness contains a JSON list or object instead of a permitted value
 - **WHEN** the summary helper runs
@@ -257,6 +281,8 @@ The helper SHALL enforce record-kind authority: legacy settlement results SHALL 
 - **THEN** it records over_budget or unknown advice respectively with exit zero; no required budget gate or provider credential is introduced.
 
 ### Requirement: Current documented workflow and independent repository gates
+
+The locked test tooling SHALL support two local pytest workers for the complete configured suite. Distributed native coverage SHALL preserve every collected target's terminal execution, reject worker errors and report combined coverage. Parallel execution SHALL NOT change test selection, required analyzers, enforcement or the signed launcher's deadline.
 
 Implemented examples SHALL match actual command, output and exit contracts, with current ownership/source mappings, generated references and llms.txt. This change SHALL reuse the foundation validators and existing required Python/native assurance; advisory statuses SHALL NOT suppress tests, docs, metadata or workflow failures. Preparation SHALL remain distinct from runtime delivery, with actual red/green and independent review evidence recorded before acceptance.
 

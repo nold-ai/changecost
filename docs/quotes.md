@@ -58,7 +58,10 @@ fails unchanged. Invalid inputs or failure before commit leave no partial Quote/
 Stored metadata retains target features, parameters, selected exact peer totals/support,
 ordered cohorts, exclusions and synthetic provenance. Inputs retain consulted normalized
 and lifecycle dependencies. Explain verifies the exact stored payload and recomputes
-supported versions at its original time/sequence cutoff in one read snapshot. The cutoff
+supported versions at its original time/sequence cutoff in one read snapshot. The
+result's own insertion sequence must equal cutoff sequence plus one, and its local
+availability time must equal cutoff time, preserving the supported producer's
+original snapshot even after unrelated history advances metadata. The cutoff
 time must not exceed the latest committed metadata timestamp; an advanced wall clock
 does not authorize a future committed cutoff. Equality and older historical cutoffs
 remain eligible, while a missing committed timestamp cannot certify replay. Later

@@ -12,7 +12,19 @@ to 24.16.0. The separate test group lets SpecFact 0.50.1 retain its signed
 BasedPyright 1.39.10 analyzer without a conflicting project copy. These are
 development dependencies; analyzer coverage and type-checking rules remain intact. Pytest
 explicitly imports repository helpers from the checkout root; they stay outside
-the distributed package. CLI tests resolve the active environment’s console script
+the distributed package.
+The test group locks pytest-xdist 3.8.0; repository pytest configuration runs the
+complete suite with two local workers using load distribution. Each worker retains
+its isolated fixtures. The signed native observer supports distributed collection
+and terminal reports, while the coverage adapter combines worker coverage and
+rejects worker errors or missing coverage. Selection, required analyzers, enforcement
+and the native launcher's deadline are unchanged. Fresh Linux reports must show
+complete target execution and passing combined coverage; host timing alone does
+not establish assurance. Sources accessed 2026-10-05 (Europe/Berlin):
+[worker distribution](https://pytest-xdist.readthedocs.io/en/latest/distribution.html),
+[combined coverage](https://pytest-cov.readthedocs.io/en/stable/xdist.html).
+
+CLI tests resolve the active environment’s console script
 from PATH, and the wheel proof puts its clean installation first.
 
 ## Inputs and comparison

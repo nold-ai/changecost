@@ -41,6 +41,7 @@ from changecost.store import (
     Store,
     computation_refs,
     key,
+    original_computation_cutoff,
     read_records,
     reference,
     run_key,
@@ -487,6 +488,7 @@ def inspect_quote(store: Store, record: Quote | RecordRef):
             and last_at is not None
             and record.cutoff.at <= timestamp(last_at)
             and record.cutoff.at <= now
+            and original_computation_cutoff(connection, record)
         )
         reproduced = eligible and quote_reproduced(connection, records, record)
         observation = connection.execute(

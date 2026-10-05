@@ -21,7 +21,7 @@ def result(label):
         "declared": [],
         "scope": None,
         "cutoff": None,
-        "provenance": "producer_assertion",
+        "provenance": "producer_assertion; provider_support_not_verified",
         "completeness": "unknown",
         "sample_count": None,
         "quantile": "p90",
@@ -263,3 +263,99 @@ def test_summary_deep_json_safe_cli(tmp_path, existing):
         assert destination.read_bytes() == original
     else:
         assert not destination.exists()
+
+
+@pytest.mark.parametrize("field", ["provenance", "completeness"])
+@pytest.mark.parametrize("existing", [False, True])
+def test_summary_unsupported_authority_values(tmp_path, field, existing):
+    import os
+    import subprocess
+    import sys
+
+    value = result("ok")
+    value["provenance"] = "producer_assertion; provider_support_not_verified"
+    value[field] = "unsupported-private-authority"
+    payload = tmp_path / "result.json"
+    payload.write_text(json.dumps(value))
+    destination = tmp_path / "summary"
+    original = b"Earlier advisory summary\n"
+    if existing:
+        destination.write_bytes(original)
+    checked = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+    )
+    assert checked.returncode == 2 and checked.stdout == ""
+    assert checked.stderr == "cannot render or write advisory summary\n"
+    if existing:
+        assert destination.read_bytes() == original
+    else:
+        assert not destination.exists()
+
+
+@pytest.mark.parametrize("existing", [False, True])
+@pytest.mark.parametrize("claim", ["producer_complete", "local_missing_cutoff", "legacy_local"])
+def test_summary_impossible_authority_combinations(tmp_path, claim, existing):
+    import os
+    import subprocess
+    import sys
+
+    value = result("ok")
+    value["provenance"] = "producer_assertion; provider_support_not_verified"
+    if claim == "producer_complete":
+        value["completeness"] = "complete"
+    else:
+        value["provenance"] = "locally_reproduced_synthetic; provider_support_not_verified"
+    if claim == "legacy_local":
+        value["record"]["kind"] = "settlement"
+        value["cutoff"] = verified_result("quote", "within_budget")["cutoff"]
+    payload = tmp_path / "result.json"
+    payload.write_text(json.dumps(value))
+    destination = tmp_path / "summary"
+    original = b"Earlier advisory summary\n"
+    if existing:
+        destination.write_bytes(original)
+    checked = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+    )
+    assert checked.returncode == 2 and checked.stdout == ""
+    assert checked.stderr == "cannot render or write advisory summary\n"
+    if existing:
+        assert destination.read_bytes() == original
+    else:
+        assert not destination.exists()
+
+
+@pytest.mark.parametrize("complete", [False, True])
+def test_summary_real_unknown_local_completeness(tmp_path, complete):
+    from changecost.advisory import budget_component, check_record
+    from changecost.store import reference
+    from changecost.summary import render_summary
+    from tests.test_advisory import settlement
+
+    store, record = settlement(tmp_path, complete=complete)
+    output = check_record(
+        store, reference(record), budget_component("15", "monetary", "EUR", "billed", "EUR")
+    )
+    assert output["status"] == "unknown"
+    assert output["completeness"] == ("complete" if complete else "unknown")
+    assert render_summary(output)
+
+
+def test_summary_real_unpriced_quote(tmp_path):
+    from changecost.quotes import compute_quote
+    from changecost.summary import render_summary
+    from tests.test_advisory import evaluate
+    from tests.test_quotes import setup
+    from tests.test_reconciliation import scope
+
+    store = setup(tmp_path)
+    record = compute_quote(store, "target", scope(), "unpriced", minimum=2)
+    output = evaluate(store, record)
+    assert output["status"] == "unknown" and output["completeness"] == "unknown"
+    assert render_summary(output)

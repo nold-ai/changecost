@@ -22,7 +22,17 @@ changecost = "changecost.cli:main"
 [dependency-groups]
 # SpecFact selects the test group without uv's default dev group, preserving
 # its signed analyzer versions while host typing uses the current BasedPyright.
-test = ["pytest>=8,<10", "ruff>=0.12,<1", "pre-commit==4.6.2", "packaging>=25", "pyyaml>=6", "types-pyyaml>=6", "pip-audit>=2.9,<3", "uv==0.12.19"]
+test = [
+    "pytest>=8,<10",
+    "ruff>=0.12,<1",
+    "pre-commit==4.6.2",
+    "packaging>=25",
+    "pyyaml>=6",
+    "types-pyyaml>=6",
+    "pip-audit>=2.9,<3",
+    "uv==0.12.19",
+    "pytest-xdist==3.8.0",
+]
 dev = [{include-group = "test"}, "basedpyright==1.40.1"]
 build = ["hatchling>=1.27,<2"]
 
@@ -34,7 +44,7 @@ only-include = ["src/changecost", "pyproject.toml", "README.md", "LICENSE"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-ra"
+addopts = "-ra -n 2 --dist load"
 
 [tool.specfact.code-review]
 native_tools = ["git"]

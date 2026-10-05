@@ -574,3 +574,69 @@ def test_corrupt_metadata_safe_error_no_write(tmp_path, fault, authority):
     assert json.loads(console.stderr)["schema"] == "changecost/error-v1"
     assert "private" not in console.stderr and "Traceback" not in console.stderr
     assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("boundary", ["own", "later", "earlier", "time"])
+@pytest.mark.parametrize("entrypoint", ["check", "inspect"])
+def test_original_cutoff_bound_to_result_availability(tmp_path, kind, boundary, entrypoint):
+    from datetime import timedelta
+
+    store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
+    original = record.cutoff
+    if boundary in {"later", "time"}:
+        store.clock = lambda: original.at + timedelta(minutes=1)
+        peer(store, "unrelated-later", "999")
+    with store.connect() as connection:
+        own_sequence = connection.execute(
+            "SELECT sequence FROM records WHERE kind=? AND id=?", (kind, record.record_id)
+        ).fetchone()[0]
+        latest_sequence = connection.execute("SELECT sequence FROM metadata").fetchone()[0]
+    updates = {
+        "own": {"sequence": own_sequence},
+        "later": {"sequence": latest_sequence},
+        "earlier": {"sequence": original.sequence - 1},
+        "time": {"at": store.clock()},
+    }
+    changed = tamper(store, record, cutoff=original.model_copy(update=updates[boundary]))
+    before = store.path.read_bytes()
+    if entrypoint == "check":
+        result = evaluate(store, changed)
+        assert result["status"] == "unknown" and result["comparison"] is None
+    else:
+        result = inspect_selected_computation(store, changed)
+        assert result["replay_eligibility"] == "replay_unavailable"
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
+@pytest.mark.parametrize("operation", ["check", "explain"])
+@pytest.mark.parametrize("format", ["json", "human"])
+@pytest.mark.parametrize(
+    "column,value",
+    [
+        ("sequence", "private-corrupt-sequence"),
+        ("sequence", 1.5),
+        ("sequence", 0),
+        ("available_at", "private-corrupt-availability"),
+    ],
+)
+def test_corrupt_result_availability_safe_cli(tmp_path, kind, operation, format, column, value):
+    store, record = priced(tmp_path) if kind == "quote" else settlement(tmp_path)
+    statement = {
+        "sequence": "UPDATE records SET sequence=? WHERE kind=? AND id=?",
+        "available_at": "UPDATE records SET available_at=? WHERE kind=? AND id=?",
+    }[column]
+    with store.connect() as connection:
+        connection.execute(statement, (value, kind, record.record_id))
+    before = store.path.read_bytes()
+    args = (
+        check_args(record)
+        if operation == "check"
+        else ["explain", "--record-kind", kind, "--record-id", record.record_id]
+    )
+    checked = runner.invoke(app, ["--db", str(store.path), "--format", format, *args])
+    assert checked.exit_code == 2 and checked.stdout == ""
+    assert checked.stderr
+    assert "private-corrupt" not in checked.stderr and "Traceback" not in checked.stderr
+    assert store.path.read_bytes() == before

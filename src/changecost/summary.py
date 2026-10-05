@@ -44,10 +44,25 @@ def validate_component(component, *, budget=False):
     return value
 
 
+def validate_authority(value):
+    provenance = value.get("provenance")
+    local = "locally_reproduced_synthetic; provider_support_not_verified"
+    producer = "producer_assertion; provider_support_not_verified"
+    if provenance not in (local, producer) or value.get("completeness") not in (
+        "complete",
+        "unknown",
+    ):
+        raise ValueError("invalid detail")
+    if provenance == producer and value["completeness"] != "unknown":
+        raise ValueError("producer completeness is unknown")
+    if provenance == local and (
+        value["record"]["kind"] == "settlement" or value.get("cutoff") is None
+    ):
+        raise ValueError("invalid local authority")
+
+
 def validate_details(value):
-    for name in ("provenance", "completeness"):
-        if not isinstance(value.get(name), str):
-            raise ValueError("invalid detail")
+    validate_authority(value)
     sample = value.get("sample_count")
     if sample is not None and (type(sample) is not int or sample < 0):
         raise ValueError("invalid sample count")

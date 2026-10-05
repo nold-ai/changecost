@@ -37,7 +37,12 @@ render is bounded to 65,536 bytes including a visible truncation notice; truncat
 preserves characters and escapes. It emits no workflow commands or shell-expanded
 labels. Inputs never enter executable scripts through expression interpolation.
 
-Valid over-budget/unknown advice exits zero. Malformed enum values, including JSON
+Valid over-budget/unknown advice exits zero. Provenance outside the two
+check-producer values or completeness outside
+complete/unknown, fail safely. Producer assertions have unknown completeness;
+local reproduction requires a computation kind and a cutoff. Valid unknown advice
+may retain complete local reproduction when only the budget identity is incompatible.
+Malformed enum containers, including JSON
 arrays and objects, produce the fixed safe error before output opens. Malformed
 results, JSON nesting beyond the decoder's recursion limit, renderer errors and
 summary-write failures exit nonzero; neither continue-on-error nor shell fallbacks

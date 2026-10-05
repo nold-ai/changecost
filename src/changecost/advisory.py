@@ -26,6 +26,7 @@ from changecost.store import (
     key,
     lookup,
     merge_portable_records,
+    original_computation_cutoff,
     read_records,
     reference,
     validate_graph,
@@ -113,6 +114,7 @@ def local_verification(connection, records, record, metadata, now):
         or cutoff.sequence > metadata.sequence
         or cutoff.at > metadata.at
         or cutoff.at > now
+        or not original_computation_cutoff(connection, record)
     ):
         return False, ["foreign_or_future_cutoff"]
     reproduced = (

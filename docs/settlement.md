@@ -150,6 +150,9 @@ captures a new revision. Imported computed results remain producer claims. Inspe
 always labels completeness as `snapshot_only`, never current eligibility. It checks
 the exact immutable payload, local operation receipt, cutoff bounds and all input
 dependencies in one read transaction with one graph validation.
+The result's insertion sequence must equal cutoff sequence plus one and its local
+availability time must equal cutoff time, matching the atomic supported producer.
+Later unrelated history cannot authorize a replacement cutoff.
 
 The local computed ledger is separate from legacy Settlement claims. Its ledger_id
 is an opaque local chain identity; a portable origin ID cannot create a local receipt.
