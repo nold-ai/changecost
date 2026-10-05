@@ -39,7 +39,7 @@ labels. Inputs never enter executable scripts through expression interpolation.
 
 Valid over-budget/unknown advice exits zero. Malformed enum values, including JSON
 arrays and objects, produce the fixed safe error before output opens. Malformed
-results, renderer errors and
+results, JSON nesting beyond the decoder's recursion limit, renderer errors and
 summary-write failures exit nonzero; neither continue-on-error nor shell fallbacks
 mask technical failures. Independent repository quality gates retain their failures.
 The workflow does not upload raw records or automatically comment on PRs. Keep local

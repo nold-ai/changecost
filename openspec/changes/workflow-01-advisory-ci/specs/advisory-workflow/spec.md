@@ -240,6 +240,12 @@ The helper SHALL enforce record-kind authority: legacy settlement results SHALL 
 
 #### Scenario: Summary technical failure
 
+- **GIVEN** deeply nested JSON exceeds the decoder's recursion limit
+- **WHEN** the summary helper reads it
+- **THEN** it exits 2 with empty stdout and the fixed safe diagnostic without a traceback, leaves existing summary bytes unchanged and creates no absent destination.
+
+#### Scenario: Summary destination or version failure
+
 - **GIVEN** an invalid check-result version or unwritable summary destination
 - **WHEN** the example runs
 - **THEN** the helper/job fails nonzero instead of presenting successful budget advice or masking the failure.

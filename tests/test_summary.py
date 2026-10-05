@@ -237,3 +237,29 @@ def test_summary_malformed_enum_safe_cli(tmp_path, field, malformed, existing):
         assert destination.read_bytes() == original
     else:
         assert not destination.exists()
+
+
+@pytest.mark.parametrize("existing", [False, True])
+def test_summary_deep_json_safe_cli(tmp_path, existing):
+    import os
+    import subprocess
+    import sys
+
+    payload = tmp_path / "result.json"
+    payload.write_text("[" * 12000 + "0" + "]" * 12000)
+    destination = tmp_path / "summary"
+    original = b"Earlier advisory summary\n"
+    if existing:
+        destination.write_bytes(original)
+    rejected = subprocess.run(
+        [sys.executable, "-m", "changecost.summary", str(payload)],
+        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
+        capture_output=True,
+        text=True,
+    )
+    assert rejected.returncode == 2 and rejected.stdout == ""
+    assert rejected.stderr == "cannot render or write advisory summary\n"
+    if existing:
+        assert destination.read_bytes() == original
+    else:
+        assert not destination.exists()

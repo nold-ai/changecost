@@ -183,7 +183,7 @@ def main():
         if not destination:
             raise ValueError("missing summary destination")
         write_summary(value, Path(destination))
-    except (OSError, ValueError, UnicodeError):
+    except (OSError, ValueError, UnicodeError, RecursionError):
         parser.exit(2, "cannot render or write advisory summary\n")
 
 

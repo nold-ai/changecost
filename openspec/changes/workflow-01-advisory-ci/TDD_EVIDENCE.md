@@ -411,3 +411,44 @@ The three tuple replacements preserve validator complexity and nesting. Current
 source-bound rationale fingerprints are refreshed for the same ten owned documents;
 accepted archive bytes and prior failed/successful native reports remain unchanged.
 Independent closure and fresh current-head gates remain required.
+
+## PR #34 JSON decoder recursion — 2026-10-05
+
+Direct review reproduced a 24,001-byte, 12,000-level JSON array causing an
+uncaught RecursionError before summary validation. Under captured input generation
+44, two console regressions failed in 0.21 seconds, covering absent and existing
+summary destinations. Both require exit 2, empty stdout, the fixed safe diagnostic
+and preserved destination state. The active specification was clarified before
+production; the decoder boundary now catches RecursionError explicitly.
+
+Under captured green generation 45, all 66 summary tests pass in 4.40 seconds.
+This includes the two new regressions and prior authority, malformed-value,
+Unicode, escaping, truncation and write-failure controls. No arbitrary exception
+handler, store change or native-gate waiver is introduced. Independent closure
+and fresh exact-head hosted assurance remain required. Rollback reverts only this
+handler and its correlated tests/spec/docs; accepted Quote archive stays intact.
+
+## Native coverage startup investigation — 2026-10-05
+
+The current-head Python 3.11 job timed out twice in the signed native coverage
+launcher; the Python 3.13 job passed. The launcher kills and discards timed-out
+worker output, so a particular slow test and the complete cause remain unknown.
+No analyzer, deadline, selection or enforcement setting is changed.
+
+A read-only host profile found four Git setup commands for each review-session
+case; the native capsule also starts a Python launcher for every Git invocation.
+All 586 module tests passed in 88.45 seconds. An isolated experiment replaced only
+the setup fixture with a once-committed seed copied into each fresh test directory;
+all 586 tests passed in 71.49 seconds. AST comparison confirms 199 existing
+functions/classes remain unchanged apart from that fixture. The tracked fixture
+now uses those separate filesystem copies, including independent Git metadata,
+without shared mutable repositories, mocked Git or reduced assertions. These
+host measurements justify reducing repeated setup work, but do not establish
+that the native timeout is fixed. Fresh full-suite, independent isolation review
+and exact-head hosted assurance remain required. Rollback restores this fixture.
+
+The tracked combined source passed all 2,014 tests in 101.55 seconds, both wheel
+proof tests and all 11 strict OpenSpec items. The full explicit-base check also
+identified the unchanged behavioral-evidence guide as stale; it now documents the
+seed isolation mechanism and is rechecked independently. The ten native analyzers
+remain unsupported on macOS; this local result does not certify Linux assurance.
