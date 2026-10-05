@@ -10,7 +10,7 @@ import os
 import re
 import stat
 import sys
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from itertools import islice
 from pathlib import Path
 
@@ -31,6 +31,37 @@ MARKERS = (
     "sys_platform",
     "os_name",
 )
+
+
+def resource_limit(root, name, count):
+    """Read only bounded numeric/max tokens from a fixed kernel limit file."""
+    try:
+        fd = os.open(root / name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(fd, "rb") as source:
+            raw = source.read(65)
+        fields = raw.split()
+        if len(raw) > 64 or len(fields) != count:
+            return None
+        if any(re.fullmatch(rb"max|[0-9]{1,20}", field) is None for field in fields):
+            return None
+        return ["max" if field == b"max" else int(field) for field in fields]
+    except OSError:
+        return None
+
+
+def host_context(root=Path("/sys/fs/cgroup")):
+    """Observe fixed host fields without printing environment or runtime payloads."""
+    affinity = None
+    if hasattr(os, "sched_getaffinity"):
+        with suppress(OSError):
+            affinity = len(os.sched_getaffinity(0))
+    return dict(
+        python_version=list(sys.version_info[:3]),
+        cpu_count=os.cpu_count(),
+        cpu_affinity_count=affinity,
+        cgroup_cpu_max=resource_limit(root, "cpu.max", 2),
+        cgroup_memory_max=resource_limit(root, "memory.max", 1),
+    )
 
 
 def require(condition):

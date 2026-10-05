@@ -1,5 +1,11 @@
 # Optional synthetic advisory summary
 
+Required repository quality remains independent of this example. Its current
+coverage timeout investigation adds slowest-test durations to the existing full
+host suite and fixed, bounded CPU/resource context before the gate. See
+[quality gates](development/quality-gates.md#privacy-safe-runtime-timeout-diagnostics)
+for scope and limitations. Host observations never replace signed native acceptance.
+
 The [manual example](../.github/workflows/advisory.yml) runs only with
 workflow_dispatch. It uses the existing pinned checkout/Python/uv setup and locked
 dependencies, permissions `contents: read` and no persisted checkout credentials.

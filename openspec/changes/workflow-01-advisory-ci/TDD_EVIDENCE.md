@@ -944,3 +944,40 @@ Exact host preflight found no blocking metrics or non-import Pylint errors.
 The worker configuration is a locally validated candidate, not native completion:
 all ten analyzers remain unsupported/incomplete on macOS, and both fresh signed
 Linux reports plus current-head provider reviews are still required.
+
+## PR #34 native diagnostic — 2026-10-05
+
+Fresh commit 95457ed failed both signed coverage launches at the existing
+300-second limit; the other nine analyzers passed. Both host suites passed all
+2,685 tests in 148.03 and 148.60 seconds. No target_execution or partial test/coverage
+observations survive the failed launch. Four workers did not establish native
+acceptance, and the cause remains unknown. Independent raw-report triage retained
+both failures and recommended actual same-runner timing before another remedy.
+
+The diagnostic plan adds durations to the existing host suite and fixed bounded
+Python/CPU/cgroup context before the aggregate check. No second suite, dependency,
+runner upgrade, test omission, timeout change or native waiver is introduced.
+Nine collector tests failed before implementation in 0.08 seconds. The first
+integration run exposed the repository's required per-step UV_PYTHON binding;
+96 gate tests failed, 76 passed. The step was corrected to retain the canonical
+matrix interpreter. Missing, malformed, oversized and symlinked limit files return
+unavailable fields without printing private canaries. Fresh scoped checks and
+independent review remain required; host metrics do not prove a coverage cause.
+
+After retaining the required interpreter binding, all 172 affected collector and
+repository-gate tests passed in 0.98 seconds. All original failure receipts remain.
+
+The first aggregate attempt failed before gates because sandbox DNS blocked the
+unchanged Hatchling build requirement. The authorized network retry passed 2,694
+tests in 34.44 seconds, types, audit and strict OpenSpec checks, but reported one
+SIM105 lint error in the optional-affinity fallback. It remains failed evidence.
+The fallback now uses contextlib.suppress(OSError); an explicit unavailable-affinity
+control confirms null output without private exception text. Native macOS analysis
+remains unsupported; this diagnostic cannot certify the coverage timeout as fixed.
+
+Frozen epoch111 passed 2,695 tests in 34.40 seconds, installed-wheel checks and
+every host-supported gate, including all 11 strict OpenSpec items. Independent
+affected review found no defects and inspected the full gate log and all 96
+input fingerprints. Aggregate make exited 2 solely for ten unsupported macOS
+native analyzers. This supports diagnostic publication only; the actual Linux
+coverage recurrence remains unresolved, with no native exception or waiver.

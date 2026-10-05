@@ -110,6 +110,15 @@ jobs:
           # Only policy installation is administrative; analysis stays unprivileged.
           sudo apparmor_parser -r "$profile"
           test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
+      - name: Observe bounded host resource context
+        env:
+          UV_PYTHON: ${{ matrix.python }}
+        run: |
+          .venv/bin/python - <<'PY'
+          import json
+          from quality.runtime_diagnostics import host_context
+          print(json.dumps(host_context(), sort_keys=True))
+          PY
       - name: Check repository
         env:
           UV_PYTHON: ${{ matrix.python }}

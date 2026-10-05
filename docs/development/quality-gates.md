@@ -659,3 +659,18 @@ performance or acceptance; actual fresh signed reports must retain every collect
 and called test, combined coverage, controller observations and complete worker
 evidence. The repository is private and actual hosted CPU count was not recorded.
 No runner upgrade, dependency, selection, threshold or deadline change is made.
+
+Both fresh 95457ed Linux reports still returned coverage UNKNOWN at the signed
+300-second launch deadline; all other nine analyzers passed. The host suites
+passed 2,685 tests in 148.03 and 148.60 seconds. Four workers therefore remain an
+unaccepted native performance hypothesis. No partial target observations survive
+the timeout, so startup, tests, workers and coverage export cannot be distinguished.
+
+The existing host pytest run now reports its slowest 25 durations. Before the
+aggregate gate, the workflow logs only Python-version integers, logical CPU and
+affinity counts, and bounded numeric/max cpu.max and memory.max tokens. Absent,
+malformed, oversized or symlinked limit files produce null fields; arbitrary input,
+environment variables and runtime payloads are not logged. No duplicate suite or
+new dependency is introduced. These observations diagnose the host, not native
+coverage; all tests, signed analyzers, worker/controller observations and deadlines
+remain mandatory. Rollback removes only the collector and diagnostic configuration.

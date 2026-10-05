@@ -7,6 +7,75 @@ from typing import Any
 import pytest
 
 
+@pytest.mark.parametrize(
+    "cpu,memory", [(b"200000 100000\n", b"1073741824\n"), (b"max 100000\n", b"max\n")]
+)
+def test_host_context_allowlist(tmp_path, cpu, memory):
+    from quality.runtime_diagnostics import host_context
+
+    (tmp_path / "cpu.max").write_bytes(cpu)
+    (tmp_path / "memory.max").write_bytes(memory)
+    (tmp_path / "private").write_text("PRIVATE_CANARY")
+    context = host_context(tmp_path)
+    assert set(context) == {
+        "python_version",
+        "cpu_count",
+        "cpu_affinity_count",
+        "cgroup_cpu_max",
+        "cgroup_memory_max",
+    }
+    assert context["cgroup_cpu_max"] == [int(v) if v != b"max" else "max" for v in cpu.split()]
+    assert context["cgroup_memory_max"] == [
+        int(v) if v != b"max" else "max" for v in memory.split()
+    ]
+    assert "PRIVATE_CANARY" not in json.dumps(context)
+
+
+@pytest.mark.parametrize(
+    "raw", [b"PRIVATE_CANARY", b"1" * 65, b"1 2 3", b"-1 100000", b"\xff 100000"]
+)
+def test_host_context_rejects_invalid_limits(tmp_path, raw):
+    from quality.runtime_diagnostics import host_context
+
+    (tmp_path / "cpu.max").write_bytes(raw)
+    (tmp_path / "memory.max").write_bytes(raw)
+    context = host_context(tmp_path)
+    assert context["cgroup_cpu_max"] is None
+    assert context["cgroup_memory_max"] is None
+    assert "PRIVATE_CANARY" not in json.dumps(context)
+
+
+def test_host_context_missing_limits(tmp_path):
+    from quality.runtime_diagnostics import host_context
+
+    context = host_context(tmp_path)
+    assert context["cgroup_cpu_max"] is None and context["cgroup_memory_max"] is None
+
+
+def test_host_context_unavailable_affinity(monkeypatch, tmp_path):
+    import os
+
+    from quality.runtime_diagnostics import host_context
+
+    def unavailable(_pid):
+        raise OSError("PRIVATE_CANARY")
+
+    monkeypatch.setattr(os, "sched_getaffinity", unavailable, raising=False)
+    context = host_context(tmp_path)
+    assert context["cpu_affinity_count"] is None
+    assert "PRIVATE_CANARY" not in json.dumps(context)
+
+
+def test_host_context_does_not_follow_limit_symlinks(tmp_path):
+    from quality.runtime_diagnostics import host_context
+
+    (tmp_path / "private").write_text("PRIVATE_CANARY")
+    for name in ("cpu.max", "memory.max"):
+        (tmp_path / name).symlink_to(tmp_path / "private")
+    context = host_context(tmp_path)
+    assert context["cgroup_cpu_max"] is None and context["cgroup_memory_max"] is None
+
+
 def fixture(tmp_path):
     inventory: dict[str, Any] = {
         "environment": {

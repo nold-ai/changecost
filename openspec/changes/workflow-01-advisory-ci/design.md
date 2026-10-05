@@ -218,3 +218,17 @@ duplicate or unmatched groups accepted by the record model and remain unknown.
 Only locally reproduced results apply scope/grouping/completeness invariants.
 Human and summary rendering escape U+2028/U+2029 mandatory text separators;
 other Unicode and exact JSON record values remain intact.
+# Native timeout investigation
+
+Both signed coverage analyzers for commit 95457ed timed out at 300 seconds;
+the other nine analyzers passed. Four pytest workers did not establish native
+acceptance. The failed reports contain no partial test or coverage observations,
+so the cause remains unknown. Preserve these failures and every mandatory gate.
+
+Log the slowest 25 durations from the existing complete host suite, and collect
+only bounded Python-version, CPU/affinity counts and numeric/max cgroup limits
+before the repository check. Missing or invalid resource values are unavailable;
+never print arbitrary input, environment values or runtime payloads. These host
+observations cannot replace signed coverage or establish its timeout cause.
+No second suite, dependency, runner upgrade, test selection or deadline change
+is introduced. Rollback removes only the diagnostic configuration and collector.

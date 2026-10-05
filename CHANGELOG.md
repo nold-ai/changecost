@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Retain slowest-test durations and bounded host resource context while investigating
+  repeated native coverage timeouts; preserve every test, analyzer and deadline.
+
 - Require completeness counts in imported computed Settlement summaries while
   retaining valid unverified claims; escape Unicode line/paragraph separators in
   human and CI presentation. Run the complete suite with four locked workers.
