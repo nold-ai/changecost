@@ -894,10 +894,9 @@ def test_linked_peer_growth_uses_snapshot_indices(
         assert result.estimation is not None
         refs = {(r.kind, r.record_id) for r in result.inputs}
         assert {(r.kind, r.record_id) for r in additions} <= refs
+        records = {(r.kind, r.record_id): r for r in store.records()}
         for change in [r for r in additions if r.kind == "change"]:
-            assert_empty_peer_diagnostics(
-                {(r.kind, r.record_id): r for r in store.records()}, change, result, refs
-            )
+            assert_empty_peer_diagnostics(records, change, result, refs)
     record_property("record_visits", visits)
     assert visits[1] < 3 * visits[0]
     assert visits[2] < 3 * visits[1]

@@ -111,3 +111,12 @@ selected records and preserving store bytes. The original cutoff-to-insertion
 anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
 the committed snapshot. Equality and later committed appends remain supported;
 portable artifact advice never consults the local store.
+
+
+## Regression fixtures
+
+The peer-growth regression checks retain all candidate diagnostics at fixture sizes
+32, 64 and 128 for open, unbounded and bounded histories. Each fixture captures its
+unchanged post-computation store once for those assertions. This avoids repeated
+SQLite graph reads in test setup while retaining every peer check and the existing
+record-visit bounds; it does not change Quote computation or historical replay.

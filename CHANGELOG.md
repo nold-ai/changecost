@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Reuse one immutable post-computation store snapshot per Quote growth-test fixture,
+  retaining every candidate assertion and fixture size while avoiding repeated reads.
+
 - Close caller-owned SQLite connections in advisory fault-injection tests on success
   and exceptions, preserving their transaction behavior and all test cases.
 

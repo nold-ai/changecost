@@ -1058,3 +1058,46 @@ and the Linux timeout are separate limitations. Linux coverage and current provi
 acceptance remain incomplete; fresh candidate CI is required.
 Rollback restores these test contexts only, preserving the Quote archive and
 all historical failure evidence. No release or version change is needed.
+
+
+## PR #34 measured Quote fixture inspection cost — 2026-10-05
+
+The three delivered Quote growth tests predate this PR. Actual Linux host timings
+at commit 6cdcced were 9.86, 15.65 and 17.40 seconds. Each unchanged post-quote
+assertion loop reloaded and validated the complete store once per candidate.
+An isolated prospective comparison retained all 224 candidate assertions per case
+(672 across the three lifecycle cases), while reducing full store reads from 224
+to three per case. Six missing-exclusion fault controls failed the real diagnostic
+assertions in both original and prospective functions. These measurements identify
+a fixture cost, not the signed Linux coverage timeout's cause.
+
+A fresh detector against the actual tracked tests failed before the change: all
+three cases exceeded the three-fixture read bound, with 224 full store reads each.
+The minimum correction captures the same immutable post-computation records once
+per fixture size, before the candidate assertion loop. All fixture sizes, candidate
+checks, visit ratios, test identities and runtime code remain unchanged.
+
+GitHub reported an Actions runner-assignment/start-delay incident on 2026-10-05
+(latest observed update 20:39 UTC; [GitHub status](https://www.githubstatus.com/),
+accessed 2026-10-05). Published commit 257f414's jobs were queued
+without assigned runners or steps; the incident is consistent with that queue,
+but does not prove its specific cause or explain earlier capsule timeouts. This
+local correction was independently scoped while preserving the queued published
+head's evidence. The actual tracked detector then passed at epoch127: three full
+store reads and all 224 assertions per lifecycle case, with each injected semantic
+fault rejected. Frozen epoch128 passed all 2,779 tests in 36.24 seconds, wheel
+checks, every host-supported gate and all 11 strict OpenSpec items; aggregate exit
+2 remains incomplete solely for ten unsupported macOS native analyzers. Independent
+review confirmed unchanged test identities, visit metrics and production/archive
+bytes. Full-suite elapsed time is not a reliable improvement claim from this pair.
+
+The published cleanup run [37370921815](https://github.com/nold-ai/changecost/actions/runs/37370921815)
+subsequently ended with both jobs cancelled before any runner or step: GitHub's
+annotation states the hosted runner was not acquired after multiple attempts. No
+native analyzer executed. This infrastructure failure is distinct from the earlier
+300-second coverage timeout. Deliberate candidate publication is authorized after
+final staged/document adoption; it does not waive fresh Linux or provider results.
+Native coverage and provider acceptance remain incomplete, with no deadline,
+analyzer, threshold, dependency or paid-service change.
+The accepted Quote archive retains its original bytes and historical evidence.
+Rollback restores only this fixture/documentation diff; no version change is needed.
