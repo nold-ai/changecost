@@ -1305,3 +1305,37 @@ unresolved: this instrumentation is a diagnostic candidate, not a verified timin
 Rollback restores this observer/upload/documentation delta only, preserving the Quote
 archive, summary corrections and every historical failure. No package version, paid
 infrastructure, vendor patch, deadline, threshold or test-selection change is involved.
+
+
+## PR #34 diagnostic fixture work reduction — 2026-10-06
+
+Run 37393754975 on `7490aa1` passed all ten native gates in the 3.11.15
+host job (2,880 tests and four subtests); coverage in the 3.13.14 host job
+returned UNKNOWN at the unchanged 300-second limit, with the other nine gates
+passing. Both numeric diagnostics match the actual native review input digest,
+retain complete baselines and terminal tails, and show sampled descendant activity.
+They do not identify test phases or establish timeout causality. The two actual
+native environments retain the same CPython 3.13.11 and package/member graphs.
+
+Independent diagnosis measured redundant fake-proc stat reads in the diagnostic
+ring-overflow fixture: 911 reads versus 23 for four real transitions and a terminal
+sample using a test-only three-frame ring. Local measured time was 0.03966 versus
+0.00129 seconds; this small host observation does not explain a native timeout.
+Every original assertion and case identity remains, including privacy, digest/root
+binding and exclusive-output failure. A separate controlled 32-process snapshot
+proves the unchanged production 120-frame capacity, overflow/oldest-drop/terminal
+retention and 64 KiB output limit. All 52 collector cases passed in 0.73 seconds.
+Runtime, analyzer limits, pins, test selection and enforcement are unchanged.
+Independent affected review found no defects. Isolated unchanged controls passed
+both cases; removing truncation reporting or terminal-tail sampling caused two
+failures each, and removing exclusive-write protection caused one failure. Frozen170
+aggregate passed all 2,881 tests in 31.28 seconds, installed-wheel/audit checks,
+locked uv/make-selection proofs, typing/lint/generated references and all 11 strict
+OpenSpec items. Its actual exit two retains one stale documentation digest and ten
+unsupported macOS native analyzers. The digest calculation originally used the
+intended-file manifest rather than the complete repository inventory; the repaired
+document gate and final staged adoption are recorded separately. No runtime or
+test bytes change for that metadata repair. Fresh Linux/full provider acceptance
+remains required; no deterministic timeout fix is claimed.
+Rollback restores only this fixture/documentation correction, preserving the Quote
+archive, runtime fixes, diagnostics and all historical failures.

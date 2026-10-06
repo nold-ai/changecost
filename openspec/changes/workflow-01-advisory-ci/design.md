@@ -275,3 +275,9 @@ explicit. No command line, environment, process name, source path or payload is 
 into the output. An exclusive fresh diagnostic is bound to the review input digest;
 unsupported metadata and output failures cannot change native exits or acceptance.
 This observation identifies activity, not pytest phases or timeout causality.
+
+Observer regression fixtures exercise overflow using a small test-only ring and
+real process-stat transitions. A separate controlled numeric snapshot verifies the
+unchanged production 120-sample capacity, terminal retention and 64 KiB bound,
+avoiding repeated filesystem scans merely to reach the ring limit. This fixture
+cleanup does not establish the native coverage timeout cause or waive fresh CI.

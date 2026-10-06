@@ -451,14 +451,17 @@ def test_process_stat_parentheses_are_private():
     assert value["pid"] == 10 and "private" not in json.dumps(value)
 
 
-def test_native_observer_tail_and_exclusive_output(tmp_path):
-    from quality.runtime_diagnostics import NativeObservation
+def test_native_observer_tail_and_exclusive_output(tmp_path, monkeypatch):
+    import quality.runtime_diagnostics as target
+
+    monkeypatch.setattr(target, "SAMPLE_LIMIT", 3)
+    NativeObservation = target.NativeObservation
 
     proc = tmp_path / "proc"
     proc.mkdir()
     proc_fixture(proc, 10)
     observation = NativeObservation(10, "a" * 64, proc)
-    for index in range(300):
+    for index in (0, 1, 2, 299):
         proc_fixture(proc, 11, parent=10, start=11, cpu=index)
         observation.sample(index)
     output = tmp_path / "diagnostic.json"
@@ -471,6 +474,32 @@ def test_native_observer_tail_and_exclusive_output(tmp_path):
     assert len(output.read_bytes()) <= 65_536 and "PRIVATE_CANARY" not in output.read_text()
     with pytest.raises(OSError):
         observation.finish(output, 302)
+
+
+def test_native_observer_production_capacity(tmp_path, monkeypatch):
+    import quality.runtime_diagnostics as target
+
+    proc_fixture(tmp_path, 10)
+    observation = target.NativeObservation(10, "a" * 64, tmp_path)
+    rows = [
+        target.parse_process_stat(process_stat_bytes(pid, parent=10, start=pid), pid)
+        for pid in range(11, 43)
+    ]
+    snapshot = dict(
+        processes=rows, truncated=False, unavailable=0, root_valid=True, lineage_exclusions=0
+    )
+    monkeypatch.setattr(target, "process_tree", lambda *_args: snapshot)
+    assert target.SAMPLE_LIMIT == 120
+    for elapsed in range(1, 120):
+        observation.sample(elapsed)
+    assert len(observation.samples) == 120 and not observation.truncated
+    output = tmp_path / "production-capacity.json"
+    observation.finish(output, 120)
+    value = json.loads(output.read_text())
+    assert len(value["samples"]) == 120 and value["truncated"]
+    assert value["samples"][0]["elapsed_seconds"] == 1
+    assert value["samples"][-1]["elapsed_seconds"] == 120
+    assert len(value["latest_tree"]) == 32 and len(output.read_bytes()) <= 65_536
 
 
 def test_native_observer_unavailable_and_error_cleanup(tmp_path):

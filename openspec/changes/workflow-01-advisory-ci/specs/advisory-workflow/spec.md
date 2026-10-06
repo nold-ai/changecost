@@ -418,3 +418,7 @@ The native review invocation SHALL retain its canonical command, exit and report
 #### Scenario: Descendant identities race or process history exceeds the bound
 - **WHEN** a root identity changes, a parent link is missing or starts after its child, or retained observations reach their bound
 - **THEN** uncertain lineage is excluded, discontinuities/truncation are disclosed, and the terminal observation remains retained within 64 KiB
+
+#### Scenario: Diagnostic production capacity remains covered
+- **WHEN** a controlled numeric process snapshot fills the production observation ring
+- **THEN** all 120 retained frames fit within 64 KiB, overflow is disclosed and the terminal frame is retained; real stat and lifecycle controls remain required

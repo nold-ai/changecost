@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Reduce repeated filesystem work in diagnostic test fixtures while preserving
+  real lifecycle controls and production observation-capacity coverage.
+
 - Retain bounded numeric native descendant activity and terminal-tail diagnostics on CI failures while preserving analyzer execution and enforcement.
 
 - Reject fabricated time windows in Quote summary projections, preserving null
