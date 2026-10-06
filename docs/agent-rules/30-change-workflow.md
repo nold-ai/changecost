@@ -369,8 +369,9 @@ Pattern inspected on 2026-09-28 (Europe/Berlin): `specfact-cli-modules` at
 `tests/unit/docs/test_llms_overview_freshness.py` (freshness guard), and
 `docs/agent-rules/70-release-commit-and-docs.md` (metadata consistency).
 The generated reference now includes offline lifecycle and normalized settlement
-options and offline empirical Quote selectors. Check and native provider adapters
-remain unimplemented; synthetic source limits are documented in
+options, offline empirical Quote selectors and read-only explicit advisory checks.
+Global human presentation preserves JSON defaults; valid advice never waives repository
+quality gates. Native provider adapters remain unimplemented; synthetic source limits are documented in
 [Quotes](../quotes.md) and the settlement implementation.
 
 ## Behavioral evidence and follow-up review

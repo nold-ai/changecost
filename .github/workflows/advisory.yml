@@ -1,0 +1,33 @@
+name: Synthetic advisory example
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  advisory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: /bin/bash --noprofile --norc -p -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13.14'
+      - name: Install pinned bootstrap and locked environment
+        run: |
+          python -m pip install uv==0.12.19
+          uv sync --locked
+      - name: Build local synthetic evidence and advice
+        run: uv run --locked python -m changecost.demo .changecost/advisory-example
+      - name: Render verified and portable advice as data
+        run: |
+          uv run --locked python -m changecost.summary .changecost/advisory-example/local-quote.json
+          uv run --locked python -m changecost.summary .changecost/advisory-example/local-settlement.json
+          uv run --locked python -m changecost.summary .changecost/advisory-example/portable-claim.json

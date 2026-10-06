@@ -238,3 +238,15 @@ packet remains advisory; only the existing session evaluates completion. The PR 
 records exact-head live acceptance; tracked pilot reports and unchecked publication-time
 milestones remain historical without creating another receipt-only source commit.
 Original f6dd negative results and fixed telemetry are retained separately.
+
+## Review-session test isolation
+
+Review-session tests initialize one actual committed seed repository per pytest
+session and copy its working files and Git metadata into each fresh test directory.
+Copies use separate files rather than hardlinks or shared object stores. Each test
+continues to exercise actual Git capture, index, history and mutation behavior in
+its own repository; setup reuse does not reduce test selection or assertions.
+Independent mutation controls verify that a commit, index/config/hook change or
+working-file edit in one copy cannot alter the seed or another copy. This removes
+repeated Git initialization work, including capsule launcher startup, while fresh
+required native coverage remains the authority for CI acceptance.

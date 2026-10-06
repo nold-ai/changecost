@@ -49,6 +49,12 @@ main specs. Settlement reconciliation merged in PR #28 on 2026-10-02 and is
 accepted/archived with synchronized main specs. Provider adapters and live
 collection require a subsequent request.
 
-Quote #15 runtime implementation was authorized on 2026-10-03. This checkout adds
-offline synthetic empirical estimation and historical replay; verification/publication
-remain tracked in the active change evidence. No provider collection is authorized.
+Quote #15 merged in PR #32 on 2026-10-03. Native CLI archival on 2026-10-04
+synchronized the accepted offline synthetic estimation and historical replay contract
+into main specs. Archived evidence preserves verification and accepted limitations.
+Provider collection and calibration remain separate gates.
+
+Advisory #16 implementation, verification and combined PR delivery were explicitly
+authorized on 2026-10-05. This checkout adds presentation, read-only exact historical
+budget advice and a manual synthetic summary example. Provider/live collection
+and calibration remain outside that authorization.

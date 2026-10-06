@@ -6,7 +6,7 @@ import json
 import os
 import sqlite3
 import tempfile
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import UTC, datetime
@@ -41,6 +41,14 @@ from changecost.models import (
 from changecost.serialization import ContractError
 
 ADAPTER = TypeAdapter(PortableRecord)
+
+
+def metadata_row(connection):
+    """Read one metadata row without replacing unavailable historical timestamps."""
+    rows = connection.execute("SELECT store_id,sequence,last_at FROM metadata").fetchmany(2)
+    if len(rows) != 1:
+        raise ContractError("invalid local store metadata")
+    return rows[0]
 
 
 def reference(record: PortableRecord) -> RecordRef:
@@ -282,19 +290,25 @@ def read_records(connection: sqlite3.Connection) -> dict:
     }
 
 
+def unique_computation_receipts(connection):
+    rows = list(connection.execute("SELECT operation_id,request,record_id FROM computations"))
+    counts = Counter(record_id for _, _, record_id in rows)
+    return [row for row in rows if counts[row[2]] == 1]
+
+
 def computation_refs(connection, records) -> set:
     """Resolve receipts by typed payload and its exact validated request."""
     from changecost.quotes import request_for
 
     result = set()
-    for request, record_id in connection.execute("SELECT request,record_id FROM computations"):
+    for operation_id, request, record_id in unique_computation_receipts(connection):
         settlement = records.get(("computed_settlement", record_id))
         if isinstance(settlement, ComputedSettlement):
             change = lookup(records, settlement.change, "change")
             if not isinstance(change, Change):
                 raise ContractError("expected Change")
             expected = settlement.scope.model_dump_json() + ":" + change.change_id
-            if request == expected:
+            if request == expected and operation_id == settlement.operation_id:
                 result.add(("computed_settlement", record_id))
         quote = records.get(("quote", record_id))
         if isinstance(quote, Quote) and quote.estimation is not None:
@@ -305,6 +319,43 @@ def computation_refs(connection, records) -> set:
             if request == expected:
                 result.add(("quote", record_id))
     return result
+
+
+def record_availability(connection, record, store_id, *, maximum_sequence=None):
+    """Validate selected stored availability before any computation trust decision."""
+    row = connection.execute(
+        "SELECT available_at,sequence FROM records WHERE kind=? AND id=?",
+        key(reference(record)),
+    ).fetchone()
+    if row is None:
+        return None
+    observation = Observation(
+        reference=reference(record),
+        store_id=store_id,
+        available_at=row[0],
+        sequence=row[1],
+    )
+    if maximum_sequence is not None and (
+        type(maximum_sequence) is not int
+        or maximum_sequence < 0
+        or observation.sequence > maximum_sequence
+    ):
+        raise ContractError("selected availability exceeds committed sequence")
+    return observation
+
+
+def original_computation_cutoff(connection, record) -> bool:
+    """Supported producers insert one result immediately after its captured cutoff."""
+    availability = record_availability(connection, record, record.cutoff.store_id)
+    if availability is None:
+        return False
+    return (
+        record.cutoff.sequence == availability.sequence - 1
+        and record.cutoff.at == availability.available_at
+        and record.origin_store_id == record.cutoff.store_id
+        and record.recorded_at == record.cutoff.at
+        and record.effective_at == record.cutoff.at
+    )
 
 
 def initialize(connection: sqlite3.Connection) -> None:
@@ -471,7 +522,7 @@ class Store:
         connection = self.connect(readonly=True)
         try:
             connection.execute("BEGIN")
-            store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
+            store_id, sequence, last_at = metadata_row(connection)
             now = timestamp(self.clock())
             if last_at and now < timestamp(last_at):
                 raise ContractError("clock moved backwards")

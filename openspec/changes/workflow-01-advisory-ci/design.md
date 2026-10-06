@@ -1,104 +1,345 @@
-# Design: Expose advisory CLI checks and GitHub summaries
+# Design: Advisory CLI checks and GitHub summaries
 
-## Context
+## Context and delivered boundaries
 
-See [proposal](proposal.md) and [capability spec](specs/advisory-workflow/spec.md).
-The current repository contains documentation and hygiene gates, with no product
-package or runtime. This design describes later implementation, not delivered behavior.
+See [proposal](proposal.md), [acceptance scenarios](specs/advisory-workflow/spec.md)
+and [preparation evidence](PREPARATION_EVIDENCE.md).
+The Python foundation, four current command families, registration/binding, lifecycle
+outcomes, normalized evidence import, computed Settlement and synthetic Quote are
+delivered. The authorized implementation now adds `check`, human formatting and structured CLI errors; current-head verification and published acceptance remain pending.
+Existing Quote inspection can reproduce supported historical parameters/results;
+Settlement inspection currently checks receipt/input availability, not full result
+reproduction. Availability alone cannot justify complete budget advice.
 
-## Goals / Non-Goals
+## Goals and non-goals
 
-**Goals:** Make the specified capability local, reproducible and explicit about missing evidence.
+Add readable presentation, truthful offline budget advice and an opt-in safe CI
+summary. Reuse delivered contracts, selectors, snapshots, provenance and gates.
+No persisted budget, migration, new source policy, provider parser, new coverage
+creation command, enforcement, price conversion or competing quality pipeline.
 
-**Non-Goals:** No required budget-status enforcement, PR comment bot, hosted service,
-dashboard, provider account setup or SpecFact runtime integration. This does not
-exempt the repository from the foundation's development quality gates.
+## Presentation and error contract
 
-## Decisions
+Global `--format json|human` appears before the command, like `--db`; default json.
+Preserve successful JSON payloads for bind, quote, settle and explain, including
+portable record schemas and amount strings. Do not add a universal wrapper or
+require economic fields on identity-only results. New check output has an internal
+version tag; new JSON errors have a version tag, stable code and safe message.
+These tags are internal preview contracts, not a product release or artifact v2.
+Human output renders the same underlying result and uncertainty; formatting does
+not affect selection, persistence or idempotency. Escape terminal control characters
+in display values rather than emitting them as terminal commands.
 
-1. Keep only five public command families. bind owns explicit Change/Run registration
-   and association; quote reads a registered Change and creates its economic Quote;
-   settle accepts local evidence/artifacts and explicit Run/Change outcomes; check
-   compares a quote/settlement to a compatible budget; explain traces a selected
-   record. Use the [core lifecycle contract](../archive/2026-09-29-core-02-change-run-contracts/design.md#registration-outcomes-and-cohort-inputs)
-   for registration, immutable features and outcome revision semantics. All support
-   structured JSON as appropriate; diagnostics go to stderr, not mixed into JSON stdout.
+Successful JSON stdout contains exactly one result, human stdout one readable
+result. Diagnostics use stderr. Invalid arguments/modes, malformed or unsupported
+artifact schemas, missing records/stores and database/filesystem failures exit 2;
+JSON mode returns one structured safe error on stderr and no successful stdout.
+Argument-parser failures obey the same rule, including invalid format values (safe
+JSON error fallback). Do not expose input values, private paths, SQL or tracebacks.
+Help and version retain their offline text behavior and exit zero; bare/unknown
+commands remain invalid and do not create stores.
 
-2. For successful check evaluation return advisory status within_budget, over_budget or unknown. All three exit zero during the pilot; invalid input, unsupported schema, database failure or malformed evidence returns nonzero with a structured error. Never suppress technical failures as budget advice.
+## Explicit check source and budget
 
-3. Budgets must match economic kind, unit and basis, plus currency for money;
-   nonmonetary budgets use currency=null. Incompatible or unpriced comparisons return
-   unknown with a reason; no implicit FX or credit-to-cash conversion. For settlements,
-   evaluate completeness for the exact requested source/interval/unit scope before
-   comparing amounts. A provisional total, missing same-unit charge, unresolved
-   correction or overlap affecting that scope returns unknown, whether the known
-   subtotal is below or above budget. Show that subtotal and the missing evidence,
-   but do not claim a complete budget result. The pilot does not infer lower-bound
-   over_budget semantics from provisional records. Complete compatible settlements
-   and priced quotes compare their selected value (quote p90 by default) to budget:
-   greater means over_budget, otherwise within_budget. Human and JSON output name the
-   scope, comparison value, basis, completeness, n when applicable and reasons.
+`check` requires `--record-kind quote|computed_settlement|settlement` and
+`--record-id ID`. It never silently selects a latest revision, sums multiple
+records or opens another store based on artifact contents. Without `--artifact`,
+read the selected immutable record from global `--db` in a read-only snapshot.
+With `--artifact PATH`, strictly load an existing changecost/v1 bundle and select
+that record there; do not import, create/open a database, or establish local authority.
+Reject malformed graphs, missing selection or another record kind as technical errors.
+A well-formed unsupported computation version remains inspectable unknown advice;
+an unsupported portable schema is a technical failure.
 
-4. Use GitHub Actions job summaries with read-only repository permission and sanitized local artifacts. The example invokes the standalone CLI, never interpolates issue titles or artifact values into shell code, escapes Markdown/HTML and controls summary size. No account tokens or live provider calls are needed.
+Require `--budget AMOUNT` as a finite, nonnegative Decimal string, and explicit
+`--economic-kind`, `--unit`, `--basis`, plus `--currency` for monetary budgets.
+Reuse the existing economic identity and amount validators; currency is absent/null
+for nonmonetary values. Reject negative/nonfinite/malformed budgets before store
+access. Compare kind, unit, basis and currency exactly; no conversion or rounding.
+`--quantile p50|p90` applies only to Quotes; absence selects p90 for Quotes. An
+explicit quantile with a Settlement is invalid. Comparison is strictly greater for
+over_budget; equality, including observed zero, is within_budget.
 
-5. CI example must remain opt-in and advisory; do not add a required budget check or automatic mutation of branch protection. Document integration with whatever developer workflow already exports local evidence.
+## Authority, cutoff and completeness
 
-6. Reuse the foundation's docs ownership, generated command/llms integrity,
-   changelog/version and workflow validators. Update owner/source mappings for
-   `docs/cli.md` and `docs/ci.md`, regenerate references from implemented command
-   metadata, and test the fresh-store examples with named synthetic fixtures.
-   Stale flags, contradictory JSON/exit examples or missing references must fail
-   the corresponding checks; updating a review date is insufficient. Validate the
-   example's workflow syntax. Successful advisory budget evaluation cannot turn
-   failed tests, docs validation or other repository quality checks green.
+Every result separates declared/claimed values from a verified comparison value,
+names the record, budget identity, source, scope/cutoff, completeness/provenance,
+sample count when relevant and explicit reasons. Unknown results retain available
+claimed amounts/known subtotals but have no verified comparison value.
 
-## Fresh-store walkthrough
+For a priced Quote, numeric advice requires matching supported computation metadata,
+a valid local typed receipt and supported reproduction of the exact stored result
+at its original store-local cutoff. Use one read snapshot and the existing historical
+selection/replay boundary; a future/foreign cutoff, missing inputs, unsupported
+version or result mismatch produces unknown. Legacy/imported Quotes remain claims.
+Do not recompute a new Quote against current history or change its original cutoff.
 
-The documented standalone workflow starts with `bind --register-change`, supplying
-repository/change IDs and optional features/v1 inputs. Run quote before work starts;
-cold start yields a valid unpriced record. Then use `bind --register-run` with explicit
-provider/surface/run identity, which creates and binds the attempt. After external
-work, settle imports an existing local export, and bind can explicitly map exposed
-evidence IDs when provider joins are unavailable. Record retry outcomes with
-`settle --run-outcome` and terminal Change outcome with `settle --outcome`; repeat
-registration for a new retry Run before ending the Change. Finally check/explain the
-settlement or quote. No step requires hand-writing a database row or artifact.
+For a computed Settlement, validate its local typed receipt, supported algorithm and
+policy, original cutoff and all required historical inputs, then reproduce values
+and completeness using the existing reconciliation evaluator at its stored scope.
+Compare the reproduced material result with the immutable stored result, including
+subtotals, scope, consulted inputs/exclusions, reasons and full-change completeness.
+Ignore only nondeterministic record bookkeeping that is not computation evidence.
+Receipt/input availability alone is insufficient. Later imports/corrections do not
+change advice about the selected historical record. Numeric advice requires the existing evaluator to certify completeness for the
+exact stored scope with one matching subtotal and no unresolved reasons. The current
+evaluator marks narrowed Run windows partial_change_scope; retain that reason and
+return unknown with the declared scope/subtotal. Do not filter scope-only reasons
+or invent a new narrower coverage policy. Provisional/missing coverage or unresolved
+corrections remain unknown on either side of budget. Incompatible identity remains unknown; do not sum other subtotals.
 
-Command-level integration scenarios must exercise this sequence on a fresh database,
-including registration retries, missing evidence, failed attempts and an abandoned
-Change. Output names the created IDs and feature/outcome timestamps. Product
-implementation remains separate; these command modes are planned interfaces.
+A valid legacy Settlement or imported/portable computed claim without local
+verification returns unknown with its declared values and producer-assertion status.
+Even purported completeness or supplied receipt-like fields cannot create authority.
+Artifact-only inputs always remain producer claims under the current portable contract;
+no stateless historical certification or new portable receipt is introduced.
+Malformed input and failed database access are technical failures, not uncertainty.
 
-## Dependencies and evidence
+Check returns within_budget, over_budget or unknown with exit zero for valid advice.
+It creates no store, Quote, Settlement, computation receipt, revision or availability
+observation. Verify unchanged exports and durable retry behavior around evaluation.
 
-- [quote-01-empirical-estimation](../quote-01-empirical-estimation/proposal.md)
+## Fresh-store regression walkthrough
 
-Shared boundaries and current provider evidence are recorded in the
-[source assessment](../../../docs/research/pilot-source-assessment.md).
-No provider-specific mapping becomes supported merely by appearing in this plan.
-Foundation quality gates are inherited through quote → reconciliation → contracts
-→ foundation; this extension changes no direct implementation prerequisites.
+Reuse bind registration, quote, Run registration/binding, normalized settle import,
+evidence binding, explicit Run/Change outcomes and settle computation. Use named
+controlled synthetic fixtures including existing portable coverage records, not a
+real provider export or invented parser. Cold start is a valid unpriced Quote;
+complete synthetic history can support a priced Quote and complete Settlement.
+Exercise check/explain and both presentation modes after the existing lifecycle.
+No hand-written database row or new coverage-authoring API is needed. The fixture
+bundle is test/demo input with explicit synthetic provenance, not an approved provider.
 
-## Risks / Trade-offs
+## Optional Actions example and summary
 
-- Advice becomes enforcement → explicit exit semantics and opt-in workflow.
-- Untrusted labels execute or misrender → safe argument handling and escaped bounded summaries.
-- JSON hides uncertainty → required completeness and structured unknown reasons.
+Add a workflow_dispatch-only example, independent of required quality jobs, using
+local synthetic fixtures and the repository's reviewed pinned checkout/uv/Python
+setup. Use permissions contents: read, no persisted checkout credentials, provider
+credentials, remote collection or automatic PR commentary. Pass selections/budgets
+as data arguments/environment values, never expression interpolation into scripts.
+No setup changes to account settings, branch protection or required checks.
 
-## Migration Plan
+Use a Python helper to validate the check-result version and allowlist summary
+fields, then write directly to GITHUB_STEP_SUMMARY; do not eval, source, shell-expand
+or render raw record dumps. Escape HTML, Markdown delimiters and terminal/control
+characters; preserve benign Unicode. Bound final UTF-8 output to 65,536 bytes,
+including a visible truncation notice; truncation must preserve UTF-8 validity and
+rendering escapes. This fixed pilot limit is not a new configuration framework.
+Summary serialization/path/write failures are technical nonzero failures. Valid
+unknown/over-budget advice exits zero; do not suppress technical failures with
+continue-on-error or shell fallbacks. Raw artifacts remain local; document retention
+without automatically uploading sensitive records.
 
-After separate implementation authorization, land this change in dependency order
-with spec-derived failing and passing evidence. Update docs/cli.md, docs/ci.md, and README.md.
-Use synthetic fixtures before any authorized real-data evaluation. This is unreleased;
-there is no deployed service to migrate. For local schema changes, export/backup
-before migration and validate recovery without deleting the previous data.
+GitHub's per-step summary limit is 1 MiB and summary upload errors alone do not
+fail a job. Application rendering must enforce its own smaller limit and write-error
+contract. Sources, accessed 2026-10-05 (Europe/Berlin):
+[job summaries](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-job-summary),
+[script injections](https://docs.github.com/en/actions/concepts/security/script-injections),
+[permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions).
 
-Rollback the implementation commit if its checks fail; restore a compatible local
-backup rather than forcing an older program to write a newer database. Planning
-rollback is a commit revert plus closing the associated issue, preserving history.
+## Verification, delivery and rollback
 
-## Verification
+Spec first, real failing tests, implementation, passing evidence. Preserve existing
+JSON/idempotency, imported-claim, backup, historical cutoff and trust tests; extend
+fresh-store/installed-wheel proofs rather than rebuild delivered operations.
+Add exact comparison, authority/replay, no-write, presentation/parser and malicious
+summary boundaries from the delta spec. Update docs/cli.md and new docs/ci.md only
+when runtime/examples exist, their owner/source mappings and generated references.
+Keep package 0.1.0.dev0 and the existing blocking quality/Python-matrix requirements.
 
-Each requirement has Given/When/Then scenarios. Exercise negative paths and privacy
-boundaries alongside the success cases. Run strict OpenSpec validation and applicable
-repository gates; record actual results, not anticipated test or review outcomes.
+Before later implementation obtain one independent obligation review, then close
+only affected obligations after corrections. Required published reviews are Codex
+and CodeRabbit because claim trust and historical computation are affected. Bind
+actual complete inputs and reports in the bounded session; no counter reset or
+assurance from an older archive/feature result. Supported-Linux native assurance
+remains required; unavailable macOS analyzers are incomplete.
+
+Preparation remains local/unpublished on the owned combined branch in worktree
+7808, alongside the existing Quote archive, as explicitly requested. The sole
+native prerequisite is closed #15; provider approval/calibration remain separate.
+See [archived Quotes](../archive/2026-10-04-quote-01-empirical-estimation/proposal.md),
+[change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
+No runtime persistence change or paid infrastructure is planned. Restore only the
+preparation diff to undo planning; later revert runtime changes while retaining
+original stores/backups, accepted archive and evidence.
+
+## Authorized implementation status
+
+The maintainer requested implementation, independent/local review and combined PR
+delivery on 2026-10-05. Historical preparation remains unchanged evidence; current
+red/green outcomes are recorded separately in [TDD evidence](TDD_EVIDENCE.md).
+
+
+## Review correction: producer headers, predecessors and selected values
+
+Supported generated headers bind origin and both generated timestamps to their
+original cutoff through the existing shared eligibility guard. Advisory Settlement
+replay also reconstructs the receipted same-Change predecessor at that cutoff,
+across scopes, retaining its ledger identity without authenticating opaque first IDs.
+Summary validation binds numeric comparison to the selected p50/p90 pair or single
+complete scope subtotal using exact Decimal equality. Unknown producer results and
+minimum-one Quotes remain supported; no persisted schema or budget policy changes.
+
+
+Local computation authority requires exactly one raw receipt per result ID before
+request/payload matching. Identical aliases and conflicting aliases are ambiguous
+for both computation kinds, including inspection, retry and historical predecessor
+selection. This uses the existing receipt table without a database/schema change.
+
+
+Selected local availability is a technical input boundary, checked before legacy,
+receipt or version trust shortcuts. Quote inspection uses the same typed-row
+validation without changing normal serialized availability. Summary unknown status
+requires reasons; local completeness follows the Quote pair and selected complete
+value. Complete local unknown is possible only for an actually incompatible budget
+with its reason. Partial computed scopes can retain a known subtotal while unknown.
+
+Selected local availability must belong to the committed metadata snapshot: its
+strict positive sequence cannot exceed the metadata sequence. Check and both
+computation inspectors validate this bound before legacy/receipt/version decisions.
+A result's original cutoff intentionally precedes its own insertion; validating
+that original anchor does not replace the committed-snapshot membership check.
+
+The summary reuses the producer's existing Identifier validator for legacy scope,
+record ID and each reason. Missing/null/blank values fail before output access;
+valid nonblank labels retain original Unicode, whitespace, controls and length,
+with escaping/bounded output unchanged. Numeric advice still permits empty reasons.
+
+Local computed Settlement declarations retain unique economic identity groups,
+explicit nonnegative integer unknown counts and exactly one scope subtotal even
+when completeness is unknown. Null amounts and positive unknown counts remain
+valid incomplete advice. Summary validation checks structure without store access;
+JSON alone cannot authenticate a declared historical amount.
+ Complete local advice requires known amounts and zero unknown counts in every group; only the scope group may be empty with null amount and zero unknown count.
+
+Every computed Settlement declaration requires typed nonnegative unknown_count
+metadata, including portable unverified claims. Such claims may retain empty,
+duplicate or unmatched groups accepted by the record model and remain unknown.
+Only locally reproduced results apply scope/grouping/completeness invariants.
+Human and summary rendering escape U+2028/U+2029 mandatory text separators;
+other Unicode and exact JSON record values remain intact.
+## Native timeout investigation
+
+The next bounded correction preserves every existing case while running the 238
+shared malformed-summary cases through the same public main entrypoint in-process.
+Scope argv/environment changes to each invocation; require exact SystemExit 2,
+empty stdout, fixed stderr and unchanged absent/existing destinations. Retain all
+101 other process cases and add numeric Quote/Settlement success process smokes.
+The local unchanged corpus took 16.21 seconds; this is a measured contributor,
+not proof of the native timeout cause. Full fresh signed Linux coverage is required.
+
+Selected Quote and computed Settlement inspection must reject missing or multiple
+metadata rows before trust decisions, as check already does. Share only the exact
+single-row lookup across check, both inspectors and the bundle export that
+precedes computed Settlement inspection. Preserve existing typed validation and positive-sequence
+inspection's missing-timestamp replay_unavailable result; do not substitute a
+current timestamp or strengthen that accepted unavailable-history contract.
+
+Both signed coverage analyzers for commit 95457ed timed out at 300 seconds;
+the other nine analyzers passed. Four pytest workers did not establish native
+acceptance. The failed reports contain no partial test or coverage observations,
+so the cause remains unknown. Preserve these failures and every mandatory gate.
+
+Log the slowest 25 durations from the existing complete host suite, and collect
+only bounded Python-version, CPU/affinity counts and numeric/max cgroup limits
+before the repository check. Missing or invalid resource values are unavailable;
+never print arbitrary input, environment values or runtime payloads. These host
+observations cannot replace signed coverage or establish its timeout cause.
+No second suite, dependency, runner upgrade, test selection or deadline change
+is introduced. Rollback removes only the diagnostic configuration and collector.
+
+## Review correction: unpriced Quote sample counts
+
+The supported local Quote producer uses an empty peer sample set when both
+quantiles are null. The summary's local-completeness branch therefore also requires
+sample_count zero for an unpriced Quote. This guard runs before output access and
+uses the existing safe technical error. Imported assertions retain schema-valid
+declared counts without verified comparison authority; priced local outputs and
+their existing positive-count checks are preserved. No minimum-cohort rule,
+persisted schema or economic-policy change is introduced.
+
+PR #34 Quote-scope correction: Quote records have no time-window fields;
+record_context synthesizes null bounds for every Quote projection, including
+portable imported claims. The summary validates EconomicScope first, then
+requires a null start for Quote results. Its paired-bound contract also enforces
+a null end. This rejects fabricated intervals without changing persisted schemas
+or imported-record handling, and preserves computed Settlement windows.
+
+Native coverage timeout diagnosis uses a numeric-only observer around the existing
+`subprocess.run` invocation. It reads bounded no-follow Linux process stat files,
+validates complete parent/start-tick chains against the exact controller, excludes
+preexisting descendant chains, and retains first/latest trees plus a bounded tail
+of live descendant CPU/RSS/state sums. CPU/RSS values describe sampled live processes,
+not cumulative CPU or unique memory. Missing/racing lineage and truncation are
+explicit. No command line, environment, process name, source path or payload is read
+into the output. An exclusive fresh diagnostic is bound to the review input digest;
+unsupported metadata and output failures cannot change native exits or acceptance.
+This observation identifies activity, not pytest phases or timeout causality.
+
+Observer regression fixtures exercise overflow using a small test-only ring and
+real process-stat transitions. A separate controlled numeric snapshot verifies the
+unchanged production 120-sample capacity, terminal retention and 64 KiB bound,
+avoiding repeated filesystem scans merely to reach the ring limit. This fixture
+cleanup does not establish the native coverage timeout cause or waive fresh CI.
+
+An incomplete initial descendant baseline disables process sampling for the entire
+invocation. Later readable records cannot distinguish unseen preexisting work
+from newly launched descendants. Such diagnostics retain unavailable status, empty
+trees/samples, the fresh binding and terminal elapsed time; the native command
+continues with unchanged exits and report validation.
+
+The synthetic demo preflights exactly its six generated paths before opening the
+store, rejecting existing files/directories/links and dangling links while allowing
+unrelated files. Bundle/result writes use exclusive creation to preserve late
+collisions. Technical failure retains any newly generated partial demo; this is
+not atomic directory publication or protection against a racing SQLite creator.
+
+After a failed complete repository check, a separate pinned native invocation selects
+`tests/test_review_session.py` through the CLI's explicit-file mode. The module makes
+its own private snapshot; neither project configuration nor the original full command
+changes. Explicit `--out .specfact/selected-review-session-diagnostic.json` separates
+this report from canonical acceptance files. The step preserves the CLI exit and the
+original failed job. Its actual selected/observed IDs, runtime/source bindings and
+analyzer states can bound this family in isolation; success does not identify the
+full-suite cause or supply complete-suite acceptance. Keep failed original reports.
+
+Settlement predecessor reproduction retains potential same-Change historical local
+computations before receipt filtering. A matching local origin, local cutoff-store
+declaration or surviving raw computation receipt record ID identifies a candidate;
+raw receipt presence denies authority only and does not validate a request, operation
+or result. Every candidate must have an unambiguous matching
+receipt, the current store's supported cutoff anchors and supported computation
+versions. A unique historical tip must match the selected previous reference and
+ledger. Missing evidence therefore cannot manufacture a first computation. Foreign
+imported claims and unrelated Changes do not become local predecessors; subsequent
+computations remain outside the original cutoff. No schema or receipt migration is
+introduced. This consistency check does not authenticate coordinated deletion or
+rewriting of all origin, cutoff and receipt authority in the noncryptographic store;
+local availability alone cannot distinguish such a row from a foreign import.
+
+Candidate discovery uses the complete record view and typed destination availability
+at the original time/sequence before dependency pruning or declaration-time filtering.
+A potential local predecessor missing from the replay snapshot denies verification;
+otherwise altered dependencies could erase historical authority. Genuinely later
+rows, including the selected result itself, are outside the cutoff.
+
+Change association uses the declared reference or surviving raw Settlement request
+selectors. Decode the leading JSON object through the existing EconomicScope model,
+then compare its repository and the exact colon-prefixed remainder to the selected
+Change ID. IDs may contain colons or Unicode; no splitting, substring matching or
+normalization is applied. Structurally typed noncanonical requests retain negative
+association only; existing exact receipt validation still controls authority. Any
+matching selector among malformed or unrelated aliases retains the candidate,
+independently of its mutable declared scope. Removing every association cannot be
+distinguished from genuinely unrelated history without a new authentication model.
+
+Raw receipt IDs span record kinds. Subtract only IDs definitively resolved as valid
+Quote-only receipts from the raw candidate branch; otherwise a foreign computed
+claim sharing a Quote ID would suppress local advice. Invalid or ambiguous raw
+markers remain uncertain. Local origin/cutoff branches are never subtracted, and
+neither raw markers nor selector parsing grant numeric authority.
+
+Selector decoding consumes only JSON whitespace (space, tab, CR, LF) around the
+leading scope object before the separator. It never strips the Change-ID suffix,
+so padded IDs remain distinct. Independent frozen209 review reproduced trailing
+JSON whitespace bypass; the original failed closure is retained.

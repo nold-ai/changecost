@@ -20,10 +20,9 @@ TEST_HEAD = ""
 TEST_ROOT = Path()
 
 
-@pytest.fixture(autouse=True)
-def git_fixture(tmp_path: Path) -> None:
-    global TEST_HEAD, TEST_ROOT
-    TEST_ROOT = tmp_path
+@pytest.fixture(scope="session")
+def committed_seed(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, str]:
+    tmp_path = tmp_path_factory.mktemp("committed-seed")
     subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
     (tmp_path / ".gitignore").write_text(".changecost/\n")
     (tmp_path / "input.txt").write_text("initial\n")
@@ -43,9 +42,21 @@ def git_fixture(tmp_path: Path) -> None:
         ],
         check=True,
     )
-    TEST_HEAD = subprocess.check_output(
+    head = subprocess.check_output(
         ["git", "-C", str(tmp_path), "rev-parse", "HEAD"], text=True
     ).strip()
+
+    return tmp_path, head
+
+
+@pytest.fixture(autouse=True)
+def git_fixture(tmp_path: Path, committed_seed: tuple[Path, str]) -> None:
+    global TEST_HEAD, TEST_ROOT
+    import shutil
+
+    seed, TEST_HEAD = committed_seed
+    shutil.copytree(seed, tmp_path, dirs_exist_ok=True)
+    TEST_ROOT = tmp_path
 
 
 def contract() -> dict[str, object]:

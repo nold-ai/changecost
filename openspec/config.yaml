@@ -5,8 +5,9 @@ context: |
   Offline contracts, bind, lifecycle-only settle and explain are delivered on main.
   Normalized reconciliation merged in PR #28 on 2026-10-02 and is accepted/archived
   with synchronized main specs; final verification and limitations remain archived.
-  No provider adapter is delivered. Quote #15 runtime implementation was authorized on
-  2026-10-03; this checkout includes offline synthetic empirical Quotes, pending verification.
+  No provider adapter is delivered. Quotes merged in PR #32 on 2026-10-03 and were
+  archived through the native CLI on 2026-10-04 with synchronized empirical-quotes
+  main specs. Calibration and source approval remain To-Validate.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
   cost estimates and settlement for AI-assisted software changes.
   Phase: unreleased 0.x alpha/preview feasibility study; private; Apache-2.0.

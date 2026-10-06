@@ -125,8 +125,17 @@ but committed after the captured snapshot is excluded. This is a snapshot bounda
 not a claim of an exact physical commit timestamp. Clock regression fails writes
 and snapshot capture; it cannot detect arbitrary external tampering or clock jumps.
 Foreign, time-only or future cutoffs cannot prove local replay. A cutoff time must
-not exceed the current committed snapshot's time, even when its store ID and
-sequence are otherwise valid. Importing old evidence now
+match the selected local result's own availability time, and its sequence must be
+exactly one before that result's insertion sequence, as both supported producers
+commit one result after capturing their input cutoff. These anchors apply to
+check and both historical inspectors without changing persisted receipts.
+A cutoff time must
+not exceed the current committed snapshot's metadata timestamp, even when its store ID
+and sequence are otherwise valid or the wall clock has advanced. Check and Quote/computed
+Settlement inspection enforce this bound; equality and older historical cutoffs remain
+eligible. Missing metadata timestamps cannot certify replay. A populated local store
+with no committed timestamp is invalid for check and returns its safe technical error.
+Importing old evidence now
 never reconstructs earlier destination knowledge.
 
 `Store.backup(new_path)` uses SQLite's consistent backup API and preserves identity,
@@ -199,3 +208,15 @@ A compatible same-layout backup preserves authority; portable export/import does
 Foreign/future or unavailable cutoffs, unsupported algorithms/policies and result
 mismatches report replay_unavailable. Later evidence cannot alter a stored historical
 result. See [Quotes](quotes.md) for rank, cohort and feature details.
+
+## Ephemeral budget results
+
+Advisory budgets add no persisted record, receipt or schema migration. Check reads one immutable record at its historical cutoff and separates producer declarations from locally reproduced comparison values; portable artifacts never grant local authority. See [CLI advice](cli.md#presentation-errors-and-advisory-budgets).
+
+Selected local result availability must not exceed the committed metadata sequence.
+Check and both computation inspectors validate that strict integer bound before
+receipt/version trust decisions, returning safe technical errors for unavailable
+selected records and preserving store bytes. The original cutoff-to-insertion
+anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
+the committed snapshot. Equality and later committed appends remain supported;
+portable artifact advice never consults the local store.

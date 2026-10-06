@@ -402,3 +402,66 @@ requires literal repeated exclusions when audit output requires them. The existi
 8-peer/8-pending-event test retains 64 exclusions and passes in the scoped suite.
 Shared source preparation is performed once; output-sized remaining work is
 intentional. No deduplication, algorithm version or stored history change is made.
+
+## Final merged acceptance — 2026-10-04 (Europe/Berlin)
+
+[PR #32](https://github.com/nold-ai/changecost/pull/32), feature head
+`b83c2dc2fd4ae292bcdf1b532858d6bac8360d40`, merged at
+`5f43c32d09e6d1b167c352ad16cabea555d84ec2` on 2026-10-03 at 17:58:36
+Europe/Berlin. The maintainer requested native CLI archival in this worktree.
+The [accepted task closeout](tasks.md#accepted-implementation-closeout--2026-10-04-europeberlin)
+records the final verification index and fresh GitHub readback. Earlier pending
+statements describe historical freezes; they do not supersede merged acceptance.
+This archive/planning diff requires its own checks. Calibration and provider
+source support remain To-Validate; no review counters are reset.
+
+## Native CLI archive readback — 2026-10-04 (Europe/Berlin)
+
+`openspec archive quote-01-empirical-estimation --yes` (CLI 1.13.2,
+schema `spec-driven`) succeeded in this real worktree and created
+`openspec/changes/archive/2026-10-04-quote-01-empirical-estimation`.
+Readback compared all six complete requirement bodies and 31 scenarios against
+`openspec/specs/empirical-quotes/spec.md`, ignoring blank-line normalization only.
+Metadata `.openspec.yaml` is retained; the active change is absent and no delta
+operation headings remain in main. No main spec was authored or merged by the agent.
+Strict all-item validation passed 11 items with zero failures.
+Fresh baseline: `340668e6b74bfb7ccab15efe13830555bc6dd7ef` (includes PR #33).
+The older unpublished archive draft in worktree 97b4 remains untouched.
+Rollback is restoration/revert of this archive/documentation diff, preserving
+accepted feature history. No runtime migration or paid infrastructure is added.
+
+## Archive checks and retained delivery — 2026-10-04 (Europe/Berlin)
+
+`PATH="$PWD/.venv/bin:$PATH" make check
+BASE_REF=340668e6b74bfb7ccab15efe13830555bc6dd7ef
+MANIFEST=.changecost/workflow/archive-quote-and-prepare-next/manifest.txt` ran all
+leaves. Python 3.13.14 / pytest 9.1.1: 1,791 tests passed in 128.16 seconds;
+two clean installed-wheel offline proofs passed in 6.875 seconds. Hygiene,
+format/lint, types (zero errors), docs ownership/links, generated references,
+metadata, workflow and all 11 strict OpenSpec checks passed. Dependency audit
+was not applicable because locked dependency/audit inputs are unchanged.
+
+The initial host tool probe failed because GNU make propagated command-line
+BASE_REF/MANIFEST overrides into a temporary fixture repository where that base
+SHA does not exist. A direct identical-base `python -m quality lock` rerun without
+make overrides passed both actual missing/stale/repaired lock and required-test
+selection/configuration/failure/repair/input proofs. No tool probe was skipped
+or changed. Generated command content is unchanged; a reviewed source-bound
+rationale was refreshed for the moved navigation inventory.
+
+The aggregate exited nonzero. SpecFact CLI 0.55.4 reported FAIL / UNKNOWN:
+all ten required analyzers have `unsupported_controller_platform` on macOS.
+No supported-Linux analyzer result for this archive diff is claimed and the
+accepted PR #32 feature result cannot certify these new inputs. The native report
+is retained under ignored `.specfact/`; logs, explicit manifest and recovery
+receipt are under `.changecost/workflow/archive-quote-and-prepare-next/`.
+Documentation recording these results receives a final docs/index readback;
+no runtime behavior changed after the test/build results.
+
+Archive/documentation changes remain local/unpublished on
+`codex/archive-quote-and-prepare-next` in worktree 7808 for a later combined
+delivery. Next-change selection is pending under the Prepare workflow;
+#16 advisory CLI/CI is recommended because #15 is Closed/Done. Provider #13/#14
+remain blocked on #9 source approvals, despite merged research checks in PR #33.
+No implementation, issue mutation, stash, commit, push or PR is performed here.
+The earlier archive worktree and completed Quote review history remain untouched.

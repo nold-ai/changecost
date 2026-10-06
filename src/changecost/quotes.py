@@ -41,7 +41,10 @@ from changecost.store import (
     Store,
     computation_refs,
     key,
+    metadata_row,
+    original_computation_cutoff,
     read_records,
+    record_availability,
     reference,
     run_key,
     validate_graph,
@@ -476,15 +479,20 @@ def inspect_quote(store: Store, record: Quote | RecordRef):
         records = read_records(connection)
         record, ref = stored_quote(records, record)
         local = key(reference(record)) in computation_refs(connection, records)
-        store_id, sequence, last_at = connection.execute("SELECT * FROM metadata").fetchone()
+        store_id, sequence, last_at = metadata_row(connection)
         now = timestamp(store.clock())
         if last_at is not None and timestamp(last_at) > now:
             raise ContractError("clock moved backwards")
+        if record_availability(connection, record, store_id, maximum_sequence=sequence) is None:
+            raise ContractError("selected availability is unavailable")
         eligible = (
             replay_supported(record)
             and record.cutoff.store_id == store_id
             and record.cutoff.sequence <= sequence
+            and last_at is not None
+            and record.cutoff.at <= timestamp(last_at)
             and record.cutoff.at <= now
+            and original_computation_cutoff(connection, record)
         )
         reproduced = eligible and quote_reproduced(connection, records, record)
         observation = connection.execute(

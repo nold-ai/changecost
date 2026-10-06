@@ -58,7 +58,13 @@ fails unchanged. Invalid inputs or failure before commit leave no partial Quote/
 Stored metadata retains target features, parameters, selected exact peer totals/support,
 ordered cohorts, exclusions and synthetic provenance. Inputs retain consulted normalized
 and lifecycle dependencies. Explain verifies the exact stored payload and recomputes
-supported versions at its original time/sequence cutoff in one read snapshot. Later
+supported versions at its original time/sequence cutoff in one read snapshot. The
+result's own insertion sequence must equal cutoff sequence plus one, and its local
+availability time must equal cutoff time, preserving the supported producer's
+original snapshot even after unrelated history advances metadata. The cutoff
+time must not exceed the latest committed metadata timestamp; an advanced wall clock
+does not authorize a future committed cutoff. Equality and older historical cutoffs
+remain eligible, while a missing committed timestamp cannot certify replay. Later
 imports, bindings or corrections do not leak into the historical result. Explain reads
 the local clock once in that transaction and rejects a clock earlier than the latest
 committed local availability, including for imported or unsupported claims. Equality
@@ -84,4 +90,33 @@ when those are required by the audit output. No cohort count cap is added.
 
 No package version or SQLite layout migration is introduced. Back up before changing
 checkouts; rollback uses a follow-up code revert and separate compatible backup restore,
-retaining original records. Advisory CI, provider adapters and calibration remain pending.
+retaining original records. Advisory checks and optional CI summaries are implemented
+locally, pending current-head verification/acceptance. Provider adapters and calibration
+remain pending.
+
+## Budget advice
+
+Read-only check defaults to p90, permits explicit p50 and requires a local typed receipt plus supported historical reproduction before numeric advice. Imported/unpriced Quotes remain unknown with declared values and provenance; see [CLI advice](cli.md#presentation-errors-and-advisory-budgets).
+
+Selected local Quote availability is validated as a typed Observation before
+unsupported-version or receipt trust shortcuts. Malformed sequence/timestamp rows
+fail with safe technical diagnostics rather than leaking raw row values or
+returning a successful unknown claim. Check and explain remain read-only; portable
+artifact advice never accesses the local database.
+
+Selected local result availability must not exceed the committed metadata sequence.
+Check and both computation inspectors validate that strict integer bound before
+receipt/version trust decisions, returning safe technical errors for unavailable
+selected records and preserving store bytes. The original cutoff-to-insertion
+anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
+the committed snapshot. Equality and later committed appends remain supported;
+portable artifact advice never consults the local store.
+
+
+## Regression fixtures
+
+The peer-growth regression checks retain all candidate diagnostics at fixture sizes
+32, 64 and 128 for open, unbounded and bounded histories. Each fixture captures its
+unchanged post-computation store once for those assertions. This avoids repeated
+SQLite graph reads in test setup while retaining every peer check and the existing
+record-visit bounds; it does not change Quote computation or historical replay.

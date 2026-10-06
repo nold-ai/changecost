@@ -12,7 +12,19 @@ to 24.16.0. The separate test group lets SpecFact 0.50.1 retain its signed
 BasedPyright 1.39.10 analyzer without a conflicting project copy. These are
 development dependencies; analyzer coverage and type-checking rules remain intact. Pytest
 explicitly imports repository helpers from the checkout root; they stay outside
-the distributed package. CLI tests resolve the active environment’s console script
+the distributed package.
+The test group locks pytest-xdist 3.8.0; repository pytest configuration runs the
+complete suite with four local workers using load distribution. Each worker retains
+its isolated fixtures. The signed native observer supports distributed collection
+and terminal reports, while the coverage adapter combines worker coverage and
+rejects worker errors or missing coverage. Selection, required analyzers, enforcement
+and the native launcher's deadline are unchanged. Fresh Linux reports must show
+complete target execution and passing combined coverage; host timing alone does
+not establish assurance. Sources accessed 2026-10-05 (Europe/Berlin):
+[worker distribution](https://pytest-xdist.readthedocs.io/en/latest/distribution.html),
+[combined coverage](https://pytest-cov.readthedocs.io/en/stable/xdist.html).
+
+CLI tests resolve the active environment’s console script
 from PATH, and the wheel proof puts its clean installation first.
 
 ## Inputs and comparison
@@ -368,6 +380,19 @@ turn an unavailable analyzer into a pass or disable the CI gate.
 
 ## Hosted capsule prerequisite
 
+The review-module installation step sets `SPECFACT_REGISTRY_INDEX_URL` to the
+[official registry at da006b47](https://github.com/nold-ai/specfact-cli-modules/blob/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json)
+(checked 2026-10-06). The rolling index replaced its 0.50.1 entry with 0.51.0;
+the existing version argument then failed before analysis with “not found in
+registry” in PR #34 run 37372912712, attempt 3. Pinning the registry restores the
+exact signed 0.50.1 release through SpecFact CLI 0.55.4's supported registry
+override. Relative bundle URLs and recursive dependencies use that same commit;
+the native installer retains checksum, signature, publisher and compatibility
+validation. No installation bypass or module modification is used. This repairs
+bootstrap availability; it does not explain or resolve the separate native
+coverage timeout. Rollback removes the registry pin, which leaves older-release
+installation dependent on the rolling index again.
+
 CI pins Ubuntu 24.04 and assigns a fresh job-local capsule cache under RUNNER_TEMP.
 Before review, it loads an AppArmor profile granting `userns` to that cache's
 `**/opt/specfact/bin/bwrap-static` launcher. Installation and all analyzers remain
@@ -598,3 +623,96 @@ is neither a native pass nor a reason to attempt local capsule execution repeate
 
 Contributor review can use the [behavioral evidence pilot](behavioral-evidence.md) for bounded
 lifecycle controls and content-bound delta review. Final required gates remain mandatory.
+
+## Privacy-safe runtime timeout diagnostics
+
+The existing Repository quality workflow collects a small metadata diagnostic
+before its always-run evidence upload, including when native review fails. It
+matches the report's supported `project-runtime-layer-v2` identity to one bounded,
+one-level cache descriptor and verifies the canonical descriptor digest/context.
+The collector reads metadata only, follows no linked ancestors/files, rejects
+hardlinked/nonregular/oversized/ambiguous metadata and rejects duplicate/nonfinite
+JSON. Descriptor content is not an authenticated host attestation.
+
+The diagnostic allowlists only runtime/project/worker identities, fixed local-build
+provenance, bounded ASCII Python markers, package names/versions/requested flags,
+and the pytest-observe member graph's package names/versions/dependency names.
+It excludes project/payload/source metadata, URLs, raw requirements, environment
+variables, arguments, logs, imports and executables. Inputs are capped at 16 MiB,
+cache candidates at 256, package/dependency lists at 1,000 and final JSON at 65,536
+bytes. Output is exclusive and no-follow. Invalid/unavailable metadata or write
+failure emits a safe nonzero diagnostic; evidence upload still runs and cannot
+mask the original quality failure. Successful collection certifies only the
+metadata match, never native analysis or capsule performance.
+
+This was added after a supported-Python-3.13 capsule coverage timeout persisted
+while Python 3.11 completed. It supplies dependency/runtime evidence for diagnosis;
+no signed vendor patch, analyzer timeout, test selection, quality threshold or
+required member was changed. Native assurance stays incomplete until actual
+current-head full reports pass. Revert this collector/workflow addition to roll
+back metadata retention, preserving original failure evidence.
+
+
+Pylint's full source analysis uses two local processes via the supported
+`tool.pylint.main.jobs = 2` setting. The installed signed module preserves this
+ordinary configuration while enforcing its complete file/checker projection and
+30-second Pylint deadline. Pylint 4.0.7 merges worker checker results; aggregation
+of duplicate-code messages can differ between worker counts. This setting adds no
+ignored files/checkers or deadline exception. The measured host timing is diagnostic;
+actual supported-Linux native completion remains required. Official
+[parallel execution guidance](https://pylint.readthedocs.io/en/v4.0.7/user_guide/configuration/all-options.html#jobs)
+accessed 2026-10-05 (Europe/Berlin); the installed 4.0.7 implementation and signed
+module 0.50.1 configuration projection were inspected separately.
+
+The four-worker configuration followed repeated signed coverage timeouts on both
+Python matrix legs. A same-source host run passed all 2,657 tests in 34.97 seconds
+with four workers versus 63.09 seconds with two. The earlier improperly configured
+benchmark remains failed evidence. This host timing does not establish Linux
+performance or acceptance; actual fresh signed reports must retain every collected
+and called test, combined coverage, controller observations and complete worker
+evidence. The repository is private and actual hosted CPU count was not recorded.
+No runner upgrade, dependency, selection, threshold or deadline change is made.
+
+Both fresh 95457ed Linux reports still returned coverage UNKNOWN at the signed
+300-second launch deadline; all other nine analyzers passed. The host suites
+passed 2,685 tests in 148.03 and 148.60 seconds. Four workers therefore remain an
+unaccepted native performance hypothesis. No partial target observations survive
+the timeout, so startup, tests, workers and coverage export cannot be distinguished.
+
+The existing host pytest run now reports its slowest 25 durations. Before the
+aggregate gate, the workflow logs only Python-version integers, logical CPU and
+affinity counts, and bounded numeric/max cpu.max and memory.max tokens. Absent,
+malformed, oversized or symlinked limit files produce null fields; arbitrary input,
+environment variables and runtime payloads are not logged. No duplicate suite or
+new dependency is introduced. These observations diagnose the host, not native
+coverage; all tests, signed analyzers, worker/controller observations and deadlines
+remain mandatory. Rollback removes only the collector and diagnostic configuration.
+
+Native execution diagnostics retain a fresh `.specfact/native-process-*.json`
+artifact alongside the unchanged native reports, including on failure. A five-second
+observer samples numeric descendant process stat fields during the canonical review
+command, excluding preexisting descendants and the controller. Exact PID/start-tick
+parent chains, fresh invocation ID and input digest bind the observations. No process
+names, command lines, environment, file paths or runtime payloads are exported.
+The 64 KiB projection retains first/latest bounded trees and the latest 120 aggregate
+samples, including a final observation. Missing links, incomplete baseline, process
+limits, departures and truncation are disclosed. CPU ticks and resident pages are sums
+of observed live processes, with units supplied when available; they do not represent
+cumulative CPU or unique memory. Unsupported or unwritable diagnostics cannot change
+native exits, report validation, test selection, analyzer limits or provider requirements.
+Activity observations do not identify pytest phases or prove timeout causality.
+
+Linux stat field definitions and the sampled RSS limitation are documented in the [kernel proc guide](https://docs.kernel.org/filesystems/proc.html) (accessed 2026-10-06, Europe/Berlin).
+
+If the initial descendant scan is incomplete, process diagnostics remain
+unavailable for that invocation: later scans cannot safely classify unseen
+preexisting work. Empty trees and samples retain the fresh binding and terminal
+elapsed time; native execution, exits and acceptance checks continue unchanged.
+
+A failed complete repository check also runs the pinned native CLI with explicit
+`tests/test_review_session.py` selection, saving
+`.specfact/selected-review-session-diagnostic.json`. This diagnostic retains the
+original project configuration and signed runtime, with normal technical exits.
+The required full-suite failure and canonical reports remain intact. Inspect actual
+selected/observed test IDs and bindings before using the report to bound this family;
+a subset success cannot certify the full suite or establish timeout causality.

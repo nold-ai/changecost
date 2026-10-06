@@ -26,7 +26,7 @@
 - [Python foundation specification](openspec/specs/python-foundation/spec.md): Accepted behavior synchronized from the merged implementation.
 - [Bounded review specification](openspec/specs/bounded-review-session/spec.md): Accepted behavior synchronized from the merged implementation.
 - [Core-02 contracts preparation](openspec/changes/archive/2026-09-29-core-02-change-run-contracts/PREPARATION_EVIDENCE.md): Contract preparation, archive results and prerequisite evidence; implementation evidence is recorded separately.
-- [Offline CLI](docs/cli.md): Synthetic registration, lifecycle, inspection and portable replay examples.
+- [Offline CLI](docs/cli.md): Synthetic registration, lifecycle, Quote/Settlement advice, human/JSON presentation and portable claims.
 - [Contracts v1](docs/contracts.md): Exact field semantics, immutable revisions, local history and recovery limits.
 - [Behavioral evidence review](docs/development/behavioral-evidence.md): Bounded lifecycle controls and content-bound review packets; no completion authority.
 - [Behavioral evidence pilot](docs/lessons-learned/behavioral-evidence-pilot.md): Measured experiment status, tool coverage and limitations.
@@ -35,9 +35,13 @@
 - [Offline settlement preview](docs/settlement.md): Normalized input, exact computation, synthetic coverage, operation retries and recovery.
 - [Settlement implementation evidence](openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md): Accepted implementation TDD, final merged verification, retained limitations and archive closeout.
 - [Evidence reconciliation specification](openspec/specs/evidence-reconciliation/spec.md): Accepted normalized reconciliation, immutable computation and explicit coverage requirements synchronized by the OpenSpec archive CLI.
-- [Empirical quotes preparation](openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md): Historical preparation against delivered cutoff/coverage contracts; later runtime evidence is separate.
+- [Empirical quotes preparation](openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/PREPARATION_EVIDENCE.md): Historical preparation against delivered cutoff/coverage contracts; later runtime evidence is separate.
 - [Empirical Quotes](docs/quotes.md): Offline synthetic peer estimation, exact quantiles, feature backoff and historical replay.
 - [Source profile register](docs/providers/source-profiles.json): Canonical per-version capabilities, digest references and unresolved native evidence.
+- [Accepted empirical Quote specification](openspec/specs/empirical-quotes/spec.md): CLI-synchronized offline synthetic cohort, cutoff and provenance requirements from accepted PR #32.
+- [Advisory workflow preparation](openspec/changes/workflow-01-advisory-ci/PREPARATION_EVIDENCE.md): Local planning for preserved JSON, verified historical budget advice and safe optional CI summaries; runtime implementation remains separate.
+- [Optional advisory CI](docs/ci.md): Manually invoked local synthetic advice, escaped bounded summaries and technical failure exits.
+- [Advisory implementation evidence](openspec/changes/workflow-01-advisory-ci/TDD_EVIDENCE.md): Observed red/green tests and bounded trust/oracle controls; publication acceptance remains separate.
 
 ## Local skills
 

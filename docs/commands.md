@@ -5,6 +5,7 @@
 Implemented command surface:
 
 - `changecost --db`
+- `changecost --format`
 - `changecost --help`
 - `changecost --version`
 - `changecost bind`
@@ -22,6 +23,17 @@ Implemented command surface:
 - `changecost bind --surface`
 - `changecost bind --trajectory`
 - `changecost bind --work-start`
+- `changecost check`
+- `changecost check --artifact`
+- `changecost check --basis`
+- `changecost check --budget`
+- `changecost check --currency`
+- `changecost check --economic-kind`
+- `changecost check --help`
+- `changecost check --quantile`
+- `changecost check --record-id`
+- `changecost check --record-kind`
+- `changecost check --unit`
 - `changecost explain`
 - `changecost explain --basis`
 - `changecost explain --change-id`
@@ -77,4 +89,4 @@ Help and version succeed offline. Bare or unknown commands exit nonzero.
 No database, configuration or evidence files are created by these invocations.
 
 `bind` registers/maps/imports; `settle` declares lifecycle, imports normalized evidence or computes;
-`explain` inspects/exports and reports repository remainder. `quote` computes offline empirical estimates. `check` and provider adapters remain planned.
+`explain` inspects/exports and reports repository remainder. `quote` computes offline empirical estimates. `check` compares explicit historical records to compatible budgets, with valid unknown advice. Provider adapters remain planned.

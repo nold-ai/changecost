@@ -84,6 +84,7 @@ jobs:
       - name: Install pinned review module
         env:
           UV_PYTHON: ${{ matrix.python }}
+          SPECFACT_REGISTRY_INDEX_URL: https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json
         run: specfact module install nold-ai/specfact-code-review --version 0.50.1
       - name: Allow namespaces for this job's capsule launcher paths
         id: capsule-userns
@@ -110,10 +111,34 @@ jobs:
           # Only policy installation is administrative; analysis stays unprivileged.
           sudo apparmor_parser -r "$profile"
           test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
+      - name: Observe bounded host resource context
+        env:
+          UV_PYTHON: ${{ matrix.python }}
+        run: |
+          .venv/bin/python - <<'PY'
+          import json
+          from quality.runtime_diagnostics import host_context
+          print(json.dumps(host_context(), sort_keys=True))
+          PY
       - name: Check repository
+        id: repository-check
         env:
           UV_PYTHON: ${{ matrix.python }}
         run: /usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check
+      - name: Diagnose selected review-session tests after failure
+        if: failure() && steps.repository-check.outcome == 'failure'
+        env:
+          UV_PYTHON: ${{ matrix.python }}
+        # This selected report never replaces the failed complete-suite gate.
+        run: >-
+          specfact code review run tests/test_review_session.py
+          --include-tests --bug-hunt --enforcement full --json
+          --out .specfact/selected-review-session-diagnostic.json
+      - name: Collect privacy-safe runtime metadata
+        if: always()
+        env:
+          UV_PYTHON: ${{ matrix.python }}
+        run: .venv/bin/python -m quality.runtime_diagnostics .specfact/code-review.json "$HOME/.cache/specfact/code-review/project-runtimes-v2" .specfact/runtime-diagnostic.json
       - name: Preserve native review evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -122,6 +147,9 @@ jobs:
           path: |
             .specfact/code-review*.json
             .specfact/review-binding.json
+            .specfact/runtime-diagnostic.json
+            .specfact/native-process-*.json
+            .specfact/selected-review-session-diagnostic.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 7

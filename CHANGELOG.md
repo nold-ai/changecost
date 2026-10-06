@@ -3,6 +3,130 @@
 
 ## Unreleased
 
+- Retain original receipt Change selectors after predecessor declaration corruption,
+  and distinguish valid Quote-only receipts from imported Settlement ID collisions.
+
+- Retain surviving predecessor origin/cutoff claims and raw receipt IDs after combined
+  corruption, without granting authority to claims or changing imported records.
+
+- Reject Settlement rerooting when historical local receipts or replay dependencies
+  are unavailable, preserving original cutoff, foreign-claim and no-write boundaries.
+
+- Retain a separately selected sealed review-session diagnostic after failed quality
+  checks, preserving the required complete-suite gate and original reports.
+
+- Preflight all synthetic demo outputs before opening the store and create JSON
+  exclusively, preserving existing paths, symlink targets and late collisions.
+
+- Keep native process diagnostics unavailable after an incomplete initial
+  baseline, preventing attribution of unseen preexisting descendants.
+
+- Reduce repeated filesystem work in diagnostic test fixtures while preserving
+  real lifecycle controls and production observation-capacity coverage.
+
+- Retain bounded numeric native descendant activity and terminal-tail diagnostics on CI failures while preserving analyzer execution and enforcement.
+
+- Reject fabricated time windows in Quote summary projections, preserving null
+  bounds on local/imported claims and supported computed Settlement windows.
+
+- Reduce complexity in the unpriced Quote regression test by extracting accepted
+  output assertions, preserving all producer cases and public-process checks.
+
+- Reject positive sample counts on locally reproduced unpriced Quote summaries
+  before output writes; preserve imported declared counts and valid priced results.
+
+- Pin the official review-module registry to an immutable commit so native signed
+  0.50.1 installation survives later registry releases, including its dependencies.
+
+- Reuse one immutable post-computation store snapshot per Quote growth-test fixture,
+  retaining every candidate assertion and fixture size while avoiding repeated reads.
+
+- Close caller-owned SQLite connections in advisory fault-injection tests on success
+  and exceptions, preserving their transaction behavior and all test cases.
+
+- Reject missing or duplicate metadata before local Quote/Settlement inspection and
+  bundle export; preserve unavailable historical timestamps and read-only errors.
+- Exercise 238 malformed-summary cases through the public entrypoint with isolated
+  arguments/environment; retain real-process coverage and every original case.
+
+- Retain slowest-test durations and bounded host resource context while investigating
+  repeated native coverage timeouts; preserve every test, analyzer and deadline.
+
+- Require completeness counts in imported computed Settlement summaries while
+  retaining valid unverified claims; escape Unicode line/paragraph separators in
+  human and CI presentation. Run the complete suite with four locked workers.
+
+- Validate local computed Settlement subtotal structure even for incomplete advice;
+  preserve null amounts, positive unknown counts and separate economic groups.
+
+- Match producer nonblank identifiers for CI summary record IDs, reasons and
+  legacy Settlement scope; preserve valid labels and reject invalid input safely.
+
+- Require selected local results to belong to the committed metadata sequence
+  before advisory or inspection trust decisions; retain equal and later snapshots.
+
+- Validate selected local availability before trust/version shortcuts; reject
+  contradictory complete or unexplained unknown CI advice before output writes.
+
+- Reject duplicate or conflicting local computation receipts before granting
+  advisory, inspection or retry authority for Quotes and computed Settlements.
+- Clarify the exact Decimal summary control fixture for native Pylint inference
+  without suppressing checks or changing runtime behavior.
+
+- Bind advisory replay to generated origin/timestamps and the original Settlement
+  predecessor; reject CI numeric summaries that contradict selected declarations.
+
+- Run full Pylint analysis with two supported local processes, retaining all
+  source files, required checkers and the sealed 30-second deadline.
+
+- Reject missing committed timestamps for record checks even when corrupt store
+  metadata reports sequence zero; preserve safe errors and read-only behavior.
+
+- Bind computed Settlement receipt and retry operation IDs; reject missing or
+  contradictory computation scopes and wrong-kind summary details before writing.
+
+- Bind original local computation cutoffs to each result's own insertion sequence
+  and availability time across advice and historical inspection. Reject unsupported
+  summary authority values and impossible provenance/completeness combinations.
+- Run the complete pytest suite with two locked local workers and combined native
+  coverage, preserving every required analyzer and the signed launcher's deadline.
+
+- Reject JSON nesting beyond the summary decoder's recursion limit with a safe
+  technical error, preserving existing summary bytes and absent destinations.
+
+- Reject numeric advice relabeled as a legacy Settlement before summary output;
+  valid legacy unknown advice remains available, and rejected input leaves the
+  summary destination unchanged. Reject malformed summary enum values with safe
+  technical errors instead of tracebacks.
+
+- Bound advisory and Quote/Settlement replay authority to the latest committed store
+  timestamp, including after the wall clock advances; missing committed timestamps
+  cannot certify replay. Flatten diagnostic fault-test branches while preserving
+  every case and native quality requirements.
+
+- Retain bounded privacy-safe, identity-matched project-runtime metadata alongside
+  native CI evidence to diagnose capsule timeouts without changing analyzers,
+  deadlines, test selection or quality requirements.
+
+- Simplify advisory request/result construction and split the fresh-store workflow
+  proof into lifecycle, advice and portable-roundtrip phases to satisfy native
+  maintainability checks while preserving serialized results and assertions.
+
+- Add global human presentation and safe structured parser/operation errors while
+  preserving existing JSON successes. Add read-only explicit Quote/Settlement budget
+  advice with local receipt and historical result/completeness reproduction.
+- Add an opt-in synthetic Actions example and allowlisted escaped 64 KiB summaries;
+  valid advice never suppresses technical or independent quality failures.
+
+- Reconcile advisory CLI/CI #16 planning with delivered commands, preserved JSON,
+  unknown imported claims, verified historical budget comparison and bounded safe
+  summaries; preparation history is retained alongside the separately authorized
+  local implementation pending current-head verification/acceptance.
+
+- Archive accepted PR #32 through OpenSpec CLI 1.13.2 with six empirical Quote
+  requirements and 31 scenarios synchronized into main specs; preserve historical
+  verification and provider/calibration limits.
+
 - Bind default research checks to canonical registered fixture bytes before parsing.
 
 - Validate registered HTTPS citation destination hosts before accepting profile metadata.

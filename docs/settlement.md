@@ -150,6 +150,9 @@ captures a new revision. Imported computed results remain producer claims. Inspe
 always labels completeness as `snapshot_only`, never current eligibility. It checks
 the exact immutable payload, local operation receipt, cutoff bounds and all input
 dependencies in one read transaction with one graph validation.
+The result's insertion sequence must equal cutoff sequence plus one and its local
+availability time must equal cutoff time, matching the atomic supported producer.
+Later unrelated history cannot authorize a replacement cutoff.
 
 The local computed ledger is separate from legacy Settlement claims. Its ledger_id
 is an opaque local chain identity; a portable origin ID cannot create a local receipt.
@@ -169,3 +172,21 @@ backup and matching earlier checkout; export there and import into a separate fr
 store for preview experimentation. This creates new destination history. Retain the
 old backup/checkout for original cutoff replay. No automatic migration, downgrade,
 release or cross-checkout compatibility promise is provided.
+
+## Historical budget advice
+
+Check additionally reproduces all material reconciliation fields at the original cutoff.
+Both check and computation inspection require its time to be no later than the latest
+committed metadata timestamp; an advanced wall clock cannot grant authority. Equality
+and older historical cutoffs remain eligible. Missing timestamps cannot certify replay,
+and a populated store with no committed timestamp returns check's safe technical error.
+Input availability alone is insufficient. Incomplete known subtotals above or below budget
+and narrowed partial_change_scope results remain unknown; see [CLI advice](cli.md#presentation-errors-and-advisory-budgets).
+
+Selected local result availability must not exceed the committed metadata sequence.
+Check and both computation inspectors validate that strict integer bound before
+receipt/version trust decisions, returning safe technical errors for unavailable
+selected records and preserving store bytes. The original cutoff-to-insertion
+anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
+the committed snapshot. Equality and later committed appends remain supported;
+portable artifact advice never consults the local store.

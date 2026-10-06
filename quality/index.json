@@ -112,7 +112,7 @@
   {
     "title": "Offline CLI",
     "path": "docs/cli.md",
-    "description": "Synthetic registration, lifecycle, inspection and portable replay examples."
+    "description": "Synthetic registration, lifecycle, Quote/Settlement advice, human/JSON presentation and portable claims."
   },
   {
     "title": "Contracts v1",
@@ -156,7 +156,7 @@
   },
   {
     "title": "Empirical quotes preparation",
-    "path": "openspec/changes/quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
+    "path": "openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/PREPARATION_EVIDENCE.md",
     "description": "Historical preparation against delivered cutoff/coverage contracts; later runtime evidence is separate."
   },
   {
@@ -168,5 +168,25 @@
     "title": "Source profile register",
     "path": "docs/providers/source-profiles.json",
     "description": "Canonical per-version capabilities, digest references and unresolved native evidence."
+  },
+  {
+    "path": "openspec/specs/empirical-quotes/spec.md",
+    "title": "Accepted empirical Quote specification",
+    "description": "CLI-synchronized offline synthetic cohort, cutoff and provenance requirements from accepted PR #32."
+  },
+  {
+    "path": "openspec/changes/workflow-01-advisory-ci/PREPARATION_EVIDENCE.md",
+    "title": "Advisory workflow preparation",
+    "description": "Local planning for preserved JSON, verified historical budget advice and safe optional CI summaries; runtime implementation remains separate."
+  },
+  {
+    "title": "Optional advisory CI",
+    "path": "docs/ci.md",
+    "description": "Manually invoked local synthetic advice, escaped bounded summaries and technical failure exits."
+  },
+  {
+    "title": "Advisory implementation evidence",
+    "path": "openspec/changes/workflow-01-advisory-ci/TDD_EVIDENCE.md",
+    "description": "Observed red/green tests and bounded trust/oracle controls; publication acceptance remains separate."
   }
 ]

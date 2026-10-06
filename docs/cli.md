@@ -1,4 +1,4 @@
-# Offline lifecycle, settlement and Quote CLI
+# Offline lifecycle, settlement, Quote and advisory CLI
 
 Install with the [README setup](../README.md#work-on-the-repository). Put the global
 `--db PATH` option before the subcommand. Its default is
@@ -47,7 +47,7 @@ on a handled failure. Hard process termination may leave an unreferenced tempora
 file, but never a partial final artifact. Keep exports private.
 
 Portable import/export modes cannot be combined with selectors or other operation modes.
-`check`, native provider imports and live collection remain unavailable.
+Native provider imports and live collection remain unavailable. Read-only `check` is described below.
 `quote` computes synthetic offline empirical amounts. Computed record inspection includes local receipt status, input replay
 eligibility and `snapshot_only` completeness. Repository remainder reports are read-only.
 A busy store reports a retryable error; wait for the other writer and repeat the
@@ -76,3 +76,102 @@ that override. Identical operation retries preserve the original cutoff/result e
 when new evidence arrives; conflicting reuse, including a settlement operation ID,
 fails unchanged. See [empirical Quotes](quotes.md) for complete-cohort, feature and
 replay semantics. These commands never collect provider data or write settlements.
+
+## Presentation, errors and advisory budgets
+
+Put global `--format human` before the command for readable values; `--format json`
+(or no format option) preserves existing bind/quote/settle/explain success payloads.
+Human presentation escapes terminal controls. Help/version remain offline text with
+exit 0. Technical failures, including argument parsing, emit a safe diagnostic on
+stderr, leave stdout empty and exit 2. JSON errors use `changecost/error-v1` with
+`code` and `message`; rejected values, paths, SQL and tracebacks are not displayed.
+New advice uses `changecost/check-v1`; these are internal preview tags.
+
+```sh
+changecost --db demo.sqlite --format human explain --record-kind quote --record-id QUOTE_ID
+changecost --db demo.sqlite check --record-kind quote --record-id QUOTE_ID --budget 15 --economic-kind monetary --unit USD --currency USD --basis billed
+changecost --db demo.sqlite check --record-kind quote --record-id QUOTE_ID --quantile p50 --budget 15 --economic-kind monetary --unit USD --currency USD --basis billed
+changecost --db demo.sqlite check --record-kind computed_settlement --record-id SETTLEMENT_ID --budget 15 --economic-kind monetary --unit USD --currency USD --basis billed
+changecost check --artifact bundle.json --record-kind quote --record-id QUOTE_ID --budget 15 --economic-kind monetary --unit USD --currency USD --basis billed
+```
+
+Replace the explicit record IDs with the selected immutable result. No implicit
+latest selection or aggregation occurs. Budgets are finite nonnegative Decimal
+strings with exact kind/unit/basis/currency identity, no rounding or conversion.
+Monetary budgets require currency; nonmonetary budgets omit it. Quote p90 is the
+default; p50 is explicit. Settlement quantiles are invalid. Equality and observed
+zero are within_budget. All valid advice (`within_budget`, `over_budget`, `unknown`)
+exits 0; technical failures exit 2.
+
+Selected local availability is validated before legacy, receipt or unsupported
+version shortcuts. Malformed availability remains a safe technical error, even
+when the selected claim would otherwise be unknown; artifact mode stays database-free.
+
+Numeric advice requires exactly one raw receipt for the selected result, a supported
+typed request/payload match and exact
+historical reproduction at the original cutoff. Supported local computations insert
+their result at cutoff sequence plus one and at the cutoff time; check and both
+historical inspectors verify these anchors against the result's own availability.
+The generated origin store equals the cutoff store, and both recorded/effective
+timestamps equal the cutoff time.
+Its time cannot exceed the latest
+committed local metadata timestamp, even when the wall clock has advanced; equality
+and earlier historical cutoffs remain eligible. The same boundary applies to Quote
+and computed Settlement explain. A populated store missing its committed metadata
+timestamp is invalid for check even if metadata sequence is corrupted to zero or
+no local receipt remains; record checks never substitute the wall clock for a missing
+committed timestamp. Inspection cannot certify replay without that timestamp.
+Computed Settlement receipts also bind the payload operation ID to the local receipt
+primary key. Identical or conflicting receipt aliases deny local authority before
+request matching for both computation kinds, including check, inspection and retry.
+Unrelated results retain their own receipt authority. Retrying an operation rejects a mismatched stored operation ID even
+if another receipt references that result. Settlement reproduction includes
+scope, subtotals, supporting inputs/exclusions, reasons and completeness. It also
+retains potential local predecessors associated with the selected Change from their stored availability
+before pruning dependencies or filtering receipts. A surviving local origin,
+local cutoff-store declaration or raw receipt record ID retains a candidate even
+when other authority is corrupted. Surviving typed receipt selectors also retain the original repository/Change association
+when a predecessor declares another Change. Selector parsing preserves the complete
+Change ID, including colons, Unicode and spaces; it supplies negative evidence only.
+Uniquely valid Quote-only receipts do not identify imported computed Settlements
+with the same untyped ID. Uncertain receipt kinds and local origin/cutoff claims
+remain fail-closed. Every candidate must remain in
+the replay snapshot with a unique valid receipt and supported producer cutoff
+anchors/version. A unique tip must match the previous reference and ledger across
+scopes. Missing or ambiguous history cannot establish a first result. Foreign
+imported claims and unrelated Changes do not become local predecessors; later
+computations remain outside the cutoff. A first ledger ID
+remains opaque; this is deterministic replay, not generic payload authentication.
+Coordinated deletion or rewriting of every origin, cutoff, receipt and Change association marker is
+indistinguishable from a foreign import; availability alone proves timing, not locality.
+Explain's
+`inputs_available` alone cannot certify a value. Later evidence never replaces that
+cutoff. Imported/legacy/artifact-only results remain unknown producer claims, even
+with declared completeness. Unpriced, incomplete, incompatible, unsupported or
+unreproducible results remain unknown on both sides of budget. Narrowed Run windows
+retain the existing partial_change_scope reason. Results separate `declared` amounts
+from verified `comparison`, expose provenance, scope/cutoff and reasons.
+
+Check creates no record, receipt, revision, observation or store. Artifact mode
+strictly validates the portable graph and performs no database access or import.
+The executable [synthetic CI walkthrough](ci.md) demonstrates complete local values
+and portable claims; provider support/calibration remain To-Validate.
+
+Selected local result availability must not exceed the committed metadata sequence.
+Check and both computation inspectors validate that strict integer bound before
+receipt/version trust decisions, returning safe technical errors for unavailable
+selected records and preserving store bytes. The original cutoff-to-insertion
+anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
+the committed snapshot. Equality and later committed appends remain supported;
+portable artifact advice never consults the local store.
+
+Human output escapes Unicode line and paragraph separators U+2028/U+2029,
+preventing label values from creating text line boundaries. JSON output retains
+the original record values; ordinary Unicode and spaces remain data.
+
+Local Quote and computed Settlement inspection requires exactly one metadata row.
+Missing or duplicate metadata is a technical error (exit 2, empty stdout) in both
+formats. Bundle export applies the same cardinality guard before inspection.
+Positive-sequence inspection with an unavailable committed timestamp still reports
+replay unavailable; budget check cannot certify that history. These reads do not
+repair or modify the store.

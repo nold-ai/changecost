@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import typer
+from typer._click.globals import get_current_context
 
 from changecost import operations
 from changecost.models import (
@@ -21,10 +22,13 @@ from changecost.models import (
     RunRef,
     timestamp,
 )
+from changecost.presentation import SafeGroup, error_output, human
 from changecost.serialization import ContractError, dumps_bundle, loads_bundle
 from changecost.store import Store, key, lookup, reference, subject
 
-app = typer.Typer(add_completion=False, help="ChangeCost offline contract and lifecycle records.")
+app = typer.Typer(
+    cls=SafeGroup, add_completion=False, help="ChangeCost offline contract and lifecycle records."
+)
 
 
 def show_version(value: bool) -> None:
@@ -43,14 +47,19 @@ def root(
             "--version", callback=show_version, is_eager=True, help="Show version and exit."
         ),
     ] = False,
+    format: Annotated[str, typer.Option("--format", help="Output format: json or human.")] = "json",
     db: Annotated[
         Path, typer.Option(help="Local SQLite store; opened only by valid operations.")
     ] = Path(".changecost/changecost.sqlite3"),
 ) -> None:
     """Keep help, version and invalid invocation free of store writes."""
+    if format not in {"json", "human"}:
+        error_output("json")
+        raise typer.Exit(2)
+    context.meta["format"] = format
     context.obj = Store(db)
     if context.invoked_subcommand is None:
-        typer.echo(context.get_help())
+        error_output(format)
         raise typer.Exit(2)
 
 
@@ -59,12 +68,13 @@ def execute(operation) -> None:
         result = operation()
         if hasattr(result, "model_dump"):
             result = result.model_dump(mode="json", by_alias=True)
-        typer.echo(json.dumps(result, ensure_ascii=True))
+        format = get_current_context().meta.get("format", "json")
+        typer.echo(human(result) if format == "human" else json.dumps(result, ensure_ascii=True))
     except ContractError as exc:
-        typer.echo(str(exc), err=True)
+        error_output(get_current_context().meta.get("format", "json"))
         raise typer.Exit(2) from exc
     except (ValueError, OSError, sqlite3.Error) as exc:
-        typer.echo("invalid request fields or unavailable local store/artifact", err=True)
+        error_output(get_current_context().meta.get("format", "json"))
         raise typer.Exit(2) from exc
 
 
@@ -410,6 +420,33 @@ def export_file(store: Store, path: Path) -> None:
         os.link(temporary, path)
     finally:
         Path(temporary).unlink(missing_ok=True)
+
+
+@app.command()
+def check(
+    context: typer.Context,
+    record_kind: Annotated[str, typer.Option()],
+    record_id: Annotated[str, typer.Option()],
+    budget: Annotated[str, typer.Option()],
+    economic_kind: Annotated[str, typer.Option()],
+    unit: Annotated[str, typer.Option()],
+    basis: Annotated[str, typer.Option()],
+    currency: str | None = None,
+    quantile: str | None = None,
+    artifact: Path | None = None,
+) -> None:
+    """Read one explicit historical record and compare a compatible budget."""
+    from changecost.advisory import budget_component, check_record
+
+    execute(
+        lambda: check_record(
+            context.obj,
+            RecordRef.model_validate(dict(kind=record_kind, record_id=record_id)),
+            budget_component(budget, economic_kind, unit, basis, currency),
+            quantile,
+            artifact,
+        )
+    )
 
 
 def main() -> None:
