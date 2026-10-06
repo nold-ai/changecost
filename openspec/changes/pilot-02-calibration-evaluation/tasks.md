@@ -16,7 +16,7 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 3. Pilot assessment
 
-- [ ] 3.1 Confirm both adapter dependencies and live collection authorization; verify each source capability is supported or explicitly reported as an unresolved gap.
+- [ ] 3.1 Confirm the forecast/core prerequisites and each enabled lane's approved reader/measurement policy plus actual evaluation authorization; missing other providers remain reported gaps, not universal blockers.
 - [ ] 3.2 Run authorized evidence replay and overhead measurements with recorded environment and input sizes; verify reports distinguish real observations from synthetic tests and omit sensitive data.
 - [ ] 3.3 Publish aggregate calibration, width, attribution, abandoned expenditure, unknown counts and baseline comparison; verify every metric has units and denominators and the conclusion follows the pre-registered rubric.
 - [ ] 3.4 Record continue/pivot/not-yet-validated reasoning and next evidence in docs/pilot/findings.md; verify unsupported capabilities are not claimed as validated.
@@ -26,3 +26,12 @@ All implementation and research tasks below remain unchecked. Planning approval 
 - [ ] 4.1 Run applicable repository gates and `openspec validate pilot-02-calibration-evaluation --strict --no-interactive`; verify all relevant checks pass and report unavailable tooling explicitly.
 - [ ] 4.2 For behavior changes, record actual failing-before/passing-after commands, timestamps and results in TDD_EVIDENCE.md and run fresh SpecFact review; verify reviewed scope, tool/module versions and analyzer availability, resolving findings or documenting narrow exceptions. For research-only work, record evidence review without invented TDD.
 - [ ] 4.3 Open a focused PR with docs, verification, limits and rollback; verify reciprocal proposal/issue links and native hierarchy/dependencies, and archive only after implementation is accepted.
+
+## 5. Adaptive protocol and evidence promotion
+
+- [ ] 5.1 Pre-register target-only/dimensional/transfer/rehearsal comparison and scoped promotion rubric before examining target outcomes; preserve the economic matched-availability protocol.
+- [ ] 5.2 Write failing cold-start/new-ecosystem, differing adaptive availability, matched-pair leakage/confounding, useful/harmful transfer, target-preference, drift-withdrawal and partial native truth tests; implement and verify exact synthetic outcomes.
+- [ ] 5.3 Evaluate shared eligible truth and additional availability separately with all-outcome/abandoned denominators, uncertainty and rehearsal overhead; record unvalidated conclusions when criteria do not pass.
+- [ ] 5.4 Bind any passing validation receipt to exact ecosystem/component/population/input and policy versions without promoting from sample count or synthetic data alone.
+
+- [ ] Exclude each target Change and all its attempts/revisions from analogy, transfer calibration and validation inputs; test terminal-target updates and disclose dependence among distinct repeat-task Changes.

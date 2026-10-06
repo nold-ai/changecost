@@ -117,8 +117,100 @@ evidence; the named human review must confirm version, authority, accounting
 interval, replay/reset/correction semantics and declared exclusions. No provider
 policy, adapter, public command, portable schema or database migration is added.
 
-The selected completion rule requires verified intended Copilot/Cursor profiles.
+Historical 2026-10-03 completion rule (superseded on 2026-10-07): required verified intended Copilot/Cursor profiles.
 Missing exports/finality or custom-hook input/output leave tasks and #9 open;
 complete tooling and documents may be delivered while those evidence gates remain
 blocked. Reopen #9/Todo for preparation and use In Progress during implementation.
 Preserve historical PR #21 acceptance and native parent/dependency relationships.
+
+## Preparation decisions — 2026-10-06 (Europe/Berlin)
+
+PR #33 delivered the register, bounded inspector and all 18 research controls;
+PR #34 delivered advisory behavior. This preparation changes planning and evidence
+documentation only. Intended native profiles still need inspection and independent
+semantic approval. All 14 profiles have zero approvals. Preserve completed work,
+retained failures and the current completion criterion; documentation is not a sample.
+
+### Acquisition and accounting decisions
+
+Keep Copilot CLI OTel, Local IDE OTel, hosted SDK logs, personal Cursor CSV and
+Enterprise/custom-hook projections as separate source/version/harness profiles.
+Prefer existing authorized JSON/JSONL/CSV input supported by the bounded inspector.
+VS Code also documents SQLite trace export: that is an acquisition candidate, not
+a supported inspector format. If only a database exists, resolve an explicit
+offline projection/support decision before extending tooling. A transformed
+derivative is not native wire evidence. Do not enable collection to fill a gap.
+
+| Decision | Required native evidence | Default while evidence is missing |
+| --- | --- | --- |
+| Authoritative Copilot quantity | Root/child/subagent identities and inclusion boundaries; durable checkpoints versus invocation data in the same interval. | Keep overlapping lanes separate. Do not add roots, children and cumulative checkpoints. Nano-AIU, multipliers, tokens and currency stay distinct. |
+| Replay, corrections and finality | Stable record/revision identity, resume/replay examples, interval/timezone, reset/corrections, cache categories and terminal coverage. | Retain partial/unverified status. Completion flags or absent events do not prove a complete ledger. |
+| Provider-to-change attribution | Exact namespaces/session joins and explicit binding, including manual provenance and ambiguous/unbound records. | No provider-authoritative join inferred from time proximity, repository labels or IDE windows. |
+| Cursor economics | Actual personal CSV headers/rows, tier/export version/range, included/on-demand/pool meanings, quantity units, stable row identity and corrections. | Displayed dollars and included usage are not automatically billed cash. No conversion from quota percentages or list prices. |
+| Hook transformation | Sanitized mapping code or paired native input/upload; receiver changes inspected separately, including retry/correction/classifier provenance. | Keep native, converted and receiver claims separate. Disabled work OTel stays disabled. |
+
+Historical 2026-10-06 disposition: native evidence determined approval and this
+preparation retained intended profiles/dependencies. The explicit 2026-10-07 scope
+revision below supersedes that universal closeout condition. Codex/Claude reader
+plans are now authorized planning only; runtime adapters remain unimplemented.
+
+### Source approval and runtime authority
+
+The contributor attestation binds profile digest, capability, native evidence hash
+and named semantic review. It does not authenticate the reviewer, mint a computation
+receipt or change runtime policy. Normalized imports already persist provider-shaped
+economic records, while trusted coverage, settlement, Quote replay and advisory
+reproduction authorize synthetic fixture billed-USD accounting only. A supported
+register cell cannot make provider results complete, priced or eligible for advice.
+
+Later #13/#14 preparation must explicitly map supported versioned source/component
+and economic semantics into an accounting/coverage policy and bind its version to
+historical settlement, Quote and advisory replay. Reuse current contracts where
+they suffice; this preparation introduces no plugin framework, public command,
+schema migration or runtime policy extension.
+
+### Acceptance and recovery
+
+Refresh citations without replacing historical observations, original evidence or
+canonical fixture bytes. Verify register/matrix consistency, all 18 cases, links
+and applicable quality gates. Keep #9 Open/In Progress with zero approvals and exact
+native evidence requests; #13/#14 retain blocked-by #9/#12. Remain locally unpublished
+pending the reviewed-diff PR/stash choice. A missing earlier local review receipt
+requires recovery, not a new correction allowance.
+
+Confidence is high in code boundaries and medium in provider feasibility. Duplicate
+accounting, premature approval and unsupported numeric authority are mitigated by
+separate lanes, semantic attestations and later policy-specific replay. No paid
+infrastructure is needed; native artifact availability controls timing. Rollback
+reverts the scoped planning diff and restores issue text from readback while
+preserving source originals, archives and review history.
+
+## Current decisions — capability closeout, 2026-10-07
+
+1. Assess accessible regular local metadata without requiring new exports,
+   Enterprise plans, administrator data or collection. Record unsupported/partial/
+   unverified capabilities and bounded acquisition evidence. Custom hooks and
+   optional OTel/CSV profiles remain separate unresolved lanes, not universal gates.
+2. A reviewed capability inventory with exact gaps can complete feasibility; it
+   cannot approve a missing mapping. The current 14-profile register has zero native
+   approvals. New observed Codex/Claude producer versions need separate profile
+   reconciliation; do not relabel old evidence or infer support from installed apps.
+3. Native source semantics, demand-measurement eligibility and full billed-money
+   authority are independent. Preserve exact profile/capability/evidence/reviewer
+   attestations and policy-specific replay. This change creates no runtime policy.
+4. Existing local session JSON/JSONL is a candidate acquisition route. SQLite
+   databases require an explicitly reviewed read-only snapshot/projection policy,
+   including live-file/WAL limits; no write-capable open, checkpoint or bypass.
+5. Codex request records overlap legacy snapshots; Claude repeated/revised usage
+   overlaps result streams; Copilot root/direct/checkpoint/session totals can overlap.
+   Cursor empty counters/context occupancy cannot provide measured token outcomes.
+   Preserve identities, representations, cache categories, reset/correction/finality
+   and root/subagent gaps. Explicit manual Run/Change binding stays the default.
+6. Dated metadata-only discovery findings are incorporated without native approvals;
+   original private source pointers/hashes remain ignored. Public summaries exclude
+   prompts, paths, identifiers and actual account quantities. See the
+   [research evidence](../../../docs/research/adaptive-demand-evidence.md).
+
+Task/source-feasibility scope is current; prior acceptance/failures remain history.
+Close/archive still requires separately reviewed actual reconciliation and applicable
+delivery checks. This planning update does not close #9 or imply adapter readiness.

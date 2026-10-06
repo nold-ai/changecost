@@ -6,7 +6,7 @@ Copilot local telemetry may supply useful usage and billing units, but repeated 
 
 ## What Changes
 
-- Import user-provided Copilot IDE/CLI local files using versioned, feasibility-approved mappings.
+- Import explicitly selected existing Copilot CLI, Local IDE or hosted SDK/Agent Host files using independently approved versioned mappings; no new telemetry is required.
 - Preserve billing units and select authoritative evidence without counting repeated span values.
 - Use verified provider identifiers or explicit manual mappings; expose ambiguous attribution and unsupported formats.
 
@@ -18,7 +18,7 @@ Copilot local telemetry may supply useful usage and billing units, but repeated 
 
 ### Modified Capabilities
 
-None; no main capability specs exist yet.
+None; delivered main capabilities are preserved. New additive requirements are defined in this change; source/policy approval remains separate.
 
 ## Impact
 

@@ -157,8 +157,8 @@ remains required; unavailable macOS analyzers are incomplete.
 Preparation remains local/unpublished on the owned combined branch in worktree
 7808, alongside the existing Quote archive, as explicitly requested. The sole
 native prerequisite is closed #15; provider approval/calibration remain separate.
-See [archived Quotes](../archive/2026-10-04-quote-01-empirical-estimation/proposal.md),
-[change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
+See [archived Quotes](../2026-10-04-quote-01-empirical-estimation/proposal.md),
+[change order](../../../CHANGE_ORDER.md) and [source assessment](../../../../docs/research/pilot-source-assessment.md).
 No runtime persistence change or paid infrastructure is planned. Restore only the
 preparation diff to undo planning; later revert runtime changes while retaining
 original stores/backups, accepted archive and evidence.

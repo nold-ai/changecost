@@ -40,6 +40,11 @@
           "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
           "accessed": "2026-10-03",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -77,6 +82,11 @@
           "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
           "accessed": "2026-10-03",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#opentelemetry-monitoring",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -113,6 +123,11 @@
           "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
           "accessed": "2026-10-03",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://code.visualstudio.com/docs/agents/guides/monitoring-agents",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -319,6 +334,26 @@
           "url": "https://prod.cursor.com/help/models-and-usage/usage-limits",
           "accessed": "2026-10-03",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://forum.cursor.com/t/usage-page-to-token-amount-what/167153/79",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
+        },
+        {
+          "url": "https://forum.cursor.com/t/measuring-a-quota-through-a-gauge-that-only-shows-tenths-of-a-percent/170206/4",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
+        },
+        {
+          "url": "https://forum.cursor.com/t/cost-column-in-webpage-usage-hidden-behind-scrollbar/173244",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
+        },
+        {
+          "url": "https://prod.cursor.com/help/models-and-usage/usage-limits",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -356,6 +391,11 @@
           "url": "https://learn.chatgpt.com/docs/app-server",
           "accessed": "2026-09-28",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://learn.chatgpt.com/docs/app-server",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -393,6 +433,11 @@
           "url": "https://learn.chatgpt.com/docs/app-server",
           "accessed": "2026-09-28",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://learn.chatgpt.com/docs/app-server",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -430,6 +475,11 @@
           "url": "https://code.claude.com/docs/en/monitoring-usage",
           "accessed": "2026-10-03",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -467,6 +517,11 @@
           "url": "https://code.claude.com/docs/en/monitoring-usage",
           "accessed": "2026-10-03",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -504,6 +559,11 @@
           "url": "https://code.claude.com/docs/en/monitoring-usage",
           "accessed": "2026-10-03",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -616,6 +676,11 @@
           "url": "https://learn.chatgpt.com/docs/app-server",
           "accessed": "2026-09-28",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://learn.chatgpt.com/docs/app-server",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     },
@@ -650,6 +715,11 @@
           "url": "https://code.claude.com/docs/en/monitoring-usage",
           "accessed": "2026-10-03",
           "kind": "rolling documentation; not observed account support"
+        },
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-06",
+          "kind": "Refreshed documentation/vendor report; no native-account approval"
         }
       ]
     }

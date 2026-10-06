@@ -3,6 +3,17 @@
 
 ## Unreleased
 
+- Plan zero-knowledge local task-demand learning, scoped matched-ecosystem transfer
+  and chronological validation; add separate Codex/Claude local-reader plans and
+  capability-based source-feasibility closeout. Update the private backlog without
+  changing runtime Quote/advisory behavior or granting native approvals.
+
+- Archive the delivered advisory workflow from PR #34 through OpenSpec CLI,
+  synchronizing 11 requirements and 69 scenarios while retaining the accepted
+  quota-blocked full Codex review. Reconcile source-feasibility #9 around merged
+  offline tooling, dated export evidence and native accounting/coverage decisions;
+  preserve zero source approvals and synthetic-only runtime authority.
+
 - Retain original receipt Change selectors after predecessor declaration corruption,
   and distinguish valid Quote-only receipts from imported Settlement ID collisions.
 

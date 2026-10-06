@@ -216,3 +216,12 @@ The multiplier-only research strategy admits exactly one record. Fixture expecta
 Registered citations require a parsed HTTPS destination hostname; this structural check does not probe reachability or provider authority.
 
 Default research checking binds the exact canonical fixture bytes to all twelve registered synthetic references before parsing. In-memory semantic checks and matrix-only rendering make no fixture-byte provenance claim.
+
+## Local adaptive demand — planning approved 2026-10-07
+
+[Adaptive forecasting](docs/forecasting.md) is planned to begin with qualitative
+zero knowledge for unseen ecosystems, learn from eligible bound local outcomes,
+and test transfer from older models/workflows using observed comparisons. Missing
+exports/admin access do not universally block source-feasibility closeout; missing
+measurements remain unknown. Codex/Claude readers and demand quote mode are future
+work. Current CLI behavior remains the delivered synthetic economic/advisory scope.

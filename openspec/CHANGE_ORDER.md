@@ -1,9 +1,9 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-10-03**.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-10-07**.
 The Python foundation and supplemental bounded-review workflow are delivered and
-archived. Source-feasibility research is partly implemented; its remaining inspection
-tasks keep it active with #9 reopened and In Progress. Core-02 (#11) merged in PR #25 and is
+archived. Source-feasibility tooling is delivered; remaining capability-reconciliation/review
+tasks keep #9 active and In Progress under the 2026-10-07 closeout revision. Core-02 (#11) merged in PR #25 and is
 archived with synchronized main specs. Settlement reconciliation merged in PR #28
 on 2026-10-02 and is accepted/archived with synchronized main specs. Provider
 implementation and live collection require a subsequent request.
@@ -11,7 +11,7 @@ implementation and live collection require a subsequent request.
 Supplemental contributor workflow: [#23](https://github.com/nold-ai/changecost/issues/23)
 tracks the delivered/archived [dev-workflow-01-bounded-review](changes/archive/2026-09-29-dev-workflow-01-bounded-review/proposal.md), a development-only control for retaining
 review context and bounding correction loops. It is a sub-issue of [#6](https://github.com/nold-ai/changecost/issues/6), has no pilot dependency edge, and does not
-change the nine-change product delivery order.
+change the original nine-change product delivery order; the 2026-10-07 adaptive expansion below is separate.
 
 Supplemental behavioral-evidence pilot: [#26](https://github.com/nold-ai/changecost/issues/26)
 tracks [dev-workflow-02-behavioral-evidence](changes/dev-workflow-02-behavioral-evidence/proposal.md),
@@ -28,7 +28,7 @@ This adds no new issue or product-order dependency.
 
 - Epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
 - Organization project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, linked to this repository.
-- Native hierarchy: **Epic → Feature → User Story**. All 14 issues start **Todo**,
+- Native hierarchy: **Epic → Feature → User Story**. The original 14 issues started **Todo**,
   unassigned and without delivery dates.
 - Every dependency below is also a native GitHub blocked-by relationship. Arrows
   run from prerequisite to dependent; feature grouping adds no implementation gate.
@@ -53,22 +53,28 @@ This adds no new issue or product-order dependency.
 | [provider-01-copilot-import](changes/provider-01-copilot-import/proposal.md) | [#13](https://github.com/nold-ai/changecost/issues/13) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [provider-02-cursor-import](changes/provider-02-cursor-import/proposal.md) | [#14](https://github.com/nold-ai/changecost/issues/14) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [quote-01-empirical-estimation](changes/archive/2026-10-04-quote-01-empirical-estimation/proposal.md) | [#15](https://github.com/nold-ai/changecost/issues/15) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
-| [workflow-01-advisory-ci](changes/workflow-01-advisory-ci/proposal.md) | [#16](https://github.com/nold-ai/changecost/issues/16) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#15](https://github.com/nold-ai/changecost/issues/15) `quote-01-empirical-estimation` |
-| [pilot-02-calibration-evaluation](changes/pilot-02-calibration-evaluation/proposal.md) | [#17](https://github.com/nold-ai/changecost/issues/17) | [#5](https://github.com/nold-ai/changecost/issues/5) | [#13](https://github.com/nold-ai/changecost/issues/13) `provider-01-copilot-import`, [#14](https://github.com/nold-ai/changecost/issues/14) `provider-02-cursor-import`, [#15](https://github.com/nold-ai/changecost/issues/15) `quote-01-empirical-estimation`, [#16](https://github.com/nold-ai/changecost/issues/16) `workflow-01-advisory-ci` |
+| [workflow-01-advisory-ci](changes/archive/2026-10-06-workflow-01-advisory-ci/proposal.md) | [#16](https://github.com/nold-ai/changecost/issues/16) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#15](https://github.com/nold-ai/changecost/issues/15) `quote-01-empirical-estimation` |
+| [forecast-01-local-adaptive-demand](changes/forecast-01-local-adaptive-demand/proposal.md) | [#35](https://github.com/nold-ai/changecost/issues/35) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16); native lanes require applicable approved readers/policies |
+| [provider-03-codex-local-import](changes/provider-03-codex-local-import/proposal.md) | [#36](https://github.com/nold-ai/changecost/issues/36) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
+| [provider-04-claude-local-import](changes/provider-04-claude-local-import/proposal.md) | [#37](https://github.com/nold-ai/changecost/issues/37) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
+| [pilot-02-calibration-evaluation](changes/pilot-02-calibration-evaluation/proposal.md) | [#17](https://github.com/nold-ai/changecost/issues/17) | [#5](https://github.com/nold-ai/changecost/issues/5) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16), [#35](https://github.com/nold-ai/changecost/issues/35); native adapters are lane-specific |
 
 ## Dependency graph
 
 ```mermaid
 graph TD
-  c0["pilot-01-source-feasibility"]
-  c1["core-01-python-foundation"]
-  c2["core-02-change-run-contracts"]
-  c3["settlement-01-reconciliation"]
-  c4["provider-01-copilot-import"]
-  c5["provider-02-cursor-import"]
-  c6["quote-01-empirical-estimation"]
-  c7["workflow-01-advisory-ci"]
-  c8["pilot-02-calibration-evaluation"]
+  c0["pilot-01-source-feasibility #9"]
+  c1["core-01-python-foundation #10"]
+  c2["core-02-change-run-contracts #11"]
+  c3["settlement-01-reconciliation #12"]
+  c4["provider-01-copilot-import #13"]
+  c5["provider-02-cursor-import #14"]
+  c6["quote-01-empirical-estimation #15"]
+  c7["workflow-01-advisory-ci #16"]
+  c8["pilot-02-calibration-evaluation #17"]
+  c9["forecast-01-local-adaptive-demand #35"]
+  c10["provider-03-codex-local-import #36"]
+  c11["provider-04-claude-local-import #37"]
   c1 --> c2
   c2 --> c3
   c0 --> c4
@@ -77,17 +83,26 @@ graph TD
   c3 --> c5
   c3 --> c6
   c6 --> c7
-  c4 --> c8
-  c5 --> c8
+  c2 --> c9
+  c3 --> c9
+  c6 --> c9
+  c7 --> c9
+  c0 --> c10
+  c3 --> c10
+  c0 --> c11
+  c3 --> c11
+  c2 --> c8
+  c3 --> c8
   c6 --> c8
   c7 --> c8
+  c9 --> c8
 ```
 
 The graph is acyclic. Source feasibility and Python foundation can start independently
 once separately authorized. Contracts enable reconciliation; both provider adapters
 also require the feasibility gate. Quotes depend on reconciliation and can use
-synthetic evidence before provider integration. Evaluation requires both adapters,
-quotes and advisory workflow; its report must expose unavailable capabilities.
+synthetic evidence before provider integration. Evaluation now requires delivered core, quotes/advisory and adaptive demand;
+each native lane requires its approved reader/policy. Reports expose unavailable capabilities.
 
 ## Evidence and lifecycle rules
 
@@ -142,7 +157,8 @@ line; no requirement or scenario content changed.
 The selected next work is **pilot-01-source-feasibility (#9)**: the maintainer
 reopened it on 2026-10-03 for verified native profiles and executable closeout
 checks. Provider **#13**, then **#14**, retain their approved dependency order;
-#9 remains open until inspected source profiles pass the evidence gate.
+#9 remains open pending reviewed capability dispositions and reconciliation;
+  supported mappings still require independent native approval.
 Settlement is delivered. Quotes **#15** were prepared earlier on 2026-10-03 and
 subsequently implemented and merged in [PR #32](https://github.com/nold-ai/changecost/pull/32).
 Its accepted contract was synchronized through the native OpenSpec CLI in this
@@ -203,7 +219,7 @@ Source feasibility #9 was reopened on 2026-10-03 for verified native profiles an
 ## Advisory workflow preparation — 2026-10-05 (Europe/Berlin)
 
 The maintainer selected **workflow-01-advisory-ci (#16)** after accepted Quotes #15.
-[Preparation evidence](changes/workflow-01-advisory-ci/PREPARATION_EVIDENCE.md)
+[Preparation evidence](changes/archive/2026-10-06-workflow-01-advisory-ci/PREPARATION_EVIDENCE.md)
 reconciles the delivered four command families/registration/outcomes against the
 remaining human presentation, structured errors, read-only budget check and optional
 summary example. The sole native prerequisite remains closed #15; parent #8 and
@@ -222,4 +238,51 @@ created. Implementation needs a subsequent request and fresh binding/verificatio
 
 Advisory #16 implementation and combined verification/PR delivery were explicitly
 authorized on 2026-10-05. Its preparation remains historical; implementation/current
-acceptance evidence is retained in its active change. The quote archive is preserved.
+acceptance evidence is retained in its archived change. The quote archive is preserved.
+
+
+## Advisory archive and selected preparation — 2026-10-06 (Europe/Berlin)
+
+Advisory #16 merged in [PR #34](https://github.com/nold-ai/changecost/pull/34)
+at `ee424b5cf3c116b18515cec1ee086e1a6de223a0` (09:41:49 Europe/Berlin).
+`openspec archive workflow-01-advisory-ci --yes` (1.13.2, spec-driven)
+synchronized all 11 added requirements and 69 scenarios into
+[advisory-workflow](specs/advisory-workflow/spec.md). Readback preserved requirement
+bodies, scenarios and metadata; the accepted Quote archive remains unchanged.
+[Archived tasks](changes/archive/2026-10-06-workflow-01-advisory-ci/tasks.md)
+retain unchecked task 5.2 and the maintainer's accepted quota-blocked full Codex
+code-review limitation. This exception does not waive future reviews.
+
+The selected next preparation is **pilot-01-source-feasibility (#9)**. Its offline
+checker/register/18-case tooling merged in PR #33, but all 14 profiles have zero
+native approvals. #9 remains Open/In Progress and #13/#14 keep blocked-by #9/#12.
+Current normalized imports exist; trusted coverage/replay remains synthetic billed
+USD only. See the [architecture decisions](changes/pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin)
+and [current research](changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin).
+This preparation is locally unpublished pending checks and the PR/stash choice;
+provider implementation, live collection and calibration remain separate gates.
+
+
+## Adaptive-demand expansion — 2026-10-07 (Europe/Berlin)
+
+The maintainer approved three additional first-product planning stories: adaptive
+demand #35 under #8, Codex local reader #36 and Claude local reader #37 under #7.
+Native User Story types, parents, blocked-by edges and private project Todo state
+were read back; new stories are unassigned and undated. No implementation is delivered.
+The original nine-change plan and historical decisions remain evidence, not a
+current universal export requirement. #9 now closes through reviewed capability
+dispositions/gaps; missing optional exports/admin/Enterprise/hook sources do not
+block every lane, while unsupported mappings remain unavailable.
+
+Native #13/#14 blockers remain #9/#12. Evaluation #17 removes universal #13/#14
+blockers and adds #11/#12/#35 alongside delivered #15/#16. Applicable approved
+readers/policies are required for each native evaluation lane. The graph is acyclic.
+Offline demand contracts/synthetic verification can proceed on delivered core;
+native semantic/accounting/coverage approval then enables individual readers and
+native learning. A missing provider cannot prevent another eligible source's evaluation.
+
+See [forecasting](../docs/forecasting.md), [architecture/evidence register](../docs/research/adaptive-demand-evidence.md)
+and the three proposals. Preserve the delivered Quote/advisory contracts and their
+archives. This batch is local/unpublished and the selected disposition is a new
+verified scoped stash, preserving the original recovery stash and review limits.
+Native approvals remain zero. No runtime, collection, paid service or release is added.

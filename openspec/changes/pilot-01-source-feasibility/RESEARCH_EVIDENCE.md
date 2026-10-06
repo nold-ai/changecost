@@ -204,3 +204,143 @@ explicit finality/identity evidence and metadata-only synthetic projections.
 No paid infrastructure or inference was required. Rollback is the scoped file
 diff revert and restoration of the selected issue's prior body if necessary;
 raw source data and account settings are unchanged.
+
+
+## Preparation research — 2026-10-06 (Europe/Berlin)
+
+Fresh main was fetched at 10:09:51 Europe/Berlin, SHA
+`ee424b5cf3c116b18515cec1ee086e1a6de223a0`. The PR #34 source and merged
+Git trees match. The maintainer selected #9 and retained its existing native-profile
+completion criterion. This preparation is locally unpublished; no exports were
+acquired, collection enabled or provider settings changed. Historical observations
+and private originals remain unchanged. PR #33 delivered the checker and semantic
+tooling; that delivery is not approval of intended sources.
+
+### Current primary evidence
+
+All sources in this table were opened on **2026-10-06**. Rolling documentation
+establishes a candidate interface, not compatibility of an installed profile.
+
+| Source | Confirmed documentation | Impact / remaining uncertainty |
+| --- | --- | --- |
+| [Copilot CLI monitoring](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#opentelemetry-monitoring) | File export writes JSON-lines and enables OTel. Nano-AIU repeats across root/child spans; cost is a multiplier. Top-level and subagent invocation spans both exist. | Inspect existing authorized exports. Root-versus-child selection is insufficient without subagent inclusion and interval boundaries; no cash conversion or additive policy is approved. |
+| [VS Code monitoring](https://code.visualstudio.com/docs/agents/guides/monitoring-agents) | File JSON-lines and optional SQLite trace export are documented. Content and identity capture are separate settings; Local and Agent Host identity behavior differs. | Record editor/extension/harness and effective existing configuration. CLI or hosted SDK evidence cannot approve Local IDE imports. SQLite is a candidate acquisition format outside the current JSON/JSONL/CSV inspector; support/projection needs a separate decision if necessary. |
+| [Copilot SDK events](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events) | Usage info is ephemeral context occupancy; usage checkpoints are durable accumulated nano-AIU snapshots for resumed accounting. | Context occupancy is not consumption. Preserve host/SDK namespaces and overlapping turn/session/checkpoint scopes; require replay/reset/correction/finality evidence. |
+| [Cursor August update](https://forum.cursor.com/t/usage-page-to-token-amount-what/167153/79), [September conflicting reply](https://forum.cursor.com/t/measuring-a-quota-through-a-gauge-that-only-shows-tenths-of-a-percent/170206/4), [September team export reply](https://forum.cursor.com/t/cost-column-in-webpage-usage-hidden-behind-scrollbar/173244) | Dated vendor replies disagree about self-serve cost availability; the 2026-09-28 reply describes team CSV cost rows. The August reply distinguishes covered usage value from amounts owed. | Do not extrapolate team support to a personal account or treat any cost column as billed cash. Actual personal headers/rows and account economics remain unknown. |
+| [Cursor usage and limits](https://prod.cursor.com/help/models-and-usage/usage-limits) | Included pools, on-demand charges and billing-cycle resets are distinct. | Verify tier, pool/range/timezone and included/on-demand semantics; percentages or external list prices cannot establish billed money. |
+| [Codex App Server](https://learn.chatgpt.com/docs/app-server) | Thread token-usage updates are documented. | Current documentation does not certify recorded CLI/Desktop versions, finality or account billing. Keep snapshots/versioned entrypoints separate; no new adapter is authorized. |
+| [Claude monitoring](https://code.claude.com/docs/en/monitoring-usage) | Cost metrics are approximations; official billing comes from the API provider. The page documents a streaming usage correction before version 2.1.214. | Date/version the observation, keep estimated versus billed bases distinct, and verify native record repetition/finality. The documented metric fix does not approve repeated assistant-log rows at other versions. |
+
+### Local architecture evidence and decisions requiring attention
+
+Independent read-only obligation review found that provider designs still described
+an absent runtime and that the source assessment called the foundation future work.
+Those statements are corrected here without introducing provider behavior.
+`quality.source_feasibility` checks native evidence/profile digests and named semantic
+attestations; it does not authenticate the reviewer. The register still has 14
+profiles, zero approvals and unchanged canonical synthetic evidence references.
+
+`src/changecost/normalized.py` already imports strict normalized records with
+stable source/component identity and atomic conflict rejection.
+`src/changecost/coverage.py` and `src/changecost/reconciliation.py` limit trusted
+accounting to synthetic fixture billed USD; `quotes.py` and `advisory.py` reproduce
+supported historical policy before numeric authority. Source approval alone cannot
+make provider settlements complete or grant priced Quotes/numeric advice.
+
+Before #13/#14 implementation, evidence must settle authoritative quantity lanes,
+subagent inclusion, stable identity and binding, replay/reset/correction, cache
+categories, accounting interval and finality. Adapter preparation must then define
+versioned accounting/coverage policy and historical replay under the current contracts.
+The [decision register](design.md#preparation-decisions--2026-10-06-europeberlin)
+records required proof and conservative defaults. This preparation neither chooses
+unsupported semantics nor changes runtime policy, schemas or dependency edges.
+
+### Exact evidence requests and scope gates
+
+1. Existing native Copilot CLI export: CLI/export version, account tier, exporter
+   format/configuration without credentials, root/child/subagent and session/event
+   identities, repeated/resumed examples, cache categories, accounting range,
+   reset/correction behavior and terminal coverage.
+2. Existing native Copilot IDE export: editor/extension/harness versions, tier,
+   native format and acquisition route, conversation/trace boundaries and the same
+   accounting proof. Hosted SDK logs remain a separate partial profile.
+3. Actual personal Cursor CSV: sanitized exact headers/representative rows, app/export
+   version and tier, range/timezone/pool, included/on-demand meanings, units/cost basis,
+   stable row identity, overlapping exports and correction behavior. Preserve missing
+   versus zero; do not enable paid overages to manufacture evidence.
+4. Custom hook: sanitized mapping code or paired native log/upload records with
+   trigger/version, classifier/units, log coverage, identity and retries/corrections;
+   inspect receiver transformations separately. Work OTel need not be enabled.
+5. Codex/Claude research: versioned authorized metadata with snapshot/repetition,
+   identity/account regime, interval/reset/finality and billing basis; no new adapters.
+
+Evidence may stay private in ignored storage with safe opaque IDs/hashes; publish
+synthetic relationships and reviewed provenance, not original identifiers/content.
+The inspector's structural success remains separate from semantic approval. Missing
+required inputs leave tasks 2.1/2.2, 6.2/6.3 and closeout open. A wholly unavailable
+intended source or changed target profile needs an explicit scope revision.
+
+### Preparation checks, limitations and rollback
+
+Baseline default checker returned `errors: []`, `semantic_approval: false`; the
+baseline strict OpenSpec run passed all 11 items before the advisory archive.
+Final preparation checks and issue readback are recorded in the local receipt and
+appended below when observed. Historical PR #33 native assurance is not a current
+preparation pass. The old ignored review-session receipt is absent in this worktree;
+no new session or reset allowance is fabricated. Recover it before any publication
+requiring the bounded session. Current planning remains unpublished.
+
+Confidence: high in code/documentation boundaries, medium in provider feasibility.
+Native sources, finality or billing evidence could change capability findings. Risks
+are duplicate accounting, premature support claims and unsupported runtime authority;
+separate lane/semantic/policy gates mitigate them. No paid infrastructure or inference
+is needed for source inspection; artifact availability determines closeout timing.
+Rollback reverts this scoped planning diff and restores issue text from its fresh
+readback, preserving archives, private originals and historical review evidence.
+
+
+### Observed preparation verification — 2026-10-06
+
+The first `make check BASE_REF=ee424b5... MANIFEST=...` invocation passed 3,030
+repository tests in 35.99 seconds but failed its temporary Make fixture because
+inherited command-line Make overrides referenced the outer commit/manifest. This
+is an invocation limitation; no test, gate or runtime source was changed to fix it.
+
+The corrected invocation passed both inputs through the environment:
+`BASE_REF=ee424b5cf3c116b18515cec1ee086e1a6de223a0 MANIFEST=.changecost/workflow/pilot-01-source-feasibility/manifest.txt make check`.
+Both host lock and Make failure/repaired fixture proofs passed. All 3,030 tests
+passed in 32.62 seconds; host hygiene, lint/format, types, docs, generated references,
+metadata, workflow, package/build proofs and strict OpenSpec 11/11 passed. Dependency
+audit correctly reported not applicable for unchanged locked inputs.
+
+Full `make check` remains nonzero: all ten required SpecFact analyzers report
+`native_capsule_artifact_not_admitted:darwin-arm64-cp312`. Unsupported Mac execution
+is incomplete, not passing supported-Linux assurance. No analyzer waiver, skipped
+analysis relabeling or inherited Linux pass is used. Supported-Linux/current
+publication evidence and prior bounded-session recovery remain outstanding.
+Independent affected-scope review returned no unresolved findings after two active
+calibration links were repaired. Issue #9 body readback matches the applied batch;
+Open/In Progress, User Story, parent #5, labels/project and #13/#14 edges [9,12]
+are preserved. Preparation remains local; PR/stash disposition is pending.
+
+## Adaptive-demand scope reconciliation — 2026-10-07 (Europe/Berlin)
+
+The maintainer selected capability-based closeout in place of the prior universal
+Copilot-export/Cursor-CSV requirement. Missing exports/admin/Enterprise data now
+remain lane-specific gaps. No native approvals, measurements or fixture answers
+are added. Independent source semantics, demand eligibility and complete billed
+authority remain separate gates. Newer local producer versions need separate profiles.
+
+The authorized 2026-10-06 metadata-only discovery inspected existing local stores
+without settings changes or billable requests: newer Codex request/turn/root-turn
+records overlap legacy counters; Claude coding logs contain repeated/revised usage
+and overlapping result estimates; Copilot host/checkpoint/session totals have
+different scopes; Cursor has context data but unusable empty/zero consumption
+counters. Seven selected JSONL inputs passed structural inspection only. The local
+private report/hashes are ignored recovery evidence, not semantic attestations.
+
+[Adaptive research](../../../docs/research/adaptive-demand-evidence.md) records
+primary studies, access dates, limits and concrete remaining evidence requests.
+The existing 14 canonical profiles and zero approvals remain unchanged. These
+planning findings neither certify native finality nor claim complete new inventory
+tasks. Historical failures, delivery checks and accepted review limits are retained.

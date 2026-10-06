@@ -25,3 +25,9 @@ All implementation and research tasks below remain unchecked. Planning approval 
 - [ ] 4.1 Run applicable repository gates and `openspec validate provider-01-copilot-import --strict --no-interactive`; verify all relevant checks pass and report unavailable tooling explicitly.
 - [ ] 4.2 For behavior changes, record actual failing-before/passing-after commands, timestamps and results in TDD_EVIDENCE.md and run fresh SpecFact review; verify reviewed scope, tool/module versions and analyzer availability, resolving findings or documenting narrow exceptions. For research-only work, record evidence review without invented TDD.
 - [ ] 4.3 Open a focused PR with docs, verification, limits and rollback; verify reciprocal proposal/issue links and native hierarchy/dependencies, and archive only after implementation is accepted.
+
+## Revised source lanes — 2026-10-07
+
+- [ ] 5.1 Prepare independently approved existing-local acquisition/version/accounting lanes; document optional exports and unavailable fields without enabling collection.
+- [ ] 5.2 Specify non-overlapping identity/revision/reset/cache/root-subagent/finality and manual binding rules, with separate demand versus monetary coverage/replay.
+- [ ] 5.3 Add missing-counter, incompatible quantity, overlapping representation and historical-cutoff tests before implementing the revised native mapping; unavailable support stays unavailable.

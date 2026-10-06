@@ -54,7 +54,17 @@ synchronized the accepted offline synthetic estimation and historical replay con
 into main specs. Archived evidence preserves verification and accepted limitations.
 Provider collection and calibration remain separate gates.
 
-Advisory #16 implementation, verification and combined PR delivery were explicitly
-authorized on 2026-10-05. This checkout adds presentation, read-only exact historical
-budget advice and a manual synthetic summary example. Provider/live collection
-and calibration remain outside that authorization.
+Advisory #16 merged in PR #34 on 2026-10-06. Native CLI archival synchronized
+its presentation, read-only historical advice and safe summary requirements into
+main specs. The maintainer accepted archival with the final full Codex code review
+quota-blocked; that review task remains unchecked in the archive. This exception
+does not waive future reviews. Provider/live collection and calibration remain
+separate gates. Source feasibility #9 is the selected preparation: its offline
+tooling merged in PR #33, but native profile approval remains incomplete.
+
+On 2026-10-07 the maintainer approved planning revisions for capability-based
+source closeout and local adaptive demand, including separate Codex/Claude reader
+plans. This authorizes planning/docs/backlog synchronization, not runtime readers,
+automatic collection or LLM invocation. Preserve delivered economic Quote/advisory
+contracts; the new demand record and explicit quote mode remain planned. See
+[forecasting](docs/forecasting.md) and [change order](openspec/CHANGE_ORDER.md).

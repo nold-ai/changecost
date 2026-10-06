@@ -3,8 +3,13 @@
 ## Context
 
 See [proposal](proposal.md) and [capability spec](specs/copilot-import/spec.md).
-The current repository contains documentation and hygiene gates, with no product
-package or runtime. This design describes later implementation, not delivered behavior.
+The Python runtime, normalized imports, settlement, Quotes and advisory checks are
+delivered. Provider parsers remain unimplemented. Trusted completeness and replay
+currently authorize synthetic billed-USD fixtures only; an approved source profile
+does not automatically grant provider accounting authority. Later adapter preparation
+must reconcile versioned accounting/coverage policy and historical replay across
+settlement, Quotes and advice before enabling numeric provider results. See the
+[feasibility decisions](../pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin).
 
 ## Goals / Non-Goals
 
@@ -14,7 +19,7 @@ package or runtime. This design describes later implementation, not delivered be
 
 ## Decisions
 
-1. Use local file inputs to settle, with an explicit provider/surface profile, not a new import command family. CLI candidate configuration is COPILOT_OTEL_FILE_EXPORTER_PATH; describe optional manual setup only after feasibility confirms the installed version. No setting is changed by ChangeCost.
+1. Use local file inputs to settle, with an explicit provider/surface profile, not a new import command family. Prefer approved existing local JSON/JSONL lanes, including hosted SDK evidence. COPILOT_OTEL_FILE_EXPORTER_PATH describes a separate optional OTel lane, not a requirement to enable collection. No setting is changed by ChangeCost.
 
 2. Keep IDE and CLI source profiles distinct. Feasibility must verify actual file shape, event keys, session/trace relationships and repeated attributes for each supported version. A resource window session is not automatically a change run. Unsupported profiles fail clearly before persistence.
 
@@ -56,3 +61,22 @@ rollback is a commit revert plus closing the associated issue, preserving histor
 Each requirement has Given/When/Then scenarios. Exercise negative paths and privacy
 boundaries alongside the success cases. Run strict OpenSpec validation and applicable
 repository gates; record actual results, not anticipated test or review outcomes.
+
+## Regular local metadata and demand boundaries — 2026-10-07
+
+CLI OTel, Local IDE OTel and hosted SDK/Agent Host storage are different profiles.
+Existing JSON/JSONL inputs are preferred. SQLite-only evidence needs an explicitly
+reviewed read-only snapshot/projection route before implementation; never force a
+checkpoint or ignore live WAL. SDK cumulative checkpoints and shutdown evidence
+cannot be added to per-invocation or host turn totals. Root/subagent ownership,
+cache inclusion, replay/reset/correction and finality require native review.
+
+#9 capability-based closeout does not approve missing mappings. Keep native
+prerequisites #9/#12 and verify each enabled source independently. Missing export
+or admin access does not block other provider learning. Manual evidence -> Run ->
+Change binding remains required without a verified provider join.
+
+Versioned measurement/coverage and historical replay policies must separately
+define demand-learning eligibility and billed-money authority. Tokens, nano-AIU,
+credits, estimated costs and subscription/billed charges remain distinct. No new
+runtime policy or adapter is delivered by this planning update.

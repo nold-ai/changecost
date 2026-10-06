@@ -209,7 +209,7 @@ untracked files and returning zero findings. The independent reviewer, rather
 than CodeRabbit, identified the corrected defects. Actual reports remain under
 `.changecost/workflow/workflow-01-advisory-ci/`; each retains its original binding.
 
-The existing macOS handoff in the [gate guide](../../../docs/development/quality-gates.md)
+The existing macOS handoff in the [gate guide](../../../../docs/development/quality-gates.md)
 permits transport of the reviewed feature to GitHub's supported Linux verifier
 after local/staged checks. This specific bootstrap route is applied under the
 maintainer's explicit implementation/verification/push/PR authorization despite
@@ -1556,3 +1556,22 @@ guard omissions caused failures, and safe parser controls preserved exact padded
 Unicode IDs while rejecting malformed, unrelated and deep inputs. All 97 bound
 fingerprints matched. Staged adoption and fresh Linux/provider acceptance remain
 pending. Rollback reverts this scoped correction without altering the Quote archive.
+
+
+## Accepted CLI archive — 2026-10-06 (Europe/Berlin)
+
+The maintainer accepted archival after merged PR #34 while retaining the missing
+full Codex code review as a limitation. Task 5.2 remains unchecked; the quota
+response is [native evidence](https://github.com/nold-ai/changecost/pull/34#issuecomment-6009069233),
+and the separate security completion is not substituted. Tasks 5.1/5.3 are
+reconciled from the final PR/check evidence and explicit maintainer acceptance.
+
+`openspec archive workflow-01-advisory-ci --yes` (CLI 1.13.2, spec-driven) exited 0,
+created this archive and synchronized the advisory-workflow main spec. It reported
+18/19 tasks and continued with the expressly accepted incomplete task. Readback
+compared all 11 complete requirement bodies and 69 scenarios, ignoring blank-line
+formatting only; metadata and the existing Quote archive hashes match. No delta
+operation headers remain in the main spec. All 11 strict OpenSpec items pass.
+Earlier native failures, unknown timeout cause and the quota-blocked full code
+review remain preserved; no new behavior test, review completion or future waiver
+is claimed. This archive is local/unpublished in the current preparation branch.

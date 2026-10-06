@@ -484,3 +484,27 @@ Currentfb182fc Codex5403919410/threadPRRT_kwDOUu9-oc6ouEvE demonstrated reserial
 Existing actual maintainer until-green/coordinator interpretation continue18/270 with no additional minutes/new numeric human quote/reset. Spec-first byte/alias controls produced7fail/1pass. Minimum repair requires all twelve exact canonical profile/evidence aliases with synthetic origin and one agreed digest, reads bounded bytes once, hashes before parsing and parses those same bytes. Every alias has stale/missing/wrong-origin fault/repaired controls; hash-before-parse, file replacement after the one read, duplicate keys and malformed UTF-8 preserve input protections. Final644 source tests pass with scoped Ruffformat/lint.
 
 The matrix-drift fixture control now uses original received bytes; synthetic semantic CLI faults are injected at the explicitly in-memory check_cases stage after genuine canonical provenance succeeds. This preserves meaningful privacy/semantic tests without a production hash bypass. Matrix-only mode does not read fixture bytes, and direct check_cases intentionally claims no file provenance. Original18 fixture bytes/expectation dictionaries, register contents, source evaluations and native approval criteria remain unchanged. Independent affected closure, complete stagedmain/priorHEAD proofs, fresh supported native and required current-head providers remain pending.
+
+
+## Planning reconciliation — 2026-10-06 (Europe/Berlin)
+
+PR #33 delivered the offline tooling at merged `340668e6b74bfb7ccab15efe13830555bc6dd7ef`.
+The current preparation is based on fresh main `ee424b5cf3c116b18515cec1ee086e1a6de223a0`.
+Only planning, lifecycle and dated documentation references change; native profile
+observations, all 18 canonical fixture bytes and approvals remain unchanged. No
+behavior was added, so no new runtime red/green result is claimed. The default
+checker passes with `errors: []` and `semantic_approval: false`; strict all-spec
+validation passes 11/11 after native advisory archival. Full preparation gate and
+independent review results are retained in the ignored preparation receipt.
+Native evidence/finality and paired hook inspection remain incomplete; prior Linux
+assurance is historical and source approvals remain zero. Earlier review-session
+receipts are absent from this checkout; no correction allowance is reset.
+
+
+Preparation quality result: 3,030 existing tests passed in 32.62 seconds, both
+host tool-fixture proofs and all applicable host leaves passed, strict OpenSpec
+11/11 and independent affected review passed. Full make check remains nonzero only
+because all ten native analyzers cannot run on this Darwin controller. The first
+invocation's inherited Make-overrides fixture failure and its corrected environment
+invocation are retained in research evidence and ignored logs. No new runtime TDD,
+source approval, current Linux assurance or publication acceptance is claimed.
