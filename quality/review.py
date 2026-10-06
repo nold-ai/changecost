@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import uuid
@@ -11,6 +12,7 @@ from typing import Any
 
 from quality import external_tools
 from quality.repository import digest
+from quality.runtime_diagnostics import observe_native
 
 REQUIRED = {
     "ruff",
@@ -53,25 +55,28 @@ def run(root: Path, files: set[str]) -> list[str]:
     output = root / f".specfact/code-review-{uuid.uuid4().hex}.json"
     output.parent.mkdir(exist_ok=True)
     before = digest(root, files)
-    result = subprocess.run(
-        [
-            external_tools.executable(root, "specfact"),
-            "code",
-            "review",
-            "run",
-            "--scope",
-            "full",
-            "--include-tests",
-            "--bug-hunt",
-            "--enforcement",
-            "full",
-            "--json",
-            "--out",
-            str(output),
-        ],
-        cwd=root,
-        check=False,
-    )
+    with observe_native(
+        os.getpid(), before, output.with_name(f"native-process-{output.stem}.json")
+    ):
+        result = subprocess.run(
+            [
+                external_tools.executable(root, "specfact"),
+                "code",
+                "review",
+                "run",
+                "--scope",
+                "full",
+                "--include-tests",
+                "--bug-hunt",
+                "--enforcement",
+                "full",
+                "--json",
+                "--out",
+                str(output),
+            ],
+            cwd=root,
+            check=False,
+        )
     if not output.exists():
         return ["SpecFact produced no review report"]
     shutil.copyfile(output, root / ".specfact/code-review.json")

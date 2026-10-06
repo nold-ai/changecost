@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Retain bounded numeric native descendant activity and terminal-tail diagnostics on CI failures while preserving analyzer execution and enforcement.
+
 - Reject fabricated time windows in Quote summary projections, preserving null
   bounds on local/imported claims and supported computed Settlement windows.
 

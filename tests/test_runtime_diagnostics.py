@@ -366,3 +366,250 @@ def test_overflowed_json_number_rejected(tmp_path):
     report.write_text('{"value":1e999}')
     with pytest.raises(ValueError):
         collect(report, cache)
+
+
+def process_stat_bytes(pid, parent=0, start=10, cpu=5, rss=7, name="PRIVATE_CANARY"):
+    fields = ["0"] * 22
+    fields[0], fields[1] = "S", str(parent)
+    fields[11], fields[12], fields[19], fields[21] = str(cpu), "2", str(start), str(rss)
+    return (f"{pid} ({name}) " + " ".join(fields)).encode()
+
+
+def proc_fixture(root, pid, **kwargs):
+    path = root / str(pid)
+    path.mkdir(exist_ok=True)
+    (path / "stat").write_bytes(process_stat_bytes(pid, **kwargs))
+
+
+def test_numeric_process_privacy_and_lineage(tmp_path):
+    from quality.runtime_diagnostics import process_tree
+
+    proc_fixture(tmp_path, 10, start=10)
+    proc_fixture(tmp_path, 11, parent=10, start=11)
+    proc_fixture(tmp_path, 12, parent=11, start=12)
+    proc_fixture(tmp_path, 13, parent=999, start=13)
+    proc_fixture(tmp_path, 14, parent=10, start=9)
+    proc_fixture(tmp_path, 15, parent=16, start=15)
+    proc_fixture(tmp_path, 16, parent=15, start=15)
+    tree = process_tree(10, 10, tmp_path)
+    assert {row["pid"] for row in tree["processes"]} == {11, 12}
+    assert all(row["cpu_ticks"] == 7 and row["rss_pages"] == 7 for row in tree["processes"])
+    assert "PRIVATE_CANARY" not in json.dumps(tree)
+    mismatch = process_tree(10, 11, tmp_path)
+    assert not mismatch["root_valid"] and not mismatch["processes"]
+
+
+@pytest.mark.parametrize("fault", ["symlink", "oversize", "malformed", "wrong-pid", "negative"])
+def test_numeric_process_faults(tmp_path, fault):
+    from quality.runtime_diagnostics import process_tree
+
+    proc_fixture(tmp_path, 10)
+    proc_fixture(tmp_path, 11, parent=10, start=11)
+    target = tmp_path / "11" / "stat"
+    if fault == "symlink":
+        target.rename(target.with_name("secret"))
+        target.symlink_to(target.with_name("secret"))
+    elif fault == "oversize":
+        target.write_bytes(b"PRIVATE_CANARY" * 1000)
+    elif fault == "malformed":
+        target.write_bytes(b"PRIVATE_CANARY")
+    elif fault == "wrong-pid":
+        target.write_bytes(process_stat_bytes(99, parent=10))
+    else:
+        target.write_bytes(process_stat_bytes(11, parent=10, rss=-1))
+    result = process_tree(10, 10, tmp_path)
+    assert not result["processes"]
+    assert result["unavailable"] > 0
+    assert "PRIVATE_CANARY" not in json.dumps(result)
+
+
+def test_process_parent_directory_symlink(tmp_path):
+    from quality.runtime_diagnostics import process_tree
+
+    proc_fixture(tmp_path, 10)
+    proc_fixture(tmp_path, 11, parent=10, start=11)
+    (tmp_path / "11").rename(tmp_path / "private")
+    (tmp_path / "11").symlink_to(tmp_path / "private")
+    assert not process_tree(10, 10, tmp_path)["processes"]
+
+
+def test_process_preexisting_subtree_excluded(tmp_path):
+    from quality.runtime_diagnostics import process_tree
+
+    proc_fixture(tmp_path, 10)
+    proc_fixture(tmp_path, 11, parent=10, start=11)
+    proc_fixture(tmp_path, 12, parent=11, start=12)
+    proc_fixture(tmp_path, 13, parent=10, start=13)
+    result = process_tree(10, 10, tmp_path, {(11, 11)})
+    assert {row["pid"] for row in result["processes"]} == {13}
+
+
+def test_process_stat_parentheses_are_private():
+    from quality.runtime_diagnostics import parse_process_stat
+
+    value = parse_process_stat(process_stat_bytes(10, name="private) (name"), 10)
+    assert value["pid"] == 10 and "private" not in json.dumps(value)
+
+
+def test_native_observer_tail_and_exclusive_output(tmp_path):
+    from quality.runtime_diagnostics import NativeObservation
+
+    proc = tmp_path / "proc"
+    proc.mkdir()
+    proc_fixture(proc, 10)
+    observation = NativeObservation(10, "a" * 64, proc)
+    for index in range(300):
+        proc_fixture(proc, 11, parent=10, start=11, cpu=index)
+        observation.sample(index)
+    output = tmp_path / "diagnostic.json"
+    observation.finish(output, 301)
+    value = json.loads(output.read_text())
+    assert value["truncated"] and value["samples"][-1]["elapsed_seconds"] == 301
+    assert value["samples"][-1]["live_cpu_ticks"] == 301
+    assert value["binding"]["input_digest"] == "a" * 64
+    assert value["binding"]["root_start_ticks"] == 10
+    assert len(output.read_bytes()) <= 65_536 and "PRIVATE_CANARY" not in output.read_text()
+    with pytest.raises(OSError):
+        observation.finish(output, 302)
+
+
+def test_native_observer_unavailable_and_error_cleanup(tmp_path):
+    import threading
+
+    from quality.runtime_diagnostics import observe_native
+
+    output = tmp_path / "diagnostic.json"
+    before = set(threading.enumerate())
+    with (
+        pytest.raises(RuntimeError, match="sentinel"),
+        observe_native(10, "a" * 64, output, tmp_path / "absent", interval=0.001),
+    ):
+        raise RuntimeError("sentinel")
+    assert json.loads(output.read_text())["status"] == "unavailable"
+    assert set(threading.enumerate()) == before
+
+
+def test_native_observer_write_failure_preserves_execution(tmp_path):
+    from quality.runtime_diagnostics import observe_native
+
+    output = tmp_path / "existing"
+    output.write_text("PRIVATE_CANARY")
+    with observe_native(10, "a" * 64, output, tmp_path / "absent", interval=0.001):
+        pass
+    assert output.read_text() == "PRIVATE_CANARY"
+
+
+def test_native_process_bound_and_discontinuities(tmp_path, monkeypatch):
+    import quality.runtime_diagnostics as target
+
+    proc_fixture(tmp_path, 10)
+    observation = target.NativeObservation(10, "a" * 64, tmp_path)
+    proc_fixture(tmp_path, 11, parent=10, start=11)
+    observation.sample(1)
+    (tmp_path / "11" / "stat").unlink()
+    (tmp_path / "11").rmdir()
+    observation.sample(2)
+    assert observation.departures
+    for pid in range(20, 27):
+        proc_fixture(tmp_path, pid, parent=10, start=pid)
+    monkeypatch.setattr(target, "PROCESS_LIMIT", 4)
+    result = target.process_tree(10, 10, tmp_path)
+    assert result["truncated"] and len(result["processes"]) <= 4
+
+
+def test_native_binding_rejects_private_input(tmp_path):
+    from quality.runtime_diagnostics import NativeObservation
+
+    with pytest.raises(ValueError, match="invalid diagnostic metadata"):
+        NativeObservation(10, "PRIVATE_CANARY", tmp_path)
+
+
+@pytest.mark.parametrize("exit_code", [0, 3])
+def test_native_observer_real_child_preserves_result(tmp_path, capfd, exit_code):
+    import os
+    import subprocess
+    import sys
+
+    from quality.runtime_diagnostics import observe_native
+
+    output = tmp_path / "diagnostic.json"
+    with observe_native(os.getpid(), "a" * 64, output, interval=0.001):
+        result = subprocess.run(
+            [sys.executable, "-c", f"import sys; print('child'); sys.exit({exit_code})"],
+            cwd=tmp_path,
+            check=False,
+        )
+    assert result.returncode == exit_code and capfd.readouterr().out == "child\n"
+    assert json.loads(output.read_text())["binding"]["input_digest"] == "a" * 64
+
+
+def test_native_review_command_and_missing_report_preserved(tmp_path, monkeypatch, capfd):
+    import sys
+
+    import quality.review as target
+
+    driver = tmp_path / "driver"
+    driver.write_text(
+        f"#!{sys.executable}\nimport json,sys\nfrom pathlib import Path\n"
+        "Path('called.json').write_text(json.dumps(sys.argv[1:]))\n"
+        "print('native-output')\nprint('native-error', file=sys.stderr)\nsys.exit(3)\n"
+    )
+    driver.chmod(0o700)
+    monkeypatch.setattr(target.external_tools, "executable", lambda *_args: str(driver))
+    assert target.run(tmp_path, set()) == ["SpecFact produced no review report"]
+    captured = capfd.readouterr()
+    assert captured.out == "native-output\n" and "native-error" in captured.err
+    args = json.loads((tmp_path / "called.json").read_text())
+    assert args[:-1] == [
+        "code",
+        "review",
+        "run",
+        "--scope",
+        "full",
+        "--include-tests",
+        "--bug-hunt",
+        "--enforcement",
+        "full",
+        "--json",
+        "--out",
+    ]
+    diagnostics = list((tmp_path / ".specfact").glob("native-process-*.json"))
+    assert len(diagnostics) == 1
+
+
+@pytest.mark.parametrize("exit_code", [0, 3])
+def test_native_observer_start_failure_preserves_child(tmp_path, monkeypatch, capfd, exit_code):
+    import os
+    import subprocess
+    import sys
+    import threading
+
+    from quality.runtime_diagnostics import observe_native
+
+    def unavailable(_thread):
+        raise RuntimeError("PRIVATE_CANARY")
+
+    before = set(threading.enumerate())
+    monkeypatch.setattr(threading.Thread, "start", unavailable)
+    output = tmp_path / "diagnostic.json"
+    with observe_native(os.getpid(), "a" * 64, output):
+        result = subprocess.run([sys.executable, "-c", f"import sys; sys.exit({exit_code})"])
+    assert result.returncode == exit_code and set(threading.enumerate()) == before
+    value = json.loads(output.read_text())
+    assert value["sampling_error"] and "PRIVATE_CANARY" not in json.dumps(value)
+    assert "PRIVATE_CANARY" not in capfd.readouterr().err
+
+
+def test_native_observer_start_failure_preserves_body_exception(tmp_path, monkeypatch):
+    import threading
+
+    from quality.runtime_diagnostics import observe_native
+
+    def unavailable(_thread):
+        raise RuntimeError("PRIVATE_CANARY")
+
+    monkeypatch.setattr(threading.Thread, "start", unavailable)
+    output = tmp_path / "diagnostic.json"
+    with pytest.raises(ValueError, match="body-sentinel"), observe_native(10, "a" * 64, output):
+        raise ValueError("body-sentinel")
+    assert json.loads(output.read_text())["sampling_error"]

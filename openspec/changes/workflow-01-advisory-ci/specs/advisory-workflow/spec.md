@@ -407,3 +407,14 @@ rejects unavailable metadata before numeric advice.
 - **WHEN** a Quote check result declares a non-null time window under either local or imported provenance
 - **THEN** the summary command rejects it with the safe technical error before destination access, since Quote projections have null window bounds
 - **AND** null or omitted Quote bounds remain valid for priced, observed-zero and unpriced results under p50 or p90, while supported windowed computed Settlement results remain valid
+
+### Requirement: Native diagnostic observations preserve assurance
+The native review invocation SHALL retain its canonical command, exit and report validation. Optional process observations SHALL export only bounded numeric descendant metadata and fixed state labels, bind the fresh input digest and exact controller identity, exclude preexisting descendants, disclose missing links and truncation, retain the terminal tail, and never certify analyzer completion or expose arguments, environment, process names or payloads.
+
+#### Scenario: Native execution times out or diagnostics are unavailable
+- **WHEN** the unchanged required analyzer fails, or numeric process metadata cannot be collected
+- **THEN** its failure remains blocking and a bounded diagnostic or explicit unavailable result may be retained with fresh invocation identity, without changing selection, limits or enforcement
+
+#### Scenario: Descendant identities race or process history exceeds the bound
+- **WHEN** a root identity changes, a parent link is missing or starts after its child, or retained observations reach their bound
+- **THEN** uncertain lineage is excluded, discontinuities/truncation are disclosed, and the terminal observation remains retained within 64 KiB

@@ -113,3 +113,17 @@ Quote check projections have null time-window bounds, including imported claims.
 The summary rejects windowed Quote projections before writing; omitted bounds
 retain their null defaults. Computed Settlement summaries retain supported
 windows from their computation scope.
+
+Native execution diagnostics retain a fresh `.specfact/native-process-*.json`
+artifact alongside the unchanged native reports, including on failure. A five-second
+observer samples numeric descendant process stat fields during the canonical review
+command, excluding preexisting descendants and the controller. Exact PID/start-tick
+parent chains, fresh invocation ID and input digest bind the observations. No process
+names, command lines, environment, file paths or runtime payloads are exported.
+The 64 KiB projection retains first/latest bounded trees and the latest 120 aggregate
+samples, including a final observation. Missing links, incomplete baseline, process
+limits, departures and truncation are disclosed. CPU ticks and resident pages are sums
+of observed live processes, with units supplied when available; they do not represent
+cumulative CPU or unique memory. Unsupported or unwritable diagnostics cannot change
+native exits, report validation, test selection, analyzer limits or provider requirements.
+Activity observations do not identify pytest phases or prove timeout causality.

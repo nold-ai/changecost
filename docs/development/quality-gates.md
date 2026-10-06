@@ -687,3 +687,19 @@ environment variables and runtime payloads are not logged. No duplicate suite or
 new dependency is introduced. These observations diagnose the host, not native
 coverage; all tests, signed analyzers, worker/controller observations and deadlines
 remain mandatory. Rollback removes only the collector and diagnostic configuration.
+
+Native execution diagnostics retain a fresh `.specfact/native-process-*.json`
+artifact alongside the unchanged native reports, including on failure. A five-second
+observer samples numeric descendant process stat fields during the canonical review
+command, excluding preexisting descendants and the controller. Exact PID/start-tick
+parent chains, fresh invocation ID and input digest bind the observations. No process
+names, command lines, environment, file paths or runtime payloads are exported.
+The 64 KiB projection retains first/latest bounded trees and the latest 120 aggregate
+samples, including a final observation. Missing links, incomplete baseline, process
+limits, departures and truncation are disclosed. CPU ticks and resident pages are sums
+of observed live processes, with units supplied when available; they do not represent
+cumulative CPU or unique memory. Unsupported or unwritable diagnostics cannot change
+native exits, report validation, test selection, analyzer limits or provider requirements.
+Activity observations do not identify pytest phases or prove timeout causality.
+
+Linux stat field definitions and the sampled RSS limitation are documented in the [kernel proc guide](https://docs.kernel.org/filesystems/proc.html) (accessed 2026-10-06, Europe/Berlin).

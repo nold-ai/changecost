@@ -264,3 +264,14 @@ portable imported claims. The summary validates EconomicScope first, then
 requires a null start for Quote results. Its paired-bound contract also enforces
 a null end. This rejects fabricated intervals without changing persisted schemas
 or imported-record handling, and preserves computed Settlement windows.
+
+Native coverage timeout diagnosis uses a numeric-only observer around the existing
+`subprocess.run` invocation. It reads bounded no-follow Linux process stat files,
+validates complete parent/start-tick chains against the exact controller, excludes
+preexisting descendant chains, and retains first/latest trees plus a bounded tail
+of live descendant CPU/RSS/state sums. CPU/RSS values describe sampled live processes,
+not cumulative CPU or unique memory. Missing/racing lineage and truncation are
+explicit. No command line, environment, process name, source path or payload is read
+into the output. An exclusive fresh diagnostic is bound to the review input digest;
+unsupported metadata and output failures cannot change native exits or acceptance.
+This observation identifies activity, not pytest phases or timeout causality.

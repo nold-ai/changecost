@@ -1251,3 +1251,57 @@ windows, and unchanged producer/archive bytes. Original red/green and fault
 proofs retain their bindings. Rollback restores only this correction while preserving earlier fixes,
 accepted archive and historical evidence; fresh Linux/provider evidence remains
 required after publication.
+
+
+## PR #34 numeric native process observation — 2026-10-06
+
+Published `cfac533` run 37390381479 passed all ten native analyzers on host Python
+3.13.14, with all 2,860 tests and four subtests. The 3.11.15 host job passed nine
+analyzers but coverage returned UNKNOWN at the unchanged 300-second launch limit,
+without target execution/progress observations. Both actual native runtime package
+graphs use CPython 3.13.11; host matrix versions cannot explain the difference.
+Independent original157 triage retained the failure and found its cause unknown.
+No historical PASS closes this new recurrence.
+
+A separately bounded numeric-only observation now surrounds the literal original
+subprocess.run command. Parent/start-tick validation, baseline exclusion, no-follow
+bounded stat reads, live CPU/RSS/state aggregates and fresh digest/invocation binding
+preserve privacy and lineage. The bounded terminal tail survives long runs and the
+observer stops/joins on success and failure. Exclusive output and unavailable metadata
+cannot alter command exits or the existing native report checks. Actual PID numbers
+are metadata only; process names, argv/environment and payloads are never exported.
+This measures activity and does not claim a cause or a repaired analyzer timeout.
+
+Spec-first original158 introduced twelve failing controls before implementation
+(12 failures in 0.25 seconds). Original159 passed all 43 collector tests in 0.35
+seconds, with import-order/nested-context lint failures retained. Original160 used
+an incorrect nonexistent test selector and ran no tests; it grants no passing proof.
+Original161 passed all 211 collector/repository/failure tests in 1.10 seconds;
+a subsequently corrected units annotation was the sole host typing error. Tests also
+exercise real child exits and native command/stdio preservation with a missing report.
+Independent162 review found that Thread.start failure prevented the canonical body.
+Three original163 startup controls failed before containment (actual exit 1); after
+containment, original164 passed all 214 affected tests in 1.10 seconds (actual exit 0).
+Root/parent/startup omission controls against the same isolated source/test detector
+produced 1/2/3 expected failures respectively, while all five unchanged controls
+passed. The first162 root-guard omission did not fail because its assertion checked
+only empty descendants; the strengthened164 detector also checks invalid root status.
+Both diagnostic attempts are retained, without claiming the first proved that guard.
+All affected exact pinned Radon metrics are at most ten. Frozen165 aggregate passed
+all 2,880 tests in 33.04 seconds, installed-wheel checks and audit, with host typing
+and documentation/generated-reference checks passing. Its actual exit 2 also retains
+a lock-fixture failure caused by inherited Make command-line BASE_REF/MANIFEST, ten
+unsupported macOS analyzers, and strict failure because task4.7 was under group5.
+The initial aggregate receipt overstated host success; independent166 review caught
+the additional raw-log failure, and both original receipt and explicit correction
+remain retained. A direct166 lock gate with Make fixture variables cleared passed
+both actual uv and make-selection proofs. Moving task4.7 to group4 then passed
+selected/all strict validation (11 items), documentation and generated references.
+Runtime/tests are byte-identical to165; original results retain their binding.
+Independent repaired166 closure inspected every original/corrected gate and all97
+inputs with no remaining observer findings. Current source/commit adoption, Linux
+observations and full provider reviews remain pending. The timeout recurrence remains
+unresolved: this instrumentation is a diagnostic candidate, not a verified timing fix.
+Rollback restores this observer/upload/documentation delta only, preserving the Quote
+archive, summary corrections and every historical failure. No package version, paid
+infrastructure, vendor patch, deadline, threshold or test-selection change is involved.

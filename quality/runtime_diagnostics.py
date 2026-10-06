@@ -10,9 +10,14 @@ import os
 import re
 import stat
 import sys
+import threading
+import time
+import uuid
+from collections import deque
 from contextlib import contextmanager, suppress
 from itertools import islice
 from pathlib import Path
+from typing import Any
 
 from packaging.version import Version
 
@@ -284,6 +289,204 @@ def write_output(path, value):
         )
         with os.fdopen(fd, "wb") as target:
             target.write(raw)
+
+
+PROCESS_LIMIT = 512
+TREE_LIMIT = 32
+SAMPLE_LIMIT = 120
+
+
+def parse_process_stat(raw, pid):
+    require(len(raw) <= 4096 and raw.startswith(f"{pid} (".encode()))
+    _, separator, suffix = raw.rpartition(b")")
+    fields = suffix.split()
+    require(separator and len(fields) >= 22 and fields[0] in b"R S D T t Z X I P K W".split())
+    indices = (1, 11, 12, 19, 21)
+    require(all(re.fullmatch(rb"[0-9]{1,20}", fields[i]) for i in indices))
+    parent, user, system, start, rss = (int(fields[i]) for i in indices)
+    return dict(
+        pid=pid,
+        parent=parent,
+        start_ticks=start,
+        cpu_ticks=user + system,
+        rss_pages=rss,
+        state=fields[0].decode("ascii"),
+    )
+
+
+def read_process(folder, name):
+    with child_directory(folder, name) as child:
+        fd = os.open("stat", os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=child)
+        with os.fdopen(fd, "rb") as source:
+            return parse_process_stat(source.read(4097), int(name))
+
+
+def process_descends(row, rows, root_identity, baseline):
+    seen = set()
+    while (row["pid"], row["start_ticks"]) != root_identity:
+        identity = (row["pid"], row["start_ticks"])
+        if identity in seen or identity in baseline:
+            return False
+        seen.add(identity)
+        parent = rows.get(row["parent"])
+        if parent is None or parent["start_ticks"] > row["start_ticks"]:
+            return False
+        row = parent
+    return True
+
+
+def process_tree(
+    root_pid, start_ticks, proc_root=Path("/proc"), baseline: set | frozenset = frozenset()
+):
+    result: dict[str, Any] = dict(
+        processes=[], unavailable=0, truncated=False, root_valid=False, lineage_exclusions=0
+    )
+    rows = {}
+    try:
+        with directory(proc_root) as folder:
+            with os.scandir(folder) as entries:
+                names = [e.name for e in islice(entries, PROCESS_LIMIT + 1)]
+            result["truncated"] = len(names) > PROCESS_LIMIT
+            for name in names[:PROCESS_LIMIT]:
+                if not re.fullmatch(r"[0-9]{1,10}", name):
+                    continue
+                try:
+                    rows[int(name)] = read_process(folder, name)
+                except (OSError, ValueError):
+                    result["unavailable"] += 1
+            root = read_process(folder, str(root_pid))
+            rows[root_pid] = root
+        if root["start_ticks"] != start_ticks:
+            return result
+        result["root_valid"] = True
+        result["processes"] = [
+            r
+            for pid, r in rows.items()
+            if pid != root_pid and process_descends(r, rows, (root_pid, start_ticks), baseline)
+        ]
+        result["lineage_exclusions"] = len(rows) - 1 - len(result["processes"])
+    except (OSError, ValueError):
+        result["unavailable"] += 1
+    return result
+
+
+class NativeObservation:
+    """Bounded live-process samples; no cumulative CPU or unique-memory claims."""
+
+    def __init__(self, root_pid, input_digest, proc_root=Path("/proc")):
+        require(type(root_pid) is int and root_pid > 0)
+        require(isinstance(input_digest, str) and re.fullmatch(r"[0-9a-f]{64}", input_digest))
+        self.root_pid, self.proc_root = root_pid, proc_root
+        self.start_ticks = None
+        try:
+            with directory(proc_root) as folder:
+                self.start_ticks = read_process(folder, str(root_pid))["start_ticks"]
+        except (OSError, ValueError):
+            pass
+        initial = process_tree(root_pid, self.start_ticks, proc_root)
+        self.baseline = {(r["pid"], r["start_ticks"]) for r in initial["processes"]}
+        self.baseline_incomplete = (
+            not initial["root_valid"] or initial["truncated"] or bool(initial["unavailable"])
+        )
+        self.units: dict[str, int | None] = dict(cpu_ticks_per_second=None, rss_page_bytes=None)
+        for key, name in (
+            ("cpu_ticks_per_second", "SC_CLK_TCK"),
+            ("rss_page_bytes", "SC_PAGE_SIZE"),
+        ):
+            with suppress(OSError, ValueError):
+                value = os.sysconf(name)
+                self.units[key] = value if value > 0 else None
+        self.binding = dict(
+            input_digest=input_digest,
+            root_pid=root_pid,
+            root_start_ticks=self.start_ticks,
+            invocation_id=uuid.uuid4().hex,
+        )
+        self.samples = deque(maxlen=SAMPLE_LIMIT)
+        self.first_tree = None
+        self.latest_tree = []
+        self.truncated = False
+        self.departures = False
+        self.previous = set()
+        self.status = "unavailable"
+        self.sampling_error = False
+        self.sample(0)
+
+    def sample(self, elapsed):
+        result = process_tree(self.root_pid, self.start_ticks, self.proc_root, self.baseline)
+        rows = result["processes"]
+        identities = {(r["pid"], r["start_ticks"]) for r in rows}
+        self.departures |= bool(self.previous - identities)
+        self.previous = identities
+        self.truncated |= result["truncated"] or len(rows) > TREE_LIMIT
+        self.truncated |= len(self.samples) == SAMPLE_LIMIT
+        self.status = "collected" if result["root_valid"] else "unavailable"
+        self.latest_tree = sorted(rows, key=lambda r: r["pid"])[:TREE_LIMIT]
+        if self.first_tree is None and rows:
+            self.first_tree = self.latest_tree
+        states = {state: sum(r["state"] == state for r in rows) for state in "RSDTtZXIPKW"}
+        self.samples.append(
+            dict(
+                elapsed_seconds=round(elapsed, 3),
+                processes=len(rows),
+                live_cpu_ticks=sum(r["cpu_ticks"] for r in rows),
+                live_rss_pages=sum(r["rss_pages"] for r in rows),
+                states=states,
+                unavailable=result["unavailable"],
+                root_valid=result["root_valid"],
+                lineage_exclusions=result["lineage_exclusions"],
+            )
+        )
+
+    def finish(self, output, elapsed):
+        self.sample(elapsed)
+        write_output(
+            output,
+            dict(
+                schema="changecost/native-process-diagnostic-v1",
+                status=self.status,
+                sampling_error=self.sampling_error,
+                binding=self.binding,
+                units=self.units,
+                baseline_incomplete=self.baseline_incomplete,
+                truncated=self.truncated,
+                departures=self.departures,
+                first_tree=self.first_tree or [],
+                latest_tree=self.latest_tree,
+                samples=list(self.samples),
+                terminal_elapsed_seconds=round(elapsed, 3),
+            ),
+        )
+
+
+@contextmanager
+def observe_native(root_pid, input_digest, output, proc_root=Path("/proc"), interval: float = 5):
+    """Observe one unchanged native command; diagnostic failures never mask its result."""
+    start = time.monotonic()
+    observation = NativeObservation(root_pid, input_digest, proc_root)
+    stop = threading.Event()
+
+    def sample_until_stopped():
+        while not stop.wait(interval):
+            observation.sample(time.monotonic() - start)
+
+    thread = threading.Thread(target=sample_until_stopped, name="native-numeric-observer")
+    started = False
+    try:
+        thread.start()
+        started = True
+    except RuntimeError:
+        observation.sampling_error = True
+    try:
+        yield
+    finally:
+        stop.set()
+        if started:
+            thread.join()
+        try:
+            observation.finish(output, time.monotonic() - start)
+        except (OSError, ValueError):
+            print("native process diagnostics unavailable", file=sys.stderr)
 
 
 def main(args=None):

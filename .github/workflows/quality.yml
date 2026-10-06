@@ -138,6 +138,7 @@ jobs:
             .specfact/code-review*.json
             .specfact/review-binding.json
             .specfact/runtime-diagnostic.json
+            .specfact/native-process-*.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 7
