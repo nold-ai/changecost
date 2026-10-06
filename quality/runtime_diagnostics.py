@@ -413,6 +413,8 @@ class NativeObservation:
         self.sample(0)
 
     def sample(self, elapsed):
+        if self.baseline_incomplete:
+            return
         result = process_tree(self.root_pid, self.start_ticks, self.proc_root, self.baseline)
         rows = result["processes"]
         identities = {(r["pid"], r["start_ticks"]) for r in rows}

@@ -127,3 +127,8 @@ of observed live processes, with units supplied when available; they do not repr
 cumulative CPU or unique memory. Unsupported or unwritable diagnostics cannot change
 native exits, report validation, test selection, analyzer limits or provider requirements.
 Activity observations do not identify pytest phases or prove timeout causality.
+
+If the initial descendant scan is incomplete, process diagnostics remain
+unavailable for that invocation: later scans cannot safely classify unseen
+preexisting work. Empty trees and samples retain the fresh binding and terminal
+elapsed time; native execution, exits and acceptance checks continue unchanged.

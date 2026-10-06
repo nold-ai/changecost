@@ -1339,3 +1339,37 @@ test bytes change for that metadata repair. Fresh Linux/full provider acceptance
 remains required; no deterministic timeout fix is claimed.
 Rollback restores only this fixture/documentation correction, preserving the Quote
 archive, runtime fixes, diagnostics and all historical failures.
+
+
+## PR #34 incomplete process baseline correction — 2026-10-06
+
+Actual `3104ad6` run 37395656573 passed all ten native analyzers in both
+Linux jobs, with 2,881 unique tests, four subtests and 97.539047% controller
+coverage. Independent173 inspection verified all 211 native source fingerprints,
+all 97 session inputs, required execution/phase/map evidence, unchanged pins and
+300-second limit. This restores current operational evidence; historical157/169
+timeouts and unknown causality remain recorded. No deterministic fix is claimed.
+
+CODE review5422521781 reported P2 “Stop collection when the baseline scan is
+incomplete” (thread PRRT_kwDOUu9-oc6pRscr, comment4190412731). Independent173
+triage reproduced preexisting CPU/RSS attribution after truncated, unreadable
+and invalid-root baselines. Spec-first174 tests repair those initial conditions
+later and require unavailable status with empty trees/samples, fresh binding and
+terminal time. Two real child exit cases additionally preserve native body exits.
+The first shell exit-capture assignment failed after the tests ran; its original
+log remains. A separate captured original174 run actually exited one with all
+five expected failures in 0.28 seconds. A two-line early return before process
+sampling now preserves the initially unavailable status throughout the invocation.
+Original175 passed all 220 affected tests in 1.05 seconds, actual exit zero.
+Complete-baseline observation, privacy, production capacity and lifecycle controls
+remain selected. Independent175 affected review found no defects: ten isolated original controls
+passed; removing only the new guard caused five expected failures while all five
+existing complete-baseline/lifecycle positives still passed. Exact pinned Radon
+metrics are at most eleven, below the blocking threshold of fifteen. Frozen176
+aggregate passed all 2,886 tests in 30.89 seconds, every host-supported gate,
+installed-wheel/audit checks and all 11 strict OpenSpec items. Actual exit two
+remains incomplete solely for ten unsupported macOS native analyzers. Final staged
+adoption and fresh Linux/full provider acceptance remain required. No analyzer, command,
+selection, deadline, dependency, persisted schema or product behavior changes.
+Rollback restores only this baseline guard, tests and correlated documentation,
+preserving the Quote archive and every historical result.

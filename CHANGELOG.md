@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Keep native process diagnostics unavailable after an incomplete initial
+  baseline, preventing attribution of unseen preexisting descendants.
+
 - Reduce repeated filesystem work in diagnostic test fixtures while preserving
   real lifecycle controls and production observation-capacity coverage.
 

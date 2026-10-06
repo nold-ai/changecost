@@ -422,3 +422,7 @@ The native review invocation SHALL retain its canonical command, exit and report
 #### Scenario: Diagnostic production capacity remains covered
 - **WHEN** a controlled numeric process snapshot fills the production observation ring
 - **THEN** all 120 retained frames fit within 64 KiB, overflow is disclosed and the terminal frame is retained; real stat and lifecycle controls remain required
+
+#### Scenario: Initial descendant baseline is incomplete
+- **WHEN** the initial process scan is truncated, contains unreadable records or lacks a valid controller identity, even if later scans could succeed
+- **THEN** the invocation's diagnostic remains unavailable with no descendant trees or aggregate samples; its fresh binding and terminal elapsed time remain available without changing native execution or report checks

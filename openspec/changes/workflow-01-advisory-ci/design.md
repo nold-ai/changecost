@@ -281,3 +281,9 @@ real process-stat transitions. A separate controlled numeric snapshot verifies t
 unchanged production 120-sample capacity, terminal retention and 64 KiB bound,
 avoiding repeated filesystem scans merely to reach the ring limit. This fixture
 cleanup does not establish the native coverage timeout cause or waive fresh CI.
+
+An incomplete initial descendant baseline disables process sampling for the entire
+invocation. Later readable records cannot distinguish unseen preexisting work
+from newly launched descendants. Such diagnostics retain unavailable status, empty
+trees/samples, the fresh binding and terminal elapsed time; the native command
+continues with unchanged exits and report validation.

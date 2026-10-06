@@ -642,3 +642,49 @@ def test_native_observer_start_failure_preserves_body_exception(tmp_path, monkey
     with pytest.raises(ValueError, match="body-sentinel"), observe_native(10, "a" * 64, output):
         raise ValueError("body-sentinel")
     assert json.loads(output.read_text())["sampling_error"]
+
+
+@pytest.mark.parametrize("fault", ["truncated", "unreadable", "invalid-root"])
+def test_native_incomplete_baseline_stays_unavailable(tmp_path, monkeypatch, fault):
+    import quality.runtime_diagnostics as target
+
+    proc_fixture(tmp_path, 10)
+    proc_fixture(tmp_path, 11, parent=10, start=11)
+    if fault == "truncated":
+        monkeypatch.setattr(target, "PROCESS_LIMIT", 1)
+    else:
+        pid = 11 if fault == "unreadable" else 10
+        (tmp_path / str(pid) / "stat").write_bytes(b"PRIVATE_CANARY")
+    observation = target.NativeObservation(10, "a" * 64, tmp_path)
+    assert observation.baseline_incomplete
+    monkeypatch.setattr(target, "PROCESS_LIMIT", 512)
+    proc_fixture(tmp_path, 10)
+    proc_fixture(tmp_path, 11, parent=10, start=11)
+    observation.sample(1)
+    output = tmp_path / "diagnostic.json"
+    observation.finish(output, 2)
+    value = json.loads(output.read_text())
+    assert value["status"] == "unavailable" and value["baseline_incomplete"]
+    assert value["samples"] == value["first_tree"] == value["latest_tree"] == []
+    assert value["binding"]["input_digest"] == "a" * 64
+    assert value["binding"]["root_pid"] == 10 and value["binding"]["invocation_id"]
+    assert value["terminal_elapsed_seconds"] == 2 and "PRIVATE_CANARY" not in output.read_text()
+
+
+@pytest.mark.parametrize("exit_code", [0, 3])
+def test_native_incomplete_baseline_preserves_child(tmp_path, monkeypatch, exit_code):
+    import subprocess
+    import sys
+
+    from quality.runtime_diagnostics import observe_native
+
+    proc_fixture(tmp_path, 10)
+    proc_fixture(tmp_path, 11, parent=10, start=11)
+    (tmp_path / "11" / "stat").write_bytes(b"PRIVATE_CANARY")
+    output = tmp_path / "diagnostic.json"
+    with observe_native(10, "a" * 64, output, tmp_path):
+        proc_fixture(tmp_path, 11, parent=10, start=11)
+        result = subprocess.run([sys.executable, "-c", f"import sys; sys.exit({exit_code})"])
+    assert result.returncode == exit_code
+    value = json.loads(output.read_text())
+    assert value["status"] == "unavailable" and value["samples"] == []

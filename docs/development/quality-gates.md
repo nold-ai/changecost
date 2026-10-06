@@ -703,3 +703,8 @@ native exits, report validation, test selection, analyzer limits or provider req
 Activity observations do not identify pytest phases or prove timeout causality.
 
 Linux stat field definitions and the sampled RSS limitation are documented in the [kernel proc guide](https://docs.kernel.org/filesystems/proc.html) (accessed 2026-10-06, Europe/Berlin).
+
+If the initial descendant scan is incomplete, process diagnostics remain
+unavailable for that invocation: later scans cannot safely classify unseen
+preexisting work. Empty trees and samples retain the fresh binding and terminal
+elapsed time; native execution, exits and acceptance checks continue unchanged.
