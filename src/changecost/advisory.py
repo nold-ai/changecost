@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from contextlib import closing
 from decimal import Decimal
 from pathlib import Path
@@ -12,6 +13,7 @@ from changecost.models import (
     Component,
     ComputedSettlement,
     Cutoff,
+    EconomicScope,
     Quote,
     RecordRef,
     Settlement,
@@ -73,14 +75,33 @@ def artifact_records(path):
     return records
 
 
-def computation_claim_ids(connection):
-    return {row[0] for row in connection.execute("SELECT record_id FROM computations")}
+def receipt_claims_change(request, change):
+    if not isinstance(request, str):
+        return False
+    try:
+        data, end = json.JSONDecoder().raw_decode(request.lstrip(" \t\r\n"))
+        scope = EconomicScope.model_validate(data)
+        remainder = request.lstrip(" \t\r\n")[end:].lstrip(" \t\r\n")
+    except (ValueError, RecursionError):
+        return False
+    return scope.repository_id == change.repository_id and remainder == ":" + change.change_id
 
 
-def potential_local_predecessor(candidate, record, claimed_ids):
+def computation_claim_ids(connection, local_ids, change):
+    claims = list(connection.execute("SELECT request, record_id FROM computations"))
+    quote_ids = {record_id for kind, record_id in local_ids if kind == "quote"}
+    settlement_ids = {record_id for kind, record_id in local_ids if kind == "computed_settlement"}
+    claimed_ids = {record_id for _, record_id in claims} - (quote_ids - settlement_ids)
+    selector_ids = {
+        record_id for request, record_id in claims if receipt_claims_change(request, change)
+    }
+    return claimed_ids, selector_ids
+
+
+def potential_local_predecessor(candidate, record, claimed_ids, selector_ids):
     return (
         isinstance(candidate, ComputedSettlement)
-        and candidate.change == record.change
+        and (candidate.change == record.change or candidate.record_id in selector_ids)
         and (
             candidate.origin_store_id == record.cutoff.store_id
             or candidate.cutoff.store_id == record.cutoff.store_id
@@ -110,11 +131,13 @@ def predecessor_available_at_cutoff(connection, candidate, cutoff):
 
 def settlement_predecessor_reproduced(connection, snapshot, record, records):
     local_ids = computation_refs(connection, records)
-    claimed_ids = computation_claim_ids(connection)
+    claimed_ids, selector_ids = computation_claim_ids(
+        connection, local_ids, lookup(records, record.change, "change")
+    )
     local = [
         candidate
         for candidate in records.values()
-        if potential_local_predecessor(candidate, record, claimed_ids)
+        if potential_local_predecessor(candidate, record, claimed_ids, selector_ids)
         and predecessor_available_at_cutoff(connection, candidate, record.cutoff)
     ]
     if any(

@@ -347,6 +347,19 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **AND** missing or unsupported predecessor authority returns unknown in both formats without store writes; genuine foreign claims with foreign origin and cutoff and no local receipt do not poison local history
 - **AND** this consistency check cannot authenticate coordinated deletion or rewriting of every unauthenticated local authority marker, which is indistinguishable from a foreign imported claim
 
+#### Scenario: Receipt selectors retain predecessor Change association
+- **GIVEN** an earlier computation has surviving receipt requests declaring the selected repository and complete external Change ID
+- **WHEN** its declared Change, scope or dependencies are altered, or receipt aliases include other or malformed requests
+- **THEN** any matching typed Settlement selector retains the candidate at the original cutoff; JSON whitespace before the separator and key order may preserve negative association; the full suffix after the separator remains exact but never relax exact receipt validation for authority
+- **AND** selectors compare the full repository and Change identity without splitting colon-bearing IDs, substring matching or Unicode normalization; genuinely unrelated Changes and later computations retain their existing treatment
+- **AND** complete removal or rewriting of every Change association is not authenticated by this noncryptographic consistency check
+
+#### Scenario: Quote-only receipt IDs do not become Settlement authority
+- **GIVEN** a foreign imported computed Settlement shares an opaque record ID with a local Quote, while their kinds remain distinct
+- **WHEN** that raw receipt resolves definitively as valid Quote-only
+- **THEN** it does not retain the foreign Settlement as a local predecessor or suppress valid local Settlement advice; the foreign claim remains unknown
+- **AND** invalid or ambiguous raw receipts remain negative evidence, and contradictory local origin or cutoff claims still retain the candidate; quote disambiguation never grants Settlement authority
+
 #### Scenario: Incomplete local Settlement declarations retain producer structure
 
 All computed Settlement summary declarations, including unverified producer claims, SHALL retain mandatory nonnegative integer unknown_count metadata. Unverified claims may retain empty, duplicate or unmatched economic groups accepted by the portable record model; those declarations SHALL NOT gain local reproduction or numeric advice through summary rendering.

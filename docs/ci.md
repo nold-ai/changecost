@@ -158,3 +158,9 @@ Foreign claims, unrelated Changes and genuinely later results keep their separat
 treatment. These consistency checks do not authenticate coordinated removal or
 rewriting of every unauthenticated origin, cutoff and receipt marker; availability
 alone cannot distinguish that history from a foreign import.
+
+Budget checks preserve surviving request selectors as negative historical evidence
+when a predecessor changes its declared Change. A uniquely validated Quote-only
+receipt sharing an imported Settlement ID does not confer Settlement authority or
+suppress legitimate local advice. Both formats retain the same no-write boundary;
+summary rendering cannot authenticate a producer claim.

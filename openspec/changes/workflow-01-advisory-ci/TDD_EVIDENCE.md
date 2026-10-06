@@ -1511,3 +1511,48 @@ executing all 2,944 tests plus four subtests with 97.626% combined coverage. Pyt
 separate 586-case diagnostic passed but cannot grant acceptance. Both source/runtime
 bindings were independently inspected. Per-test native durations and failed partial
 results remain unavailable; timeout cause and any supported remedy remain unknown.
+
+### 2026-10-06: surviving Change selectors and typed receipt collisions
+
+CODE comment 4191176461 on 12324b7 exposed a coherent historical reroot after
+a predecessor's Change declaration changed. Independent actual-store probes also
+found a legitimate Quote/imported-computed-Settlement ID collision suppressing local
+advice. Spec/design preceded the regression tests and implementation. Frozen207
+initial red contained 24 wrong-oracle graph-validation exceptions and four fixture
+keyword errors, alongside two genuine Quote collision failures. Those raw results
+and a separate correction receipt remain preserved. Frozen208 corrected red exited
+one with 26 behavioral failures and 68 passing controls in 0.76 seconds.
+
+Typed raw request scopes now retain exact repository/Change association independently
+of mutable payload declarations. Noncanonical JSON spacing/key order retain negative
+evidence; the complete Change-ID suffix preserves colons, Unicode and spaces.
+Canonical unique receipt validation remains required for numeric authority. Valid
+Quote-only receipts are excluded solely from the untyped raw-ID candidate branch;
+uncertain roles and surviving local origin/cutoff claims still deny replay. All
+cutoff, original-anchor, snapshot, version and unique-tip guards remain. Complete
+removal of every unauthenticated association remains indistinguishable from an
+unrelated imported claim. No schema, producer, importer or native policy changes.
+
+Affected/full checks, independent guard controls, staged adoption and current Linux
+provider acceptance remain pending for this correction. Actual206 Python 3.13 full
+native coverage passed all 2,976 cases plus four subtests at 97.621% coverage; Python
+3.11 timed out at the unchanged 300-second guard. Its separately selected diagnostic
+passed but grants no complete-suite acceptance. The timeout cause remains unknown.
+
+Independent frozen209 review found trailing JSON whitespace before the request
+separator could drop association. Frozen210 spec/test-only red exited one with
+eight behavioral failures and 24 passing controls in 0.53 seconds, including padded
+colon/Unicode Change IDs. Parsing now consumes only space/tab/CR/LF around the
+JSON scope before the separator; the complete suffix after it remains exact.
+Original failed review, red and full209 evidence remain preserved.
+
+Frozen211 affected advisory/summary/reconciliation tests passed all 1,218 cases
+in 6.83 seconds. Complete host checks passed all 3,030 tests, all 11 strict OpenSpec
+items and supported hygiene, locked resolution, formatting, typing, documentation/
+generated references, workflow, build and audit gates. Aggregate exit two preserves
+all ten unsupported Darwin native analyzers; it is incomplete. Independent complete
+affected-source review found no defects: 113 controls passed, all eleven isolated
+guard omissions caused failures, and safe parser controls preserved exact padded
+Unicode IDs while rejecting malformed, unrelated and deep inputs. All 97 bound
+fingerprints matched. Staged adoption and fresh Linux/provider acceptance remain
+pending. Rollback reverts this scoped correction without altering the Quote archive.

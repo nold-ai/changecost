@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Retain original receipt Change selectors after predecessor declaration corruption,
+  and distinguish valid Quote-only receipts from imported Settlement ID collisions.
+
 - Retain surviving predecessor origin/cutoff claims and raw receipt IDs after combined
   corruption, without granting authority to claims or changing imported records.
 

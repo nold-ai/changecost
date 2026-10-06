@@ -322,3 +322,24 @@ at the original time/sequence before dependency pruning or declaration-time filt
 A potential local predecessor missing from the replay snapshot denies verification;
 otherwise altered dependencies could erase historical authority. Genuinely later
 rows, including the selected result itself, are outside the cutoff.
+
+Change association uses the declared reference or surviving raw Settlement request
+selectors. Decode the leading JSON object through the existing EconomicScope model,
+then compare its repository and the exact colon-prefixed remainder to the selected
+Change ID. IDs may contain colons or Unicode; no splitting, substring matching or
+normalization is applied. Structurally typed noncanonical requests retain negative
+association only; existing exact receipt validation still controls authority. Any
+matching selector among malformed or unrelated aliases retains the candidate,
+independently of its mutable declared scope. Removing every association cannot be
+distinguished from genuinely unrelated history without a new authentication model.
+
+Raw receipt IDs span record kinds. Subtract only IDs definitively resolved as valid
+Quote-only receipts from the raw candidate branch; otherwise a foreign computed
+claim sharing a Quote ID would suppress local advice. Invalid or ambiguous raw
+markers remain uncertain. Local origin/cutoff branches are never subtracted, and
+neither raw markers nor selector parsing grant numeric authority.
+
+Selector decoding consumes only JSON whitespace (space, tab, CR, LF) around the
+leading scope object before the separator. It never strips the Change-ID suffix,
+so padded IDs remain distinct. Independent frozen209 review reproduced trailing
+JSON whitespace bypass; the original failed closure is retained.

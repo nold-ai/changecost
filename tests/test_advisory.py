@@ -132,24 +132,38 @@ def test_independent_decimal_oracle(tmp_path, value, budget):
     assert isinstance(Decimal(value), Decimal)
 
 
-def settlement(tmp_path, value="10", complete=True):
-    from changecost.operations import bind_evidence
+def settlement(tmp_path, value="10", complete=True, *, change_id="change", first_scope=None):
+    from changecost.operations import (
+        LifecycleDeclaration,
+        bind_evidence,
+        declare,
+        register_change,
+        register_run,
+    )
+    from changecost.reconciliation import compute_settlement
+    from changecost.store import reference
     from tests.test_reconciliation import (
         NOW,
         START,
         add_coverage,
-        compute,
         event,
         import_events,
         setup_change,
     )
 
     store, change, members = setup_change(tmp_path)
+    if change_id != "change":
+        change = register_change(store, "repo", change_id)
+        member = members[0].model_copy(update={"run_id": "selected-run"})
+        run = register_run(store, member, change_id, work_start=START)
+        declare(store, reference(run), LifecycleDeclaration(end=NOW, outcome="succeeded"))
+        declare(store, reference(change), LifecycleDeclaration(outcome="accepted"))
+        members = [member]
     ident = import_events(store, event("charge", value))[0]
     bind_evidence(store, ident, members[0])
     if complete:
         add_coverage(store, members[0], ident, start=START, end=NOW)
-    return store, compute(store)
+    return store, compute_settlement(store, change_id, first_scope or scope(), "op")
 
 
 def evaluate(store, record, budget="15", **options):
@@ -1271,4 +1285,149 @@ def test_settlement_pruned_history_cannot_grant_root_authority(tmp_path, fault):
     result = evaluate(store, changed)
     assert result["status"] == "unknown" and result["comparison"] is None
     assert "historical_inputs_unavailable_or_result_mismatch" in result["reasons"]
+    assert store.path.read_bytes() == before
+
+
+def alter_receipt_selector_format(store, first, shape):
+    with closing(store.connect()) as connection, connection:
+        request = connection.execute(
+            "SELECT request FROM computations WHERE operation_id=?", (first.operation_id,)
+        ).fetchone()[0]
+        data, end = json.JSONDecoder().raw_decode(request)
+        if shape in {"pretty", "pretty-separator"}:
+            connection.execute(
+                "UPDATE computations SET request=? WHERE operation_id=?",
+                (
+                    json.dumps(data, indent=2, sort_keys=True)
+                    + (" \r\n\t" if shape == "pretty-separator" else "")
+                    + request[end:],
+                    first.operation_id,
+                ),
+            )
+        elif shape == "aliases":
+            for alias, claim in [("other-alias", request[:end] + ":other"), ("bad-alias", "bad")]:
+                connection.execute(
+                    "INSERT INTO computations VALUES (?,?,?)", (alias, claim, first.record_id)
+                )
+
+
+@pytest.mark.parametrize("receipt_shape", ["canonical", "pretty", "pretty-separator", "aliases"])
+@pytest.mark.parametrize("change_id", ["change", " part:λ:雪 "])
+@pytest.mark.parametrize("different_scope", [False, True])
+@pytest.mark.parametrize("format", ["json", "human"])
+def test_surviving_receipt_selector_retains_changed_predecessor(
+    tmp_path, receipt_shape, change_id, different_scope, format
+):
+    from changecost.operations import register_change
+    from changecost.reconciliation import compute_settlement
+    from changecost.serialization import ContractError
+    from changecost.store import reference
+
+    old_scope = scope()
+    if different_scope:
+        old_scope = old_scope.model_copy(
+            update={"economic": old_scope.economic.model_copy(update={"basis": "old:billed"})}
+        )
+    store, first = settlement(tmp_path, change_id=change_id, first_scope=old_scope)
+    other = register_change(store, "repo", "other")
+    second = compute_settlement(store, change_id, scope(), "second")
+    assert evaluate(store, second)["comparison"]["amount"] == "10"
+    alter_receipt_selector_format(store, first, receipt_shape)
+    tamper(
+        store,
+        first,
+        change=reference(other),
+        scope=scope(),
+        runs=[],
+        inputs=[reference(other)],
+        exclusions=[],
+    )
+    before = store.path.read_bytes()
+    with pytest.raises(ContractError, match="revision subject mismatch"):
+        evaluate(store, second)
+    assert store.path.read_bytes() == before
+    changed = tamper(store, second, previous=None, ledger_id="rerooted-ledger")
+    before = store.path.read_bytes()
+    result = evaluate(store, changed)
+    assert result["status"] == "unknown" and result["comparison"] is None
+    assert "historical_inputs_unavailable_or_result_mismatch" in result["reasons"]
+    assert_unknown_public_advice(store, changed, format, result)
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("marker", ["foreign", "origin", "cutoff"])
+@pytest.mark.parametrize("receipt_fault", [None, "invalid", "ambiguous"])
+@pytest.mark.parametrize("format", ["json", "human"])
+def test_quote_only_receipt_does_not_identify_foreign_settlement(
+    tmp_path, marker, receipt_fault, format
+):
+    from changecost.models import Bundle
+    from changecost.quotes import compute_quote
+    from tests.test_reconciliation import compute
+
+    store, first = settlement(tmp_path)
+    quote = compute_quote(store, "change", scope(), "quote-collision", minimum=2)
+    foreign = first.model_copy(
+        update=dict(
+            record_id=quote.record_id,
+            origin_store_id=first.origin_store_id if marker == "origin" else "foreign-store",
+            cutoff=first.cutoff.model_copy(
+                update={
+                    "store_id": first.cutoff.store_id if marker == "cutoff" else "foreign-store"
+                }
+            ),
+            operation_id="foreign-operation",
+            ledger_id="foreign-ledger",
+        )
+    )
+    store.import_bundle(
+        Bundle(
+            source=store.export_bundle().source.model_copy(update={"store_id": "foreign-store"}),
+            records=[foreign],
+        )
+    )
+    second = compute(store, op="second")
+    assert second.previous is not None and second.previous.record_id == first.record_id
+    invalidate_computation_receipt(store, quote, receipt_fault)
+    before = store.path.read_bytes()
+    assert evaluate(store, first)["comparison"]["amount"] == "10"
+    assert evaluate(store, foreign)["status"] == "unknown"
+    result = evaluate(store, second)
+    if marker == "foreign" and receipt_fault is None:
+        assert result["comparison"] is not None
+        assert result["comparison"]["amount"] == "10" and result["status"] == "within_budget"
+        public = runner.invoke(
+            app, ["--format", format, "--db", str(store.path), *check_args(second)]
+        )
+        assert public.exit_code == 0 and public.stderr == ""
+        assert "within_budget" in public.stdout
+    else:
+        assert result["status"] == "unknown" and result["comparison"] is None
+        assert_unknown_public_advice(store, second, format, result)
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize(
+    "selected_id,other_repo,other_id",
+    [
+        ("change", "other-repo", "change"),
+        ("change", "repo", "change:tail"),
+        ("change", "repo", "change "),
+        ("changé", "repo", "change\u0301"),
+    ],
+)
+def test_other_receipt_selectors_do_not_poison_local_history(
+    tmp_path, selected_id, other_repo, other_id
+):
+    from changecost.operations import register_change
+    from changecost.reconciliation import compute_settlement
+
+    store, first = settlement(tmp_path, change_id=selected_id)
+    register_change(store, other_repo, other_id)
+    other_scope = scope().model_copy(update={"repository_id": other_repo})
+    compute_settlement(store, other_id, other_scope, "other-operation")
+    second = compute_settlement(store, selected_id, scope(), "second")
+    before = store.path.read_bytes()
+    for record in (first, second):
+        assert evaluate(store, record)["comparison"]["amount"] == "10"
     assert store.path.read_bytes() == before

@@ -127,17 +127,22 @@ request matching for both computation kinds, including check, inspection and ret
 Unrelated results retain their own receipt authority. Retrying an operation rejects a mismatched stored operation ID even
 if another receipt references that result. Settlement reproduction includes
 scope, subtotals, supporting inputs/exclusions, reasons and completeness. It also
-retains potential same-Change local predecessors from their stored availability
+retains potential local predecessors associated with the selected Change from their stored availability
 before pruning dependencies or filtering receipts. A surviving local origin,
 local cutoff-store declaration or raw receipt record ID retains a candidate even
-when other authority is corrupted. Raw claims only deny verification. Every candidate must remain in
+when other authority is corrupted. Surviving typed receipt selectors also retain the original repository/Change association
+when a predecessor declares another Change. Selector parsing preserves the complete
+Change ID, including colons, Unicode and spaces; it supplies negative evidence only.
+Uniquely valid Quote-only receipts do not identify imported computed Settlements
+with the same untyped ID. Uncertain receipt kinds and local origin/cutoff claims
+remain fail-closed. Every candidate must remain in
 the replay snapshot with a unique valid receipt and supported producer cutoff
 anchors/version. A unique tip must match the previous reference and ledger across
 scopes. Missing or ambiguous history cannot establish a first result. Foreign
 imported claims and unrelated Changes do not become local predecessors; later
 computations remain outside the cutoff. A first ledger ID
 remains opaque; this is deterministic replay, not generic payload authentication.
-Coordinated deletion or rewriting of every origin, cutoff and receipt marker is
+Coordinated deletion or rewriting of every origin, cutoff, receipt and Change association marker is
 indistinguishable from a foreign import; availability alone proves timing, not locality.
 Explain's
 `inputs_available` alone cannot certify a value. Later evidence never replaces that
