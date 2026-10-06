@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Preflight all synthetic demo outputs before opening the store and create JSON
+  exclusively, preserving existing paths, symlink targets and late collisions.
+
 - Keep native process diagnostics unavailable after an incomplete initial
   baseline, preventing attribution of unseen preexisting descendants.
 

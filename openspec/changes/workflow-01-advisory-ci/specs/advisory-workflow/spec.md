@@ -426,3 +426,14 @@ The native review invocation SHALL retain its canonical command, exit and report
 #### Scenario: Initial descendant baseline is incomplete
 - **WHEN** the initial process scan is truncated, contains unreadable records or lacks a valid controller identity, even if later scans could succeed
 - **THEN** the invocation's diagnostic remains unavailable with no descendant trees or aggregate samples; its fresh binding and terminal elapsed time remain available without changing native execution or report checks
+
+### Requirement: Synthetic demo preserves existing outputs
+The synthetic demo SHALL preflight its database, bundle and four named check outputs before opening the store. Existing files, directories and symlinks, including dangling links, SHALL be rejected without modifying those paths or creating a database. Unrelated files remain permitted. JSON outputs SHALL be created exclusively so a late collision cannot overwrite an existing file. Late failure may retain newly created demo files and SHALL produce the existing safe technical exit two.
+
+#### Scenario: A generated destination already exists
+- **WHEN** any of the six generated paths exists or is a dangling symlink, even while the database is absent
+- **THEN** no generated writes or database creation occur and the existing path, target and unrelated files remain unchanged
+
+#### Scenario: A JSON destination appears after preflight
+- **WHEN** a file or symlink appears at a bundle or result destination before its write
+- **THEN** exclusive creation fails safely without overwriting that path or its target; a newly generated partial demo may remain

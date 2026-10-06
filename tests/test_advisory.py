@@ -468,7 +468,11 @@ def test_synthetic_demo(tmp_path):
     from changecost.demo import create_demo
 
     directory = tmp_path / "demo"
+    directory.mkdir()
+    unrelated = directory / "unrelated.txt"
+    unrelated.write_text("KEEP")
     create_demo(directory)
+    assert unrelated.read_text() == "KEEP"
     expected = {
         "cold-start": "unknown",
         "local-quote": "over_budget",
@@ -993,3 +997,92 @@ def test_committed_sequence_requires_strict_integer(
     assert checked.exit_code == 2 and checked.stdout == ""
     assert "Traceback" not in checked.stderr and "private-invalid-sequence" not in checked.stderr
     assert store.path.read_bytes() == before
+
+
+DEMO_OUTPUT_NAMES = (
+    "synthetic.sqlite",
+    "synthetic-bundle.json",
+    "cold-start.json",
+    "local-quote.json",
+    "local-settlement.json",
+    "portable-claim.json",
+)
+
+
+def make_demo_collision(path, victim, kind):
+    victim.write_bytes(b"PRIVATE_CANARY")
+    if kind == "file":
+        path.write_bytes(b"PRIVATE_CANARY")
+    elif kind == "directory":
+        path.mkdir()
+        (path / "keep").write_bytes(b"PRIVATE_CANARY")
+    else:
+        path.symlink_to(victim if kind == "symlink" else victim.parent / "absent")
+
+
+@pytest.mark.parametrize("name", DEMO_OUTPUT_NAMES)
+@pytest.mark.parametrize("kind", ["file", "directory", "symlink", "dangling"])
+def test_demo_existing_output_preserved(tmp_path, monkeypatch, capsys, name, kind):
+    import sys
+
+    from changecost.demo import create_demo, main
+
+    directory = tmp_path / "demo"
+    directory.mkdir()
+    victim = tmp_path / "victim"
+    destination = directory / name
+    make_demo_collision(destination, victim, kind)
+    unrelated = directory / "unrelated.txt"
+    unrelated.write_bytes(b"KEEP")
+    with pytest.raises(ValueError):
+        create_demo(directory)
+    monkeypatch.setattr(sys, "argv", ["demo", str(directory)])
+    with pytest.raises(SystemExit) as stopped:
+        main()
+    assert stopped.value.code == 2
+    captured = capsys.readouterr()
+    assert captured.out == "" and "cannot create synthetic demo" in captured.err
+    assert "PRIVATE_CANARY" not in captured.err
+    assert set(directory.iterdir()) == {destination, unrelated}
+    assert victim.read_bytes() == b"PRIVATE_CANARY" and unrelated.read_bytes() == b"KEEP"
+    if kind == "file":
+        assert destination.read_bytes() == b"PRIVATE_CANARY"
+    elif kind == "directory":
+        assert (destination / "keep").read_bytes() == b"PRIVATE_CANARY"
+    else:
+        assert destination.is_symlink()
+
+
+@pytest.mark.parametrize("name", DEMO_OUTPUT_NAMES[1:])
+@pytest.mark.parametrize("kind", ["file", "symlink"])
+def test_demo_late_output_preserved(tmp_path, monkeypatch, name, kind):
+    from pathlib import Path
+
+    from changecost.demo import create_demo
+
+    directory = tmp_path / "demo"
+    destination = directory / name
+    victim = tmp_path / "victim"
+    victim.write_bytes(b"PRIVATE_CANARY")
+    real_open = Path.open
+    fired = False
+
+    def collide(path, mode="r", *args, **kwargs):
+        nonlocal fired
+        if path == destination and not fired and mode in {"w", "x"}:
+            fired = True
+            if kind == "symlink":
+                path.symlink_to(victim)
+            else:
+                with real_open(path, "x") as output:
+                    output.write("PRIVATE_CANARY")
+        return real_open(path, mode, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", collide)
+    with pytest.raises(FileExistsError):
+        create_demo(directory)
+    assert fired and destination.read_bytes() == b"PRIVATE_CANARY"
+    assert victim.read_bytes() == b"PRIVATE_CANARY"
+    assert (directory / "synthetic.sqlite").is_file()
+    if kind == "symlink":
+        assert destination.is_symlink()

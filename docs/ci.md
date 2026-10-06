@@ -22,7 +22,14 @@ GITHUB_STEP_SUMMARY=.changecost/advisory-summary.md uv run --locked python -m ch
 GITHUB_STEP_SUMMARY=.changecost/advisory-summary.md uv run --locked python -m changecost.summary .changecost/advisory-example/portable-claim.json
 ```
 
-Use a fresh directory; the demo refuses an existing database. Named synthetic
+Use a fresh directory; the demo preflights its database, bundle and four named
+result paths before opening the store. Existing files, directories and symlinks,
+including dangling links, cause safe exit two without modifying those paths or
+creating a database; unrelated files are permitted. JSON outputs use exclusive
+creation, preserving files that appear after preflight. A late failure may retain
+newly generated demo files; remove only the owned example output before retrying.
+This does not provide atomic directory publication or racing SQLite protection.
+Named synthetic
 normalized events and portable final coverage assertions pass through existing
 registration, evidence import/binding, explicit lifecycle outcomes, computation and
 read-only check operations. No handwritten database rows or coverage-authoring CLI

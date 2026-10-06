@@ -1373,3 +1373,40 @@ adoption and fresh Linux/full provider acceptance remain required. No analyzer, 
 selection, deadline, dependency, persisted schema or product behavior changes.
 Rollback restores only this baseline guard, tests and correlated documentation,
 preserving the Quote archive and every historical result.
+
+
+## PR #34 synthetic demo output preservation — 2026-10-06
+
+Actual `42fcac9` run 37397370401 passed all ten native analyzers and all
+2,886 tests with four subtests in the 3.13.14 host job. The 3.11.15 host job
+passed nine analyzers but coverage returned UNKNOWN at the unchanged 300-second
+limit. Source/process bindings match current179. This is a new unresolved
+recurrence; original173 passing evidence remains historical, and observed activity
+does not explain the timeout. No full provider acceptance is claimed.
+
+CODE review5422667191 reported P2 “Refuse existing demo outputs before
+overwriting them” (thread PRRT_kwDOUu9-oc6pSBAZ, comment4190538397).
+Independent179 public reproduction confirmed all five existing JSON paths were
+overwritten when no database existed. The reviewed preflight covers the database,
+bundle and four result names before Store construction, including files, directories,
+links and dangling links. Exclusive UTF-8 creation preserves late file/link collisions
+at both JSON write sites. Unrelated files and all four expected advice statuses remain
+valid. Late failure may retain a newly generated demo prefix; no atomic directory
+publication or protection against a racing SQLite creator is claimed.
+
+Spec-first180 observed 30 expected failures and five passing cases in 0.58 seconds
+(actual exit one): 24 preexisting destination/type cases, ten deterministic late
+file/link collisions and the existing fresh-demo positive with an unrelated canary.
+Original181 passed all 1,009 advisory/summary cases in 5.77 seconds, actual exit zero.
+Independent181 affected review found no defects. Isolated unchanged controls passed
+all 35 demo cases; removing only JSON preflight caused 20 failures/15 passes, while
+removing exclusive writes caused ten failures/25 passes. Raw bindings and receipts
+remain retained. Frozen182 aggregate passed all 2,920 tests in 31.63 seconds, every host-supported
+gate, installed-wheel/audit checks and all 11 strict OpenSpec items. Actual exit
+two remains incomplete solely for ten unsupported macOS native analyzers. Exact
+pinned Radon reports demo complexity five and maximum affected-test complexity
+fourteen, below the blocking threshold of fifteen. Final staged adoption and fresh
+Linux/full provider acceptance remain required; this overwrite correction does
+not claim to fix native timing.
+Rollback restores only the demo guard/tests and related documentation, preserving
+the accepted Quote archive, prior runtime/diagnostic fixes and every failure.

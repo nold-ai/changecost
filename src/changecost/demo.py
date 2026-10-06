@@ -90,7 +90,15 @@ def synthetic_peer(store, name, value, outcome="accepted"):
 def create_demo(directory: Path):
     directory.mkdir(parents=True, exist_ok=True)
     database = directory / "synthetic.sqlite"
-    if database.exists():
+    outputs = (
+        "synthetic.sqlite",
+        "synthetic-bundle.json",
+        "cold-start.json",
+        "local-quote.json",
+        "local-settlement.json",
+        "portable-claim.json",
+    )
+    if any((directory / name).exists() or (directory / name).is_symlink() for name in outputs):
         raise ValueError("use a fresh demo directory")
     store = Store(database, clock=lambda: END)
     register_change(store, "demo", "target")
@@ -101,7 +109,8 @@ def create_demo(directory: Path):
     quote = compute_quote(store, "target", scope, "priced-quote", 2)
     settlement = compute_settlement(store, "ten", scope, "settlement")
     artifact = directory / "synthetic-bundle.json"
-    artifact.write_text(store.export_bundle().model_dump_json(by_alias=True), encoding="utf-8")
+    with artifact.open("x", encoding="utf-8") as output:
+        output.write(store.export_bundle().model_dump_json(by_alias=True))
     requests = (
         ("cold-start", cold, None),
         ("local-quote", quote, None),
@@ -115,9 +124,8 @@ def create_demo(directory: Path):
             budget_component("15", "monetary", "USD", "billed", "USD"),
             artifact=portable,
         )
-        (directory / f"{label}.json").write_text(
-            json.dumps(result, ensure_ascii=True), encoding="utf-8"
-        )
+        with (directory / f"{label}.json").open("x", encoding="utf-8") as output:
+            output.write(json.dumps(result, ensure_ascii=True))
     return {"quote": quote.record_id, "settlement": settlement.record_id}
 
 

@@ -287,3 +287,9 @@ invocation. Later readable records cannot distinguish unseen preexisting work
 from newly launched descendants. Such diagnostics retain unavailable status, empty
 trees/samples, the fresh binding and terminal elapsed time; the native command
 continues with unchanged exits and report validation.
+
+The synthetic demo preflights exactly its six generated paths before opening the
+store, rejecting existing files/directories/links and dangling links while allowing
+unrelated files. Bundle/result writes use exclusive creation to preserve late
+collisions. Technical failure retains any newly generated partial demo; this is
+not atomic directory publication or protection against a racing SQLite creator.
