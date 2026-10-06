@@ -152,6 +152,9 @@ Historical Settlement checks fail closed on uncertain prior local authority.
 Predecessor candidates use destination time/sequence availability before dependency
 pruning or receipt filtering; missing, invalid or ambiguous receipts and unsupported
 anchors/versions cannot manufacture a first result. A unique historical tip is
-required. Foreign claims, unrelated Changes and genuinely later results keep their
-separate treatment. These consistency checks do not authenticate coordinated removal
-of all history from the noncryptographic local store.
+required. Surviving local origin/cutoff declarations or raw computation record IDs
+retain candidates after combined corruption; those claims deny verification only.
+Foreign claims, unrelated Changes and genuinely later results keep their separate
+treatment. These consistency checks do not authenticate coordinated removal or
+rewriting of every unauthenticated origin, cutoff and receipt marker; availability
+alone cannot distinguish that history from a foreign import.

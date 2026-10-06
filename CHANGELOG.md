@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Retain surviving predecessor origin/cutoff claims and raw receipt IDs after combined
+  corruption, without granting authority to claims or changing imported records.
+
 - Reject Settlement rerooting when historical local receipts or replay dependencies
   are unavailable, preserving original cutoff, foreign-claim and no-write boundaries.
 

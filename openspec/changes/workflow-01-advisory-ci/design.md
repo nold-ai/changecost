@@ -304,15 +304,18 @@ analyzer states can bound this family in isolation; success does not identify th
 full-suite cause or supply complete-suite acceptance. Keep failed original reports.
 
 Settlement predecessor reproduction retains potential same-Change historical local
-computations before receipt filtering. A matching local origin or a resolved local
-receipt identifies a candidate; every candidate must have an unambiguous matching
+computations before receipt filtering. A matching local origin, local cutoff-store
+declaration or surviving raw computation receipt record ID identifies a candidate;
+raw receipt presence denies authority only and does not validate a request, operation
+or result. Every candidate must have an unambiguous matching
 receipt, the current store's supported cutoff anchors and supported computation
 versions. A unique historical tip must match the selected previous reference and
 ledger. Missing evidence therefore cannot manufacture a first computation. Foreign
 imported claims and unrelated Changes do not become local predecessors; subsequent
 computations remain outside the original cutoff. No schema or receipt migration is
-introduced. This consistency check does not authenticate coordinated deletion of
-all history from the noncryptographic local store.
+introduced. This consistency check does not authenticate coordinated deletion or
+rewriting of all origin, cutoff and receipt authority in the noncryptographic store;
+local availability alone cannot distinguish such a row from a foreign import.
 
 Candidate discovery uses the complete record view and typed destination availability
 at the original time/sequence before dependency pruning or declaration-time filtering.

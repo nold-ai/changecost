@@ -340,6 +340,13 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **WHEN** altered dependencies or declarations exclude it from the replay snapshot and the selected result is coherently rerooted
 - **THEN** check returns unknown without verified comparison or writes; potential predecessors are discovered from stored availability before graph pruning, while genuinely later computations remain excluded
 
+#### Scenario: Combined predecessor authority corruption retains surviving claims
+- **GIVEN** a same-Change predecessor is locally available at the selected original cutoff
+- **WHEN** origin or cutoff declarations are changed and its receipt becomes invalid, ambiguous or missing
+- **THEN** any surviving local origin, local cutoff-store declaration or raw computation receipt record ID retains that potential predecessor; raw claims can deny verification but cannot grant numeric authority
+- **AND** missing or unsupported predecessor authority returns unknown in both formats without store writes; genuine foreign claims with foreign origin and cutoff and no local receipt do not poison local history
+- **AND** this consistency check cannot authenticate coordinated deletion or rewriting of every unauthenticated local authority marker, which is indistinguishable from a foreign imported claim
+
 #### Scenario: Incomplete local Settlement declarations retain producer structure
 
 All computed Settlement summary declarations, including unverified producer claims, SHALL retain mandatory nonnegative integer unknown_count metadata. Unverified claims may retain empty, duplicate or unmatched economic groups accepted by the portable record model; those declarations SHALL NOT gain local reproduction or numeric advice through summary rendering.

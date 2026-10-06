@@ -1479,3 +1479,35 @@ and removing each of seven guards caused failures. The snapshot-membership contr
 now retains the correct selected predecessor before testing coherent rerooting.
 Original failed/unfrozen attempts remain preserved; staged checks, fresh Linux and
 full provider acceptance remain required. No paid infrastructure is introduced.
+
+### 2026-10-06: combined predecessor origin and receipt correction
+
+CODE review 5423214130 / comment 4191019365 on 9e877c9 exposed combined predecessor
+origin and receipt corruption. Independent real-store probes reproduced deleted,
+invalid and ambiguous receipts after origin changes. A nine-case origin/cutoff
+matrix distinguished surviving local cutoff claims and raw receipt record IDs from
+complete removal of all unauthenticated authority. Foreign imports also have local
+availability; row timing alone cannot prove producer locality. Spec/design were
+updated before tests. Frozen202 red exited one with 20 behavioral failures and 28
+passing controls in 0.55 seconds across both formats and economic scopes.
+
+Candidate discovery now retains any surviving local origin, local cutoff-store
+declaration or raw receipt record ID. Raw claims can only deny verification; all
+validated receipt, original anchor, supported version, snapshot and unique-tip
+requirements remain. Complete coordinated removal/rewrite of every local marker
+is indistinguishable from a foreign imported claim in this noncryptographic store.
+No schema, producer, importer or native policy changes are introduced. Frozen203
+affected tests passed all 1,164 cases in 6.21 seconds. Complete host checks passed
+all 2,976 tests in 31.25 seconds, all 11 strict items and supported gates; aggregate
+exit two retains all ten unsupported Darwin native analyzers. Pinned source/test
+complexity maxima remain 14. Independent closure found no defects: 59 baseline
+controls passed, and removing each of nine guards caused failures. Three foreign
+ledger imports retained unknown advice while genuine local history remained numeric,
+with unchanged store bytes. Staged and fresh Linux/provider acceptance remain pending.
+
+Actual201 run 37405292628 passed all ten full native analyzers on Python 3.13,
+executing all 2,944 tests plus four subtests with 97.626% combined coverage. Python
+3.11 retained a 300-second full coverage timeout with nine passing analyzers; its
+separate 586-case diagnostic passed but cannot grant acceptance. Both source/runtime
+bindings were independently inspected. Per-test native durations and failed partial
+results remain unavailable; timeout cause and any supported remedy remain unknown.

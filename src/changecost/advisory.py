@@ -73,13 +73,18 @@ def artifact_records(path):
     return records
 
 
-def potential_local_predecessor(candidate, record, local_ids):
+def computation_claim_ids(connection):
+    return {row[0] for row in connection.execute("SELECT record_id FROM computations")}
+
+
+def potential_local_predecessor(candidate, record, claimed_ids):
     return (
         isinstance(candidate, ComputedSettlement)
         and candidate.change == record.change
         and (
             candidate.origin_store_id == record.cutoff.store_id
-            or key(reference(candidate)) in local_ids
+            or candidate.cutoff.store_id == record.cutoff.store_id
+            or candidate.record_id in claimed_ids
         )
     )
 
@@ -105,10 +110,11 @@ def predecessor_available_at_cutoff(connection, candidate, cutoff):
 
 def settlement_predecessor_reproduced(connection, snapshot, record, records):
     local_ids = computation_refs(connection, records)
+    claimed_ids = computation_claim_ids(connection)
     local = [
         candidate
         for candidate in records.values()
-        if potential_local_predecessor(candidate, record, local_ids)
+        if potential_local_predecessor(candidate, record, claimed_ids)
         and predecessor_available_at_cutoff(connection, candidate, record.cutoff)
     ]
     if any(

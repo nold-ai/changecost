@@ -802,11 +802,36 @@ def invalidate_computation_receipt(store, record, fault):
             )
 
 
+def alter_predecessor_store_claims(store, record, fault):
+    updates = {}
+    if fault in {"origin", "both"}:
+        updates["origin_store_id"] = "foreign-store"
+    if fault in {"cutoff", "both"}:
+        updates["cutoff"] = record.cutoff.model_copy(update={"store_id": "foreign-store"})
+    return tamper(store, record, **updates) if updates else record
+
+
 @pytest.mark.parametrize("different_scope", [False, True])
-@pytest.mark.parametrize("receipt_fault", [None, "missing", "invalid", "ambiguous"])
+@pytest.mark.parametrize(
+    "receipt_fault,header_fault",
+    [
+        (None, None),
+        ("missing", None),
+        ("invalid", None),
+        ("ambiguous", None),
+        ("missing", "origin"),
+        ("invalid", "origin"),
+        ("ambiguous", "origin"),
+        ("missing", "cutoff"),
+        ("invalid", "cutoff"),
+        ("ambiguous", "cutoff"),
+        ("invalid", "both"),
+        ("ambiguous", "both"),
+    ],
+)
 @pytest.mark.parametrize("format", ["json", "human"])
 def test_settlement_replay_rejects_coherent_rerooting(
-    tmp_path, different_scope, receipt_fault, format
+    tmp_path, different_scope, receipt_fault, header_fault, format
 ):
     store, first = settlement(tmp_path)
     from changecost.reconciliation import compute_settlement
@@ -822,6 +847,7 @@ def test_settlement_replay_rejects_coherent_rerooting(
     if not different_scope:
         assert evaluate(store, second)["comparison"] is not None
     invalidate_computation_receipt(store, first, receipt_fault)
+    alter_predecessor_store_claims(store, first, header_fault)
     if receipt_fault is not None:
         unchanged = store.path.read_bytes()
         uncertain = evaluate(store, second)
