@@ -73,22 +73,63 @@ def artifact_records(path):
     return records
 
 
-def settlement_predecessor_reproduced(connection, snapshot, record):
-    local_ids = computation_refs(connection, snapshot)
+def potential_local_predecessor(candidate, record, local_ids):
+    return (
+        isinstance(candidate, ComputedSettlement)
+        and candidate.change == record.change
+        and (
+            candidate.origin_store_id == record.cutoff.store_id
+            or key(reference(candidate)) in local_ids
+        )
+    )
+
+
+def supported_predecessor_receipt(connection, candidate, local_ids, store_id):
+    return (
+        key(reference(candidate)) in local_ids
+        and candidate.cutoff.store_id == store_id
+        and original_computation_cutoff(connection, candidate)
+        and candidate.algorithm_version == ALGORITHM
+        and candidate.policy_version == POLICY
+    )
+
+
+def predecessor_available_at_cutoff(connection, candidate, cutoff):
+    observation = record_availability(connection, candidate, cutoff.store_id)
+    return (
+        observation is not None
+        and observation.sequence <= cutoff.sequence
+        and observation.available_at <= cutoff.at
+    )
+
+
+def settlement_predecessor_reproduced(connection, snapshot, record, records):
+    local_ids = computation_refs(connection, records)
     local = [
         candidate
-        for candidate in snapshot.values()
-        if isinstance(candidate, ComputedSettlement)
-        and key(reference(candidate)) in local_ids
-        and candidate.change == record.change
+        for candidate in records.values()
+        if potential_local_predecessor(candidate, record, local_ids)
+        and predecessor_available_at_cutoff(connection, candidate, record.cutoff)
     ]
+    if any(
+        key(reference(candidate)) not in snapshot
+        or not supported_predecessor_receipt(
+            connection, candidate, local_ids, record.cutoff.store_id
+        )
+        for candidate in local
+    ):
+        return False
     parents = {
         candidate.previous.record_id for candidate in local if candidate.previous is not None
     }
-    previous = next((candidate for candidate in local if candidate.record_id not in parents), None)
-    if previous is None:
+    tips = [candidate for candidate in local if candidate.record_id not in parents]
+    if not local:
         return record.previous is None
-    return record.previous == reference(previous) and record.ledger_id == previous.ledger_id
+    return (
+        len(tips) == 1
+        and record.previous == reference(tips[0])
+        and record.ledger_id == tips[0].ledger_id
+    )
 
 
 def settlement_reproduced(connection, records, record):
@@ -97,7 +138,7 @@ def settlement_reproduced(connection, records, record):
         return False
     details = computation_details(snapshot, snapshot[key(record.change)], record.scope)
     # The evaluator returns the complete deterministic evidence projection, without new IDs.
-    return settlement_predecessor_reproduced(connection, snapshot, record) and all(
+    return settlement_predecessor_reproduced(connection, snapshot, record, records) and all(
         details[name] == getattr(record, name) for name in MATERIAL
     )
 

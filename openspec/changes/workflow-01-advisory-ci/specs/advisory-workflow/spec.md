@@ -329,6 +329,17 @@ Implemented examples SHALL match actual command, output and exit contracts, with
 - **WHEN** its previous reference and ledger identity are coherently changed to re-root the revision while leaving numeric details unchanged
 - **THEN** check returns unknown without a verified value or store writes. Replay reproduces the producer's predecessor selection across economic scopes at that cutoff, retains the predecessor's ledger identity, and ignores later computations; the first ledger's opaque ID needs no independent authentication.
 
+#### Scenario: Historical local predecessor authority is incomplete
+- **GIVEN** an earlier same-Change computation from the local store exists at the selected Settlement's original cutoff
+- **WHEN** that earlier receipt is missing, invalid or ambiguous, or its supported producer cutoff evidence is invalid, even if the selected result is coherently rewritten as a new root
+- **THEN** check returns unknown with no verified comparison and preserves the store; receipt filtering cannot turn unresolved prior local history into absence
+- **AND** a unique coherent prior local tip is required; genuine first results, later-cutoff isolation, unrelated Changes and different-origin imported claims retain their existing treatment
+
+#### Scenario: Pruned history cannot manufacture a first computation
+- **GIVEN** an earlier local same-Change computation is time/sequence-available at the selected original cutoff
+- **WHEN** altered dependencies or declarations exclude it from the replay snapshot and the selected result is coherently rerooted
+- **THEN** check returns unknown without verified comparison or writes; potential predecessors are discovered from stored availability before graph pruning, while genuinely later computations remain excluded
+
 #### Scenario: Incomplete local Settlement declarations retain producer structure
 
 All computed Settlement summary declarations, including unverified producer claims, SHALL retain mandatory nonnegative integer unknown_count metadata. Unverified claims may retain empty, duplicate or unmatched economic groups accepted by the portable record model; those declarations SHALL NOT gain local reproduction or numeric advice through summary rendering.

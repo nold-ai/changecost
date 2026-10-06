@@ -127,8 +127,13 @@ request matching for both computation kinds, including check, inspection and ret
 Unrelated results retain their own receipt authority. Retrying an operation rejects a mismatched stored operation ID even
 if another receipt references that result. Settlement reproduction includes
 scope, subtotals, supporting inputs/exclusions, reasons and completeness. It also
-reproduces the receipted same-Change predecessor at that cutoff across scopes,
-preserving its ledger identity and ignoring later computations. A first ledger ID
+retains potential same-Change local predecessors from their stored availability
+before pruning dependencies or filtering receipts. Every candidate must remain in
+the replay snapshot with a unique valid receipt and supported producer cutoff
+anchors/version. A unique tip must match the previous reference and ledger across
+scopes. Missing or ambiguous history cannot establish a first result. Foreign
+imported claims and unrelated Changes do not become local predecessors; later
+computations remain outside the cutoff. A first ledger ID
 remains opaque; this is deterministic replay, not generic payload authentication. Explain's
 `inputs_available` alone cannot certify a value. Later evidence never replaces that
 cutoff. Imported/legacy/artifact-only results remain unknown producer claims, even

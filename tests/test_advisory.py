@@ -776,8 +776,38 @@ def test_generated_header_replay_authority(tmp_path, kind, field, output_format)
     assert store.path.read_bytes() == before
 
 
+def assert_unknown_public_advice(store, changed, format, result):
+    public = runner.invoke(app, ["--format", format, "--db", str(store.path), *check_args(changed)])
+    assert public.exit_code == 0 and public.stderr == ""
+    if format == "json":
+        assert json.loads(public.stdout) == result
+    else:
+        assert "unknown" in public.stdout and "producer_assertion" in public.stdout
+
+
+def invalidate_computation_receipt(store, record, fault):
+    with closing(store.connect()) as connection, connection:
+        if fault == "missing":
+            connection.execute("DELETE FROM computations WHERE record_id=?", (record.record_id,))
+        elif fault == "invalid":
+            connection.execute(
+                "UPDATE computations SET request=? WHERE record_id=?",
+                ("invalid-request", record.record_id),
+            )
+        elif fault == "ambiguous":
+            connection.execute(
+                "INSERT INTO computations SELECT ?,request,record_id FROM computations "
+                "WHERE record_id=?",
+                ("earlier-alias", record.record_id),
+            )
+
+
 @pytest.mark.parametrize("different_scope", [False, True])
-def test_settlement_replay_rejects_coherent_rerooting(tmp_path, different_scope):
+@pytest.mark.parametrize("receipt_fault", [None, "missing", "invalid", "ambiguous"])
+@pytest.mark.parametrize("format", ["json", "human"])
+def test_settlement_replay_rejects_coherent_rerooting(
+    tmp_path, different_scope, receipt_fault, format
+):
     store, first = settlement(tmp_path)
     from changecost.reconciliation import compute_settlement
 
@@ -791,11 +821,19 @@ def test_settlement_replay_rejects_coherent_rerooting(tmp_path, different_scope)
     assert second.previous is not None and second.previous.record_id == first.record_id
     if not different_scope:
         assert evaluate(store, second)["comparison"] is not None
+    invalidate_computation_receipt(store, first, receipt_fault)
+    if receipt_fault is not None:
+        unchanged = store.path.read_bytes()
+        uncertain = evaluate(store, second)
+        assert uncertain["comparison"] is None
+        assert "historical_inputs_unavailable_or_result_mismatch" in uncertain["reasons"]
+        assert store.path.read_bytes() == unchanged
     changed = tamper(store, second, previous=None, ledger_id="coherently-new-ledger")
     before = store.path.read_bytes()
     result = evaluate(store, changed)
     assert result["status"] == "unknown" and result["comparison"] is None
     assert "historical_inputs_unavailable_or_result_mismatch" in result["reasons"]
+    assert_unknown_public_advice(store, changed, format, result)
     assert store.path.read_bytes() == before
 
 
@@ -811,6 +849,90 @@ def test_settlement_predecessor_replay_ignores_later_computations(tmp_path):
     for record in (first, second, third):
         assert evaluate(store, record)["comparison"] is not None
     assert store.path.read_bytes() == before
+    invalidate_computation_receipt(store, third, "missing")
+    before = store.path.read_bytes()
+    for record in (first, second):
+        assert evaluate(store, record)["comparison"] is not None
+    assert evaluate(store, third)["status"] == "unknown"
+    assert store.path.read_bytes() == before
+
+
+def test_settlement_predecessor_ignores_foreign_claims_and_other_changes(tmp_path):
+    from changecost.models import Bundle
+    from changecost.operations import register_change
+    from changecost.reconciliation import compute_settlement
+    from tests.test_reconciliation import compute
+
+    store, first = settlement(tmp_path)
+    foreign = first.model_copy(
+        update=dict(
+            record_id="foreign-result",
+            origin_store_id="foreign-store",
+            cutoff=first.cutoff.model_copy(update={"store_id": "foreign-store"}),
+            operation_id="foreign-operation",
+            ledger_id="foreign-ledger",
+        )
+    )
+    store.import_bundle(
+        Bundle(
+            source=store.export_bundle().source.model_copy(update={"store_id": "foreign-store"}),
+            records=[foreign],
+        )
+    )
+    register_change(store, "repo", "other")
+    other = compute_settlement(store, "other", scope(), "other-operation")
+    with closing(store.connect()) as connection, connection:
+        connection.execute("DELETE FROM computations WHERE record_id=?", (other.record_id,))
+    second = compute(store, op="second")
+    assert second.previous is not None and second.previous.record_id == first.record_id
+    before = store.path.read_bytes()
+    assert evaluate(store, foreign)["status"] == "unknown"
+    for record in (first, second):
+        assert evaluate(store, record)["comparison"]["amount"] == "10"
+    assert store.path.read_bytes() == before
+
+
+@pytest.mark.parametrize("fault", ["origin", "cutoff", "recorded", "algorithm", "policy"])
+def test_settlement_predecessor_requires_supported_original_anchors(tmp_path, fault):
+    from datetime import timedelta
+
+    from tests.test_reconciliation import compute
+
+    store, first = settlement(tmp_path)
+    second = compute(store, op="second")
+    updates = {
+        "origin": {"origin_store_id": "foreign-origin"},
+        "cutoff": {
+            "cutoff": first.cutoff.model_copy(update={"sequence": first.cutoff.sequence + 1})
+        },
+        "recorded": {"recorded_at": first.recorded_at - timedelta(seconds=1)},
+        "algorithm": {"algorithm_version": "unsupported/v9"},
+        "policy": {"policy_version": "unsupported/v9"},
+    }
+    tamper(store, first, **updates[fault])
+    before = store.path.read_bytes()
+    result = evaluate(store, second)
+    assert result["status"] == "unknown" and result["comparison"] is None
+    assert "historical_inputs_unavailable_or_result_mismatch" in result["reasons"]
+    assert store.path.read_bytes() == before
+
+
+def test_settlement_predecessor_requires_unique_historical_tip(tmp_path):
+    from changecost.store import reference
+    from tests.test_reconciliation import compute
+
+    store, first = settlement(tmp_path)
+    second = compute(store, op="second")
+    third = compute(store, op="third")
+    split = tamper(store, second, previous=None, ledger_id="forked-ledger")
+    # Neither coherent tip may become authoritative through arbitrary snapshot order.
+    for chosen in (first, split):
+        changed = tamper(store, third, previous=reference(chosen), ledger_id=chosen.ledger_id)
+        before = store.path.read_bytes()
+        result = evaluate(store, changed)
+        assert result["status"] == "unknown" and result["comparison"] is None
+        assert "historical_inputs_unavailable_or_result_mismatch" in result["reasons"]
+        assert store.path.read_bytes() == before
 
 
 @pytest.mark.parametrize("kind", ["quote", "computed_settlement"])
@@ -1086,3 +1208,41 @@ def test_demo_late_output_preserved(tmp_path, monkeypatch, name, kind):
     assert (directory / "synthetic.sqlite").is_file()
     if kind == "symlink":
         assert destination.is_symlink()
+
+
+@pytest.mark.parametrize("fault", ["dependency", "recorded", "effective"])
+def test_settlement_pruned_history_cannot_grant_root_authority(tmp_path, fault):
+    from datetime import timedelta
+
+    from changecost.models import Evidence
+    from changecost.operations import common
+    from changecost.store import reference
+    from tests.test_reconciliation import NOW, compute
+
+    store, first = settlement(tmp_path)
+    second = compute(store, op="second")
+    if fault == "dependency":
+        late = Evidence(
+            **common("late-origin", NOW, "later-raw"),
+            provider="synthetic",
+            surface="fixture",
+            profile="synthetic/v1",
+            identity_scope="namespaced",
+            source_key="later-raw",
+        )
+        store.apply(lambda records, store_id, now: ([late], None))
+        tamper(store, first, inputs=[*first.inputs, reference(late)])
+        before = store.path.read_bytes()
+        unchanged = evaluate(store, second)
+        assert unchanged["status"] == "unknown" and unchanged["comparison"] is None
+        assert "historical_inputs_unavailable_or_result_mismatch" in unchanged["reasons"]
+        assert store.path.read_bytes() == before
+    else:
+        field = "recorded_at" if fault == "recorded" else "effective_at"
+        tamper(store, first, **{field: second.cutoff.at + timedelta(seconds=1)})
+    changed = tamper(store, second, previous=None, ledger_id="rerooted-ledger")
+    before = store.path.read_bytes()
+    result = evaluate(store, changed)
+    assert result["status"] == "unknown" and result["comparison"] is None
+    assert "historical_inputs_unavailable_or_result_mismatch" in result["reasons"]
+    assert store.path.read_bytes() == before

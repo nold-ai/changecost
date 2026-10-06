@@ -147,3 +147,11 @@ original project configuration and signed runtime, with normal technical exits.
 The required full-suite failure and canonical reports remain intact. Inspect actual
 selected/observed test IDs and bindings before using the report to bound this family;
 a subset success cannot certify the full suite or establish timeout causality.
+
+Historical Settlement checks fail closed on uncertain prior local authority.
+Predecessor candidates use destination time/sequence availability before dependency
+pruning or receipt filtering; missing, invalid or ambiguous receipts and unsupported
+anchors/versions cannot manufacture a first result. A unique historical tip is
+required. Foreign claims, unrelated Changes and genuinely later results keep their
+separate treatment. These consistency checks do not authenticate coordinated removal
+of all history from the noncryptographic local store.

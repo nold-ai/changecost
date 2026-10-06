@@ -1437,3 +1437,45 @@ without source edits. Existing workflow fault controls passed all 163 tests in
 1.92 seconds. These results close host limitations only; fresh pinned Linux full
 acceptance, any selected diagnostic outcome and current provider reviews remain
 required. The selected scope is never treated as complete-suite acceptance.
+
+
+### 2026-10-06: historical predecessor authority correction
+
+CODE review 5422968612 / comment 4190808083 on f920dfb identified lost predecessor
+receipts permitting coherent rerooting. Two independent real-store reproductions
+confirmed missing, invalid and ambiguous receipt cases in public JSON/human output.
+Spec/design were extended before the regression/runtime correction. Corrected frozen
+191 red exited one with 18 behavioral failures and six positive controls in 0.48
+seconds. Original 190 attempts are retained separately: a missing foreign Bundle
+source caused a harness failure, and an iteration-order assumption weakened the tip
+control. The corrected fixture supplies a valid source and tests both coherent tips.
+
+Frozen192 affected tests passed 1,129 cases in 17.64 seconds; pinned Radon then found
+source complexity 19 and test complexity 15. Focused predicate/fault-fixture extraction
+retained the cases and assertions; frozen193 passed the same 1,129 in 17.60 seconds,
+with source/test maxima 14. Independent review then reproduced an adjacent dependency
+pruning bypass before publication: a stored available predecessor could disappear
+from the replay snapshot. Frozen194 red exited one with all three dependency/future
+declaration controls failing in 0.21 seconds. Candidate discovery now uses typed stored
+availability before pruning, and absent replay candidates fail closed. Frozen195
+passed all 1,132 affected advisory, summary and reconciliation tests in 17.85 seconds,
+including genuine first/historical results, later missing receipts, foreign claims,
+unrelated Changes, supported anchors/versions and unique-tip controls. Final added
+assertions also deny numeric replay with an unchanged selected predecessor when its
+prior receipt is uncertain. Store bytes remain unchanged by checks.
+
+Actual189 CI retained both full coverage timeouts at 300 seconds and nine passing
+analyzers; both separately selected 586-case diagnostics passed all 1,758 phases.
+These selected results are diagnostic only. Host CPU/affinity was two with four
+required pytest workers. Full-suite timeout causality remains unknown. No analyzer
+limit, worker count, selection, stored schema or receipt format changes are included.
+Frozen198 complete host checks passed all 2,944 tests in 31.89 seconds and all 11
+strict OpenSpec items, along with supported hygiene, locked resolution, formatting,
+typing, documentation/generated references, workflow, build and audit checks.
+`make check` exited two because all ten native analyzers remain unsupported on
+Darwin; it is incomplete. Pinned Radon source/test maxima were 14. Independent
+affected-source closure found no additional defects: its 27-case baseline passed,
+and removing each of seven guards caused failures. The snapshot-membership control
+now retains the correct selected predecessor before testing coherent rerooting.
+Original failed/unfrozen attempts remain preserved; staged checks, fresh Linux and
+full provider acceptance remain required. No paid infrastructure is introduced.

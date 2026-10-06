@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Reject Settlement rerooting when historical local receipts or replay dependencies
+  are unavailable, preserving original cutoff, foreign-claim and no-write boundaries.
+
 - Retain a separately selected sealed review-session diagnostic after failed quality
   checks, preserving the required complete-suite gate and original reports.
 
