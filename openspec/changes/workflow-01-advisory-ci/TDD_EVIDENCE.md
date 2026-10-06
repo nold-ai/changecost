@@ -1410,3 +1410,30 @@ Linux/full provider acceptance remain required; this overwrite correction does
 not claim to fix native timing.
 Rollback restores only the demo guard/tests and related documentation, preserving
 the accepted Quote archive, prior runtime/diagnostic fixes and every failure.
+
+
+### 2026-10-06: selected sealed diagnostic preparation
+
+Actual run 37399641336 for e9f62e4 failed both native coverage analyzers at the
+unchanged 300-second limit, with no target observations; the other nine analyzers
+passed. Independently checked official historical module 0.50.1 archive SHA256
+`61489b8b3e9596082f738d093987fe0427815b2a6148cfae678a996878d117e7`:
+explicit-file selection chooses the unchanged review-session test family and
+explicit `--out` writes only the selected diagnostic file. A failure-only workflow
+step preserves the original full gate, reports, configuration and all technical
+exits. This is a diagnostic configuration change; it does not claim a runtime fix
+or full-suite acceptance. Existing workflow fault controls and strict/documentation
+checks are required before publication; actual Linux selected IDs, runtime binding
+and outcome remain pending. No paid infrastructure or new dependency is introduced.
+
+
+Original frozen186 `make check` exited two: all 2,920 host tests passed in 32.51
+seconds and all 11 strict OpenSpec items passed. Hygiene read/write file opens on
+sandbox-read-only skills and build/audit DNS restrictions remained failures,
+besides ten unsupported Darwin native analyzers. The original log is retained.
+Scoped hygiene under supported file permissions, locked installed-wheel/build
+validation with network access, and dependency audit each subsequently exited zero
+without source edits. Existing workflow fault controls passed all 163 tests in
+1.92 seconds. These results close host limitations only; fresh pinned Linux full
+acceptance, any selected diagnostic outcome and current provider reviews remain
+required. The selected scope is never treated as complete-suite acceptance.

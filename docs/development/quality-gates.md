@@ -708,3 +708,11 @@ If the initial descendant scan is incomplete, process diagnostics remain
 unavailable for that invocation: later scans cannot safely classify unseen
 preexisting work. Empty trees and samples retain the fresh binding and terminal
 elapsed time; native execution, exits and acceptance checks continue unchanged.
+
+A failed complete repository check also runs the pinned native CLI with explicit
+`tests/test_review_session.py` selection, saving
+`.specfact/selected-review-session-diagnostic.json`. This diagnostic retains the
+original project configuration and signed runtime, with normal technical exits.
+The required full-suite failure and canonical reports remain intact. Inspect actual
+selected/observed test IDs and bindings before using the report to bound this family;
+a subset success cannot certify the full suite or establish timeout causality.

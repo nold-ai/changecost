@@ -293,3 +293,12 @@ store, rejecting existing files/directories/links and dangling links while allow
 unrelated files. Bundle/result writes use exclusive creation to preserve late
 collisions. Technical failure retains any newly generated partial demo; this is
 not atomic directory publication or protection against a racing SQLite creator.
+
+After a failed complete repository check, a separate pinned native invocation selects
+`tests/test_review_session.py` through the CLI's explicit-file mode. The module makes
+its own private snapshot; neither project configuration nor the original full command
+changes. Explicit `--out .specfact/selected-review-session-diagnostic.json` separates
+this report from canonical acceptance files. The step preserves the CLI exit and the
+original failed job. Its actual selected/observed IDs, runtime/source bindings and
+analyzer states can bound this family in isolation; success does not identify the
+full-suite cause or supply complete-suite acceptance. Keep failed original reports.

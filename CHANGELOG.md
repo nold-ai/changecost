@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Retain a separately selected sealed review-session diagnostic after failed quality
+  checks, preserving the required complete-suite gate and original reports.
+
 - Preflight all synthetic demo outputs before opening the store and create JSON
   exclusively, preserving existing paths, symlink targets and late collisions.
 

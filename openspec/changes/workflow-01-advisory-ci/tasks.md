@@ -34,6 +34,7 @@ Current implementation evidence is recorded in [TDD_EVIDENCE.md](TDD_EVIDENCE.md
 - [x] 4.6 Reject windowed Quote summary projections before destination access; preserve actual local/imported null or missing bounds, p50/p90, observed-zero/unpriced results and supported computed Settlement windows. Record real-producer/artifact red/green, guard-removal and affected quality/review evidence.
 
 - [x] 4.7 Preserve bounded numeric native descendant observations across successful and failed canonical execution; test privacy, lineage, terminal-tail bounds and unchanged gate behavior.
+- [x] 4.8 Configure a separately selected pinned sealed review-session diagnostic after a complete-check failure; preserve canonical reports and blocking failures, and label its scope as ineligible for full acceptance.
 
 ## 5. Verification and later delivery
 

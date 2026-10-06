@@ -121,9 +121,19 @@ jobs:
           print(json.dumps(host_context(), sort_keys=True))
           PY
       - name: Check repository
+        id: repository-check
         env:
           UV_PYTHON: ${{ matrix.python }}
         run: /usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check
+      - name: Diagnose selected review-session tests after failure
+        if: failure() && steps.repository-check.outcome == 'failure'
+        env:
+          UV_PYTHON: ${{ matrix.python }}
+        # This selected report never replaces the failed complete-suite gate.
+        run: >-
+          specfact code review run tests/test_review_session.py
+          --include-tests --bug-hunt --enforcement full --json
+          --out .specfact/selected-review-session-diagnostic.json
       - name: Collect privacy-safe runtime metadata
         if: always()
         env:
@@ -139,6 +149,7 @@ jobs:
             .specfact/review-binding.json
             .specfact/runtime-diagnostic.json
             .specfact/native-process-*.json
+            .specfact/selected-review-session-diagnostic.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 7

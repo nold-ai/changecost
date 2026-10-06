@@ -437,3 +437,8 @@ The synthetic demo SHALL preflight its database, bundle and four named check out
 #### Scenario: A JSON destination appears after preflight
 - **WHEN** a file or symlink appears at a bundle or result destination before its write
 - **THEN** exclusive creation fails safely without overwriting that path or its target; a newly generated partial demo may remain
+
+#### Scenario: Separately selected sealed timeout diagnosis
+- **WHEN** the original required complete repository check fails
+- **THEN** CI may run the unchanged review-session test family through the same pinned signed CLI using explicit-file selection and retain its report under a separate diagnostic filename
+- **AND** the original full command, selection, limits, reports and failure remain unchanged; diagnostic exits are preserved and a selected success cannot satisfy full acceptance or establish the full-suite timeout cause
