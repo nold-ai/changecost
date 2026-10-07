@@ -125,3 +125,14 @@ require separate versioned policies. #13/#14 keep prerequisites #9/#12; missing
 support blocks only the affected mapping/capability. New Codex/Claude reader and
 adaptive-demand plans are separate future implementations. See
 [forecasting](../../../docs/forecasting.md) and [research](../../../docs/research/adaptive-demand-evidence.md).
+
+
+## Publication disposition — 2026-10-07 (Europe/Berlin)
+
+The maintainer superseded local-only retention with the published planning-only
+[PR #38](https://github.com/nold-ai/changecost/pull/38). Both scoped stashes remain
+recovery points. Earlier dated local/unpublished statements describe their
+historical preparation state; this is the current delivery disposition.
+Publication does not imply merge, implementation completion or native approval.
+Recorded review limits and all 14 source profiles with zero approvals remain
+unchanged.

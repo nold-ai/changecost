@@ -214,3 +214,14 @@ preserving source originals, archives and review history.
 Task/source-feasibility scope is current; prior acceptance/failures remain history.
 Close/archive still requires separately reviewed actual reconciliation and applicable
 delivery checks. This planning update does not close #9 or imply adapter readiness.
+
+
+## Publication disposition — 2026-10-07 (Europe/Berlin)
+
+The maintainer superseded local-only retention with the published planning-only
+[PR #38](https://github.com/nold-ai/changecost/pull/38). Both scoped stashes remain
+recovery points. Earlier dated local/unpublished statements describe their
+historical preparation state; this is the current delivery disposition.
+Publication does not imply merge, implementation completion or native approval.
+Recorded review limits and all 14 source profiles with zero approvals remain
+unchanged.

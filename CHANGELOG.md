@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Correct planning verification to cover all 17 native hierarchy issues and record
+  PR #38 as the current publication disposition, retaining scoped stashes as
+  recovery points and preserving existing lifecycle states and historical evidence.
+
 - Plan zero-knowledge local task-demand learning, scoped matched-ecosystem transfer
   and chronological validation; add separate Codex/Claude local-reader plans and
   capability-based source-feasibility closeout. Update the private backlog without

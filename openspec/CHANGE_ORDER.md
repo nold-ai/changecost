@@ -200,8 +200,11 @@ cache, release infrastructure or runtime framework is introduced.
 Required planning checks: strict validation of all active changes and main specs, complete artifacts,
 Given/When/Then scenario coverage, accurate task status with unfinished tasks unchecked,
 valid relative links, acyclic graph,
-and GitHub readback of all 14 native types, parents, dependencies, labels, private project
-membership and Todo status. Preserve repository description, privacy and topics,
+and GitHub readback of all **17 hierarchy issues**: Epic #4; Features #5–#8;
+User Stories #9–#17 and #35–#37. Verify each issue’s native type, parent,
+dependencies, labels, private project membership and current lifecycle/project
+status. New unstarted stories #35–#37 remain Todo, unassigned and undated; preserve
+existing delivered and In Progress states. Preserve repository description, privacy and topics,
 including `token-economics`. Runtime tests and product review are not planning evidence.
 
 Rollback: revert the planning commit and close abandoned issues/project while preserving
@@ -243,6 +246,10 @@ acceptance evidence is retained in its archived change. The quote archive is pre
 
 ## Advisory archive and selected preparation — 2026-10-06 (Europe/Berlin)
 
+This section records the historical local preparation on 2026-10-06. The
+2026-10-07 publication disposition in the adaptive-demand expansion below
+supersedes its then-pending PR/stash choice.
+
 Advisory #16 merged in [PR #34](https://github.com/nold-ai/changecost/pull/34)
 at `ee424b5cf3c116b18515cec1ee086e1a6de223a0` (09:41:49 Europe/Berlin).
 `openspec archive workflow-01-advisory-ci --yes` (1.13.2, spec-driven)
@@ -283,6 +290,9 @@ native learning. A missing provider cannot prevent another eligible source's eva
 
 See [forecasting](../docs/forecasting.md), [architecture/evidence register](../docs/research/adaptive-demand-evidence.md)
 and the three proposals. Preserve the delivered Quote/advisory contracts and their
-archives. This batch is local/unpublished and the selected disposition is a new
-verified scoped stash, preserving the original recovery stash and review limits.
+archives. The selected disposition is the published planning-only
+[PR #38](https://github.com/nold-ai/changecost/pull/38), which supersedes the earlier
+local-only stash choice. Both scoped stashes remain recovery points; they are not
+the delivery disposition. PR publication does not imply merge or implementation
+completion and preserves recorded review limits.
 Native approvals remain zero. No runtime, collection, paid service or release is added.

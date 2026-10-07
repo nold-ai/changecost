@@ -344,3 +344,14 @@ primary studies, access dates, limits and concrete remaining evidence requests.
 The existing 14 canonical profiles and zero approvals remain unchanged. These
 planning findings neither certify native finality nor claim complete new inventory
 tasks. Historical failures, delivery checks and accepted review limits are retained.
+
+
+## Publication disposition — 2026-10-07 (Europe/Berlin)
+
+The maintainer superseded local-only retention with the published planning-only
+[PR #38](https://github.com/nold-ai/changecost/pull/38). Both scoped stashes remain
+recovery points. Earlier dated local/unpublished statements describe their
+historical preparation state; this is the current delivery disposition.
+Publication does not imply merge, implementation completion or native approval.
+Recorded review limits and all 14 source profiles with zero approvals remain
+unchanged.
