@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Order provider acquisition/accounting policies and regression red tests before
+  parser implementation; complete adaptive evaluation protocol, red/green harness
+  controls and authorized lane assessment before verification and delivery.
+
 - Correct planning verification to cover all 17 native hierarchy issues and record
   PR #38 as the current publication disposition, retaining scoped stashes as
   recovery points and preserving existing lifecycle states and historical evidence.
