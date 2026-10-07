@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Require auditable source/date/unit-basis provenance for optional rate scenarios
+  and explicit failing count-only/rehearsal-only evaluation promotion controls.
+
 - Require failing validation-authority and policy-drift controls before forecast
   implementation; keep Codex/Claude reader delivery independent of #35 while
   explicitly deferring adaptive integration until its delivery and policy approval.

@@ -136,7 +136,7 @@ Forecasting SHALL prefer applicable target evidence, keep mapped donor data hypo
 
 ### Requirement: Explicit economic scenarios
 
-Demand quantities, effort, credits, estimated money and billed charges SHALL remain distinct. Optional price scenarios SHALL require compatible explicit rates/bases and SHALL NOT grant financial completeness or advisory authority.
+Demand quantities, effort, credits, estimated money and billed charges SHALL remain distinct. Optional price scenarios SHALL require compatible explicit rates with effective date, unit/basis and source provenance and SHALL NOT grant financial completeness or advisory authority.
 
 #### Scenario: Subscription and missing cache
 
@@ -146,9 +146,15 @@ Demand quantities, effort, credits, estimated money and billed charges SHALL rem
 
 #### Scenario: Explicit compatible rates
 
-- **GIVEN** a demand scenario and explicitly supplied dated compatible rates
+- **GIVEN** a demand scenario and explicitly supplied compatible rates with effective date, unit/basis and source provenance
 - **WHEN** an estimated monetary scenario is rendered
-- **THEN** its assumptions and estimated basis are visible and check does not treat it as a trusted economic Quote
+- **THEN** its assumptions, frozen rate provenance and estimated basis are visible and check does not treat it as a trusted economic Quote
+
+#### Scenario: Missing rate provenance
+
+- **GIVEN** supplied rates missing source, effective date or unit/basis
+- **WHEN** an estimated monetary scenario is requested
+- **THEN** the monetary scenario is rejected without inventing rates or granting financial/advisory authority
 
 ### Requirement: Optional bounded rehearsal and local privacy
 

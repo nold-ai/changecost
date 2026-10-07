@@ -16,7 +16,7 @@ separate request. No provider approval or accuracy is implied.
 - [ ] 2.3 Write failing matched-pair, confounding, future-bridge, compatible-category, zero-denominator and target-preference tests; implement scoped median-ratio or explicit difference hypotheses without bridge chaining or pseudo-samples.
 - [ ] 2.4 Write failing component-scoped evidence-state, count-only promotion, imported validation-claim and version/policy-drift withdrawal tests; verify expected failures and retention of immutable earlier forecast/validation records before implementing these behaviors.
 - [ ] 2.5 Implement component-scoped evidence states and pre-registered validation receipt checks; verify all preceding red controls pass, count alone and imported claims cannot create validation, and policy drift withdraws current validation without rewriting earlier records.
-- [ ] 2.6 Write failing explicit-rate, subscription-authority, optional rehearsal, overhead and privacy tests; implement minimized user-provided scenarios without automatic model calls or sharing.
+- [ ] 2.6 Write failing missing rate source/effective-date/unit-basis, incompatible-rate, subscription-authority, optional rehearsal, overhead and privacy tests; implement minimized user-provided scenarios without automatic model calls or sharing.
 
 ## 3. Native lane preparation and evaluation
 
