@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Require failing validation-authority and policy-drift controls before forecast
+  implementation; keep Codex/Claude reader delivery independent of #35 while
+  explicitly deferring adaptive integration until its delivery and policy approval.
+
 - Order provider acquisition/accounting policies and regression red tests before
   parser implementation; complete adaptive evaluation protocol, red/green harness
   controls and authorized lane assessment before verification and delivery.

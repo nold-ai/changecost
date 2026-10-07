@@ -14,8 +14,9 @@ separate request. No provider approval or accuracy is implied.
 - [ ] 2.1 Implement the minimal contracts/store and explicit quote demand mode with explain; prove migration/backup recovery and preserved default JSON/check behavior.
 - [ ] 2.2 Write failing one-Change/all-attempts, target-self-history/bridge exclusion, duplicate/correction, partial/abandoned/mixed-model and missing/zero tests, then implement deterministic target analogy and cutoff-derived learning.
 - [ ] 2.3 Write failing matched-pair, confounding, future-bridge, compatible-category, zero-denominator and target-preference tests; implement scoped median-ratio or explicit difference hypotheses without bridge chaining or pseudo-samples.
-- [ ] 2.4 Implement component-scoped evidence states and pre-registered validation receipt checks; verify count alone and imported claims cannot create validation.
-- [ ] 2.5 Write failing explicit-rate, subscription-authority, optional rehearsal, overhead and privacy tests; implement minimized user-provided scenarios without automatic model calls or sharing.
+- [ ] 2.4 Write failing component-scoped evidence-state, count-only promotion, imported validation-claim and version/policy-drift withdrawal tests; verify expected failures and retention of immutable earlier forecast/validation records before implementing these behaviors.
+- [ ] 2.5 Implement component-scoped evidence states and pre-registered validation receipt checks; verify all preceding red controls pass, count alone and imported claims cannot create validation, and policy drift withdraws current validation without rewriting earlier records.
+- [ ] 2.6 Write failing explicit-rate, subscription-authority, optional rehearsal, overhead and privacy tests; implement minimized user-provided scenarios without automatic model calls or sharing.
 
 ## 3. Native lane preparation and evaluation
 

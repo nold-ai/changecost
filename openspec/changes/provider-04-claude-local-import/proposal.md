@@ -43,6 +43,9 @@ new telemetry, provider API, paid model request, prompt retention or inferred su
 Demand use additionally requires its own policy under
 [adaptive demand](../forecast-01-local-adaptive-demand/proposal.md); that feature
 does not depend on this reader for its offline/synthetic implementation.
+Reader delivery/archive depends on #9/#12 and its approved source policy, not #35.
+Adaptive-demand integration is conditional on #35 delivery and a separately
+approved demand policy; otherwise it is recorded as deferred follow-up.
 
 ## Risks and rollback
 
