@@ -113,3 +113,23 @@ No new native approval is inferred. #9 now uses capability-based closeout; missi
 optional exports do not block all lanes, but usage/identity/correction/finality
 proof remains required for supported mappings. Source support, demand-learning
 coverage and billed-money authority remain independently gated.
+
+
+## Reconciled hosted checkpoint — 2026-10-07
+
+`copilot-hosted-local-discovery` in the [register](source-profiles.json) binds the
+selected 2026-10-06 native SDK stream with checkpoint and shutdown. Recorded
+`copilotVersion: 0.0.0` and event schema 1 remain distinct from installed package
+versions. Equal checkpoint/shutdown nano-AIU values are overlapping observations,
+not two charges or proof of complete session coverage. Ephemeral `assistant.usage`
+is absent in this selected stream; missing does not mean zero. Separate read-only
+host SQLite comparisons are not an atomic cross-store snapshot and retain their
+disagreeing session-total scope.
+
+[SDK events](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events)
+and [VS Code monitoring](https://code.visualstudio.com/docs/agents/guides/monitoring-agents),
+accessed 2026-10-07, distinguish durable checkpoints and different harness/export
+interfaces. A debug panel working without OTel does not establish a durable import
+contract. Preserve CLI, Local IDE and hosted SDK lanes; require identity, ownership,
+cache inclusion, replay/reset/correction and finality before aggregation approval.
+No telemetry setting or account configuration is changed.

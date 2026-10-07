@@ -65,6 +65,15 @@ versions were inspected separately; see [their metric assessment](codex-claude-m
 | enterprise-cursor-projections / bundle v1/v2; native versions unverified / Enterprise (maintainer-reported) | partial | unverified | unverified | unverified |
 | codex-ide / uninspected / unverified | unverified | unverified | unverified | unverified |
 | claude-ide / uninspected / unverified | unverified | unverified | unverified | unverified |
+| codex-desktop-0-159-discovery / 0.159.0-alpha.12.1 / Current Pro (maintainer-confirmed); historical authentication not fully proven | partial | partial | unverified | unverified |
+| claude-project-2-1-275-discovery / 2.1.275 / Historical tier/authentication unverified; current Desktop Pro reported | partial | partial | unverified | unverified |
+| claude-desktop-2-1-221-discovery / 2.1.221 / Current Desktop Pro (maintainer-confirmed); per-record historical authentication unverified | partial | partial | unverified | unverified |
+| claude-desktop-2-1-234-discovery / 2.1.234 / Current Desktop Pro (maintainer-confirmed); per-record historical authentication unverified | partial | partial | unverified | unverified |
+| claude-desktop-result-mixed-headers / system headers 2.1.221/2.1.234; result-level association unverified / Current Desktop Pro (maintainer-confirmed); historical authentication unverified | partial | partial | unverified | unverified |
+| claude-desktop-2-1-202-inventory / 2.1.202 / Current Desktop Pro reported; historical authentication unverified | unverified | unverified | unverified | unverified |
+| claude-desktop-2-1-205-inventory / 2.1.205 / Current Desktop Pro reported; historical authentication unverified | unverified | unverified | unverified | unverified |
+| copilot-hosted-local-discovery / VS Code 1.139.1; Chat 0.67.0; recorded copilotVersion 0.0.0; event schema 1 / Current Personal Free (maintainer-confirmed) | partial | partial | unverified | unverified |
+| cursor-local-discovery / 3.22.7; internal _v 18 / Current Free (maintainer-confirmed); historical Basic label preserved separately | unverified | partial | unverified | unverified |
 <!-- source-profile-matrix:end -->
 
 ### Cursor evidence correction
@@ -484,3 +493,27 @@ blocks that mapping, not every other learning lane. Native local readers require
 explicit files, bounded allowlists, safe diagnostics, versioned accounting and
 manual Run/Change binding. SQLite-only routes require reviewed snapshot/WAL rules.
 No collector/settings change, new model call or paid infrastructure is required.
+
+
+## Reconciled regular-local inventory — 2026-10-07
+
+The register now has **23 profiles, zero approvals**: the 14 historical objects
+are unchanged and nine profiles record separate newer/local observations.
+The [current evidence decisions](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin)
+identify exact proof requests and the private inspection boundary.
+
+Codex 0.159 request/snapshot records; newly selected Claude 2.1.275 project logs;
+Claude Desktop 2.1.221/234 transcript rows and SDK/result streams with unresolved per-result version association remain
+separate. Claude 2.1.202/205 has header-inventory provenance only. Copilot hosted
+checkpoint/shutdown and Cursor Free selected SQLite rows supplement their historical
+profiles without relabeling them. No unsupported measurement becomes zero.
+
+Feasibility can close after independent review of these dispositions/gaps and
+actual delivery acceptance. It requires neither every export nor one supported
+profile. Every supported capability still needs native semantic approval. The
+original bounded-review receipt remains unavailable, with partial recovery evidence
+preserved. The maintainer authorized a separate fresh review of this post-merge
+diff; historical receipt recovery does not block that scope. Current review and
+applicable Linux/publication checks remain required. #9 stays active; source readers,
+learning eligibility and billed-money authority remain separate. PR #38 is merged
+planning history, not this diff's proof.

@@ -1,7 +1,7 @@
 {
   "format": "source-profiles/v1",
-  "assessment_date": "2026-10-03",
-  "notice": "Contributor-reviewed metadata register. Hashes identify received bytes, not authenticity. No approved capabilities.",
+  "assessment_date": "2026-10-07",
+  "notice": "Contributor-reviewed metadata register. Hashes identify selected bytes or explicit inventory receipts, not authenticity or complete coverage. Fourteen historical profiles preserved; newer local representations assessed separately. No approved capabilities.",
   "profiles": [
     {
       "id": "copilot-hosted",
@@ -720,6 +720,376 @@
           "url": "https://code.claude.com/docs/en/monitoring-usage",
           "accessed": "2026-10-06",
           "kind": "Refreshed documentation/vendor report; no native-account approval"
+        }
+      ]
+    },
+    {
+      "id": "codex-desktop-0-159-discovery",
+      "provider": "Codex",
+      "surface": "Desktop persisted request and snapshot records",
+      "version": "0.159.0-alpha.12.1",
+      "tier": "Current Pro (maintainer-confirmed); historical authentication not fully proven",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "codex-desktop-discovery-1",
+          "origin": "native",
+          "sha256": "958135ea4dd92a3b968690586eb2cd4a093166ca65c51841f3f779462a1c32f6",
+          "scope": "Selected native rollout bytes; request/snapshot overlap observed, not complete thread/ancestor coverage"
+        },
+        {
+          "id": "codex-desktop-discovery-2",
+          "origin": "native",
+          "sha256": "e814db3417d264b6817eae6584ac874133c8c829ae12124002c5a3f7dd4f2889",
+          "scope": "Selected native rollout bytes; request/snapshot overlap observed, not complete thread/ancestor coverage"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "token_usage_record.payload.response_id": "Observed request/response identity candidate; distinct in the selected inputs, not proven globally immutable",
+        "session_id/thread_id/turn_id/root_turn_id": "Observed namespaced lineage fields; complete root/subagent ownership unverified",
+        "usage/turn_token_usage/thread_token_usage": "Separate numeric token categories and accounting scopes; never add to overlapping event_msg/token_count snapshots",
+        "cache_write_input_tokens": "Observed alongside input/cached-input/output/reasoning/total; inclusion in other totals unverified"
+      },
+      "requirements": [
+        "Resolve request versus turn/thread and legacy snapshot overlap for a matched interval, with explicit response identity and cache-category inclusion",
+        "Prove root/subagent ownership, replay/reset/correction precedence, terminal boundary and all-attempt coverage; use explicit manual Run/Change binding",
+        "Do not infer billed money, demand eligibility or cross-version equivalence from local tokens or account-wide summaries"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://learn.chatgpt.com/docs/app-server",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
+        }
+      ]
+    },
+    {
+      "id": "claude-project-2-1-275-discovery",
+      "provider": "Claude",
+      "surface": "Persisted project assistant transcript",
+      "version": "2.1.275",
+      "tier": "Historical tier/authentication unverified; current Desktop Pro reported",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "claude-project-discovery-1",
+          "origin": "native",
+          "sha256": "19f856b460feee6e0215d8f58024b9f3c4cdb1bd63560f217f9f4b7d7e3f38b1",
+          "scope": "Selected native project transcript bytes; repeated message groups change usage, no result/finality guarantee"
+        },
+        {
+          "id": "claude-project-discovery-2",
+          "origin": "native",
+          "sha256": "ffb8e0c1f3a28715ecbbf7b2cc2b22071fd2cf22beaa26779d36d00e5618f833",
+          "scope": "Selected native project transcript bytes; repeated message groups change usage, no result/finality guarantee"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "message.id/requestId/sessionId/uuid/parentUuid": "Observed separate message, request, session and record identities; no automatic Change binding",
+        "message.usage": "Observed input/output/cache-read/cache-creation numeric categories; repeated message IDs can change values",
+        "isSidechain/agentId": "Observed ownership qualifiers; complete subagent accounting unverified"
+      },
+      "requirements": [
+        "Resolve repeated message/request identities and changed usage with version-specific revision precedence; neither sum-all nor universal first/last is approved",
+        "Prove cache inclusion, request/result/transcript overlap, root/subagent ownership, replay/reset/correction and terminal all-attempt coverage",
+        "Keep estimates separate from subscription charges and require manual Run/Change binding; current account tier does not prove historical authentication"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
+        }
+      ]
+    },
+    {
+      "id": "claude-desktop-2-1-221-discovery",
+      "provider": "Claude",
+      "surface": "Desktop coding-agent persisted transcript",
+      "version": "2.1.221",
+      "tier": "Current Desktop Pro (maintainer-confirmed); per-record historical authentication unverified",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "claude-desktop-discovery-1",
+          "origin": "native",
+          "sha256": "f17822802edaa76a53c68bd8f2100ee536da93afc7ea85be54ad2f1240d0359b",
+          "scope": "Mixed-version native transcript bytes include 2.1.221; profile applies only to records with that exact producer version, not every row"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "version": "Recorded coding-runtime version; distinct from Desktop application version",
+        "message.id/requestId/sessionId/uuid/parentUuid": "Observed transcript identity candidates; repeated messages overlap",
+        "message.usage": "Observed input/output/cache-read/cache-creation fields; aggregate and auxiliary category inclusion unresolved"
+      },
+      "requirements": [
+        "Resolve repeated message/request identities and changed usage with version-specific revision precedence; neither sum-all nor universal first/last is approved",
+        "Prove cache inclusion, request/result/transcript overlap, root/subagent ownership, replay/reset/correction and terminal all-attempt coverage",
+        "Keep estimates separate from subscription charges and require manual Run/Change binding; current account tier does not prove historical authentication"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
+        }
+      ]
+    },
+    {
+      "id": "claude-desktop-2-1-234-discovery",
+      "provider": "Claude",
+      "surface": "Desktop coding-agent persisted transcript",
+      "version": "2.1.234",
+      "tier": "Current Desktop Pro (maintainer-confirmed); per-record historical authentication unverified",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "claude-desktop-discovery-1",
+          "origin": "native",
+          "sha256": "f17822802edaa76a53c68bd8f2100ee536da93afc7ea85be54ad2f1240d0359b",
+          "scope": "Mixed-version native transcript bytes include 2.1.234; profile applies only to records with that exact producer version, not every row"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "version": "Recorded coding-runtime version; distinct from Desktop application version",
+        "message.id/requestId/sessionId/uuid/parentUuid": "Observed transcript identity candidates; repeated messages overlap",
+        "message.usage": "Observed input/output/cache-read/cache-creation fields; aggregate and auxiliary category inclusion unresolved"
+      },
+      "requirements": [
+        "Resolve repeated message/request identities and changed usage with version-specific revision precedence; neither sum-all nor universal first/last is approved",
+        "Prove cache inclusion, request/result/transcript overlap, root/subagent ownership, replay/reset/correction and terminal all-attempt coverage",
+        "Keep estimates separate from subscription charges and require manual Run/Change binding; current account tier does not prove historical authentication"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
+        }
+      ]
+    },
+    {
+      "id": "claude-desktop-result-mixed-headers",
+      "provider": "Claude",
+      "surface": "Desktop coding-agent SDK assistant/result stream",
+      "version": "system headers 2.1.221/2.1.234; result-level association unverified",
+      "tier": "Current Desktop Pro (maintainer-confirmed); historical authentication unverified",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "claude-desktop-discovery-2",
+          "origin": "native",
+          "sha256": "1cc9d7abfa3452457a24d5b6873d525b762bc75d8d3bf2dd6364f169863f919f",
+          "scope": "Selected native SDK assistant/result stream bytes contain mixed runtime headers; individual result-version association and transcript equivalence unverified"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "request_id/session_id/parent_tool_use_id": "Observed SDK identity namespaces; joins to persisted camel-case transcript identities unverified",
+        "usage/modelUsage": "Result aggregates and assistant usage may overlap; not additive representations",
+        "total_cost_usd": "Observed numeric result estimate; no subscription charge/billing provenance",
+        "terminal_reason/is_error": "Observed result fields; not proof of complete session/subagent coverage",
+        "claude_code_version": "Observed in mixed-version system headers; result rows lack their own version and cannot inherit a header by adjacency"
+      },
+      "requirements": [
+        "Establish explicit per-result association to the mixed 2.1.221/2.1.234 runtime headers; do not infer from adjacency",
+        "Resolve repeated message/request identities and changed usage with version-specific revision precedence; neither sum-all nor universal first/last is approved",
+        "Prove cache inclusion, request/result/transcript overlap, root/subagent ownership, replay/reset/correction and terminal all-attempt coverage",
+        "Keep estimates separate from subscription charges and require manual Run/Change binding; current account tier does not prove historical authentication"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
+        }
+      ]
+    },
+    {
+      "id": "claude-desktop-2-1-202-inventory",
+      "provider": "Claude",
+      "surface": "Desktop coding-agent header inventory",
+      "version": "2.1.202",
+      "tier": "Current Desktop Pro reported; historical authentication unverified",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "claude-desktop-2-1-202-inventory-e01",
+          "origin": "documentation",
+          "sha256": "c446ccddc0a12bb03a75b9423c50de9a807df0a42533c20acea615e31732e812",
+          "scope": "Private metadata-only discovery report records header inventory; no selected native accounting input bound to this version"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {},
+      "requirements": [
+        "Bind a selected native input for this exact producer version before asserting field meanings or accounting semantics",
+        "Keep pre-2.1.214 monitoring behavior separate; the documented OTel streaming defect is not proof of local transcript behavior",
+        "Record missing input and finality as explicit version-scoped gaps; no collection is required to close feasibility"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
+        }
+      ]
+    },
+    {
+      "id": "claude-desktop-2-1-205-inventory",
+      "provider": "Claude",
+      "surface": "Desktop coding-agent header inventory",
+      "version": "2.1.205",
+      "tier": "Current Desktop Pro reported; historical authentication unverified",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "claude-desktop-2-1-205-inventory-e01",
+          "origin": "documentation",
+          "sha256": "c446ccddc0a12bb03a75b9423c50de9a807df0a42533c20acea615e31732e812",
+          "scope": "Private metadata-only discovery report records header inventory; no selected native accounting input bound to this version"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "unverified",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {},
+      "requirements": [
+        "Bind a selected native input for this exact producer version before asserting field meanings or accounting semantics",
+        "Keep pre-2.1.214 monitoring behavior separate; the documented OTel streaming defect is not proof of local transcript behavior",
+        "Record missing input and finality as explicit version-scoped gaps; no collection is required to close feasibility"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
+        }
+      ]
+    },
+    {
+      "id": "copilot-hosted-local-discovery",
+      "provider": "Copilot",
+      "surface": "VS Code Agent Host SDK event stream",
+      "version": "VS Code 1.139.1; Chat 0.67.0; recorded copilotVersion 0.0.0; event schema 1",
+      "tier": "Current Personal Free (maintainer-confirmed)",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "copilot-hosted-discovery-1",
+          "origin": "native",
+          "sha256": "f16ed268de56316932905e5e8d770596dac8751ea42470f8aadee7e5825012a7",
+          "scope": "Selected native SDK event bytes include checkpoint and shutdown; host SQLite comparisons are separate non-atomic observations"
+        }
+      ],
+      "capabilities": {
+        "usage": "partial",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "session.usage_checkpoint.totalNanoAiu": "Observed durable cumulative checkpoint; overlaps shutdown accounting",
+        "session.shutdown.totalNanoAiu": "Observed same-amount terminal snapshot; shutdown alone cannot establish complete accounting",
+        "event id/parentId": "Observed event identity/lineage candidates; replay and ownership semantics unapproved",
+        "assistant.usage": "Not observed in this selected stream; absence is not zero usage"
+      },
+      "requirements": [
+        "Reconcile native root/direct/turn/checkpoint/session boundaries, including disagreeing session-named host totals",
+        "Prove cache inclusion, stable identity, root/subagent ownership, replay/reset/correction and complete terminal coverage",
+        "Keep standalone CLI OTel, Local IDE and hosted SDK separate; nano-AIU and billing multipliers are not currency"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
+        }
+      ]
+    },
+    {
+      "id": "cursor-local-discovery",
+      "provider": "Cursor",
+      "surface": "Local SQLite selected composer and bubble metadata",
+      "version": "3.22.7; internal _v 18",
+      "tier": "Current Free (maintainer-confirmed); historical Basic label preserved separately",
+      "acquisition": "Explicitly selected existing local metadata; read-only discovery 2026-10-06; bounded reconciliation 2026-10-07, no new collection",
+      "evidence": [
+        {
+          "id": "cursor-local-discovery-e01",
+          "origin": "native",
+          "sha256": "c208917ba93baff0a8c387b4a44716d6ee9baf40c00cd9c788dfc109c4d30201",
+          "scope": "Selected composer stored-row bytes hashed in a bounded read-only transaction; not whole database/WAL snapshot or supported export contract"
+        }
+      ],
+      "capabilities": {
+        "usage": "unverified",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "usageData": "Inspected composer usage objects empty; no consumed-token measurement",
+        "inputTokens/outputTokens": "Inspected bubble counters are zero placeholders; not demonstrated zero usage",
+        "context occupancy": "Observed current-context metadata; not cumulative consumed tokens",
+        "conversation/request identities": "Limited local identity candidates; request identity incomplete"
+      },
+      "requirements": [
+        "No usable consumption total is demonstrated for the inspected local source; retain token learning and billed money as unverified",
+        "Document read-only selected-row provenance and non-atomic DB/WAL limits; no write-capable open or checkpoint",
+        "Optional personal CSV needs actual headers/rows, tier/version/range/timezone, pool/basis, stable identity and overlap/correction evidence"
+      ],
+      "approvals": [],
+      "references": [
+        {
+          "url": "https://cursor.com/docs/account/teams/analytics",
+          "accessed": "2026-10-07",
+          "kind": "Rolling interface documentation; not approval of persisted local records"
         }
       ]
     }

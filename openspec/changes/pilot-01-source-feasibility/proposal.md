@@ -136,3 +136,29 @@ historical preparation state; this is the current delivery disposition.
 Publication does not imply merge, implementation completion or native approval.
 Recorded review limits and all 14 source profiles with zero approvals remain
 unchanged.
+
+
+## Merged planning checkpoint — 2026-10-07 (Europe/Berlin)
+
+Planning [PR #38](https://github.com/nold-ai/changecost/pull/38) merged at
+21:25:35 Europe/Berlin, commit `dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`,
+reviewed head `b6a03b38d160cf784ef8f8735ce3384164980f84`.
+Both Python 3.11.15/3.13.14 jobs passed in
+[Linux run 37670722956](https://github.com/nold-ai/changecost/actions/runs/37670722956).
+These are actual PR #38 delivery checks, not verification of this later diff or
+native semantic approval. Earlier publication/local-stash statements remain dated
+history; neither recovery stash is reapplied.
+
+## Current reconciliation — 2026-10-07
+
+The remaining delivery is evidence inventory and independent capability review,
+using the existing checker/inspector. Nine separate local/inventory profiles bring
+the register to 23 while preserving all 14 historical profile objects. Selected
+native bytes remain private; header-only versions remain unverified. No adapter,
+public API, schema, runtime policy, collection or model invocation is introduced.
+Missing optional exports and paired hooks are reviewed gaps, not universal gates.
+The maintainer authorized a separate fresh review of this post-merge scope in
+session `pilot-01-source-feasibility-reconcile-20261007`. Partial historical review
+records are preserved; recovery of the older receipt does not block this new diff.
+Current-scope review, applicable Linux assurance and actual delivery acceptance
+remain required; #9 stays Open/In Progress until acceptance.

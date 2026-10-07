@@ -148,3 +148,34 @@ No new native approval is inferred. #9 now uses capability-based closeout; missi
 optional exports do not block all lanes, but usage/identity/correction/finality
 proof remains required for supported mappings. Source support, demand-learning
 coverage and billed-money authority remain independently gated.
+
+
+## Separate current observations — 2026-10-07
+
+The [canonical register](source-profiles.json) now binds selected Codex Desktop
+0.159.0-alpha.12.1 request/snapshot bytes independently of the older 0.158 profile.
+`response_id`, session/thread/turn/root-turn fields and six token categories are
+observed; request, turn/thread and legacy snapshots overlap. Complete root/subagent
+ownership, cache inclusion, replay/reset/correction and terminal coverage remain
+unverified. [Current app-server documentation](https://learn.chatgpt.com/docs/app-server),
+accessed 2026-10-07, also documents authenticated account token summaries/daily
+buckets. They are an optional online/account scope, not offline task evidence or
+authorization to call that endpoint.
+
+Claude project 2.1.275 inputs with revised message usage are a separate observation
+from the earlier profiles. Desktop coding transcripts contain 2.1.221 and 2.1.234
+rows in one selected native input; each profile is limited to its exact-version
+rows. Another selected SDK assistant/result stream reports 2.1.221/2.1.234 in system
+headers, while result rows lack a version. Per-result association is unverified;
+its `usage`, `modelUsage` and `total_cost_usd` cannot inherit transcript authority.
+Desktop 2.1.202/205 remains header-only inventory with no selected native accounting
+binding. Current Pro plans are maintainer-reported context, not proof of historical
+authentication for every log. Ordinary Desktop chat remains a separate unverified
+surface outside these coding-reader plans.
+
+[Claude monitoring](https://code.claude.com/docs/en/monitoring-usage), accessed
+2026-10-07, documents approximate costs and version-sensitive streaming behavior
+before 2.1.214. Its input category excludes cache reads/writes; total input under
+GenAI conventions includes those categories. This documentation cannot approve
+local transcript precedence or equate the monitoring defect with every repeated
+message. No universally additive token or estimated-USD rule is approved.

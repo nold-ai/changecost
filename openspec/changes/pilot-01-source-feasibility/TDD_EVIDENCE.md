@@ -508,3 +508,71 @@ because all ten native analyzers cannot run on this Darwin controller. The first
 invocation's inherited Make-overrides fixture failure and its corrected environment
 invocation are retained in research evidence and ignored logs. No new runtime TDD,
 source approval, current Linux assurance or publication acceptance is claimed.
+
+
+## Inventory reconciliation — 2026-10-07 (Europe/Berlin)
+
+Base `dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`; owned branch
+`codex/reconcile-source-feasibility-20261007`. This batch updates metadata, specs
+and documentation only. No new product or checker behavior is implemented; no
+failing-before TDD result is invented. Existing regression tests are applicable
+verification of the delivered tool. All 14 historical profiles and original case
+bytes remain unchanged; nine separate profiles retain zero approvals.
+
+The seven selected native JSONL digests still match and eight canonical bindings
+pass bounded structural inspection with semantic approval false. Header inventory,
+mixed-version rows and selected SQLite row digests retain separate scopes. No
+whole-database/WAL identity, native aggregation or learning eligibility is asserted.
+
+PR #38 merged at `dc26715`; its Python 3.11.15/3.13.14 Linux jobs passed in run
+37670722956. That is historical evidence for the prior planning tree only.
+Current-diff checks and independent inventory review are recorded separately in
+RESEARCH_EVIDENCE.md and the ignored reconciliation receipts. The original source
+review-session state is missing; no allowance is reset. Publication, closeout and
+archival remain incomplete until original recovery and applicable assurance.
+
+A cached x86-64 Linux image has SpecFact CLI 0.55.4, but no required code-review
+module and denies unprivileged namespace isolation. Its Python 3.12 environment
+does not reproduce the required 3.11/3.13 matrix. This inspection is not a passing
+Linux assurance run and no tooling/account configuration is changed to imply one.
+
+
+### Observed reconciliation verification
+
+The corrected 19-file pre-receipt freeze passed the source suite (644), default
+register/matrix/all-18-case checker (`errors: []`, `semantic_approval: false`),
+selected/all strict OpenSpec (14/14), documentation ownership/links, generated
+references and independent source/documentation review with no remaining findings.
+All 14 historical objects and three protected fixture digests were unchanged.
+
+`make check` used explicit `BASE_REF=dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`
+and an intended 19-file manifest as environment variables. Initial cache permission,
+hygiene rb+ access and build-network failures were preserved; targeted authorized
+hygiene/build reruns passed. Lock/faulty-repaired host proofs, lint/58-file format,
+types (zero errors), docs/index/metadata/workflow, 3,030 tests (42.25 seconds) and
+build/two wheel smokes passed. Dependency audit was not applicable: locked inputs
+unchanged. Aggregate remains nonzero because fresh SpecFact 0.55.4 full review
+reported FAIL/UNKNOWN with all ten analyzers unsupported on darwin-arm64-cp312.
+No selected subset, old PR #38 Linux run or independent inventory review substitutes
+for current-diff native assurance. No package version change is required.
+
+Final task/evidence receipt updates require affected docs/index/strict readback;
+they do not change the tested Python behavior or original fixtures. Missing source
+review-session history and supported-Linux evidence block publication and acceptance.
+No commit, push, issue closure, CLI archive or #35 runtime implementation occurs.
+
+### Separate post-merge review scope — 2026-10-07 (Europe/Berlin)
+
+The maintainer authorized a fresh bounded review of the current reconciliation,
+using session `pilot-01-source-feasibility-reconcile-20261007`. Existing task,
+research, native inputs, prior failures and corrected review findings are retained.
+The prospective input fingerprint is captured separately after this documentation
+update. Earlier checks remain evidence for their recorded fingerprints; no old
+passing result is represented as fresh bound review evidence. No runtime change
+or failing-before TDD claim is introduced.
+
+Partial original initialization/read/state records were copied from execution
+history and verified against their sources. The original PR #33 session is not
+restored or reinitialized. The preceding missing-receipt publication block is
+historical following this explicit choice; fresh current-scope checks, independent
+review and supported-Linux assurance remain incomplete until actually obtained.

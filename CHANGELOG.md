@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Reconcile nine separate local/inventory source profiles while preserving the 14
+  historical profiles, original fixtures and zero native approvals. Record PR #38's
+  merged planning checkpoint and retain exact accounting/publication gaps for #9.
+
 - Require auditable source/date/unit-basis provenance for optional rate scenarios
   and explicit failing count-only/rehearsal-only evaluation promotion controls.
 

@@ -87,3 +87,22 @@ No new native approval is inferred. #9 now uses capability-based closeout; missi
 optional exports do not block all lanes, but usage/identity/correction/finality
 proof remains required for supported mappings. Source support, demand-learning
 coverage and billed-money authority remain independently gated.
+
+
+## Current Free-account disposition — 2026-10-07
+
+`cursor-local-discovery` in the [register](source-profiles.json) preserves current
+maintainer-confirmed Free context separately from historical Basic observations.
+Version 3.22.7/internal `_v` 18 selected composer/bubble rows were inspected in a
+bounded read-only transaction. Its native digest binds selected stored-row bytes,
+not a full DB/WAL snapshot or reproducible export. Usage objects are empty and
+inspected token counters are zero placeholders; context occupancy cannot replace
+consumed tokens. Usage, billed money and finality remain unverified.
+
+[Cursor analytics](https://cursor.com/docs/account/teams/analytics), accessed
+2026-10-07, describes Team/Enterprise analytics; that does not prove personal Free
+CSV availability. [Usage and limits](https://prod.cursor.com/help/models-and-usage/usage-limits),
+accessed 2026-10-07, separates pools and on-demand charges. Keep optional personal
+CSV as an exact header/row, range/timezone, tier/basis, identity and correction gap.
+No upgrade, new collection or write-capable SQLite open is required. This inspected
+source lacks usable consumption; provider-wide absence has not been established.

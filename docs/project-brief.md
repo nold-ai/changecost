@@ -128,3 +128,10 @@ overhead, not free hidden implementation or observed outcomes. All learning is
 local initially; global contribution is later and requires consent independent of
 login. See [forecasting](forecasting.md) and [evidence/decisions](research/adaptive-demand-evidence.md).
 No runtime, collection, release or global service is implemented in this delivery.
+
+
+Source-feasibility follow-through on 2026-10-07 preserves 14 historical profiles
+and records nine additional local/inventory representations with zero approvals.
+Reviewed gaps support capability-based closeout only after actual delivery acceptance.
+Native accounting, reader implementation and demand-learning coverage remain separate;
+see [source feasibility](providers/source-feasibility.md).

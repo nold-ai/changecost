@@ -100,3 +100,17 @@ transfer -> explicit hypotheses and chronological baseline comparison. Leakage -
 frozen initial inputs and independent truth cutoffs. No paid infrastructure is
 required; native proof controls timing. Rollback is a scoped planning revert,
 preserving originals, archives and review history.
+
+
+## Source inventory follow-through — 2026-10-07
+
+The [canonical source register](../providers/source-profiles.json) now contains 23
+profiles: the 14 historical objects remain unchanged and nine distinguish newer
+native representations, header-only inventory and current local observations.
+The original seven selected JSONL hashes remain unchanged. All 23 approvals are
+empty; partial usage fields are not eligible full-Change learning outcomes.
+See [the reconciled accounting decisions and exact gaps](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin).
+
+PR #38 merged the adaptive/reader plans; it did not implement them. #35's offline
+synthetic phase remains independent of #9, while native learning still requires
+the applicable reader and separately approved coverage/accounting policy.
