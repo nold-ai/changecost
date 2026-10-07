@@ -2,7 +2,7 @@
 
 ## Why
 
-The pilot must test whether change-level cohorts add value over repository-wide history, while making unavailable source capabilities and small samples visible.
+The pilot must test whether local task dimensions, ecosystem comparisons and optional rehearsal improve forecasts over simple historical baselines, including zero knowledge and changed ecosystems. Missing capabilities and small samples remain visible.
 
 ## What Changes
 
@@ -20,7 +20,7 @@ The pilot must test whether change-level cohorts add value over repository-wide 
 
 ### Modified Capabilities
 
-None; no main capability specs exist yet.
+None; delivered main capabilities are preserved. New additive requirements are defined in this change; source/policy approval remains separate.
 
 ## Impact
 
@@ -32,14 +32,15 @@ No runtime files or dependencies are introduced by this planning proposal.
 
 ## Non-goals
 
-No fabricated live measurements, collection during planning, product launch claim, employee ranking, ML training, enforcement threshold or paid infrastructure.
+No fabricated live measurements, collection during planning, product launch claim, employee ranking, opaque ML training, enforcement threshold or paid infrastructure. Deterministic analogy/transfer and optional supplied rehearsal assessments are in scope.
 
 ## Dependencies
 
-- [provider-01-copilot-import](../provider-01-copilot-import/proposal.md)
-- [provider-02-cursor-import](../provider-02-cursor-import/proposal.md)
+- [forecast-01-local-adaptive-demand](../forecast-01-local-adaptive-demand/proposal.md)
+- Delivered core-02 #11 and reconciliation #12.
+- Approved readers #13/#14 and Codex/Claude are prerequisites only for their respective native evaluation lanes, not universal gates.
 - [quote-01-empirical-estimation](../archive/2026-10-04-quote-01-empirical-estimation/proposal.md)
-- [workflow-01-advisory-ci](../workflow-01-advisory-ci/proposal.md)
+- [workflow-01-advisory-ci](../archive/2026-10-06-workflow-01-advisory-ci/proposal.md)
 
 Dependencies are implementation prerequisites; planning can proceed together.
 See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).

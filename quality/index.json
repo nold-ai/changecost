@@ -175,9 +175,9 @@
     "description": "CLI-synchronized offline synthetic cohort, cutoff and provenance requirements from accepted PR #32."
   },
   {
-    "path": "openspec/changes/workflow-01-advisory-ci/PREPARATION_EVIDENCE.md",
+    "path": "openspec/changes/archive/2026-10-06-workflow-01-advisory-ci/PREPARATION_EVIDENCE.md",
     "title": "Advisory workflow preparation",
-    "description": "Local planning for preserved JSON, verified historical budget advice and safe optional CI summaries; runtime implementation remains separate."
+    "description": "Historical advisory preparation; implementation merged in PR #34 and archival retains the accepted missing-code-review limitation."
   },
   {
     "title": "Optional advisory CI",
@@ -186,7 +186,42 @@
   },
   {
     "title": "Advisory implementation evidence",
-    "path": "openspec/changes/workflow-01-advisory-ci/TDD_EVIDENCE.md",
-    "description": "Observed red/green tests and bounded trust/oracle controls; publication acceptance remains separate."
+    "path": "openspec/changes/archive/2026-10-06-workflow-01-advisory-ci/TDD_EVIDENCE.md",
+    "description": "Delivered red/green tests, final Linux evidence and archive acceptance with the quota-blocked full Codex code review preserved."
+  },
+  {
+    "title": "Accepted advisory workflow specification",
+    "path": "openspec/specs/advisory-workflow/spec.md",
+    "description": "CLI-synchronized presentation, read-only historical advice and safe summaries from PR #34; accepted review limitation remains archived."
+  },
+  {
+    "path": "docs/forecasting.md",
+    "title": "Adaptive demand \u2014 planned",
+    "description": "Zero knowledge, local observed learning, transfer hypotheses and scoped validation; no delivered demand command."
+  },
+  {
+    "path": "docs/research/adaptive-demand-evidence.md",
+    "title": "Adaptive-demand evidence and decisions",
+    "description": "Primary research limits, bounded local discovery, architecture decisions and exact remaining native proof."
+  },
+  {
+    "path": "openspec/changes/forecast-01-local-adaptive-demand/proposal.md",
+    "title": "Adaptive-demand proposal",
+    "description": "Separately planned local demand contracts and explicit CLI mode; current financial authority remains unchanged."
+  },
+  {
+    "path": "openspec/changes/provider-03-codex-local-import/proposal.md",
+    "title": "Codex local-reader proposal",
+    "description": "Planned explicit offline coding-session metadata and separately approved accounting."
+  },
+  {
+    "path": "openspec/changes/provider-04-claude-local-import/proposal.md",
+    "title": "Claude local-reader proposal",
+    "description": "Planned explicit offline coding-session metadata, revised usage and estimated-money boundaries."
+  },
+  {
+    "path": "openspec/changes/forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md",
+    "title": "Adaptive-demand preparation evidence",
+    "description": "Planning recovery, independent review, backlog reconciliation and local assurance limits."
   }
 ]

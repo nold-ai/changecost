@@ -2,7 +2,7 @@
 
 ## Why
 
-Personal IDE and CLI accounts may expose usage without billable money or stable session joins. Establishing the accessible evidence prevents the pilot from promising Enterprise-only reconciliation.
+Regular local coding-agent metadata may support usage learning without exports, billed money or stable joins. Assess each capability so a missing personal export or Enterprise-only feature does not block an honest local-learning MVP.
 
 ## What Changes
 
@@ -19,7 +19,8 @@ Personal IDE and CLI accounts may expose usage without billable money or stable 
 
 ### Modified Capabilities
 
-None; no main capability specs exist yet.
+None; this preparation retains the delivered runtime contracts and existing main
+specifications without changing their behavior.
 
 ## Impact
 
@@ -69,8 +70,10 @@ evidence and prior local database versions; do not erase financial history.
 - Parent epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
 - Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status In Progress.
 - Source: maintainer-approved pilot plan, 2026-09-28 (Europe/Berlin).
-- Tracking baseline: 2026-09-28; issue Todo, unassigned and undated. Current closeout implementation is
-  underway locally; personal-source inspection remains pending. See [research evidence](RESEARCH_EVIDENCE.md).
+- Tracking baseline: 2026-09-28; issue Todo, unassigned and undated. Offline closeout
+  tooling merged in PR #33; current issue #9 remains Open/In Progress with native
+  source inspection pending. The 2026-10-06 preparation is locally unpublished.
+  See [research evidence](RESEARCH_EVIDENCE.md).
 <!-- tracking:end -->
 
 ## Authorized closeout — 2026-10-03 (Europe/Berlin)
@@ -84,3 +87,52 @@ cases. Preserve original private evidence and existing synthetic-only runtime po
 Missing native exports, accounting boundaries and paired hook mappings remain
 explicit blockers; a passing checker cannot close those tasks or approve support.
 Preparation delivery is a scoped stash followed by implementation.
+
+## Current preparation — 2026-10-06 (Europe/Berlin)
+
+The maintainer selected #9 after accepted advisory PR #34. Preserve the completed
+register, bounded inspector and 18-case semantic tooling from merged PR #33;
+reconcile their delivery milestones without repeating implementation. Remaining
+work is inspected native source evidence and independent semantic approval for
+the intended Copilot/Cursor profiles, plus the required custom-hook assessment.
+All 14 registered profiles have zero approvals. No new native files are supplied
+by this preparation, and documented availability does not change that finding.
+
+Refresh dated sources and distinguish CLI, Local IDE harness, hosted SDK and
+transformed receiver profiles. The [design decisions](design.md#preparation-decisions--2026-10-06-europeberlin)
+record accounting and runtime-authority boundaries for later adapter preparation.
+Normalized imports already exist; source approval does not enable the synthetic-only
+coverage/replay policy for provider results. No adapter, collector, public command,
+schema, migration or runtime policy change is included. Dependencies remain unchanged.
+
+This batch remains locally prepared/unpublished until its reviewed diff and checks
+are complete and the maintainer chooses a planning PR or scoped stash. That choice
+supersedes no historical preparation receipt or delivery.
+
+## Current capability-based scope — 2026-10-07 (Europe/Berlin)
+
+The maintainer explicitly superseded the universal intended-export closeout rule.
+Assess regular local metadata for Codex, Claude, hosted/IDE/CLI Copilot and Cursor;
+optional exports, Enterprise/admin telemetry and custom hooks are separate lanes.
+Complete #9 only after reviewed per-capability dispositions, evidence provenance,
+exact unresolved requirements and coherent delivery checks. Missing exports may be
+unverified/unavailable findings rather than universal blockers. This is not current
+completion: new reconciliation/review tasks remain unchecked.
+
+Support still requires independently approved native semantics; zero approvals
+remain unchanged. Demand-learning eligibility and complete billed-money authority
+require separate versioned policies. #13/#14 keep prerequisites #9/#12; missing
+support blocks only the affected mapping/capability. New Codex/Claude reader and
+adaptive-demand plans are separate future implementations. See
+[forecasting](../../../docs/forecasting.md) and [research](../../../docs/research/adaptive-demand-evidence.md).
+
+
+## Publication disposition — 2026-10-07 (Europe/Berlin)
+
+The maintainer superseded local-only retention with the published planning-only
+[PR #38](https://github.com/nold-ai/changecost/pull/38). Both scoped stashes remain
+recovery points. Earlier dated local/unpublished statements describe their
+historical preparation state; this is the current delivery disposition.
+Publication does not imply merge, implementation completion or native approval.
+Recorded review limits and all 14 source profiles with zero approvals remain
+unchanged.

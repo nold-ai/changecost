@@ -39,9 +39,16 @@
 - [Empirical Quotes](docs/quotes.md): Offline synthetic peer estimation, exact quantiles, feature backoff and historical replay.
 - [Source profile register](docs/providers/source-profiles.json): Canonical per-version capabilities, digest references and unresolved native evidence.
 - [Accepted empirical Quote specification](openspec/specs/empirical-quotes/spec.md): CLI-synchronized offline synthetic cohort, cutoff and provenance requirements from accepted PR #32.
-- [Advisory workflow preparation](openspec/changes/workflow-01-advisory-ci/PREPARATION_EVIDENCE.md): Local planning for preserved JSON, verified historical budget advice and safe optional CI summaries; runtime implementation remains separate.
+- [Advisory workflow preparation](openspec/changes/archive/2026-10-06-workflow-01-advisory-ci/PREPARATION_EVIDENCE.md): Historical advisory preparation; implementation merged in PR #34 and archival retains the accepted missing-code-review limitation.
 - [Optional advisory CI](docs/ci.md): Manually invoked local synthetic advice, escaped bounded summaries and technical failure exits.
-- [Advisory implementation evidence](openspec/changes/workflow-01-advisory-ci/TDD_EVIDENCE.md): Observed red/green tests and bounded trust/oracle controls; publication acceptance remains separate.
+- [Advisory implementation evidence](openspec/changes/archive/2026-10-06-workflow-01-advisory-ci/TDD_EVIDENCE.md): Delivered red/green tests, final Linux evidence and archive acceptance with the quota-blocked full Codex code review preserved.
+- [Accepted advisory workflow specification](openspec/specs/advisory-workflow/spec.md): CLI-synchronized presentation, read-only historical advice and safe summaries from PR #34; accepted review limitation remains archived.
+- [Adaptive demand — planned](docs/forecasting.md): Zero knowledge, local observed learning, transfer hypotheses and scoped validation; no delivered demand command.
+- [Adaptive-demand evidence and decisions](docs/research/adaptive-demand-evidence.md): Primary research limits, bounded local discovery, architecture decisions and exact remaining native proof.
+- [Adaptive-demand proposal](openspec/changes/forecast-01-local-adaptive-demand/proposal.md): Separately planned local demand contracts and explicit CLI mode; current financial authority remains unchanged.
+- [Codex local-reader proposal](openspec/changes/provider-03-codex-local-import/proposal.md): Planned explicit offline coding-session metadata and separately approved accounting.
+- [Claude local-reader proposal](openspec/changes/provider-04-claude-local-import/proposal.md): Planned explicit offline coding-session metadata, revised usage and estimated-money boundaries.
+- [Adaptive-demand preparation evidence](openspec/changes/forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md): Planning recovery, independent review, backlog reconciliation and local assurance limits.
 
 ## Local skills
 

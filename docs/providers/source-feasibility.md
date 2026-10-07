@@ -1,6 +1,6 @@
 # Personal-account source feasibility
 
-Assessment: **2026-10-03 (Europe/Berlin), To-Validate**.
+Assessment: **2026-10-07 (Europe/Berlin), To-Validate**.
 This is the research deliverable for
 [pilot-01-source-feasibility](../../openspec/changes/pilot-01-source-feasibility/proposal.md).
 No Copilot OTel or Cursor CSV export has been inspected. Authorized local Codex/Claude
@@ -344,7 +344,7 @@ identifiers, selectors and payloads are excluded. After a reference is validated
 malformed-input, hash and selector failures retain the safe pair with a fixed code.
 A failed inspection emits no partial success report or unverified success hash.
 Structural success remains separate from semantic approval, accounting authority and
-finality; missing native source artifacts still block issue #9 completion.
+finality; the historical universal-native completion rule is superseded by the capability-based decision below.
 
 ### Complete existing-conclusion inventory repair — 2026-10-04
 
@@ -442,3 +442,45 @@ Reference URLs must be strings parsed with HTTPS scheme and a nonblank hostname.
 ### Canonical research byte provenance
 
 The default checker requires the existing twelve canonical profile/evidence aliases to retain synthetic origin and agree on one SHA-256. It reads bounded fixture bytes once, checks their hash before parsing and parses those same bytes; any reserialization, changed records/answers or missing/stale/conflicting alias rejects through fixed safe diagnostics. Matching any unrelated evidence hash is insufficient. Original fixture bytes and registered references remain unchanged. `check_cases(bundle)` is an explicit in-memory semantic API with no file-provenance claim; matrix-only mode validates the register without reading the fixture. No native approval is inferred.
+
+
+## Repreparation after delivered tooling — 2026-10-06
+
+PR #33 delivered the offline register, inspector and 18-case controls. All 14
+profiles still have zero approvals. The [current research and evidence requests](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin)
+refresh CLI/IDE export, SDK, Cursor, Codex and Claude references without treating
+documentation as native support. The 2026-09-28 Cursor team-export reply adds dated
+cost-column evidence but does not resolve personal-account availability or basis.
+
+Normalized imports exist; trusted coverage and historical replay currently support
+synthetic billed USD only. The [architecture decisions](../../openspec/changes/pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin)
+separate source approval from future provider accounting/coverage policy. VS Code
+SQLite export is a documented acquisition candidate, not a supported format of the
+current JSON/JSONL/CSV inspector. No collection, adapter, schema or runtime policy
+is added. #9 stays Open/In Progress; #13/#14 remain blocked by native evidence.
+
+## Current capability-based closeout — 2026-10-07
+
+The maintainer explicitly changed #9 completion to reviewed capability dispositions,
+provenance and exact gaps with coherent delivery checks. Optional Copilot OTel,
+personal Cursor CSV, Enterprise/admin access or custom-hook evidence need not all
+exist. Missing support remains unverified/unavailable and cannot authorize a mapping.
+Earlier universal-export completion statements are historical, superseded decisions.
+#9 remains Open/In Progress pending the new reconciliation/review tasks; no profile
+approval or runtime readiness is claimed by this planning update.
+
+Regular local discovery on 2026-10-06 found newer Codex request/turn/root-turn usage
+overlapping legacy snapshots; Claude Desktop coding-agent and project logs with
+repeated/revised usage/result overlap; Copilot host/checkpoint/session scope
+disagreements; Cursor context metadata without usable consumption counters.
+See [the metadata-only findings and exact proof requests](../research/adaptive-demand-evidence.md).
+New producer representations require separate profile reconciliation; the 14
+historical canonical profiles retain zero approvals. Originals/private hashes stay
+ignored. Seven structural JSONL passes did not establish semantic approval.
+
+Source semantic approval, demand-learning eligibility and complete billed-money
+authority are independent gates. #13/#14 keep prerequisites #9/#12; missing support
+blocks that mapping, not every other learning lane. Native local readers require
+explicit files, bounded allowlists, safe diagnostics, versioned accounting and
+manual Run/Change binding. SQLite-only routes require reviewed snapshot/WAL rules.
+No collector/settings change, new model call or paid infrastructure is required.

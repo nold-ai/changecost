@@ -175,3 +175,11 @@ formats. Bundle export applies the same cardinality guard before inspection.
 Positive-sequence inspection with an unavailable committed timestamp still reports
 replay unavailable; budget check cannot certify that history. These reads do not
 repair or modify the store.
+
+## Planned adaptive demand mode
+
+The [adaptive-demand plan](../openspec/changes/forecast-01-local-adaptive-demand/proposal.md)
+proposes an explicit demand mode for quote and separate replay/explanation records.
+These options are not implemented. Existing default economic commands, JSON,
+min-20 cohort behavior and check authority remain unchanged. See
+[forecasting](forecasting.md) for cold-start states and learning boundaries.

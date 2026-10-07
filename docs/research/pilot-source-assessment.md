@@ -47,18 +47,29 @@ with claimed provider authority. Unknown is not zero. An unavailable capability
 must narrow the support statement; a wholly unavailable source blocks its adapter
 until the maintainer explicitly revises scope.
 
-The planned CLI imports existing local exports. It neither collects telemetry nor
-changes IDE/account settings. Synthetic fixtures verify behavior; they do not prove
+The delivered CLI imports normalized local evidence; native provider parsers remain
+planned. It neither collects telemetry nor changes IDE/account settings. Synthetic fixtures verify behavior; they do not prove
 account access, provider compatibility, cost calibration or actual billing accuracy.
 
 ## Planning choices and confidence
 
 The maintainer approved Python 3.11+, Typer/Pydantic, SQLite/Decimal, and
-uv/Hatchling. These are design choices, not claims that code exists. uv owns
+uv/Hatchling. The foundation is delivered in PR #22; uv owns
 resolution/environments; Hatchling builds packages through `pyproject.toml`.
 See [uv project configuration](https://docs.astral.sh/uv/concepts/projects/config/)
-(accessed 2026-09-28). The foundation change will replace the temporary bootstrap
-dependency setup with a committed lockfile and modern project workflow.
+(accessed 2026-09-28). The repository now has a committed lockfile and modern
+project workflow. These tools do not establish native provider compatibility.
+
+## Current preparation — 2026-10-06 (Europe/Berlin)
+
+PR #33 delivered offline feasibility tooling; PR #34 delivered advisory behavior.
+Native source approvals remain zero. See the refreshed
+[source evidence and architecture register](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin)
+for current primary citations and required artifacts. Normalized persistence is
+delivered, while trusted coverage and historical replay remain synthetic billed-USD
+only. Native parsing and accounting authority require separately authorized adapter
+policies. Current Cursor support reports include team cost exports; they do not
+settle personal-account availability or prove a cost column is an actual charge.
 
 Confidence: high in the bounded research and recorded observations; low in complete
 personal-account reconciliation until source semantics and billing bases are verified. Main failure modes are
@@ -66,3 +77,14 @@ unavailable evidence, double counting and misleading calibration. Mitigate with
 the feasibility gate, source-aware dedupe and chronological baseline evaluation.
 No paid infrastructure is required. Rollback is a planning-commit revert and
 closing linked issues/project, retaining their history.
+
+## Revised local-learning scope — 2026-10-07
+
+The maintainer approved capability-based #9 closeout: reviewed ordinary-local
+dispositions and exact gaps replace the historical universal-export prerequisite.
+Native mappings still need independent semantic approval, and demand versus cash
+coverage remain separate. Missing optional sources do not block other eligible
+lanes. [Adaptive evidence](adaptive-demand-evidence.md) and
+[forecasting](../forecasting.md) describe zero knowledge, observed learning,
+matched transfer hypotheses and chronological validation; no new runtime behavior
+or native forecast accuracy is asserted here.

@@ -134,6 +134,10 @@ structural inspection alone SHALL NOT establish accounting finality or completen
 The semantic attestation SHALL bind the exact profile/version/capability and evidence
 SHA-256, with explicit authority, interval, replay/reset/correction and exclusion
 decisions. This contributor attestation is not independent authentication of facts.
+Its dispositions describe reviewed source evidence; they do not extend the runtime's
+synthetic-only accounting/coverage policy or grant local computation authority.
+Provider policy and historical replay changes belong to later separately authorized
+adapter work, not this source-feasibility closeout.
 
 #### Scenario: Stale matrix or fabricated approval
 
@@ -144,8 +148,8 @@ decisions. This contributor attestation is not independent authentication of fac
 #### Scenario: Useful partial delivery without native evidence
 
 - **GIVEN** passing tooling tests but missing intended Copilot/Cursor native source evidence
-- **WHEN** completion is assessed
-- **THEN** the report retains exact blockers, profile approval and issue #9 remain incomplete.
+- **WHEN** approval and capability-based closeout are assessed
+- **THEN** affected profile approvals stay incomplete with exact gaps; #9 can complete only after the capability inventory and reconciliation are independently reviewed, not from tooling success alone.
 
 ### Requirement: Bounded private offline source inspection
 
@@ -345,3 +349,25 @@ changing the evaluator to fit an expected result.
 - **GIVEN** the existing canonical research bundle and its twelve registered synthetic profile/evidence references
 - **WHEN** the default development checker accepts file-backed research evidence
 - **THEN** all twelve exact references must exist, retain synthetic origin and agree on the checked SHA-256; bounded bytes are read once, hashed before parsing and parsed from those same bytes. Reserialization, changed evidence/answers or stale/conflicting/missing aliases reject with fixed safe diagnostics. In-memory check_cases only checks semantics, and matrix-only mode does not acquire fixture provenance. Original fixture bytes remain preserved.
+
+### Requirement: Capability-based regular-metadata closeout
+
+Feasibility SHALL assess ordinary local coding-session metadata independently of optional exports, Enterprise/admin access and custom hooks. Closeout SHALL require reviewed capability dispositions, provenance, explicit gaps and actual delivery checks, rather than every optional source being available. Supported capabilities SHALL still require native semantic approval; source approval SHALL NOT grant demand eligibility or billed-money authority.
+
+#### Scenario: Unavailable export
+
+- **GIVEN** reviewed regular local metadata and a missing optional CSV/OTel export
+- **WHEN** closeout is assessed
+- **THEN** the missing capability stays unverified or evidenced unavailable and does not universally block #9; no unsupported adapter mapping is approved
+
+#### Scenario: Three independent gates
+
+- **GIVEN** a native shape or approved source capability
+- **WHEN** demand learning or monetary settlement is prepared
+- **THEN** the relevant accounting/coverage/replay policy must independently establish eligibility and authority
+
+#### Scenario: Newer producer version
+
+- **GIVEN** a newer native representation than an existing profile
+- **WHEN** the inventory is reconciled
+- **THEN** its version/shape is assessed separately and older approvals or installed versions are not inherited

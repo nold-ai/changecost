@@ -103,3 +103,13 @@ diff; source files, databases and account settings are unchanged.
 Read-only reinspection of the same authorized source on 2026-10-03 found 367 persisted events and changed raw bytes. The selected checkpoint and turn-usage projections remained unchanged. The current event digest is in the profile register; old receipts remain private and preserved. Host and SDK identities remain distinct. No CLI/IDE native export, authoritative accounting interval, cache inclusion, reset/correction policy or terminal completeness was established. SDK documentation was rechecked on 2026-10-03; interface descriptions do not approve this installed version.
 
 See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).
+
+## Later local discovery and adaptive-demand scope — 2026-10-07
+
+The earlier observations above remain historical. The authorized 2026-10-06
+Copilot discovery and newer representation/version limits are summarized in
+[adaptive evidence](../research/adaptive-demand-evidence.md#authorized-local-discovery--2026-10-06).
+No new native approval is inferred. #9 now uses capability-based closeout; missing
+optional exports do not block all lanes, but usage/identity/correction/finality
+proof remains required for supported mappings. Source support, demand-learning
+coverage and billed-money authority remain independently gated.

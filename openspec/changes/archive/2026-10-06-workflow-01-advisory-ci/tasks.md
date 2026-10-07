@@ -8,7 +8,7 @@ Current implementation evidence is recorded in [TDD_EVIDENCE.md](TDD_EVIDENCE.md
 
 ## 1. Fresh scope and independent obligation review
 
-- [x] 1.1 On separate implementation authorization, refresh main, reconcile this owned combined archive/preparation diff against current code and issue #16/#15, and preserve unrelated work; verify [preparation evidence](PREPARATION_EVIDENCE.md) and [change order](../../CHANGE_ORDER.md).
+- [x] 1.1 On separate implementation authorization, refresh main, reconcile this owned combined archive/preparation diff against current code and issue #16/#15, and preserve unrelated work; verify [preparation evidence](PREPARATION_EVIDENCE.md) and [change order](../../../CHANGE_ORDER.md).
 - [x] 1.2 Recover the bounded session with counters intact, explicitly approve/bind intended runtime scope, and obtain one independent obligation review covering presentation/parser errors, claim authority, cutoff/completeness replay, no-write boundaries and CI data rendering; record invariant/dependency and oracle/generator/configuration fingerprints.
 
 ## 2. Presentation and safe errors
@@ -38,6 +38,26 @@ Current implementation evidence is recorded in [TDD_EVIDENCE.md](TDD_EVIDENCE.md
 
 ## 5. Verification and later delivery
 
-- [ ] 5.1 Record actual red/green commands, scope, timestamps, independent oracle/controls and native report digests in TDD_EVIDENCE.md. Run selected/all strict OpenSpec and explicit-base/manifest make check plus applicable staged checks; retain supported-Linux native/Python matrix evidence and report unavailable tooling as incomplete.
+- [x] 5.1 Record actual red/green commands, scope, timestamps, independent oracle/controls and native report digests in TDD_EVIDENCE.md. Run selected/all strict OpenSpec and explicit-base/manifest make check plus applicable staged checks; retain supported-Linux native/Python matrix evidence and report unavailable tooling as incomplete.
 - [ ] 5.2 Close affected independent obligations, then require current-head Codex and CodeRabbit for claim trust; preserve bounded history, inspect actual source/check evidence, reuse running required reviews and retain dispositions without a generic full local/CLI scan or receipt-only commit.
-- [ ] 5.3 On separately requested verification/promotion, hand off the combined archive/runtime/docs diff with actual issue readback, head/base and PR/ledger evidence. No implementation issue closure or archival until accepted; preserve the Quote archive and historical limitations.
+- [x] 5.3 On separately requested verification/promotion, hand off the combined archive/runtime/docs diff with actual issue readback, head/base and PR/ledger evidence. No implementation issue closure or archival until accepted; preserve the Quote archive and historical limitations.
+
+## Accepted archive closeout — 2026-10-06 (Europe/Berlin)
+
+PR #34 merged at `ee424b5cf3c116b18515cec1ee086e1a6de223a0`, with reviewed
+source head `8f5b7af84b137ec1311e7811d9a464a739001ed8` and base
+`340668e6b74bfb7ccab15efe13830555bc6dd7ef`. The merged and source Git trees
+match. The [final Linux run](https://github.com/nold-ai/changecost/actions/runs/37410821706)
+passed both required Python jobs; the PR's final verification index records all ten
+native analyzers and complete target execution. Current CodeRabbit status is SUCCESS.
+Tasks 5.1 and 5.3 are reconciled from this delivered evidence and the maintainer's
+explicit acceptance/archival instruction; earlier failures remain historical.
+
+Task 5.2 deliberately remains unchecked: the final full Codex code review was
+[quota-blocked](https://github.com/nold-ai/changecost/pull/34#issuecomment-6009069233).
+The separate security completion does not replace that code review. On 2026-10-06
+the maintainer explicitly chose archival with this accepted limitation and then
+requested execution of the plan. This is a change-specific archive exception,
+not a passing review, a completed bounded-session claim or a future review waiver.
+The historical timeout cause remains unknown. Provider approval and live collection
+remain separate gates. No review allowance is reset by this lifecycle reconciliation.

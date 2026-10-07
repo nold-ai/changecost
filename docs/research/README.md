@@ -39,3 +39,10 @@ SHA-256 of the supplied files (before any normalization):
 Keep both originals unchanged; record corrections or fresh verification in separate
 notes. Research provenance and third-party source rights are not changed by the
 repository's software license. Review retained research before making the repo public.
+
+## Adaptive-demand planning evidence — 2026-10-07
+
+[Adaptive evidence and decisions](adaptive-demand-evidence.md) records the targeted
+SciSpace/Consensus/primary-paper cross-check, unavailable Scite citation analysis,
+bounded native discovery, capability closeout and exact remaining proof. It does
+not modify the original report/panel or establish prediction accuracy.

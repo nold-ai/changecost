@@ -3,6 +3,32 @@
 
 ## Unreleased
 
+- Require auditable source/date/unit-basis provenance for optional rate scenarios
+  and explicit failing count-only/rehearsal-only evaluation promotion controls.
+
+- Require failing validation-authority and policy-drift controls before forecast
+  implementation; keep Codex/Claude reader delivery independent of #35 while
+  explicitly deferring adaptive integration until its delivery and policy approval.
+
+- Order provider acquisition/accounting policies and regression red tests before
+  parser implementation; complete adaptive evaluation protocol, red/green harness
+  controls and authorized lane assessment before verification and delivery.
+
+- Correct planning verification to cover all 17 native hierarchy issues and record
+  PR #38 as the current publication disposition, retaining scoped stashes as
+  recovery points and preserving existing lifecycle states and historical evidence.
+
+- Plan zero-knowledge local task-demand learning, scoped matched-ecosystem transfer
+  and chronological validation; add separate Codex/Claude local-reader plans and
+  capability-based source-feasibility closeout. Update the private backlog without
+  changing runtime Quote/advisory behavior or granting native approvals.
+
+- Archive the delivered advisory workflow from PR #34 through OpenSpec CLI,
+  synchronizing 11 requirements and 69 scenarios while retaining the accepted
+  quota-blocked full Codex review. Reconcile source-feasibility #9 around merged
+  offline tooling, dated export evidence and native accounting/coverage decisions;
+  preserve zero source approvals and synthetic-only runtime authority.
+
 - Retain original receipt Change selectors after predecessor declaration corruption,
   and distinguish valid Quote-only receipts from imported Settlement ID collisions.
 

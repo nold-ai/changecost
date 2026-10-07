@@ -10,9 +10,12 @@ All implementation and research tasks below remain unchecked. Planning approval 
 ## 2. Feasibility gate and profiles
 
 - [ ] 2.1 Read the completed source matrix and select only evidenced IDE/CLI profiles; verify unavailable capabilities remain blocked or explicitly unsupported.
-- [ ] 2.2 Write failing root/child duplicate, cumulative-lane, unsupported-version and privacy tests using synthetic fixtures; verify each failure before adapter code.
-- [ ] 2.3 Implement approved local parsers and authoritative billing selection; verify expected nano AIU totals and that no multiplier becomes money.
-- [ ] 2.4 Document profile/version support and optional manual local-export setup in docs/providers/copilot.md; verify no instructions imply automatic configuration.
+- [ ] 2.2 Prepare independently approved existing-local acquisition/version/accounting lanes; document optional exports and unavailable fields without enabling collection.
+- [ ] 2.3 Specify non-overlapping identity/revision/reset/cache/root-subagent/finality and manual binding rules, with separate demand versus monetary coverage/replay.
+- [ ] 2.4 Write failing root/child duplicate, cumulative-lane, unsupported-version and privacy tests using synthetic fixtures; verify each failure before adapter code.
+- [ ] 2.5 Write failing missing-counter, incompatible quantity, overlapping representation and historical-cutoff tests before implementing the revised native mapping; verify expected failures and keep unavailable support unavailable.
+- [ ] 2.6 Implement approved local parsers and authoritative billing selection; verify expected nano AIU totals and that no multiplier becomes money.
+- [ ] 2.7 Document profile/version support and optional manual local-export setup in docs/providers/copilot.md; verify no instructions imply automatic configuration.
 
 ## 3. Binding and offline integration
 
@@ -22,6 +25,6 @@ All implementation and research tasks below remain unchecked. Planning approval 
 
 ## 4. Integration and handoff
 
-- [ ] 4.1 Run applicable repository gates and `openspec validate provider-01-copilot-import --strict --no-interactive`; verify all relevant checks pass and report unavailable tooling explicitly.
+- [ ] 4.1 After all required source-policy, red/green parser and binding/replay tasks above are complete, run applicable repository gates and `openspec validate provider-01-copilot-import --strict --no-interactive`; verify all relevant checks pass and report unavailable tooling explicitly.
 - [ ] 4.2 For behavior changes, record actual failing-before/passing-after commands, timestamps and results in TDD_EVIDENCE.md and run fresh SpecFact review; verify reviewed scope, tool/module versions and analyzer availability, resolving findings or documenting narrow exceptions. For research-only work, record evidence review without invented TDD.
-- [ ] 4.3 Open a focused PR with docs, verification, limits and rollback; verify reciprocal proposal/issue links and native hierarchy/dependencies, and archive only after implementation is accepted.
+- [ ] 4.3 Open a focused PR with docs, verification, limits and rollback; verify reciprocal proposal/issue links and native hierarchy/dependencies, and archive only after implementation is accepted and all required tasks above are complete.

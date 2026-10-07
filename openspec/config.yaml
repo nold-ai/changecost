@@ -8,6 +8,12 @@ context: |
   No provider adapter is delivered. Quotes merged in PR #32 on 2026-10-03 and were
   archived through the native CLI on 2026-10-04 with synchronized empirical-quotes
   main specs. Calibration and source approval remain To-Validate.
+  Advisory #16 merged in PR #34 on 2026-10-06 and is archived with synchronized
+  main specs; the final full Codex code review was quota-blocked and accepted as
+  an archive-only limitation, not a future review waiver. Source-feasibility
+  tooling merged in PR #33; #9 remains open with zero approved native profiles.
+  Normalized imports exist, but trusted coverage/replay supports synthetic billed
+  USD only. Source approval alone cannot enable provider numeric authority.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
   cost estimates and settlement for AI-assisted software changes.
   Phase: unreleased 0.x alpha/preview feasibility study; private; Apache-2.0.
@@ -28,7 +34,16 @@ context: |
   Selected defaults: Python 3.11+, Typer, Pydantic, SQLite, Decimal; uv/Hatchling,
   pytest, Ruff, BasedPyright. Personal Cursor/Copilot IDE and CLI use is the pilot.
   Plan quote, bind, settle, check, explain and changecost/v1 portable artifacts.
-  Proposed loop: quote -> bind -> meter -> settle -> calibrate.
+  Proposed loop: assess/quote -> bind -> observe existing metadata -> reconcile -> evaluate/learn.
+  Planning revision approved 2026-10-07: #9 closes through reviewed capability
+  dispositions/gaps, not universal optional-export availability. Native support
+  still needs independent semantics; demand eligibility and billed money are separate.
+  New Codex/Claude reader and forecast-01-local-adaptive-demand plans are not runtime.
+  Demand starts at zero knowledge, learns locally, tests matched ecosystem transfer
+  hypotheses and requires scoped chronological validation before accuracy claims.
+  Preserve delivered Quote/Features/advisory contracts and min-20 economic default.
+  Optional rehearsal is user-invoked with overhead; no automatic sharing from login.
+  Additional runtime implementation/collection still requires a separate request.
   Research is input, not an approved specification or proof of provider capability.
   Treat provider charges, credits, raw usage, and estimated cost distinctly.
   Make uncertainty, unbound spend, and missing evidence visible. Use synthetic data.

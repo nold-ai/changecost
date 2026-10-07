@@ -96,3 +96,37 @@ The evaluation report SHALL separate synthetic verification from live observatio
 - **GIVEN** available evidence cannot distinguish improvement from the baseline
 - **WHEN** the decision rubric is applied
 - **THEN** the outcome is not yet validated and required next evidence is stated.
+
+### Requirement: Chronological adaptive evaluation and scoped promotion
+
+Adaptive evaluation SHALL pre-register historical/dimensional/transfer/rehearsal comparisons and promotion criteria, score shared compatible complete measured truth, report differing availability separately, and bind validation to exact ecosystem/component/population/policy. The existing economic matched-availability comparison SHALL remain unchanged.
+
+#### Scenario: Additional transfer availability
+
+- **GIVEN** a target-only method has no range but transfer produces a labeled scenario
+- **WHEN** adaptive comparison runs
+- **THEN** the additional availability is reported separately, shared eligible cases are scored and no economic comparison rule is weakened
+
+#### Scenario: Future outcome or selected pair
+
+- **GIVEN** a truth correction or bridge selection is first known after forecast time
+- **WHEN** the initial forecast is evaluated
+- **THEN** prediction uses only cutoff-visible inputs and scoring uses the separately frozen truth cutoff
+
+#### Scenario: Failure to improve
+
+- **GIVEN** transfer widens uncertainty or underestimates more than target-only history
+- **WHEN** the pre-registered rubric is applied
+- **THEN** validation is withheld or withdrawn for future applicable forecasts and the failure remains visible
+
+#### Scenario: Partial native truth
+
+- **GIVEN** native usage without complete all-attempts demand coverage
+- **WHEN** calibration is scored
+- **THEN** it remains outside full-task accuracy denominators and is not inferred from cash absence or zero placeholders
+
+#### Scenario: Count and overhead
+
+- **GIVEN** many samples or an expensive rehearsal without passing scoped metrics
+- **WHEN** promotion is assessed
+- **THEN** sample count and assessment effort alone do not establish calibrated accuracy

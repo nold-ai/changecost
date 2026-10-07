@@ -60,8 +60,8 @@ pending through review/acceptance; tasks 2.1/2.2 and archival remain incomplete.
 ## 6. Source evidence and profile register
 
 - [x] 6.1 Reinspect authorized selected local source metadata and supplied bundles read-only; record versions, original hashes, boundary evidence and exact missing artifacts in a private receipt and public profile register.
-- [ ] 6.2 Inspect native Copilot CLI/IDE exports and personal Cursor CSV with acquisition/authority/coverage/finality evidence; independently verify intended source profiles before approval. Keep incomplete while required evidence is unavailable.
-- [ ] 6.3 Refresh Codex/Claude and Enterprise/custom-hook assessments against current primary evidence; inspect paired hook source/upload/receiver mappings when supplied and preserve unmet evidence gates.
+- [ ] 6.2 Reconcile regular local per-surface/version/tier capabilities and optional export gaps with reviewed provenance; require native semantics before claiming supported mappings. Missing optional exports no longer universally block closeout (2026-10-07 scope revision).
+- [ ] 6.3 Refresh separate Codex/Claude coding-session profiles and Enterprise/custom-hook findings; inspect supplied paired mappings where available and retain missing evidence as explicit capability gaps, without making every hook a closeout prerequisite.
 
 ## 7. Offline checker and independent semantics
 
@@ -72,8 +72,33 @@ pending through review/acceptance; tasks 2.1/2.2 and archival remain incomplete.
 
 ## 8. Verified delivery and retained blockers
 
-- [ ] 8.1 Run applicable local/staged/strict gates, independent affected-obligation closure and fresh supported-Linux assurance; retain missing/skipped evidence as incomplete.
-- [ ] 8.2 Commit/push a focused implementation PR with current-head Codex/CodeRabbit evidence, actual issue/project readback and retained recovery history; leave #9 open while 6.2 or required evidence is incomplete.
-- [ ] 8.3 Close/archive only after inspected intended profiles and implementation acceptance pass; otherwise hand off exact native artifacts needed and keep unchecked tasks truthful.
+- [x] 8.1 Run applicable local/staged/strict gates, independent affected-obligation closure and fresh supported-Linux assurance; retain missing/skipped evidence as incomplete.
+- [x] 8.2 Commit/push a focused implementation PR with current-head Codex/CodeRabbit evidence, actual issue/project readback and retained recovery history; leave #9 open while 6.2 or required evidence is incomplete.
+- [ ] 8.3 Close/archive only after reviewed capability inventory, exact source gaps, coherent reconciliation and applicable acceptance checks pass; keep unsupported profile approvals and unfinished adapter work explicit.
 
-Implementation checkpoint: offline tooling is implemented and tested; native source approval, paired hook inspection and final review/acceptance remain incomplete. Task 6.3 stays pending because fresh interface assessments do not verify the missing hook mapping.
+Implementation checkpoint: offline tooling was verified and delivered in PR #33,
+merged at `340668e6b74bfb7ccab15efe13830555bc6dd7ef` on 2026-10-04.
+Tasks 8.1/8.2 are reconciled against reviewed head
+`0ee265c5c0e077a22073a6a8dd4fb2d86a1c6585`,
+[Linux assurance](https://github.com/nold-ai/changecost/actions/runs/37171782544)
+and the issue's verified tooling/merged checkpoints. These are historical delivery
+checks, not acceptance of the new preparation or native source support. Tasks
+2.1/2.2, 4.3, 6.2/6.3 and 8.3 remain unchecked. Task 4.3's PR was delivered, but
+its compound archival condition is unmet. Fresh documentation does not complete
+the missing native inspection or hook mapping.
+
+## 9. Repreparation after advisory delivery (2026-10-06)
+
+- [x] 9.1 Refresh main after PR #34, preserve tooling/history, and review current primary evidence and independent architecture obligations; record source/accounting/runtime boundaries and exact missing native artifacts.
+- [ ] 9.2 Validate this planning diff, register/matrix and immutable fixtures; run applicable explicit-base/manifest quality gates and independent affected review, synchronize/read back #9 and dependencies, then record actual limits and PR/stash disposition without claiming provider readiness.
+
+## 10. Capability-based replan — 2026-10-07
+
+The 2026-10-03/06 universal-export closeout decision is superseded by the explicit
+maintainer decision. Historical tooling checks remain history; no new completion
+or native semantic approval is asserted by this planning batch.
+
+- [ ] 10.1 Reconcile the 2026-10-06 existing-local discovery against separate newer producer profiles, metadata-only public findings and private hashes; retain missing accounting/finality evidence.
+- [ ] 10.2 Independently review regular-metadata and optional-export capability dispositions across all four providers; record why missing capabilities remain unverified/unavailable and which exact native semantics each mapping still needs.
+- [ ] 10.3 Verify current register/matrix, all 18 unchanged cases, documentation and selected/all strict gates; synchronize #9 capability-based acceptance and unchanged #13/#14 prerequisites.
+- [ ] 10.4 Complete separately authorized closeout/verification before archival; unavailable publication assurance remains a limitation, never a pass.

@@ -59,3 +59,19 @@ The adapter SHALL distinguish manual mappings from provider-backed joins and SHA
 - **GIVEN** an already imported file
 - **WHEN** it is imported again
 - **THEN** the known evidence count and totals do not increase.
+
+### Requirement: Regular-metadata and demand authority boundaries
+
+The adapter SHALL use only independently approved explicit local source/version lanes without requiring new telemetry or administrator data. Missing optional exports SHALL remain capability gaps. Native source approval SHALL NOT automatically establish full-demand coverage, billed money or calibrated forecast authority.
+
+#### Scenario: Missing ordinary usage
+
+- **GIVEN** regular metadata with empty/zero placeholders or unresolved overlapping counters
+- **WHEN** a native outcome is considered
+- **THEN** unknown quantity stays unknown and no full-task training amount is fabricated
+
+#### Scenario: Approved partial source
+
+- **GIVEN** an inspected profile with only partial usage support
+- **WHEN** demand or money authority is requested
+- **THEN** separate versioned coverage/replay policy and its evidence gate apply; source approval alone does not suffice

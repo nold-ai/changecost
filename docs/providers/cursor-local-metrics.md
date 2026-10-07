@@ -77,3 +77,13 @@ storage and account settings were unchanged.
 Read-only reinspection of the same authorized store on 2026-10-03 found changed bytes across 23 selected records, with empty usageData and zero bubble counters. The new digest is recorded separately in the profile register. These observations establish neither zero consumption nor a final charge. No personal usage CSV was supplied; exact headers, app/export version, tier, acquisition, range/timezone, stable identity, overlap and charge basis remain required.
 
 See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).
+
+## Later local discovery and adaptive-demand scope — 2026-10-07
+
+The earlier observations above remain historical. The authorized 2026-10-06
+Cursor discovery and newer representation/version limits are summarized in
+[adaptive evidence](../research/adaptive-demand-evidence.md#authorized-local-discovery--2026-10-06).
+No new native approval is inferred. #9 now uses capability-based closeout; missing
+optional exports do not block all lanes, but usage/identity/correction/finality
+proof remains required for supported mappings. Source support, demand-learning
+coverage and billed-money authority remain independently gated.

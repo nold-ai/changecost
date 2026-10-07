@@ -6,7 +6,7 @@ Personal Cursor exports cannot be assumed to expose Enterprise OTel identifiers 
 
 ## What Changes
 
-- Import feasibility-approved local personal usage export profiles.
+- Import independently approved existing personal usage sources when available; classify regular local metadata and missing exports separately rather than promise a CSV on every plan.
 - Preserve token categories and distinguish absent money from observed zero.
 - Support explicit manual mappings and unbound records without inventing conversation joins.
 
@@ -18,7 +18,7 @@ Personal Cursor exports cannot be assumed to expose Enterprise OTel identifiers 
 
 ### Modified Capabilities
 
-None; no main capability specs exist yet.
+None; delivered main capabilities are preserved. New additive requirements are defined in this change; source/policy approval remains separate.
 
 ## Impact
 

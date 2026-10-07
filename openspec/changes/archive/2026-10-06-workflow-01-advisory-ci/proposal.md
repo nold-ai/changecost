@@ -31,9 +31,9 @@ already delivered; this change completes presentation, checks and CI examples.
 ### Modified Capabilities
 
 None. This adds an advisory capability using the accepted
-[contracts](../../specs/change-run-contracts/spec.md),
-[reconciliation](../../specs/evidence-reconciliation/spec.md) and
-[Quotes](../../specs/empirical-quotes/spec.md). It does not replace their portable
+[contracts](../../../specs/change-run-contracts/spec.md),
+[reconciliation](../../../specs/evidence-reconciliation/spec.md) and
+[Quotes](../../../specs/empirical-quotes/spec.md). It does not replace their portable
 schemas, computation algorithms or source-coverage policies.
 
 ## Impact
@@ -55,11 +55,11 @@ for manufacturing coverage assertions is required by this change.
 
 ## Dependencies
 
-- [quote-01-empirical-estimation](../archive/2026-10-04-quote-01-empirical-estimation/proposal.md)
+- [quote-01-empirical-estimation](../2026-10-04-quote-01-empirical-estimation/proposal.md)
 
 #15 is closed after merged PR #32; its accepted Quote specification is synchronized
 locally through the native CLI archive. Native prerequisites are unchanged.
-See [change order](../../CHANGE_ORDER.md) and [preparation evidence](PREPARATION_EVIDENCE.md).
+See [change order](../../../CHANGE_ORDER.md) and [preparation evidence](PREPARATION_EVIDENCE.md).
 Provider approval and calibration remain separate gates; synthetic evidence suffices
 for this advisory workflow and approves no provider-specific mapping.
 

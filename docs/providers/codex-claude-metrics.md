@@ -138,3 +138,13 @@ prerequisites; existing Copilot/Cursor adapter stories are not relabeled.
 Installed metadata was rechecked on 2026-10-03: codex-cli 0.139.0 and Claude Code 2.1.257 remain distinct from historical Desktop 0.158.0-alpha.2.1 and stored Claude 2.1.275/2.1.215 records. Each version has a separate register profile. The executable detector checks synthetic snapshots and message variants; it cannot establish native finality, reset/interval authority or account billing. Claude monitoring was rechecked on 2026-10-03; its metric interface remains separate from billed money.
 
 See the canonical [profile register](source-profiles.json) and [current evidence gate](source-feasibility.md#reinspection-and-current-blockers).
+
+## Later local discovery and adaptive-demand scope — 2026-10-07
+
+The earlier observations above remain historical. The authorized 2026-10-06
+Codex/Claude discovery and newer representation/version limits are summarized in
+[adaptive evidence](../research/adaptive-demand-evidence.md#authorized-local-discovery--2026-10-06).
+No new native approval is inferred. #9 now uses capability-based closeout; missing
+optional exports do not block all lanes, but usage/identity/correction/finality
+proof remains required for supported mappings. Source support, demand-learning
+coverage and billed-money authority remain independently gated.
