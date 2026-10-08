@@ -109,7 +109,7 @@ profiles: the 14 historical objects remain unchanged and nine distinguish newer
 native representations, header-only inventory and current local observations.
 The original seven selected JSONL hashes remain unchanged. All 23 approvals are
 empty; partial usage fields are not eligible full-Change learning outcomes.
-See [the reconciled accounting decisions and exact gaps](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin).
+See [the reconciled accounting decisions and exact gaps](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin).
 
 PR #38 merged the adaptive/reader plans; it did not implement them. #35's offline
 synthetic phase remains independent of #9, while native learning still requires

@@ -34,7 +34,7 @@ No Enterprise OTel collector, Admin API dependency, undocumented editor database
 
 ## Dependencies
 
-- [pilot-01-source-feasibility](../pilot-01-source-feasibility/proposal.md)
+- [pilot-01-source-feasibility](../archive/2026-10-08-pilot-01-source-feasibility/proposal.md)
 - [settlement-01-reconciliation](../archive/2026-10-02-settlement-01-reconciliation/proposal.md)
 
 Dependencies are implementation prerequisites; planning can proceed together.

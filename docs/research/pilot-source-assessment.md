@@ -35,7 +35,7 @@ for primary citations, observed shapes, versions and their limits.
 
 ## Evidence gate
 
-The [source feasibility change](../../openspec/changes/pilot-01-source-feasibility/proposal.md)
+The [source feasibility change](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/proposal.md)
 requires a per-surface matrix of access, identifiers, economic units, billing basis,
 completeness, correction semantics and safe fixture provenance. Documented support
 and observed personal-account support must be separate fields. Provider-backed
@@ -64,7 +64,7 @@ project workflow. These tools do not establish native provider compatibility.
 
 PR #33 delivered offline feasibility tooling; PR #34 delivered advisory behavior.
 Native source approvals remain zero. See the refreshed
-[source evidence and architecture register](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin)
+[source evidence and architecture register](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin)
 for current primary citations and required artifacts. Normalized persistence is
 delivered, while trusted coverage and historical replay remain synthetic billed-USD
 only. Native parsing and accounting authority require separately authorized adapter
@@ -98,7 +98,7 @@ selected JSONL originals still match their discovery hashes; the unchanged 18-ca
 fixture remains synthetic. Header-only Claude versions, result streams with mixed runtime headers,
 selected SQLite rows and whole native files have different evidence boundaries.
 
-[Native decision review](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin)
+[Native decision review](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin)
 keeps request/snapshot, message/result and checkpoint/session overlaps unresolved.
 All approvals remain zero. Reviewed partial/unverified gaps can complete feasibility
 after actual acceptance; they cannot authorize native demand outcomes or currency.

@@ -5,7 +5,7 @@
 See [proposal](proposal.md) and [capability spec](specs/source-feasibility/spec.md).
 The Python foundation, contracts, normalized settlement and empirical Quotes are
 delivered in PRs #22/#25/#28/#32. Source-feasibility closeout was authorized on
-2026-10-03; provider support remains unverified until native evidence is inspected. See the [assessment](../../../docs/providers/source-feasibility.md).
+2026-10-03; provider support remains unverified until native evidence is inspected. See the [assessment](../../../../docs/providers/source-feasibility.md).
 
 ## Goals / Non-Goals
 
@@ -55,7 +55,7 @@ delivered in PRs #22/#25/#28/#32. Source-feasibility closeout was authorized on
 None.
 
 Shared boundaries and current provider evidence are recorded in the
-[source assessment](../../../docs/research/pilot-source-assessment.md).
+[source assessment](../../../../docs/research/pilot-source-assessment.md).
 No provider-specific mapping becomes supported merely by appearing in this plan.
 
 ## Risks / Trade-offs
@@ -209,7 +209,7 @@ preserving source originals, archives and review history.
 6. Dated metadata-only discovery findings are incorporated without native approvals;
    original private source pointers/hashes remain ignored. Public summaries exclude
    prompts, paths, identifiers and actual account quantities. See the
-   [research evidence](../../../docs/research/adaptive-demand-evidence.md).
+   [research evidence](../../../../docs/research/adaptive-demand-evidence.md).
 
 Task/source-feasibility scope is current; prior acceptance/failures remain history.
 Close/archive still requires separately reviewed actual reconciliation and applicable
