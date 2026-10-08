@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import subprocess
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
@@ -52,7 +53,6 @@ def committed_seed(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, str]
 @pytest.fixture(autouse=True)
 def git_fixture(tmp_path: Path, committed_seed: tuple[Path, str]) -> None:
     global TEST_HEAD, TEST_ROOT
-    import shutil
 
     seed, TEST_HEAD = committed_seed
     shutil.copytree(seed, tmp_path, dirs_exist_ok=True)
@@ -60,28 +60,33 @@ def git_fixture(tmp_path: Path, committed_seed: tuple[Path, str]) -> None:
 
 
 def contract() -> dict[str, object]:
+    return session_contract(TEST_ROOT, TEST_HEAD)
+
+
+def session_contract(root: Path, head: str) -> dict[str, object]:
     return {
         "requirements": ["tests pass"],
         "repository": "nold-ai/changecost",
         "acceptance_criteria": ["review evidence is current"],
         "non_goals": ["host authentication"],
         "trust_boundary": "configuration validation only",
-        "intended_files": fixture_manifest(),
-        "base": TEST_HEAD,
-        "pr_base": {"ref": "main", "sha": TEST_HEAD},
-        "head": TEST_HEAD,
+        "intended_files": fixture_manifest(root),
+        "base": head,
+        "pr_base": {"ref": "main", "sha": head},
+        "head": head,
         "required_reviewers": ["reviewer-a"],
         "required_checks": ["ci"],
         "required_statuses": [],
     }
 
 
-def fixture_manifest() -> dict[str, str]:
+def fixture_manifest(root: Path | None = None) -> dict[str, str]:
+    root = TEST_ROOT if root is None else root
     names = subprocess.check_output(
         [
             "git",
             "-C",
-            str(TEST_ROOT),
+            str(root),
             "ls-files",
             "--cached",
             "--others",
@@ -91,12 +96,119 @@ def fixture_manifest() -> dict[str, str]:
         text=True,
     ).split("\0")
     return {
-        name: hashlib.sha256((TEST_ROOT / name).read_bytes()).hexdigest()
-        if (TEST_ROOT / name).is_file()
+        name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+        if (root / name).is_file()
         else "<absent>"
         for name in names
         if name
     }
+
+
+@pytest.fixture(scope="session")
+def initialized_seed(
+    tmp_path_factory: pytest.TempPathFactory, committed_seed: tuple[Path, str]
+) -> Path:
+    root = tmp_path_factory.mktemp("initialized-seed")
+    seed, head = committed_seed
+    shutil.copytree(seed, root, dirs_exist_ok=True)
+    review_session.initialize(root, "change", session_contract(root, head))
+    return root
+
+
+def clone_session(seed: Path, root: Path, policy: dict[str, object]) -> dict[str, Any]:
+    """Reuse pristine arrangement only; retain real replay and current Git checks."""
+    state = review_session.load(seed, "change")
+    assert state["revision"] == 0 and state["events"] == [] and state["phase"] == "active"
+    assert state["batches"] == 0 and state["active_minutes"] == 0
+    assert policy == state["contract"]
+    assert (
+        review_session.capture_inputs(root, state["reviewed_head"], policy["intended_files"])
+        == (state["inputs"])
+    )
+    source = review_session.state_path(seed, "change").parent
+    destination = review_session.state_path(root, "change").parent
+    shutil.copytree(source, destination)
+    return review_session.load(root, "change")
+
+
+@pytest.fixture
+def prepared_session(tmp_path: Path, initialized_seed: Path, git_fixture: None) -> dict[str, Any]:
+    del git_fixture
+    return clone_session(initialized_seed, tmp_path, contract())
+
+
+def test_prepared_session_preserves_canonical_arrangement(
+    tmp_path: Path, initialized_seed: Path, prepared_session: dict[str, Any]
+) -> None:
+    seed = review_session.load(initialized_seed, "change")
+    assert prepared_session == seed
+    assert review_session.load(tmp_path, "change") == seed
+    assert (
+        review_session.capture_inputs(tmp_path, TEST_HEAD, contract()["intended_files"])
+        == (seed["inputs"])
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "continue"
+
+
+def test_prepared_session_files_and_events_are_isolated(
+    tmp_path: Path,
+    initialized_seed: Path,
+    committed_seed: tuple[Path, str],
+    prepared_session: dict[str, Any],
+) -> None:
+    other = tmp_path.parent / (tmp_path.name + "-other")
+    committed, head = committed_seed
+    shutil.copytree(committed, other)
+    clone_session(initialized_seed, other, session_contract(other, head))
+    names = [
+        ".git/index",
+        "input.txt",
+        ".changecost/workflow/change/genesis.json",
+        ".changecost/workflow/change/review-session.json",
+    ]
+    for name in names:
+        assert (
+            len({(root / name).stat().st_ino for root in (tmp_path, other, initialized_seed)}) == 3
+        )
+    review_session.record(tmp_path, "change", {"id": "one", "kind": "batch"})
+    assert review_session.load(tmp_path, "change")["batches"] == 1
+    assert review_session.load(other, "change") == prepared_session
+    assert review_session.load(initialized_seed, "change") == prepared_session
+    (tmp_path / "input.txt").write_text("changed\n")
+    subprocess.run(["git", "-C", str(tmp_path), "add", "input.txt"], check=True)
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    assert review_session.status(other, "change")["action"] == "continue"
+    state = review_session.load(tmp_path, "change")
+    state["batches"] = 0
+    review_session.write_state(review_session.state_path(tmp_path, "change"), state)
+    with pytest.raises(ValueError, match="contradicts canonical history"):
+        review_session.load(tmp_path, "change")
+    assert review_session.load(other, "change") == prepared_session
+    assert review_session.load(initialized_seed, "change") == prepared_session
+
+
+@pytest.mark.parametrize("fault", ["content", "index", "untracked", "policy", "seed"])
+def test_prepared_session_rejects_changed_arrangement_before_copy(
+    tmp_path: Path, initialized_seed: Path, fault: str
+) -> None:
+    policy = contract()
+    seed = initialized_seed
+    if fault in {"content", "index"}:
+        (tmp_path / "input.txt").write_text("changed\n")
+        if fault == "index":
+            subprocess.run(["git", "-C", str(tmp_path), "add", "input.txt"], check=True)
+            (tmp_path / "input.txt").write_text("initial\n")
+    elif fault == "untracked":
+        (tmp_path / "extra.txt").write_text("unexpected\n")
+    elif fault == "policy":
+        policy["trust_boundary"] = "different contract"
+    else:
+        seed = tmp_path.parent / (tmp_path.name + "-nonpristine")
+        shutil.copytree(initialized_seed, seed)
+        review_session.record(seed, "change", {"id": "one", "kind": "batch"})
+    with pytest.raises(AssertionError):
+        clone_session(seed, tmp_path, policy)
+    assert not review_session.state_path(tmp_path, "change").parent.exists()
 
 
 def complete_snapshot(epoch: str = "input-generation:0") -> dict[str, Any]:
@@ -160,8 +272,9 @@ def complete_session(tmp_path: Path, *, timing: bool = True) -> None:
         )
 
 
-def test_final_batch_completion_and_pending_precedence(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_final_batch_completion_and_pending_precedence(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     for index in range(3):
         review_session.record(tmp_path, "change", {"id": str(index), "kind": "batch"})
     complete_session(tmp_path)
@@ -234,8 +347,7 @@ def test_scope_resolution_names_pending_identity(tmp_path: Path) -> None:
     assert review_session.status(tmp_path, "change")["action"] == "continue"
 
 
-def test_fixed_escape_retains_escalation(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_fixed_escape_retains_escalation(tmp_path: Path, prepared_session: dict[str, Any]) -> None:
     for identity in ("one", "two"):
         review_session.record(
             tmp_path, "change", {"id": identity, "kind": "finding", "family": "f"}
@@ -278,8 +390,9 @@ def test_legacy_session_without_required_reviewer_contract_is_incomplete(tmp_pat
     assert review_session.status(tmp_path, "legacy")["action"] == "incomplete"
 
 
-def test_budget_and_extension_keep_existing_counters(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_budget_and_extension_keep_existing_counters(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     review_session.record(
         tmp_path, "change", {"id": "finding", "kind": "finding", "family": "gate"}
     )
@@ -303,8 +416,9 @@ def test_budget_and_extension_keep_existing_counters(tmp_path: Path) -> None:
     assert result["batches"] == 3
 
 
-def test_final_allowed_batch_requires_replanning_even_after_fixes(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_final_allowed_batch_requires_replanning_even_after_fixes(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     review_session.record(
         tmp_path, "change", {"id": "finding", "kind": "finding", "family": "gate"}
     )
@@ -360,8 +474,9 @@ def test_partial_state_is_incomplete_instead_of_crashing(tmp_path: Path) -> None
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
 
 
-def test_finding_family_requires_investigation_then_replan(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_finding_family_requires_investigation_then_replan(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     review_session.record(
         tmp_path, "change", {"id": "one", "kind": "finding", "family": "pytest-config"}
     )
@@ -397,8 +512,9 @@ def test_record_is_idempotent_and_rejects_conflicting_writer(tmp_path: Path) -> 
         )
 
 
-def test_packet_keeps_unresolved_evidence_and_usage_units(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_packet_keeps_unresolved_evidence_and_usage_units(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     review_session.record(
         tmp_path,
         "change",
@@ -414,8 +530,9 @@ def test_packet_keeps_unresolved_evidence_and_usage_units(tmp_path: Path) -> Non
     assert packet["usage"] == {"cached_input": 10, "uncached_input": 2, "output": 1, "cost": None}
 
 
-def test_disposition_does_not_transfer_without_an_exact_finding_id(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_disposition_does_not_transfer_without_an_exact_finding_id(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     review_session.record(
         tmp_path, "change", {"id": "old", "kind": "finding", "family": "workflow"}
     )
@@ -441,8 +558,9 @@ def test_changed_monitor_snapshots_are_deduplicated(tmp_path: Path) -> None:
     assert second["changed"] is False
 
 
-def test_monitor_error_leaves_session_incomplete(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_monitor_error_leaves_session_incomplete(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     review_session.record_monitor_snapshot(tmp_path, "change", {"errors": ["rate limited"]})
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
 
@@ -472,9 +590,11 @@ def test_monitor_waits_for_current_head_results_from_named_reviewers(tmp_path: P
 
 
 def test_unchanged_watcher_timeout_fails_for_incomplete_session(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     review_session.record(
         tmp_path, "change", {"id": "scope", "kind": "scope_decision", "decision": "pending"}
     )
@@ -486,9 +606,8 @@ def test_unchanged_watcher_timeout_fails_for_incomplete_session(
 
 
 def test_watcher_polls_after_a_changed_continue_snapshot(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     snapshot = {
         **complete_snapshot(),
         "head": contract()["head"],
@@ -520,8 +639,9 @@ def test_watcher_polls_after_a_changed_continue_snapshot(
     assert len(calls) == 3
 
 
-def test_changed_monitor_head_and_empty_completion_are_incomplete(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_changed_monitor_head_and_empty_completion_are_incomplete(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     review_session.record(
         tmp_path, "change", {"id": "complete", "kind": "phase", "phase": "complete"}
     )
@@ -651,8 +771,9 @@ def test_reviewed_input_changes_fail_closed(tmp_path: Path, mutation: str) -> No
 
 
 @pytest.mark.parametrize("source", ["checks", "statuses", "reviews", "threads", "comments"])
-def test_missing_source_cannot_complete(tmp_path: Path, source: str) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_missing_source_cannot_complete(
+    tmp_path: Path, source: str, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     del snapshot[source]
@@ -660,8 +781,9 @@ def test_missing_source_cannot_complete(tmp_path: Path, source: str) -> None:
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
 
 
-def test_outdated_unresolved_thread_blocks_completion(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_outdated_unresolved_thread_blocks_completion(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["threads"] = [{"id": "t", "isOutdated": True, "isResolved": False, "comments": []}]
@@ -730,8 +852,9 @@ def test_subprocess_requests_are_bounded(monkeypatch: pytest.MonkeyPatch) -> Non
     assert timeouts == [60, 60]
 
 
-def test_watcher_api_timeout_is_incomplete(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_watcher_api_timeout_is_incomplete(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, prepared_session: dict[str, Any]
+) -> None:
 
     def fail(*args: object) -> dict[str, object]:
         raise subprocess.TimeoutExpired("gh", 60)
@@ -944,8 +1067,9 @@ def test_timing_timestamp_preserves_idempotence_and_restart(tmp_path: Path) -> N
     assert second["events"][0] == event
 
 
-def test_missing_minutes_ingestion_does_not_create_measurement(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_missing_minutes_ingestion_does_not_create_measurement(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     with pytest.raises(ValueError):
         review_session.record(tmp_path, "change", {"id": "time", "kind": "active_minutes"})
     assert review_session.load(tmp_path, "change")["timing_measurements"] == []
@@ -962,9 +1086,11 @@ def test_rest_parser_preserves_api_errors(monkeypatch: pytest.MonkeyPatch) -> No
 
 
 def test_cli_watch_reports_malformed_paginated_response(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
 
     def snapshot(*args: object) -> dict[str, object]:
         raise ValueError("paginated API response must be a slurped page array")
@@ -1029,8 +1155,9 @@ def test_review_supersession_spans_pages_and_ignores_old_head(tmp_path: Path) ->
     assert review_session.status(tmp_path, "change")["action"] == "complete"
 
 
-def test_fractional_minutes_sum_canonically_across_restart_and_budget(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_fractional_minutes_sum_canonically_across_restart_and_budget(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     review_session.record(
         tmp_path, "change", {"id": "initial-time", "kind": "active_minutes", "minutes": 89}
     )
@@ -1107,9 +1234,8 @@ def test_dirty_frozen_inputs_cannot_claim_published_completion(tmp_path: Path, d
 
 @pytest.mark.parametrize("field,value", [("repository", "other/fork"), ("pull_request", 25)])
 def test_monitor_target_cannot_change_on_shared_head(
-    tmp_path: Path, field: str, value: object
+    tmp_path: Path, field: str, value: object, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot[field] = value
@@ -1117,8 +1243,9 @@ def test_monitor_target_cannot_change_on_shared_head(
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
 
 
-def test_bot_identity_cannot_approve_for_or_erase_human(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_bot_identity_cannot_approve_for_or_erase_human(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["reviews"] = [
@@ -1148,9 +1275,8 @@ def test_bot_identity_cannot_approve_for_or_erase_human(tmp_path: Path) -> None:
     [("non_finding", "continue"), ("fixed", "investigate"), ("accepted_exception", "investigate")],
 )
 def test_final_dispositions_preserve_only_genuine_escapes(
-    tmp_path: Path, disposition: str, expected: str
+    tmp_path: Path, disposition: str, expected: str, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     for event in (
         {"id": "first", "kind": "finding", "family": "f"},
         {"id": "fixed", "kind": "disposition", "finding_id": "first", "disposition": "fixed"},
@@ -1175,8 +1301,9 @@ def test_monitor_cache_cannot_hide_raw_pending(tmp_path: Path) -> None:
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
 
 
-def test_avatar_noise_does_not_count_as_progress(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_avatar_noise_does_not_count_as_progress(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     snapshot = complete_snapshot()
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     snapshot["reviews"][0][0]["user"]["avatar_url"] = "irrelevant"
@@ -1187,9 +1314,11 @@ def test_avatar_noise_does_not_count_as_progress(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("error", [OSError("missing gh"), TypeError("null payload")])
 def test_collection_failure_replaces_prior_green(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, error: Exception
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    error: Exception,
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
 
     def fail(*args: object) -> dict[str, object]:
@@ -1200,8 +1329,9 @@ def test_collection_failure_replaces_prior_green(
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
 
 
-def test_old_observation_cannot_cross_same_head_epoch(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_old_observation_cannot_cross_same_head_epoch(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     old = review_session.load(tmp_path, "change")["monitor"]["data"]
     review_session.record(
@@ -1238,9 +1368,8 @@ def test_malformed_connection_cannot_mean_exhausted(connection: object) -> None:
 
 @pytest.mark.parametrize("nonfinding_seed", [False, True])
 def test_family_investigation_requires_prior_genuine_escape(
-    tmp_path: Path, nonfinding_seed: bool
+    tmp_path: Path, nonfinding_seed: bool, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     events = [
         {"id": "seed", "kind": "finding", "family": "configuration"},
         {"id": "fix", "kind": "disposition", "finding_id": "seed", "disposition": "fixed"},
@@ -1352,9 +1481,8 @@ def test_successful_optimistic_retry_is_idempotent(tmp_path: Path) -> None:
     ],
 )
 def test_nested_evidence_requires_complete_typed_fields(
-    tmp_path: Path, field: str, entries: object
+    tmp_path: Path, field: str, entries: object, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot[field] = entries
@@ -1418,9 +1546,8 @@ def test_documented_review_states_preserve_completion_policy(
 @pytest.mark.parametrize("login", ["reviewer-a", "other-human"])
 @pytest.mark.parametrize("later", ["COMMENTED", "PENDING", "DISMISSED"])
 def test_review_objection_survives_nonapproving_later_review(
-    tmp_path: Path, login: str, later: str
+    tmp_path: Path, login: str, later: str, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["reviews"] += [
@@ -1531,8 +1658,9 @@ def test_manifest_symlink_cannot_bind_another_file(tmp_path: Path) -> None:
         review_session.initialize(tmp_path, "change", policy)
 
 
-def test_original_rejection_dismissal_is_recomputed_from_fresh_snapshot(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_original_rejection_dismissal_is_recomputed_from_fresh_snapshot(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     rejection = {
@@ -1567,9 +1695,8 @@ def test_original_rejection_dismissal_is_recomputed_from_fresh_snapshot(tmp_path
     [("other-human", False), ("reviewer-a[bot]", False), ("reviewer-a", True)],
 )
 def test_other_identity_or_head_cannot_clear_objection(
-    tmp_path: Path, other_login: str, old_head: bool
+    tmp_path: Path, other_login: str, old_head: bool, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["reviews"] += [
@@ -1623,9 +1750,12 @@ def test_unsupported_index_flags_cannot_hide_inputs(tmp_path: Path, flag: str, p
 
 @pytest.mark.parametrize("action", ["complete", "investigate", "replan", "incomplete"])
 def test_watch_emits_unchanged_local_terminal(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], action: str
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    action: str,
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     if action != "complete":
         review_session.record(
@@ -1653,9 +1783,11 @@ def test_watch_emits_unchanged_local_terminal(
 
 
 def test_watch_deadline_rechecks_local_budget(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     review_session.record(tmp_path, "change", {"id": "active", "kind": "phase", "phase": "active"})
     clock = [0.0]
@@ -1752,9 +1884,11 @@ def test_valid_format_head_still_must_match_actual_git(tmp_path: Path, head: str
 
 
 def test_changed_terminal_watch_emits_one_packet(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["checks"][0]["check_runs"][0]["started_at"] = "2100-01-01T00:00:00Z"
@@ -1764,9 +1898,8 @@ def test_changed_terminal_watch_emits_one_packet(
 
 
 def test_watch_timeout_preserves_incomplete_exit(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     review_session.record(
         tmp_path, "change", {"id": "pending", "kind": "scope_decision", "decision": "pending"}
     )
@@ -1785,8 +1918,9 @@ def test_target_base_contract_rejects_malformed(tmp_path: Path, base: Any) -> No
 
 
 @pytest.mark.parametrize("field,value", [("ref", "release"), ("sha", "a" * 40)])
-def test_same_head_target_base_drift_is_incomplete(tmp_path: Path, field: str, value: str) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_same_head_target_base_drift_is_incomplete(
+    tmp_path: Path, field: str, value: str, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["pr_base"][field] = value
@@ -2019,9 +2153,8 @@ def test_bases_require_commit_objects_not_annotated_tag_ids(
 
 @pytest.mark.parametrize("result", ["APPROVED", "COMMENTED"])
 def test_required_rerequest_waits_and_cancellation_reuses_only_valid_evidence(
-    tmp_path: Path, result: str
+    tmp_path: Path, result: str, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["reviews"][0][0]["state"] = result
@@ -2040,8 +2173,9 @@ def test_required_rerequest_waits_and_cancellation_reuses_only_valid_evidence(
     "value",
     [None, {}, "reviewer-a", [None], [{}], [{"login": 7}], [{"login": ""}], [{"login": "a b"}]],
 )
-def test_malformed_requested_users_invalidate_green(tmp_path: Path, value: Any) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_malformed_requested_users_invalidate_green(
+    tmp_path: Path, value: Any, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["requested_reviewers"] = value
@@ -2049,8 +2183,9 @@ def test_malformed_requested_users_invalidate_green(tmp_path: Path, value: Any) 
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
 
 
-def test_missing_requested_users_invalidate_green(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_missing_requested_users_invalidate_green(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     del snapshot["requested_reviewers"]
@@ -2079,8 +2214,9 @@ def test_request_changes_during_collection_fail_closed(
         review_session.gh_snapshot("nold-ai/changecost", 24)
 
 
-def test_request_identity_normalization_is_semantic_and_bot_exact(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_request_identity_normalization_is_semantic_and_bot_exact(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["requested_reviewers"] = [{"login": "reviewer-a[bot]"}, {"login": "other"}]
@@ -2099,9 +2235,8 @@ def test_request_identity_normalization_is_semantic_and_bot_exact(tmp_path: Path
 
 @pytest.mark.parametrize("blocking", ["rejection", "old-head", "exhausted"])
 def test_request_cancellation_cannot_override_existing_blocks(
-    tmp_path: Path, blocking: str
+    tmp_path: Path, blocking: str, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     if blocking == "rejection":
@@ -2311,9 +2446,11 @@ def test_event_semantic_strings_reject_whitespace_without_mutating_state(
 
 @pytest.mark.parametrize("pending_first", [False, True])
 def test_packet_uses_one_receipt_revision(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, pending_first: bool
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    pending_first: bool,
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     complete = review_session.load(tmp_path, "change")
     review_session.record(
@@ -2353,8 +2490,9 @@ def test_changed_watch_exit_and_snapshot_match_packet(
     assert output["snapshot"] == handoff["monitor"]["data"]
 
 
-def test_valid_padded_event_references_remain_exact(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_valid_padded_event_references_remain_exact(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     finding = {"id": " finding id ", "kind": "finding", "family": " family label "}
     first = review_session.record(tmp_path, "change", finding)
     assert review_session.record(tmp_path, "change", finding) == first
@@ -2429,9 +2567,12 @@ def test_packet_retains_real_input_drift_validation(tmp_path: Path) -> None:
 @pytest.mark.parametrize("axis,values", [("batches", (2, 3, 4)), ("minutes", (89, 90, 91))])
 @pytest.mark.parametrize("disposition", ["fixed", "accepted_exception"])
 def test_exhausted_budget_overrides_remaining_family_investigation(
-    tmp_path: Path, axis: str, values: tuple[int, int, int], disposition: str
+    tmp_path: Path,
+    axis: str,
+    values: tuple[int, int, int],
+    disposition: str,
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     for event in [
         {"id": "f1", "kind": "finding", "family": "inputs"},
         {"id": "fix1", "kind": "disposition", "finding_id": "f1", "disposition": "fixed"},
@@ -2448,8 +2589,9 @@ def test_exhausted_budget_overrides_remaining_family_investigation(
         assert review_session.decision(state)[0] == expected
 
 
-def test_remote_resolved_thread_does_not_create_local_adjudication(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_remote_resolved_thread_does_not_create_local_adjudication(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["threads"] = [
@@ -2493,8 +2635,9 @@ def reviewed_thread_snapshot() -> dict[str, Any]:
 
 
 @pytest.mark.parametrize("change", ["edit", "add-comment", "add-thread", "extra-coverage"])
-def test_changed_report_content_requires_explicit_revalidation(tmp_path: Path, change: str) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_changed_report_content_requires_explicit_revalidation(
+    tmp_path: Path, change: str, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = reviewed_thread_snapshot()
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
@@ -2529,8 +2672,9 @@ def test_changed_report_content_requires_explicit_revalidation(tmp_path: Path, c
     assert review_session.status(tmp_path, "change")["action"] == "complete"
 
 
-def test_thread_adjudication_does_not_override_unresolved_or_local_findings(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_thread_adjudication_does_not_override_unresolved_or_local_findings(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = reviewed_thread_snapshot()
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
@@ -2580,8 +2724,9 @@ def test_malformed_thread_coverage_rejected_at_ingestion_and_replay(
 @pytest.mark.parametrize(
     "thread", [{}, {"id": "t", "isResolved": True, "isOutdated": False, "comments": [{}]}]
 )
-def test_malformed_report_has_no_usable_receipt(tmp_path: Path, thread: Any) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_malformed_report_has_no_usable_receipt(
+    tmp_path: Path, thread: Any, prepared_session: dict[str, Any]
+) -> None:
     snapshot = complete_snapshot()
     snapshot["threads"] = [thread]
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
@@ -2596,8 +2741,8 @@ def test_family_budget_extension_must_cover_each_exhausted_axis(
     extension: str,
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     for event in [
         {"id": "f1", "kind": "finding", "family": "inputs"},
         {"id": "fix1", "kind": "disposition", "finding_id": "f1", "disposition": "fixed"},
@@ -2651,9 +2796,12 @@ def test_thread_coverage_cannot_transfer_to_new_binding(tmp_path: Path, refresh:
 @pytest.mark.parametrize("axis,values", [("batches", (2, 3, 4)), ("active_minutes", (89, 90, 91))])
 @pytest.mark.parametrize("phase", ["complete", "active", "paused"])
 def test_satisfied_completion_exception_is_exactly_bounded(
-    tmp_path: Path, axis: str, values: tuple[int, int, int], phase: str
+    tmp_path: Path,
+    axis: str,
+    values: tuple[int, int, int],
+    phase: str,
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     state = review_session.load(tmp_path, "change")
     state["phase"] = phase
@@ -2679,9 +2827,8 @@ def test_thread_receipt_digest_is_order_independent_and_complete() -> None:
 @pytest.mark.parametrize("refresh", [False, True])
 @pytest.mark.parametrize("epoch", ["missing", None, False, 0, 0.0, [], "", "old-generation"])
 def test_missing_or_invalid_observation_epoch_replaces_green(
-    tmp_path: Path, refresh: bool, epoch: Any
+    tmp_path: Path, refresh: bool, epoch: Any, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     if refresh:
         review_session.record(
@@ -2725,9 +2872,8 @@ def test_explicit_current_epoch_is_accepted_and_prior_epoch_stays_stale(
 
 
 def test_collection_error_without_epoch_replaces_prior_green(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
 
     def unavailable(*args: Any) -> Any:
@@ -2745,9 +2891,8 @@ def test_collection_error_without_epoch_replaces_prior_green(
 
 @pytest.mark.parametrize("count,minutes,expected", [(3, 0.1, 90.3), (5, 0.2, 91.0)])
 def test_fractional_budget_and_elapsed_time_share_exact_boundary(
-    tmp_path: Path, count: int, minutes: float, expected: float
+    tmp_path: Path, count: int, minutes: float, expected: float, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     review_session.record(
         tmp_path, "change", {"id": "base-time", "kind": "active_minutes", "minutes": 90}
     )
@@ -2809,9 +2954,8 @@ def test_aggregate_overflow_rejects_atomically_and_replay_fails_closed(
 
 @pytest.mark.parametrize("key", ["cached_input", "uncached_input", "output", "cost"])
 def test_usage_components_remain_canonical_across_retries_and_reload(
-    tmp_path: Path, key: str
+    tmp_path: Path, key: str, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     for index in range(3):
         event = {"id": f"usage-{index}", "kind": "usage", key: 0.1}
         before = review_session.load(tmp_path, "change")["revision"]
@@ -2910,9 +3054,8 @@ def test_fractional_budget_decisions_survive_refresh_and_zero_grants(
 )
 @pytest.mark.parametrize("sign", [1, -1])
 def test_oversized_measurements_reject_atomically_and_recover(
-    tmp_path: Path, kind: str, key: str, sign: int
+    tmp_path: Path, kind: str, key: str, sign: int, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     event = {"id": "large", "kind": kind, key: sign * 10**1000, "approved_by": "maintainer"}
     path = review_session.state_path(tmp_path, "change")
     original = path.read_bytes()
@@ -2944,8 +3087,9 @@ def test_large_integer_batches_remain_exact_through_replay(tmp_path: Path) -> No
 
 
 @pytest.mark.parametrize("value", [10**1000, -(10**1000), True, 1.5])
-def test_numeric_pr_identity_mismatch_invalidates_prior_green(tmp_path: Path, value: Any) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_numeric_pr_identity_mismatch_invalidates_prior_green(
+    tmp_path: Path, value: Any, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["pull_request"] = value
@@ -2955,8 +3099,9 @@ def test_numeric_pr_identity_mismatch_invalidates_prior_green(tmp_path: Path, va
 
 
 @pytest.mark.parametrize("value", [10**1000, -(10**1000), True, 1.5])
-def test_numeric_observation_revision_retains_integer_contract(tmp_path: Path, value: Any) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_numeric_observation_revision_retains_integer_contract(
+    tmp_path: Path, value: Any, prepared_session: dict[str, Any]
+) -> None:
     state = review_session.load(tmp_path, "change")
     state["observation_revision"] = value
     state["revision"] = value
@@ -2968,9 +3113,11 @@ def test_numeric_observation_revision_retains_integer_contract(tmp_path: Path, v
 
 
 def test_oversized_measurement_cli_is_structured_incomplete(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     event_path = tmp_path / ".changecost" / "oversized.json"
     event_path.write_text(
         json.dumps({"id": "large", "kind": "active_minutes", "minutes": 10**1000})
@@ -3429,8 +3576,9 @@ def test_declared_ignored_nonregular_or_unreadable_is_incomplete(
 
 
 @pytest.mark.parametrize("surface", ["reviews", "comments"])
-def test_nonthread_report_changes_require_local_adjudication(tmp_path: Path, surface: str) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_nonthread_report_changes_require_local_adjudication(
+    tmp_path: Path, surface: str, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     if surface == "reviews":
@@ -3474,9 +3622,8 @@ def test_all_report_changes_require_exact_current_receipts(
     [("id", None), ("id", True), ("id", "1"), ("id", 0), ("body", None), ("body", 17)],
 )
 def test_malformed_nonthread_reports_replace_green(
-    tmp_path: Path, surface: str, field: str, value: Any
+    tmp_path: Path, surface: str, field: str, value: Any, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     if surface == "comments":
@@ -3501,8 +3648,9 @@ def test_duplicate_nonthread_ids_across_pages_fail_closed(tmp_path: Path, surfac
     assert review_session.report_receipts(snapshot) is None
 
 
-def test_report_namespaces_and_metadata_do_not_collide_or_revoke_coverage(tmp_path: Path) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_report_namespaces_and_metadata_do_not_collide_or_revoke_coverage(
+    tmp_path: Path, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["reviews"][0][0]["id"] = 42
@@ -3537,8 +3685,9 @@ def test_report_namespaces_and_metadata_do_not_collide_or_revoke_coverage(tmp_pa
 
 
 @pytest.mark.parametrize("duplicate", [False, True])
-def test_required_neutral_check_cannot_satisfy_completion(tmp_path: Path, duplicate: bool) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_required_neutral_check_cannot_satisfy_completion(
+    tmp_path: Path, duplicate: bool, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     neutral = {**snapshot["checks"][0]["check_runs"][0], "conclusion": "neutral"}
@@ -3569,9 +3718,8 @@ def test_required_neutral_check_cannot_satisfy_completion(tmp_path: Path, duplic
     ],
 )
 def test_check_conclusion_policy_preserves_required_positive_assurance(
-    tmp_path: Path, required: bool, conclusion: Any
+    tmp_path: Path, required: bool, conclusion: Any, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     item = {
@@ -3595,8 +3743,9 @@ def test_check_conclusion_policy_preserves_required_positive_assurance(
 @pytest.mark.parametrize(
     "status", ["queued", "in_progress", "waiting", "pending", "requested", "unknown"]
 )
-def test_uncompleted_checks_never_become_positive(tmp_path: Path, status: str) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_uncompleted_checks_never_become_positive(
+    tmp_path: Path, status: str, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["checks"][0]["check_runs"][0]["status"] = status
@@ -3717,9 +3866,8 @@ def test_consistent_passes_return_second_with_harmless_metadata(
 
 @pytest.mark.parametrize("failure", ["api", "malformed", "timeout"])
 def test_second_pass_failure_replaces_prior_green(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, failure: str, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     calls = [0]
 
@@ -3742,9 +3890,8 @@ def test_second_pass_failure_replaces_prior_green(
 
 
 def test_two_passes_share_one_decreasing_request_deadline(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     ticks = iter([100, 110])
     monkeypatch.setattr(review_session.time, "monotonic", lambda: next(ticks))
     timeouts = []
@@ -3963,8 +4110,9 @@ def test_native_completion_rejects_misbound_source(tmp_path: Path, field: str, v
 
 
 @pytest.mark.parametrize("kind", ["batch", "investigation"])
-def test_exhaustion_blocks_new_correction_authority(tmp_path: Path, kind: str) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_exhaustion_blocks_new_correction_authority(
+    tmp_path: Path, kind: str, prepared_session: dict[str, Any]
+) -> None:
     for index in range(3):
         review_session.record(tmp_path, "change", {"id": str(index), "kind": "batch"})
     with pytest.raises(ValueError, match="budget"):
@@ -3975,9 +4123,11 @@ def test_exhaustion_blocks_new_correction_authority(tmp_path: Path, kind: str) -
 
 @pytest.mark.parametrize("timeout", [None, 30])
 def test_watch_default_is_absolute_despite_progress(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, timeout: int | None
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    timeout: int | None,
+    prepared_session: dict[str, Any],
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     clock = [0.0]
     deadlines = []
@@ -4280,9 +4430,8 @@ def test_known_closure_and_administrative_fixed_orders_are_valid(
 
 @pytest.mark.parametrize("gate", ["pending", "missing"])
 def test_new_report_hands_off_before_pending_gates(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, gate: str
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, gate: str, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"
@@ -4304,8 +4453,9 @@ def test_new_report_hands_off_before_pending_gates(
 
 
 @pytest.mark.parametrize("report", ["acknowledged-incomplete", "check-only-progress"])
-def test_pending_gates_do_not_repeat_unchanged_report_handoff(tmp_path: Path, report: str) -> None:
-    review_session.initialize(tmp_path, "change", contract())
+def test_pending_gates_do_not_repeat_unchanged_report_handoff(
+    tmp_path: Path, report: str, prepared_session: dict[str, Any]
+) -> None:
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["checks"][0]["check_runs"][0]["status"] = "in_progress"

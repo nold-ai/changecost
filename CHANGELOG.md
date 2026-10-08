@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Reuse independently copied, verified pristine review-session arrangements for
+  ordinary event tests, preserving real initialization/race/corruption controls,
+  all original cases and mandatory complete native coverage enforcement.
+
 - Reconcile nine separate local/inventory source profiles while preserving the 14
   historical profiles, original fixtures and zero native approvals. Record PR #38's
   merged planning checkpoint and retain exact accounting/publication gaps for #9.

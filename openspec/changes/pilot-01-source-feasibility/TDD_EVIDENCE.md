@@ -576,3 +576,38 @@ history and verified against their sources. The original PR #33 session is not
 restored or reinitialized. The preceding missing-receipt publication block is
 historical following this explicit choice; fresh current-scope checks, independent
 review and supported-Linux assurance remain incomplete until actually obtained.
+
+### Native coverage timeout repair — 2026-10-08 (Europe/Berlin)
+
+PR #39 at `c01ec1bb94acfff5b8a7f85e268a5ae8eb090f4a` reached genuine hosted
+Linux assurance on Python 3.13, but both Python 3.11 job attempts failed native
+`targeted-pytest-coverage` with `sandbox_launch_failed:timeout`. Nine other native
+analyzers passed; the ordinary 3,030-test suite passed. Both native test runtimes
+used Python 3.13.11 with identical package versions. Selected follow-up diagnostics
+passed 586 review-session tests (1,758 setup/call/teardown records). The full failed
+reports do not identify the precise slow case; active descendants and the signed
+300-second limit support a performance/deadline diagnosis, not a proven host-version
+defect. Original reports, bindings and the successful 3.13 artifact are retained.
+
+The maintainer requested analysis and repair. The existing bounded session explicitly
+expanded its scope for test arrangement and correlated documentation, retaining
+previous counters and evidence. No new allowance or replacement receipt was initialized.
+Independent review identified 67 ordinary default-arrange functions (198 existing
+parameterized cases) eligible to reuse an independently copied pristine receipt.
+The helper performs real canonical replay, exact contract comparison and current
+Git-input capture before copying. Initialization/race/corruption/replay/loss/index
+controls and every original assertion, decorator and parameter ID are unchanged.
+Seven additional cases verify binding, inode/event isolation, dirty/tampered clone
+detection and rejection before copying. No runtime, analyzer, vendor, lock, test-selection
+or deadline change is included; this test scaffold adds no product capability.
+
+The independent ten-arrangement local probe measured 15 Git calls per real initializer
+versus five per guarded clone, taking 0.8871 versus 0.3127 seconds. Controlled local
+coverage runs used the locked project with temporary `coverage==7.15.4` and
+`pytest-cov==7.1.0`, without modifying project dependencies. The original full suite
+passed 3,030 cases in 41.58 seconds. The review-session comparison passed 586 cases
+in 23.14 seconds before and 593 cases in 19.71 seconds after the repair.
+These measurements establish reduced arrangement overhead, not native timeout
+resolution. Fresh current-head aggregate, independent closure and supported-Linux
+matrix/provider evidence remain necessary. Package version and source approvals
+remain unchanged; no runtime failing-before TDD claim is fabricated for this scaffold.
