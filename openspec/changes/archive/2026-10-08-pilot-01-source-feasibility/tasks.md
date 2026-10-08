@@ -7,7 +7,7 @@ collection or runtime adapter work is included. See [research evidence](RESEARCH
 ## 1. Scope and prerequisites
 
 - [x] 1.1 Start the separately authorized implementation on a focused branch and read the proposal, design and capability spec; verify Git status preserves unrelated work.
-- [x] 1.2 Confirm prerequisite issues and evidence gates; verify the dependency links in [change order](../../CHANGE_ORDER.md) match GitHub before behavior work.
+- [x] 1.2 Confirm prerequisite issues and evidence gates; verify the dependency links in [change order](../../../CHANGE_ORDER.md) match GitHub before behavior work.
 
 ## 2. Evidence inventory
 
@@ -25,7 +25,7 @@ collection or runtime adapter work is included. See [research evidence](RESEARCH
 
 - [x] 4.1 Run applicable repository gates and `openspec validate pilot-01-source-feasibility --strict --no-interactive`; verify all relevant checks pass and report unavailable tooling explicitly.
 - [x] 4.2 For behavior changes, record actual failing-before/passing-after commands, timestamps and results in TDD_EVIDENCE.md and run fresh SpecFact review; verify reviewed scope, tool/module versions and analyzer availability, resolving findings or documenting narrow exceptions. For research-only work, record evidence review without invented TDD.
-- [ ] 4.3 Open a focused PR with docs, verification, limits and rollback; verify reciprocal proposal/issue links and native hierarchy/dependencies, and archive only after implementation is accepted.
+- [x] 4.3 Open a focused PR with docs, verification, limits and rollback; verify reciprocal proposal/issue links and native hierarchy/dependencies, and confirm implementation acceptance before the archival operation in 8.3.
 
 ## Remaining evidence
 
@@ -94,7 +94,7 @@ the missing native inspection or hook mapping.
 ## 9. Repreparation after advisory delivery (2026-10-06)
 
 - [x] 9.1 Refresh main after PR #34, preserve tooling/history, and review current primary evidence and independent architecture obligations; record source/accounting/runtime boundaries and exact missing native artifacts.
-- [ ] 9.2 Validate this planning diff, register/matrix and immutable fixtures; run applicable explicit-base/manifest quality gates and independent affected review, synchronize/read back #9 and dependencies, then record actual limits and PR/stash disposition without claiming provider readiness.
+- [x] 9.2 Validate this planning diff, register/matrix and immutable fixtures; run applicable explicit-base/manifest quality gates and independent affected review, synchronize/read back #9 and dependencies, then record actual limits and PR/stash disposition without claiming provider readiness.
 
 ## 10. Capability-based replan — 2026-10-07
 
@@ -105,7 +105,7 @@ or native semantic approval is asserted by this planning batch.
 - [x] 10.1 Reconcile the 2026-10-06 existing-local discovery against separate newer producer profiles, metadata-only public findings and private hashes; retain missing accounting/finality evidence.
 - [x] 10.2 Independently review regular-metadata and optional-export capability dispositions across all four providers; record why missing capabilities remain unverified/unavailable and which exact native semantics each mapping still needs.
 - [x] 10.3 Verify current register/matrix, all 18 unchanged cases, documentation and selected/all strict gates; synchronize #9 capability-based acceptance and unchanged #13/#14 prerequisites.
-- [ ] 10.4 Complete separately authorized closeout/verification before archival; unavailable publication assurance remains a limitation, never a pass.
+- [x] 10.4 Complete separately authorized closeout/verification before archival; unavailable publication assurance remains a limitation, never a pass.
 
 
 ## 11. Reconciled inventory follow-through — 2026-10-07
@@ -117,8 +117,8 @@ and not reapplied. Tasks below record this separately authorized reconciliation.
 - [x] 11.1 Preserve all 14 historical profile objects and original fixture hashes; add nine separate version/representation profiles with exact native or inventory provenance and regenerate the 23-profile matrix, retaining zero approvals.
 - [x] 11.2 Rehash the seven existing selected JSONL originals and run eight canonical structural bindings; record request/snapshot, revised-message/result and checkpoint/session overlap, selected-row DB/WAL limits and header-only version gaps without aggregation approval.
 - [x] 11.3 Obtain independent native-disposition and affected documentation review; reconcile completion of inventory tasks against capability-based acceptance, preserving gaps and history.
-- [ ] 11.4 Verify the current register, all 18 original cases, source tests, docs/generated references, selected/all strict validation and applicable explicit-base/manifest quality gates; synchronize/read back #9's native relationships and actual local status.
-- [ ] 11.5 Verify the separately authorized post-merge reconciliation in its own bounded review session, preserving the partial historical receipt evidence; obtain applicable current-diff Linux/publication assurance and deliver the focused PR, then close/archive only after acceptance. Missing current assurance remains incomplete; no older counters or acceptance are reconstructed.
+- [x] 11.4 Verify the current register, all 18 original cases, source tests, docs/generated references, selected/all strict validation and applicable explicit-base/manifest quality gates; synchronize/read back #9's native relationships and actual local status.
+- [x] 11.5 Verify the separately authorized post-merge reconciliation in its own bounded review session, preserving the partial historical receipt evidence; obtain applicable current-diff Linux/publication assurance and deliver the focused PR, then confirm acceptance before the archival operation in 8.3. Missing current assurance remains incomplete; no older counters or acceptance are reconstructed.
 
 No runtime source, public API/schema, provider reader or learned policy is changed.
 The original `all profiles have zero approvals` regression remains valid for this
@@ -159,4 +159,63 @@ remain required; no prior finding, counter or review result is erased or inferre
 
 - [x] 12.1 Investigate the repeated full-suite native timeout family, preserve the failed and passing reports, and specify canonical Git acquisition invariants before implementation.
 - [x] 12.2 Observe failing single-acquisition tests, implement the minimal combined capture and verify historical fingerprint, hidden-flag and race controls with real Git.
-- [ ] 12.3 Complete current-diff aggregate, independent closure and both supported-Linux matrix/provider obligations without reducing analyzers, cases or deadlines; keep acceptance/archival open until actually accepted.
+- [x] 12.3 Complete current-diff aggregate, independent closure and both supported-Linux matrix/provider obligations without reducing analyzers, cases or deadlines; keep acceptance/archival open until actually accepted.
+
+
+## Accepted reconciliation — 2026-10-08 (Europe/Berlin)
+
+[PR #39](https://github.com/nold-ai/changecost/pull/39) merged at 23:29:03
+Europe/Berlin as `755a6e1e3243eec8a73de4163d160fa0da77ff24`. Its file tree
+exactly equals reviewed head `d9dbe9512dcc2b647dc68af31ffdd84378127571`.
+Both Python 3.11.15/3.13.14 jobs in
+[Linux run 37843823798](https://github.com/nold-ai/changecost/actions/runs/37843823798)
+executed all ten native analyzers with PASS and complete assurance; each collected
+3,054 tests with zero deselection. Current-head Codex code review and
+[CodeRabbit full review](https://github.com/nold-ai/changecost/pull/39#issuecomment-6069289439)
+completed without actionable findings. Independent current-scope quality, defect
+and documentation closure, the unchanged original fixtures/all 18 cases, and
+verified native hierarchy/dependencies satisfy the accepted delivery obligations.
+The completed review session retains its original history, approved four-batch
+allowance and measured 87.0401734 of 90 active minutes; archival does not reset it.
+
+This acceptance reconciles tasks 4.3, 9.2, 10.4, 11.4, 11.5 and 12.3 against
+actual delivery, rather than treating older pending or failed checkpoints as passes.
+Task 8.3 remains pending until the real CLI archive and spec-preservation readback
+succeed. The maintainer's approved closeout plan authorizes that operation after
+acceptance. All 23 profiles retain zero semantic approvals; the inventory satisfies
+the capability-based criterion without granting import, learning or monetary
+authority. Missing native source semantics and unfinished adapters remain explicit
+in the provider reports. Earlier incomplete checkpoints are retained as history.
+
+
+## Native archival readback — 2026-10-08 (Europe/Berlin)
+
+Installed OpenSpec CLI 1.13.2 executed
+`openspec archive pilot-01-source-feasibility --yes` in the real repository.
+It reported `2026-10-08-pilot-01-source-feasibility`, synchronized eight added
+requirements and removed the active change. The sole incomplete-task warning was
+8.3, the compound archive/issue-close operation itself, authorized by the accepted
+closeout plan. Readback verified archive metadata, all seven source-feasibility
+requirements/52 scenarios and the one bounded-review requirement/five scenarios.
+Every pre-existing bounded-review requirement/scenario remained unchanged.
+Historical evidence is retained; relative navigation is repaired for the new path.
+All 14 strict OpenSpec items, source register/matrix/all 18 cases, generated index
+and documentation checks pass. Structural success still reports
+`semantic_approval: false`.
+
+Task 8.3 remains unchecked while archival publication and issue close/readback are
+pending. The PR #39 acceptance evidence above proves the delivered research scope,
+not new-head verification of this lifecycle diff. No provider mapping, native
+learning outcome or billed-money authority is approved by this archive.
+
+
+## Authorized publication sequence — 2026-10-08 (Europe/Berlin)
+
+After independent lifecycle review and local mechanical checks, the maintainer
+explicitly approved publishing the archive branch and creating its PR to obtain
+fresh supported-Linux verification. macOS native assurance reports all ten
+analyzers UNKNOWN; it remains incomplete. This sequencing exception permits
+publication, not acceptance or any gate waiver. The PR's live verification index
+will record the actual committed head, current Linux results and required provider
+review. Task 8.3 remains pending through the publication/issue-close handoff.
+The preceding local/unpublished checkpoint describes the pre-publication state.

@@ -91,7 +91,7 @@
   },
   {
     "title": "Research evidence",
-    "path": "openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md",
+    "path": "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md",
     "description": "scenario review, checks and unresolved source inspection."
   },
   {
@@ -103,6 +103,11 @@
     "title": "Bounded review specification",
     "path": "openspec/specs/bounded-review-session/spec.md",
     "description": "Accepted behavior synchronized from the merged implementation."
+  },
+  {
+    "title": "Source feasibility specification",
+    "path": "openspec/specs/source-feasibility/spec.md",
+    "description": "Accepted capability inventory and evidence gates; native support and runtime authority remain separately approved."
   },
   {
     "title": "Core-02 contracts preparation",

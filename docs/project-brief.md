@@ -1,6 +1,6 @@
 # Project brief
 
-Status: **pilot planning / To-Validate**, updated 2026-10-07 (Europe/Berlin).
+Status: **pilot planning / To-Validate**, updated 2026-10-08 (Europe/Berlin).
 All approved pilot changes belong to the first **unreleased 0.x alpha/preview
 feasibility study**. No product version has been published. The current package is
 `0.1.0.dev0`; internal artifact labels do not imply a product 1.0 release or stable
@@ -98,13 +98,14 @@ retain that unchecked obligation. Human/JSON presentation, exact read-only check
 and optional summaries retain imported-claim uncertainty and independent quality
 gates. Provider approval and calibration remain separate.
 
-Source feasibility #9 is the selected next preparation. PR #33 delivered its
-offline checker, register and research controls, but all 14 profiles still have
-zero native approvals. Normalized input can persist provider-shaped evidence;
+Source feasibility #9 is accepted after PR #39 merged on 2026-10-08. Its
+offline checker, register and research controls are delivered; native CLI archival
+synchronized the evidence gates. All 23 profiles still have zero native approvals.
+Offline adaptive demand #35 is the next change to prepare for implementation. Normalized input can persist provider-shaped evidence;
 trusted completeness and replay remain limited to synthetic billed-USD fixtures.
 Future adapters need explicit source accounting, coverage and historical replay
 policies before provider results can grant trusted numeric advice. See the
-[architecture decisions](../openspec/changes/pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin).
+[architecture decisions](../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin).
 
 ## Adaptive-demand direction — approved planning, 2026-10-07
 

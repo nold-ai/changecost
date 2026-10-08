@@ -59,8 +59,10 @@ its presentation, read-only historical advice and safe summary requirements into
 main specs. The maintainer accepted archival with the final full Codex code review
 quota-blocked; that review task remains unchecked in the archive. This exception
 does not waive future reviews. Provider/live collection and calibration remain
-separate gates. Source feasibility #9 is the selected preparation: its offline
-tooling merged in PR #33, but native profile approval remains incomplete.
+separate gates. Source feasibility #9 tooling merged in PR #33 and capability reconciliation
+was accepted in PR #39 on 2026-10-08. Native CLI archival synchronized its
+evidence gates; all 23 profiles retain zero approvals. Offline adaptive demand
+#35 is the next selected change; implementation still requires authorization.
 
 On 2026-10-07 the maintainer approved planning revisions for capability-based
 source closeout and local adaptive demand, including separate Codex/Claude reader

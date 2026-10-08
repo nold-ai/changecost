@@ -48,7 +48,7 @@ No account changes, paid plans, live collection in this planning delivery, Enter
 None.
 
 Dependencies are implementation prerequisites; planning can proceed together.
-See [change order](../../CHANGE_ORDER.md) and [source assessment](../../../docs/research/pilot-source-assessment.md).
+See [change order](../../../CHANGE_ORDER.md) and [source assessment](../../../../docs/research/pilot-source-assessment.md).
 
 ## Decisions and uncertainty
 
@@ -127,7 +127,7 @@ remain unchanged. Demand-learning eligibility and complete billed-money authorit
 require separate versioned policies. #13/#14 keep prerequisites #9/#12; missing
 support blocks only the affected mapping/capability. New Codex/Claude reader and
 adaptive-demand plans are separate future implementations. See
-[forecasting](../../../docs/forecasting.md) and [research](../../../docs/research/adaptive-demand-evidence.md).
+[forecasting](../../../../docs/forecasting.md) and [research](../../../../docs/research/adaptive-demand-evidence.md).
 
 
 ## Publication disposition — 2026-10-07 (Europe/Berlin)
@@ -165,3 +165,25 @@ session `pilot-01-source-feasibility-reconcile-20261007`. Partial historical rev
 records are preserved; recovery of the older receipt does not block this new diff.
 Current-scope review, applicable Linux assurance and actual delivery acceptance
 remain required; #9 stays Open/In Progress until acceptance.
+
+
+## Accepted capability inventory and CLI archive — 2026-10-08
+
+PR #39 merged at `755a6e1e3243eec8a73de4163d160fa0da77ff24`, with a file tree
+identical to reviewed head `d9dbe9512dcc2b647dc68af31ffdd84378127571`. Its
+current-head Linux and provider reviews completed before acceptance. The normal
+OpenSpec CLI archived this change and synchronized both capability deltas; see
+the dated [task acceptance and archive record](tasks.md#native-archival-readback--2026-10-08-europeberlin).
+The accepted capability criterion is satisfied with 23 profiles and zero native
+approvals. Earlier active/unpublished statements record dated history.
+
+The archive lifecycle diff remains locally unpublished pending its applicable
+verification and issue closeout. This record does not reconstruct the older review
+receipt or waive fresh publication checks. #13/#14/#36/#37 retain #9/#12 prerequisites
+and separate native approval gates. Offline adaptive demand #35 is next.
+
+
+The maintainer subsequently approved publication of this reviewed lifecycle diff
+and creation of its PR to obtain fresh Linux CI. This sequencing exception does
+not waive native assurance, current-head review or the remaining issue-close
+readback; the PR's verification index owns the live delivery state.

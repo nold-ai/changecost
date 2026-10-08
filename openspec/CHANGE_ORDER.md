@@ -46,7 +46,7 @@ This adds no new issue or product-order dependency.
 
 | Change / proposal | Story | Feature | Implementation prerequisites |
 | --- | --- | --- | --- |
-| [pilot-01-source-feasibility](changes/pilot-01-source-feasibility/proposal.md) | [#9](https://github.com/nold-ai/changecost/issues/9) | [#5](https://github.com/nold-ai/changecost/issues/5) | None |
+| [pilot-01-source-feasibility](changes/archive/2026-10-08-pilot-01-source-feasibility/proposal.md) | [#9](https://github.com/nold-ai/changecost/issues/9) | [#5](https://github.com/nold-ai/changecost/issues/5) | None |
 | [core-01-python-foundation](changes/archive/2026-09-29-core-01-python-foundation/proposal.md) | [#10](https://github.com/nold-ai/changecost/issues/10) | [#6](https://github.com/nold-ai/changecost/issues/6) | None |
 | [core-02-change-run-contracts](changes/archive/2026-09-29-core-02-change-run-contracts/proposal.md) | [#11](https://github.com/nold-ai/changecost/issues/11) | [#6](https://github.com/nold-ai/changecost/issues/6) | [#10](https://github.com/nold-ai/changecost/issues/10) `core-01-python-foundation` |
 | [settlement-01-reconciliation](changes/archive/2026-10-02-settlement-01-reconciliation/proposal.md) | [#12](https://github.com/nold-ai/changecost/issues/12) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#11](https://github.com/nold-ai/changecost/issues/11) `core-02-change-run-contracts` |
@@ -264,8 +264,8 @@ The selected next preparation is **pilot-01-source-feasibility (#9)**. Its offli
 checker/register/18-case tooling merged in PR #33, but all 14 profiles have zero
 native approvals. #9 remains Open/In Progress and #13/#14 keep blocked-by #9/#12.
 Current normalized imports exist; trusted coverage/replay remains synthetic billed
-USD only. See the [architecture decisions](changes/pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin)
-and [current research](changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin).
+USD only. See the [architecture decisions](changes/archive/2026-10-08-pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin)
+and [current research](changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin).
 This preparation is locally unpublished pending checks and the PR/stash choice;
 provider implementation, live collection and calibration remain separate gates.
 
@@ -310,3 +310,24 @@ the separate `pilot-01-source-feasibility-reconcile-20261007` review session for
 this post-merge diff; partial older receipt evidence is preserved. Current-scope
 review and applicable Linux/publication assurance remain required, while recovery
 of the historical receipt does not block this new scope.
+
+
+## Accepted source feasibility — 2026-10-08 (Europe/Berlin)
+
+[PR #39](https://github.com/nold-ai/changecost/pull/39) merged at 23:29:03
+Europe/Berlin, main `755a6e1e3243eec8a73de4163d160fa0da77ff24`, with the same
+file tree as reviewed head `d9dbe9512dcc2b647dc68af31ffdd84378127571`. Both
+[Linux matrix jobs](https://github.com/nold-ai/changecost/actions/runs/37843823798)
+and current-head Codex/CodeRabbit reviews completed. The accepted capability-based
+inventory closes the research scope; all 23 profiles retain zero native approvals.
+
+The OpenSpec CLI archived [the change](changes/archive/2026-10-08-pilot-01-source-feasibility/proposal.md),
+synchronizing seven source-feasibility requirements/52 scenarios plus one bounded-review
+requirement/five scenarios. Missing native accounting, finality and coverage evidence
+remain per-capability gates for #13/#14/#36/#37; prerequisite edges #9/#12 are retained.
+Closing feasibility does not approve imports, learning eligibility or billed money.
+Earlier active/pending statements above record dated history.
+
+The next product change is [offline adaptive demand #35](changes/forecast-01-local-adaptive-demand/proposal.md),
+starting with zero-knowledge contracts and synthetic verification. Provider readers,
+live collection and native calibration remain independently authorized work.

@@ -9,7 +9,7 @@ currently authorize synthetic billed-USD fixtures only; an approved source profi
 does not automatically grant provider accounting authority. Later adapter preparation
 must reconcile versioned accounting/coverage policy and historical replay across
 settlement, Quotes and advice before enabling numeric provider results. See the
-[feasibility decisions](../pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin).
+[feasibility decisions](../archive/2026-10-08-pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin).
 
 ## Goals / Non-Goals
 
@@ -31,7 +31,7 @@ settlement, Quotes and advice before enabling numeric provider results. See the
 
 ## Dependencies and evidence
 
-- [pilot-01-source-feasibility](../pilot-01-source-feasibility/proposal.md)
+- [pilot-01-source-feasibility](../archive/2026-10-08-pilot-01-source-feasibility/proposal.md)
 - [settlement-01-reconciliation](../archive/2026-10-02-settlement-01-reconciliation/proposal.md)
 
 Shared boundaries and current provider evidence are recorded in the
