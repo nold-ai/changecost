@@ -355,3 +355,133 @@ historical preparation state; this is the current delivery disposition.
 Publication does not imply merge, implementation completion or native approval.
 Recorded review limits and all 14 source profiles with zero approvals remain
 unchanged.
+
+
+## Merged planning checkpoint — 2026-10-07 (Europe/Berlin)
+
+Planning [PR #38](https://github.com/nold-ai/changecost/pull/38) merged at
+21:25:35 Europe/Berlin, commit `dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`,
+reviewed head `b6a03b38d160cf784ef8f8735ce3384164980f84`.
+Both Python 3.11.15/3.13.14 jobs passed in
+[Linux run 37670722956](https://github.com/nold-ai/changecost/actions/runs/37670722956).
+These are actual PR #38 delivery checks, not verification of this later diff or
+native semantic approval. Earlier publication/local-stash statements remain dated
+history; neither recovery stash is reapplied.
+
+## Native reconciliation — 2026-10-07 (Europe/Berlin)
+
+Fresh main is `dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`. This follow-through
+reuses the existing discovery inputs and delivered checker; no model request,
+account/API call, collector, setting change or runtime adapter is executed.
+All 14 historical profile objects and the original synthetic fixture bytes remain
+unchanged. Nine separately scoped profiles bring the inventory to **23 profiles,
+zero approvals**. The current assessment date is distinct from observation dates.
+
+Seven selected native JSONL originals were rehashed using the bounded regular-file
+reader; all match their 2026-10-06 digests. Eight canonical profile/input bindings
+pass structural inspection because the mixed-version Claude input is bound to two
+version-scoped profiles. Hashing the entire file does not assign every row to either
+version. Private manifests, identity comparisons and structural receipts remain
+ignored; public findings disclose no source paths, identities or actual quantities.
+
+| Profile group | Observed evidence and disposition | Exact decision still required |
+| --- | --- | --- |
+| Codex Desktop 0.159.0-alpha.12.1 | Partial request usage/identity; request records and legacy snapshots coexist, with cache-write categories and root-turn fields. | Establish non-overlapping request/snapshot authority, response identity, root/subagent ownership, category inclusion, replay/reset/correction and complete terminal/all-attempt coverage. No adjacency join or cumulative sum is selected. |
+| Claude project 2.1.275, new selected inputs | Partial assistant usage/identity; repeated message groups change usage. Distinct observation from the historical profile. | Establish version-scoped request/message revision precedence and complete ownership; first, last and maximum are not universal policies. |
+| Claude Desktop 2.1.221/234 | Partial transcript usage/identity for rows with each exact version in one mixed input. | Resolve replay/revisions, cache inclusion, subagent coverage, terminal scope and joins to SDK results without borrowing another version's authority. |
+| Claude Desktop SDK/result, mixed runtime headers 2.1.221/234 | Partial usage and identity; assistant records overlap aggregate `usage`/`modelUsage`; numeric `total_cost_usd` is an estimate without billing provenance. | Prove per-result version association and request/result/transcript boundaries; estimated USD never establishes Pro subscription charges. |
+| Claude Desktop 2.1.202/205 inventory | All capabilities unverified; documentation-provenance discovery receipt records header versions but no selected native accounting input for them. | Bind exact-version native input before field/accounting claims. The pre-2.1.214 monitoring defect does not prove local transcript behavior. |
+| Copilot hosted local observation | Partial usage/identity; native checkpoint and shutdown overlap, while separate host session totals disagree. Ephemeral usage is absent from this selected stream. | Establish root/direct/turn/session ownership, cache inclusion, identity, replay/reset/correction and final coverage. Host SQLite comparisons are non-atomic. Keep CLI and Local IDE separate. |
+| Cursor Free local observation | Partial identity, usage unverified; selected stored-row hashes bind bounded read-only SQLite findings, not full DB/WAL snapshots. Empty objects and zero placeholders do not measure consumption. | No usable consumption lane demonstrated. Optional personal CSV needs actual headers/rows, range/timezone, tier/basis, identity and correction evidence; provider-wide absence is not established. |
+
+All billed-money and finality capabilities remain unverified. Current maintainer-
+confirmed Free/Pro context does not retroactively prove every stored session's
+authentication or billing. Optional Enterprise/custom hooks retain the previously
+documented paired native/upload or sanitized mapping requirement, with receiver
+transformations inspected separately. No such new input was supplied.
+
+### Current primary-source recheck
+
+Accessed **2026-10-07**: [Codex app-server](https://learn.chatgpt.com/docs/app-server)
+documents thread usage notifications and authenticated account summary/daily buckets;
+the account interface is optional online/account scope, not a task-level offline
+source. [Claude monitoring](https://code.claude.com/docs/en/monitoring-usage)
+documents approximate cost, the pre-2.1.214 streaming correction and cache-category
+differences. None certifies the persisted samples or a universal revision policy.
+
+[Copilot CLI monitoring](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#opentelemetry-monitoring)
+warns against adding repeated child nano-AIU and distinguishes multipliers from
+currency. [SDK events](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events)
+distinguish ephemeral per-call usage, context occupancy and durable checkpoints.
+[VS Code monitoring](https://code.visualstudio.com/docs/agents/guides/monitoring-agents)
+describes harness-specific traces and a debug panel available without export;
+that does not establish a durable local import contract or authorize enabling OTel.
+
+[Cursor analytics](https://cursor.com/docs/account/teams/analytics) describes
+Team/Enterprise access; [usage and limits](https://prod.cursor.com/help/models-and-usage/usage-limits)
+separates included pools and on-demand charges. These do not approve personal Free
+CSV availability or make context occupancy a consumed-token measurement.
+
+### Delivery and recovery boundary
+
+Reviewed dispositions and exact gaps can satisfy the accepted feasibility criterion
+without one supported profile or every optional export. Native support, demand
+eligibility and billed-money authority remain independent gates. Actual closeout
+requires independent review and current-diff delivery checks, not the checker exit.
+The original source review-session receipt is absent from known checkouts/worktrees
+and scoped stash trees. No replacement session, inferred counters or approval is
+created. Publication, issue closure and archival stay incomplete pending recovery
+and applicable assurance; #35's offline synthetic phase has no #9 prerequisite.
+
+
+### Reviewed disposition and actual local verification
+
+Independent native-disposition review and documentation/metadata review found no
+remaining introduced defects after correcting the SDK/result stream's mixed
+2.1.221/234 system headers. Result-level version association remains unresolved;
+no native support attestations are added. Inventory tasks are reconciled under
+capability-based closeout, not the superseded universal-export condition.
+
+The source suite passed 644; all 18 original cases/register/matrix return errors
+empty and semantic approval false. All 14 historical profiles and three protected
+fixture hashes remain unchanged. Selected/all strict OpenSpec passed 14/14.
+Mechanical quality leaves, 3,030 repository tests, build and independent inventory
+review passed; original environment failures and affected passing reruns remain
+recorded in the ignored reconciliation receipt. Full native assurance remains
+FAIL/UNKNOWN on Darwin. Cached Linux cannot provide the required capsule/module
+environment; prior PR #38 checks apply only to its merged tree.
+
+Current disposition is local/unpublished on
+`codex/reconcile-source-feasibility-20261007`; the original source review receipt
+is still missing. No replacement allowance, focused PR, issue closure or archive
+is created. The delivery/acceptance tasks remain open until recovery and applicable
+current-diff assurance. The original scoped stashes and accepted archives remain
+untouched. Rollback reverts only the scoped diff and restores the saved issue body.
+
+
+Issue #9 synchronization was read back with unchanged native User Story type,
+labels, private-project In Progress status and parent #5. #9 has no prerequisites;
+#13/#14/#36/#37 retain [#9,#12]. The issue explicitly distinguishes merged PR #38
+from this local/unpublished 23-profile reconciliation and records the publication
+blockers. No issue state or dependency is changed.
+
+### Maintainer-authorized post-merge review — 2026-10-07 (Europe/Berlin)
+
+The maintainer selected a fresh review for the current uncommitted reconciliation
+after the prior PR merged. The new bounded session is
+`pilot-01-source-feasibility-reconcile-20261007`, explicitly associated with #9
+and its existing OpenSpec change. It reviews the prospective diff against
+`dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`; it does not resume or certify PR #33's
+implementation review. Main was fetched again and still identifies that commit.
+
+Local execution history proves that the older schema-8 receipt was initialized
+on 2026-10-03 in a now-absent temporary worktree and subsequently read successfully.
+Six original tool-call/result records were copied into the ignored recovery
+directory with source locations and hashes. Saved full-state output is truncated;
+no complete historical receipt, missing counters or events are reconstructed.
+The original evidence, known findings and earlier limitations remain preserved.
+
+The earlier requirement to recover that receipt before publishing this new scope
+is superseded by the maintainer's review choice. This grants no source approval,
+passing check or publication acceptance. Fresh verification binds to the current
+contents; supported-Linux evidence and the focused PR remain pending.

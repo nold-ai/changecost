@@ -392,13 +392,10 @@ def validate_gate_contract(contract: dict[str, Any]) -> None:
 
 
 def capture_inputs(root: Path, expected_head: str, declared: Any) -> dict[str, Any]:
-    validate_index_flags(root)
+    files, index = capture_index(root)
     head = repository.git(root, "rev-parse", "HEAD").decode().strip()
     if head != expected_head:
         raise ValueError("reviewed head differs from local HEAD")
-    names = repository.git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
-    files = set(names.decode().split("\0")) - {""}
-    index = repository.git(root, "ls-files", "--stage", "-z")
     parsed_index = index_entries(index)
     fingerprints = {name: input_fingerprint(root, name, parsed_index) for name in declared}
     manifest = json.dumps(fingerprints, sort_keys=True).encode()
@@ -413,12 +410,37 @@ def capture_inputs(root: Path, expected_head: str, declared: Any) -> dict[str, A
     return {"head": head, "digest": hashlib.sha256(fingerprint).hexdigest(), "clean": clean}
 
 
-def validate_index_flags(root: Path) -> None:
-    records = repository.git(root, "ls-files", "-v", "-z").split(b"\0")
-    if any(record[:1].islower() or record[:1] == b"S" for record in records if record):
-        raise ValueError(
-            "unsupported index flags: clear assume-unchanged/skip-worktree explicitly before review"
-        )
+def capture_index(root: Path) -> tuple[set[str], bytes]:
+    """Acquire one tagged snapshot while retaining historical raw stage bytes."""
+    raw = repository.git(
+        root, "ls-files", "--cached", "--others", "--exclude-standard", "--stage", "-v", "-z"
+    )
+    files: set[str] = set()
+    stages: list[bytes] = []
+    if raw and not raw.endswith(b"\0"):
+        raise ValueError("malformed Git inventory snapshot")
+    for record in raw.split(b"\0"):
+        if not record:
+            continue
+        tag, payload = record[:1], record[2:]
+        if tag.islower() or tag == b"S":
+            raise ValueError(
+                "unsupported index flags: clear assume-unchanged/skip-worktree "
+                "explicitly before review"
+            )
+        if record[1:2] != b" " or not payload:
+            raise ValueError("malformed Git inventory snapshot")
+        if tag == b"?":
+            files.add(payload.decode())
+            continue
+        metadata, separator, name = payload.partition(b"\t")
+        if tag not in {b"H", b"M", b"R", b"C", b"K"} or not separator or not name:
+            raise ValueError("malformed Git inventory snapshot")
+        if not re.fullmatch(rb"[0-7]{6} [0-9a-f]{40}(?:[0-9a-f]{24})? [0-3]", metadata):
+            raise ValueError("malformed Git index metadata")
+        files.add(name.decode())
+        stages.append(payload + b"\0")
+    return files, b"".join(stages)
 
 
 def load(root: Path, change_id: str) -> dict[str, Any]:

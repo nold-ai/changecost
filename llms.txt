@@ -15,10 +15,10 @@
 - [Change order](openspec/CHANGE_ORDER.md): pending changes, issue links and prerequisites.
 - [Changelog](CHANGELOG.md): recorded changes; no release is implied.
 - [Archived Python foundation](openspec/changes/archive/2026-09-29-core-01-python-foundation/design.md): delivered foundation design, historical verification and accepted limitations.
-- [Source feasibility](docs/providers/source-feasibility.md): capability matrix, current limits and work-side evidence checklist.
-- [Codex and Claude Code metrics](docs/providers/codex-claude-metrics.md): documented interfaces and authorized local metadata observations; no approved adapters.
-- [Cursor local metrics](docs/providers/cursor-local-metrics.md): Basic-account identity/context observations; consumption and billing remain unverified.
-- [VS Code hosted Copilot metrics](docs/providers/copilot-local-metrics.md): explicit host/SDK identity, local turn totals and checkpoint boundaries; final settlement unverified.
+- [Source feasibility](docs/providers/source-feasibility.md): Reviewed regular-local and optional-export capability inventory; source approvals and runtime authority remain separate.
+- [Codex and Claude Code metrics](docs/providers/codex-claude-metrics.md): Separate recorded producer versions, request/transcript/result observations and exact native accounting gaps.
+- [Cursor local metrics](docs/providers/cursor-local-metrics.md): Historical Basic and current Free metadata; consumed tokens and billing remain unverified.
+- [VS Code hosted Copilot metrics](docs/providers/copilot-local-metrics.md): Hosted SDK checkpoint/shutdown observations, overlapping host scopes and unresolved accounting semantics.
 - [Enterprise schema review](docs/providers/enterprise-schema-review.md): received projection integrity, official schema comparison, and reported session-log parsing and custom receiver with OTel disabled.
 - [Enterprise v2 review](docs/providers/enterprise-v2-schema-review.md): reported message counters, synthetic arithmetic, encoding discrepancies and unchanged hook evidence gaps.
 - [Fixture contract](docs/providers/fixtures.md): allowlists, synthetic cases and relationship-preserving transformations.
@@ -37,7 +37,7 @@
 - [Evidence reconciliation specification](openspec/specs/evidence-reconciliation/spec.md): Accepted normalized reconciliation, immutable computation and explicit coverage requirements synchronized by the OpenSpec archive CLI.
 - [Empirical quotes preparation](openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/PREPARATION_EVIDENCE.md): Historical preparation against delivered cutoff/coverage contracts; later runtime evidence is separate.
 - [Empirical Quotes](docs/quotes.md): Offline synthetic peer estimation, exact quantiles, feature backoff and historical replay.
-- [Source profile register](docs/providers/source-profiles.json): Canonical per-version capabilities, digest references and unresolved native evidence.
+- [Source profile register](docs/providers/source-profiles.json): Canonical historical and separately reconciled local/inventory profiles, exact provenance and unresolved native approval.
 - [Accepted empirical Quote specification](openspec/specs/empirical-quotes/spec.md): CLI-synchronized offline synthetic cohort, cutoff and provenance requirements from accepted PR #32.
 - [Advisory workflow preparation](openspec/changes/archive/2026-10-06-workflow-01-advisory-ci/PREPARATION_EVIDENCE.md): Historical advisory preparation; implementation merged in PR #34 and archival retains the accepted missing-code-review limitation.
 - [Optional advisory CI](docs/ci.md): Manually invoked local synthetic advice, escaped bounded summaries and technical failure exits.

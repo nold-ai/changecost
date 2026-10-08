@@ -296,3 +296,17 @@ local-only stash choice. Both scoped stashes remain recovery points; they are no
 the delivery disposition. PR publication does not imply merge or implementation
 completion and preserves recorded review limits.
 Native approvals remain zero. No runtime, collection, paid service or release is added.
+
+
+## Source reconciliation checkpoint — 2026-10-07
+
+PR #38 merged planning at `dc26715`; #9 now reconciles nine additional local/
+inventory profiles while retaining the 14 historical objects and zero approvals.
+Independent disposition review and actual delivery acceptance remain required;
+missing optional source capabilities are lane-specific gaps. No prerequisite edge
+changes: #13/#14/#36/#37 retain #9/#12; #35's offline synthetic phase has no #9 gate.
+The source change remains active pending acceptance. The maintainer authorized
+the separate `pilot-01-source-feasibility-reconcile-20261007` review session for
+this post-merge diff; partial older receipt evidence is preserved. Current-scope
+review and applicable Linux/publication assurance remain required, while recovery
+of the historical receipt does not block this new scope.

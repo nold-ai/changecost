@@ -454,6 +454,14 @@
       "kind": "manual"
     },
     {
+      "path": "openspec/changes/pilot-01-source-feasibility/specs/bounded-review-session/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/pilot-01-source-feasibility/specs/bounded-review-session/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
       "path": "openspec/changes/pilot-01-source-feasibility/specs/source-feasibility/spec.md",
       "owner": "specifications",
       "sources": [

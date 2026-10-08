@@ -53,6 +53,16 @@ or mutations solely to the expected result/projection are not valid controls.
 
 ## Build and validate a packet
 
+The review-session test suite uses an opt-in pristine arrangement for 67 ordinary
+event-test functions (198 existing parameterized cases). Each worker creates the
+seed with the real initializer. Before copying its receipt, the helper loads and
+replays the seed, requires an unchanged default contract and captures the destination's
+current Git inputs. Each test retains separate repository, index, genesis and receipt
+files; no runtime validation is mocked or cached. Initialization, race, corruption,
+replay, loss and scope controls continue to call the real initializer. Additional
+controls check isolation and reject changed inputs, contracts or nonpristine seeds
+before copying. This test arrangement does not initialize or authorize live sessions.
+
 Initialize or recover the existing review session using the
 [shared workflow](../agent-rules/30-change-workflow.md#bounded-review-contract).
 Before executing checks, refresh its inputs with the explicitly authorized manifest
@@ -250,3 +260,19 @@ Independent mutation controls verify that a commit, index/config/hook change or
 working-file edit in one copy cannot alter the seed or another copy. This removes
 repeated Git initialization work, including capsule launcher startup, while fresh
 required native coverage remains the authority for CI acceptance.
+
+
+Review-input capture acquires flags, visible inventory and stage records in one
+NUL-delimited Git query. Tagged untracked paths are classified before parsing any
+tab; tracked records retain their original ordered stage bytes. Hidden index flags
+remain rejected across the repository, including undeclared paths. Independent HEAD
+and status reads and the two captures around initialization/scope refresh remain;
+this optimization does not make working-tree capture atomic or change schema 8.
+Real-Git compatibility cases compare historical fingerprints for staged/working
+divergence, deleted files, unusual names, ignored declared files, planned absence,
+intent-to-add, executable mode and undeclared unmerged entries.
+
+Compatibility scenarios use independent guards for distinct immutable case values,
+preserving their arrangements and assertions while keeping setup control flow shallow
+enough for the required native KISS checks. A passing local depth probe supplements
+tests; fresh full native assurance remains required.

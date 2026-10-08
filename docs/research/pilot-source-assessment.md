@@ -88,3 +88,22 @@ lanes. [Adaptive evidence](adaptive-demand-evidence.md) and
 [forecasting](../forecasting.md) describe zero knowledge, observed learning,
 matched transfer hypotheses and chronological validation; no new runtime behavior
 or native forecast accuracy is asserted here.
+
+
+## Current inventory reconciliation — 2026-10-07
+
+The [23-profile register](../providers/source-profiles.json) preserves all 14
+historical profiles and adds nine separate local/inventory observations. Seven
+selected JSONL originals still match their discovery hashes; the unchanged 18-case
+fixture remains synthetic. Header-only Claude versions, result streams with mixed runtime headers,
+selected SQLite rows and whole native files have different evidence boundaries.
+
+[Native decision review](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin)
+keeps request/snapshot, message/result and checkpoint/session overlaps unresolved.
+All approvals remain zero. Reviewed partial/unverified gaps can complete feasibility
+after actual acceptance; they cannot authorize native demand outcomes or currency.
+Merged PR #38 verifies its planning tree only. The maintainer authorized a separate
+fresh review of this post-merge reconciliation; partial original review records
+are preserved without reconstructing the unavailable historical receipt. Current
+review and applicable Linux/publication assurance remain required; historical
+receipt recovery does not block this new scope.

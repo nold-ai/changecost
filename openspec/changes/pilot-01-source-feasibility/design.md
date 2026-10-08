@@ -225,3 +225,64 @@ historical preparation state; this is the current delivery disposition.
 Publication does not imply merge, implementation completion or native approval.
 Recorded review limits and all 14 source profiles with zero approvals remain
 unchanged.
+
+
+## Merged planning checkpoint — 2026-10-07 (Europe/Berlin)
+
+Planning [PR #38](https://github.com/nold-ai/changecost/pull/38) merged at
+21:25:35 Europe/Berlin, commit `dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`,
+reviewed head `b6a03b38d160cf784ef8f8735ce3384164980f84`.
+Both Python 3.11.15/3.13.14 jobs passed in
+[Linux run 37670722956](https://github.com/nold-ai/changecost/actions/runs/37670722956).
+These are actual PR #38 delivery checks, not verification of this later diff or
+native semantic approval. Earlier publication/local-stash statements remain dated
+history; neither recovery stash is reapplied.
+
+## Profile reconciliation decisions — 2026-10-07
+
+- Preserve the 14 historical profiles byte-for-byte as JSON objects; add nine
+  separate observation/representation profiles and refresh only the current
+  assessment date. All 23 profiles retain zero approvals.
+- Bind Codex 0.159.0-alpha.12.1 request/snapshot inputs separately from 0.158
+  histories. Bind the newly selected Claude 2.1.275 project inputs separately from
+  the earlier observation; repeated usage has changed within message groups.
+- Scope Claude Desktop 2.1.221/234 profiles to exact-version rows in the same
+  mixed-version native input. Keep the SDK/result stream with mixed system-header versions separate;
+  per-result version association remains unverified.
+  The 2.1.202/205 header inventory has documentation provenance only; no other
+  version's hash or monitoring fix grants its accounting semantics.
+- Bind the Copilot hosted checkpoint/shutdown observation separately. Equal
+  checkpoint/shutdown amounts do not establish full coverage; disagreeing host
+  session totals remain unresolved and host SQLite comparisons are non-atomic.
+- Record Cursor Free separately from historical Basic. Its native digest binds
+  selected stored-row bytes, not a whole DB/WAL snapshot. Usage remains unverified:
+  empty objects, zero placeholders and context occupancy are not consumed tokens.
+- Support is still conditional on independently reviewed native authority, interval,
+  identity, replay/reset/correction, cache inclusion, ownership and finality.
+  No sum-all, first/last, largest-value or cross-version aggregation is selected.
+
+The original source review-session receipt remains missing after checking known
+checkouts, temporary worktrees and immutable stash trees; partial original
+execution records are preserved locally. The maintainer authorized a separate
+fresh review for this post-merge reconciliation in session
+`pilot-01-source-feasibility-reconcile-20261007`. It neither reconstructs old
+counters nor certifies the earlier review. Historical receipt recovery does not
+block this new scope; current review, applicable Linux assurance and delivery
+acceptance remain required for publication and closeout.
+
+### Contributor gate performance repair — 2026-10-08
+
+The maintainer requested repair of PR #39's native full-suite timeout. The first
+test-arrangement optimization passed full native assurance on Python 3.11, while
+Python 3.13 still timed out. The same signed native interpreter/dependency versions
+and reversed matrix pattern do not identify a host-version defect. Independent
+review found avoidable repeated Git acquisition within contributor input capture.
+
+Use one NUL-delimited tagged `git ls-files` result for index flags, stage records
+and visible untracked inventory. Distinguish untracked tags before parsing filenames,
+strip only tracked tag prefixes and retain stage order/terminal NUL so existing
+schema-8 fingerprints remain byte-identical. Reject hidden flags globally, including
+undeclared entries. Keep HEAD/status verification, ignored/absent declarations and
+both initialization/refresh captures. This consistent index observation does not
+make the entire working-tree capture atomic. Real Git parity/race tests and fresh
+full native assurance are mandatory; no vendor deadline or product API changes.

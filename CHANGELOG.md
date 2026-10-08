@@ -3,6 +3,20 @@
 
 ## Unreleased
 
+- Keep canonical compatibility-test setup shallow while preserving every scenario,
+  historical fingerprint assertion and complete native coverage requirement.
+
+- Acquire review-session flags, inventory and stage entries in one Git query,
+  preserving schema-8 fingerprints, hidden-index rejection and freshness guards.
+
+- Reuse independently copied, verified pristine review-session arrangements for
+  ordinary event tests, preserving real initialization/race/corruption controls,
+  all original cases and mandatory complete native coverage enforcement.
+
+- Reconcile nine separate local/inventory source profiles while preserving the 14
+  historical profiles, original fixtures and zero native approvals. Record PR #38's
+  merged planning checkpoint and retain exact accounting/publication gaps for #9.
+
 - Require auditable source/date/unit-basis provenance for optional rate scenarios
   and explicit failing count-only/rehearsal-only evaluation promotion controls.
 

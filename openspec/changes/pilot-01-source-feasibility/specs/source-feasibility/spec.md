@@ -371,3 +371,15 @@ Feasibility SHALL assess ordinary local coding-session metadata independently of
 - **GIVEN** a newer native representation than an existing profile
 - **WHEN** the inventory is reconciled
 - **THEN** its version/shape is assessed separately and older approvals or installed versions are not inherited
+
+#### Scenario: Header inventory without selected native accounting evidence
+
+- **WHEN** a recorded producer version appears only in a metadata inventory
+- **THEN** the report records that version with inventory provenance and unverified accounting capabilities
+- **AND** neither another version's selected bytes nor a documented monitoring fix establishes its field meanings
+
+#### Scenario: Selected local evidence leaves accounting unresolved
+
+- **WHEN** selected native records expose usage fields but overlap snapshots, revised messages or result aggregates
+- **THEN** the report records the inspected representation and exact unresolved accounting decisions
+- **AND** reviewed partial dispositions may satisfy feasibility inventory closeout without approving aggregation, complete demand outcomes or billed-money authority

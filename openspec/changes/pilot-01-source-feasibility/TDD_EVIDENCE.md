@@ -508,3 +508,174 @@ because all ten native analyzers cannot run on this Darwin controller. The first
 invocation's inherited Make-overrides fixture failure and its corrected environment
 invocation are retained in research evidence and ignored logs. No new runtime TDD,
 source approval, current Linux assurance or publication acceptance is claimed.
+
+
+## Inventory reconciliation — 2026-10-07 (Europe/Berlin)
+
+Base `dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`; owned branch
+`codex/reconcile-source-feasibility-20261007`. This batch updates metadata, specs
+and documentation only. No new product or checker behavior is implemented; no
+failing-before TDD result is invented. Existing regression tests are applicable
+verification of the delivered tool. All 14 historical profiles and original case
+bytes remain unchanged; nine separate profiles retain zero approvals.
+
+The seven selected native JSONL digests still match and eight canonical bindings
+pass bounded structural inspection with semantic approval false. Header inventory,
+mixed-version rows and selected SQLite row digests retain separate scopes. No
+whole-database/WAL identity, native aggregation or learning eligibility is asserted.
+
+PR #38 merged at `dc26715`; its Python 3.11.15/3.13.14 Linux jobs passed in run
+37670722956. That is historical evidence for the prior planning tree only.
+Current-diff checks and independent inventory review are recorded separately in
+RESEARCH_EVIDENCE.md and the ignored reconciliation receipts. The original source
+review-session state is missing; no allowance is reset. Publication, closeout and
+archival remain incomplete until original recovery and applicable assurance.
+
+A cached x86-64 Linux image has SpecFact CLI 0.55.4, but no required code-review
+module and denies unprivileged namespace isolation. Its Python 3.12 environment
+does not reproduce the required 3.11/3.13 matrix. This inspection is not a passing
+Linux assurance run and no tooling/account configuration is changed to imply one.
+
+
+### Observed reconciliation verification
+
+The corrected 19-file pre-receipt freeze passed the source suite (644), default
+register/matrix/all-18-case checker (`errors: []`, `semantic_approval: false`),
+selected/all strict OpenSpec (14/14), documentation ownership/links, generated
+references and independent source/documentation review with no remaining findings.
+All 14 historical objects and three protected fixture digests were unchanged.
+
+`make check` used explicit `BASE_REF=dc26715d2b583a31050c1cf7fda8ed0e9a9d5507`
+and an intended 19-file manifest as environment variables. Initial cache permission,
+hygiene rb+ access and build-network failures were preserved; targeted authorized
+hygiene/build reruns passed. Lock/faulty-repaired host proofs, lint/58-file format,
+types (zero errors), docs/index/metadata/workflow, 3,030 tests (42.25 seconds) and
+build/two wheel smokes passed. Dependency audit was not applicable: locked inputs
+unchanged. Aggregate remains nonzero because fresh SpecFact 0.55.4 full review
+reported FAIL/UNKNOWN with all ten analyzers unsupported on darwin-arm64-cp312.
+No selected subset, old PR #38 Linux run or independent inventory review substitutes
+for current-diff native assurance. No package version change is required.
+
+Final task/evidence receipt updates require affected docs/index/strict readback;
+they do not change the tested Python behavior or original fixtures. Missing source
+review-session history and supported-Linux evidence block publication and acceptance.
+No commit, push, issue closure, CLI archive or #35 runtime implementation occurs.
+
+### Separate post-merge review scope — 2026-10-07 (Europe/Berlin)
+
+The maintainer authorized a fresh bounded review of the current reconciliation,
+using session `pilot-01-source-feasibility-reconcile-20261007`. Existing task,
+research, native inputs, prior failures and corrected review findings are retained.
+The prospective input fingerprint is captured separately after this documentation
+update. Earlier checks remain evidence for their recorded fingerprints; no old
+passing result is represented as fresh bound review evidence. No runtime change
+or failing-before TDD claim is introduced.
+
+Partial original initialization/read/state records were copied from execution
+history and verified against their sources. The original PR #33 session is not
+restored or reinitialized. The preceding missing-receipt publication block is
+historical following this explicit choice; fresh current-scope checks, independent
+review and supported-Linux assurance remain incomplete until actually obtained.
+
+### Native coverage timeout repair — 2026-10-08 (Europe/Berlin)
+
+PR #39 at `c01ec1bb94acfff5b8a7f85e268a5ae8eb090f4a` reached genuine hosted
+Linux assurance on Python 3.13, but both Python 3.11 job attempts failed native
+`targeted-pytest-coverage` with `sandbox_launch_failed:timeout`. Nine other native
+analyzers passed; the ordinary 3,030-test suite passed. Both native test runtimes
+used Python 3.13.11 with identical package versions. Selected follow-up diagnostics
+passed 586 review-session tests (1,758 setup/call/teardown records). The full failed
+reports do not identify the precise slow case; active descendants and the signed
+300-second limit support a performance/deadline diagnosis, not a proven host-version
+defect. Original reports, bindings and the successful 3.13 artifact are retained.
+
+The maintainer requested analysis and repair. The existing bounded session explicitly
+expanded its scope for test arrangement and correlated documentation, retaining
+previous counters and evidence. No new allowance or replacement receipt was initialized.
+Independent review identified 67 ordinary default-arrange functions (198 existing
+parameterized cases) eligible to reuse an independently copied pristine receipt.
+The helper performs real canonical replay, exact contract comparison and current
+Git-input capture before copying. Initialization/race/corruption/replay/loss/index
+controls and every original assertion, decorator and parameter ID are unchanged.
+Seven additional cases verify binding, inode/event isolation, dirty/tampered clone
+detection and rejection before copying. No runtime, analyzer, vendor, lock, test-selection
+or deadline change is included; this test scaffold adds no product capability.
+
+The independent ten-arrangement local probe measured 15 Git calls per real initializer
+versus five per guarded clone, taking 0.8871 versus 0.3127 seconds. Controlled local
+coverage runs used the locked project with temporary `coverage==7.15.4` and
+`pytest-cov==7.1.0`, without modifying project dependencies. The original full suite
+passed 3,030 cases in 41.58 seconds. The review-session comparison passed 586 cases
+in 23.14 seconds before and 593 cases in 19.71 seconds after the repair.
+These measurements establish reduced arrangement overhead, not native timeout
+resolution. Fresh current-head aggregate, independent closure and supported-Linux
+matrix/provider evidence remain necessary. Package version and source approvals
+remain unchanged; no runtime failing-before TDD claim is fabricated for this scaffold.
+
+
+### Canonical Git acquisition repair — 2026-10-08 (Europe/Berlin)
+
+At `012ddec`, hosted run 37836046829 passed every native analyzer on Python 3.11.15
+with full binding `ee828c6d5f7c7c1d5ff18a287f76482748c1cb7167d91e5cdd88749b772e1e78`.
+Python 3.13.14 still failed full coverage with `sandbox_launch_failed:timeout`;
+its other nine analyzers passed. Both actual jobs installed CLI 0.55.4/module 0.50.1.
+These are retained historical results for that tree, not assurance for this repair.
+
+Independent family review found redundant Git acquisition in each input capture.
+A 25-iteration local acquisition-only probe measured median 15.882 ms for three
+queries versus 5.996 ms for one. A separate 13-scenario probe retained canonical
+fingerprint/clean-state parity and rejection behavior. Neither establishes native
+timeout resolution or a host-interpreter cause.
+
+A new delta specification preceded implementation. Against unchanged source,
+`python -m pytest tests/test_review_session.py -k 'capture_acquires_git_inventory_once
+or capture_preserves_historical_fingerprint or capture_rejects_undeclared' -q`
+produced **1 failed, 11 passed**: acquisition-count expected one `ls-files` call
+and observed three. Real-Git historical byte-construction comparisons cover dirty
+working files, staged/working divergence, deletion, tab/newline/stage-looking/Unicode
+names, ignored declared content, planned absence, intent-to-add, executable index
+mode and undeclared conflict stages. Both hidden flags remain rejected even when
+the file is outside the declared manifest. Existing initialization/refresh race
+controls remain unchanged. Local red/green logs stay in the ignored bounded session.
+
+The minimal contributor-gate implementation retains ordered raw stage bytes after
+removing Git's tag, recognizes untracked paths before tabs, and fails closed for
+malformed inventory. HEAD/status checks and two captures around initialization and
+scope refresh remain independent. Schema 8 and existing receipt identities remain
+unchanged; this is not an atomic working-tree snapshot. The existing session's third
+correction batch is used without reinitializing its allowance. Fresh aggregate,
+independent closure and exact-head Linux/provider evidence remain required.
+
+The complete review-session suite passed **610 cases in 21.78 seconds** after
+implementation, including five malformed-output controls. Touched lint and format
+checks passed. The acquisition-count control now observes one inventory query plus
+separate HEAD/status queries. This passing local evidence does not substitute for
+fresh hosted coverage or resolve the exhausted publication allowance.
+
+
+### Native test arrangement correction — 2026-10-08 (Europe/Berlin)
+
+At `39a38e7`, run 37841156226's Python 3.13.14 job ran all ten native analyzers.
+Full coverage passed all **3,054 collected cases, zero deselected**, with 97.6447%
+coverage. The timeout did not recur on this leg. The aggregate nevertheless failed:
+required `radon-kiss` reported `kiss.nesting.error` at compatibility-test line 155,
+with seven nesting levels against a limit of three. The exact failed native report
+SHA256 is `be230ecd419b562dac4c25a765561f87edbe700e83fd0e15a1b4eb9ae8cd5de3`.
+This introduced test-arrangement defect is distinct from the coverage-timeout family.
+
+The maintainer-approved additional correction batch flattens only that fixture's
+mutually exclusive case branches into independent guards. The case selector never
+changes, so every arrangement, parameter ID and assertion is retained. Product and
+contributor runtime source, analyzer selection, deadlines and receipt schemas remain
+unchanged. The actual required-analyzer failure provides red evidence; local affected
+tests and fresh exact-head native evidence must establish correction. Prior failures,
+passing coverage and review counters are preserved; no new allowance is initialized.
+
+The corrected review-session suite passed **610 cases in 14.16 seconds**. An
+independent AST comparison confirmed that only the six outer `elif` links changed;
+all nine case values, arrangements and assertions remain identical. A local AST
+depth probe reproduced the native red value seven and measured two after flattening;
+this development probe does not substitute for pinned native analyzer assurance.
+Independent source review retains the parser's CC14 as a justified nonblocking
+maintainability advisory: its distinct framing, global flags, untracked/index category
+and metadata guards preserve required rejection and canonical-byte behavior.

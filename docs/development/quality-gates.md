@@ -716,3 +716,33 @@ original project configuration and signed runtime, with normal technical exits.
 The required full-suite failure and canonical reports remain intact. Inspect actual
 selected/observed test IDs and bindings before using the report to bound this family;
 a subset success cannot certify the full suite or establish timeout causality.
+
+On 2026-10-08 (Europe/Berlin), investigation of PR #39's two failed Python 3.11
+matrix jobs found active native work exceeding the signed 300-second sandbox limit.
+Both native runtimes used Python 3.13.11 and matching dependency versions; the
+successful Python 3.13 matrix job ran all 3,030 tests with 97.63% measured coverage.
+The selected diagnostics passed 586 tests, but failed full reports did not retain
+partial test inventories. These facts do not identify the exact slow test or prove
+that the host interpreter caused the timeout.
+
+The focused repair removes redundant initial arrangement work from 198 ordinary
+review-session cases, preserving all existing cases and adding seven isolation and
+rejection controls. It copies a real initialized seed only after canonical replay,
+exact contract comparison and current Git-input verification. Dedicated initialization,
+race, corruption, loss and input controls remain unchanged. Local covered runs improved
+from 586 cases in 23.14 seconds to 593 cases in 19.71 seconds; these observations
+are not native assurance or a guaranteed hosted speedup. All mandatory analyzers,
+complete-suite selection, signed capsule protections and time limits remain unchanged.
+Fresh full current-head Linux results on both matrix legs determine acceptance.
+
+
+The first PR #39 repair at `012ddec` passed full native assurance on Python 3.11
+(run 37836046829), but Python 3.13 still exceeded the same coverage deadline. The
+ordinary suite was also slower on that runner; this is not evidence that its host
+interpreter caused the failure. A second focused contributor-gate repair consolidates
+three Git inventory queries into one while retaining canonical bytes, global hidden
+flag rejection, independent HEAD/status reads and initialization/refresh race guards.
+Its acquisition-count test fails before implementation; compatibility cases preserve
+existing schema-8 fingerprints. Local timing probes establish reduced acquisition
+overhead only. Fresh full-suite native assurance on both Linux matrix legs remains
+required; no vendor module, test selection or time limit is altered.
