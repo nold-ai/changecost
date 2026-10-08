@@ -3,6 +3,15 @@
 
 ## Unreleased
 
+- Implement risk-first contributor guidance across the four workflow stages: early
+  critical-assumption proof, evidence-based triage, compact delta handoffs and
+  delivery-overhead measurement, preserving existing gates and review budgets.
+  Adoption-trial benefit and final publication acceptance remain pending.
+
+- Plan risk-first contributor execution with early critical-assumption proof,
+  evidence-based triage and one bounded adoption trial in existing review slots;
+  preserve quality gates, receipt schemas and historical review outcomes.
+
 - Keep canonical compatibility-test setup shallow while preserving every scenario,
   historical fingerprint assertion and complete native coverage requirement.
 

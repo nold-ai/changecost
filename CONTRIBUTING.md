@@ -43,6 +43,17 @@ state between sessions. A stash is local, not a backup on GitHub. A planning PR
 does not close an implementation issue. The promotion stage reports missing bot
 reviews or required checks as incomplete, not as a green review.
 
+Use the [risk-first execution checkpoint](docs/agent-rules/30-change-workflow.md#risk-first-execution-checkpoint)
+to prove one or two critical existing-system assumptions before dependent work.
+Keep observations and limitations in existing planning/evidence, reuse the upfront
+review, and close corrections against actual deltas. Evidence-backed triage keeps
+confirmed defects blocking and records preferences without unnecessary rewrites.
+The [delivery measurement guide](docs/development/behavioral-evidence.md#bounded-risk-first-adoption-trial)
+separates setup, delivery phases, tokens, elapsed time and measured human effort.
+The checkpoint supplements existing assurance; its defect-reduction and cost
+benefits require a separately authorized trial. It adds no runtime or review lane
+and preserves every existing assurance obligation.
+
 For implementation/review work, initialize the bounded local review receipt with
 `python -m quality.review_session init <change-id> --json <contract.json>`. It
 keeps the complete scope, finding families and counters across chats and commits.

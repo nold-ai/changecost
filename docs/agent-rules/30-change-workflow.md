@@ -114,6 +114,82 @@ For restoration:
    reflog entry resolving to that OID and recheck immediately before dropping;
    never drop a cached `stash@{n}`. Keeping it for deliberate later cleanup is safe.
 
+## Risk-first execution checkpoint
+
+For a nontrivial behavior change, select one or two existing-system safety
+assumptions most likely to invalidate the approach. Keep the full obligation
+matrix; selecting assumptions does not narrow accepted requirements. Record the
+checkpoint in the existing design, preparation receipt or TDD evidence:
+
+| Critical assumption and affected obligation | Observable check and expected result | Actual evidence and input identity | Limits and next step |
+| --- | --- | --- | --- |
+| Existing interface preserves a required invariant | Smallest relevant CLI, API or dependency probe | Exact command, relevant tool version, inputs, outcome and report reference | Excluded behavior, unavailable evidence and dependent decision |
+
+Use synthetic inputs and read-only or isolated probes. Exercise the relevant
+existing boundary before dependent implementation, rather than infer its behavior
+from configuration or model agreement. For example, a routine retry change can
+probe an existing public replay operation in a disposable store and compare its
+export before/after; that observed no-op proves only the selected retry case.
+A security, persistence or assurance change also names its risk-selected provider
+obligations. Neither example adds a review slot or substitutes for final tests.
+
+If evidence contradicts an assumption, retain the contradiction and revise or
+explicitly replan the dependent approach before implementation. If the probe is
+unsupported or inconclusive, name the missing evidence and the smallest supported
+next check; keep dependent safety claims unproven. Unaffected authorized work can
+continue under the existing scope policy. A proxy command or configuration read
+cannot turn an unexecuted required probe into passing proof. Expected red tests
+for newly proposed behavior remain normal TDD evidence, distinct from a failed
+existing-system safety assumption.
+
+For documentation-only work, record why a runtime probe is not applicable and
+use relevant document/scenario checks. This applicability rationale does not waive
+any check selected by the repository's actual gate dispatcher. Reuse an applicable
+behavioral packet; unrelated documentation does not require a lifecycle-model
+packet. This is prose in existing artifacts, not another ledger or packet schema.
+
+Give the existing upfront independent reviewer the selected assumptions, observed
+proof and limits, affected obligations and exclusions. Name the current blocker,
+sole writer and independent read-only work that can safely proceed. Follow-up
+handoffs retain the selected change, comparison/head/input binding, actual delta,
+affected assumptions, unresolved findings and necessary native report references.
+A same-head content/index change still invalidates affected evidence. Mapped
+corrections receive affected-scope closure; new or unknown dependencies, scope,
+entrypoints or trust boundaries require renewed broader obligation review through
+the existing policy. Keep verbose logs in ignored local output and provide compact
+references without omitting required complete source evidence.
+
+### Evidence-based triage and bounded corrections
+
+For each actionable finding, identify the violated accepted obligation, reachable
+failure path, supporting reproduction/regression or inspected-path evidence, and
+finding family. A runnable reproduction is useful but is not the only valid proof.
+Deduplicate reports against the same root finding while retaining source identities
+and distinct variants that change failure coverage. Model agreement, disagreement,
+severity labels and implementation inconvenience alone establish no disposition.
+
+Use the existing authoritative dispositions:
+
+- A confirmed defect remains blocking until verified fixed (`fixed`) or explicitly
+  accepted under the existing exception policy (`accepted_exception`). One
+  reviewer's demonstrated violation is enough; another's silence does not dismiss it.
+- A preference or disproved concern receives a reasoned `non_finding` disposition,
+  explaining why it violates no accepted obligation. Do not change code solely to
+  quiet a style preference or invent a new ledger value such as `preference`.
+- A credible unverified defect remains `unresolved`; name its smallest evidence
+  step. Missing reproduction alone is not contrary evidence. New scope requires
+  the existing explicit scope decision rather than relabeling a defect.
+
+An administrative disposition cannot clear an effective provider objection or
+replace required independent closure. Collect independent reports before one
+writer batches compatible confirmed corrections. Review the actual delta and
+affected assumptions afterwards. Preserve prior finding/family history, three
+batches/90 active minutes by default, investigation/replan rules and explicit
+extension requirements. Do not restart counters or add another review lane.
+Early proof and compact handoffs never certify completion or remove mechanical,
+supported-Linux/Python, Codex or risk-triggered CodeRabbit obligations. Missing,
+stale, failed or unavailable required evidence remains incomplete.
+
 ## Verification and compact delegation
 
 ## Bounded review contract

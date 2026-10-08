@@ -175,6 +175,69 @@ seeded detections and wall minutes have distinct units. Missing costs stay unkno
 one pilot cannot establish causal savings. Rollback reverts these contributor files
 while retaining ignored evidence/session history and existing user stores.
 
+## Bounded risk-first adoption trial
+
+Use the [canonical execution checkpoint](../agent-rules/30-change-workflow.md#risk-first-execution-checkpoint)
+for early proof and finding triage. Trial its benefit on one subsequently authorized
+bounded change; implementing this guidance does not select or authorize that
+change. Record observations at preparation, first stable candidate and final
+handoff in existing design/evidence/receipts. Reuse the current session and budget,
+not a new ledger, collector or measurement service. An unauthorized or incomplete
+trial and its recommendation remain pending.
+
+Separate one-time guidance/setup effort from recurring execution. For each
+available observation, name its source identity, scope, start/end boundaries and
+coverage. Describe these activities so comparisons use the same boundaries:
+
+| Activity | Observation boundary |
+| --- | --- |
+| Preparation | Scope/assumption selection, probes and plan reconciliation |
+| Implementation | Initial authorized behavior/guidance construction |
+| Verification | Execution and interpretation of mechanical/scenario checks |
+| Review | Independent obligation/closure and required provider review |
+| Rework | Compatible correction sets, fixes and their affected verification |
+| Orchestration | Dispatch, evidence transfer, adjudication and coordination |
+
+These intervals may overlap. Do not add overlapping elapsed intervals as if they
+were exclusive allocations or as if parallel workers reduced their total work.
+Keep wall elapsed minutes, measured active reviewer minutes and measured active
+maintainer minutes separate. Waiting or agent elapsed time cannot establish
+active human effort; unavailable measurements remain unknown. Session active
+review minutes are an existing budget measure, not inferred maintainer time.
+
+Report observed cached-input, uncached-input and output tokens separately. Use
+deduplicated response usage or supported deltas from the same cumulative source,
+with a stable observation identity and nonoverlapping scope. Never add cumulative
+snapshots together. For example, synthetic same-source cached-input counters of
+1,200 then 1,700 tokens establish a 500-token interval only if counter semantics
+and boundaries are known. They do not establish 2,900 consumed tokens, uncached
+input/output totals or billed cost. Counter resets or incompatible scopes prevent
+that subtraction; retain them as unknown until clarified. This example is a
+measurement control, not observed trial usage.
+
+Retain partial categories and missing billing in existing prose evidence; do not
+encode a missing measurement as zero in numeric session usage events. A token
+quantity is not a cash charge, and no pricing database or inferred cash amount is
+added. Keep commands, versions, input bindings and full native logs/digests where
+applicable; broad proof and current-input requirements remain unchanged.
+
+Count early verified discoveries before dependent implementation separately from
+later verified escapes after correction. Report actual compatible correction sets
+alongside recorded batch events, preserving any difference. Separate genuine
+product defects, assurance-tool defects, design ambiguities, duplicate reports and
+synthetic controls. Distinct variants retain their failure coverage and source
+identities. Preserve incomplete/negative acceptance and all original counters;
+three batches/90 active minutes remain the default unless explicitly extended.
+
+At trial closeout, recommend retain, revise or withdraw using observed benefit,
+recurring effort, setup cost and limitations, even if benefit is unproven. Compare
+history only when scope, phase/observation boundaries, measurement coverage and
+acceptance conditions are comparable; state mismatches explicitly. One trial
+cannot establish causal defect, token, billing or time-to-market savings. Keep
+missing final assurance incomplete and publish real observations in maintained
+lessons-learned documentation only after authorization and execution. Rollback
+reverts guidance while retaining evidence/history; no user-store migration occurs.
+
 A follow-up also compares advisory `known_findings` and analyzer definitions keyed by
 ID (command, tool, version, required, applicable, rationale). Changed definitions or
 advisory lists require broader review and appear in `context_changes` with previous

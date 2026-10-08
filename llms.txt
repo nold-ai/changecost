@@ -49,6 +49,7 @@
 - [Codex local-reader proposal](openspec/changes/provider-03-codex-local-import/proposal.md): Planned explicit offline coding-session metadata and separately approved accounting.
 - [Claude local-reader proposal](openspec/changes/provider-04-claude-local-import/proposal.md): Planned explicit offline coding-session metadata, revised usage and estimated-money boundaries.
 - [Adaptive-demand preparation evidence](openspec/changes/forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md): Planning recovery, independent review, backlog reconciliation and local assurance limits.
+- [Risk-first execution guidance and pending trial](openspec/changes/dev-workflow-03-risk-first-execution/proposal.md): Implemented contributor guidance for critical-assumption proof, evidence-based triage and existing review handoffs; publication acceptance and a separately authorized trial remain pending.
 
 ## Local skills
 
