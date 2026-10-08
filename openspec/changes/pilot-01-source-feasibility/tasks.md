@@ -154,3 +154,9 @@ execution records remain private recovery evidence. Earlier missing-receipt
 publication statements above describe the preceding handoff, not the current
 delivery rule. Current-diff review, supported-Linux assurance and acceptance
 remain required; no prior finding, counter or review result is erased or inferred.
+
+## 12. Required contributor-gate timeout repair
+
+- [x] 12.1 Investigate the repeated full-suite native timeout family, preserve the failed and passing reports, and specify canonical Git acquisition invariants before implementation.
+- [x] 12.2 Observe failing single-acquisition tests, implement the minimal combined capture and verify historical fingerprint, hidden-flag and race controls with real Git.
+- [ ] 12.3 Complete current-diff aggregate, independent closure and both supported-Linux matrix/provider obligations without reducing analyzers, cases or deadlines; keep acceptance/archival open until actually accepted.

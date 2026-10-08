@@ -19,8 +19,11 @@ Regular local coding-agent metadata may support usage learning without exports, 
 
 ### Modified Capabilities
 
-None; this preparation retains the delivered runtime contracts and existing main
-specifications without changing their behavior.
+- `bounded-review-session`: a maintainer-requested contributor-gate repair acquires
+  Git index flags, stage records and visible inventory once, preserving canonical
+  schema-8 fingerprints and every freshness/hidden-input/race guard. See the
+  [repair delta](specs/bounded-review-session/spec.md). Product runtime contracts
+  and provider capability approval remain unchanged.
 
 ## Impact
 

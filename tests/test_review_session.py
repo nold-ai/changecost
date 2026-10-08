@@ -104,6 +104,112 @@ def fixture_manifest(root: Path | None = None) -> dict[str, str]:
     }
 
 
+def historical_capture(root: Path, declared: dict[str, str]) -> dict[str, Any]:
+    """Compatibility oracle: preserve the schema-8 three-query byte construction."""
+    git = review_session.repository.git
+    flags = git(root, "ls-files", "-v", "-z").split(b"\0")
+    if any(record[:1].islower() or record[:1] == b"S" for record in flags if record):
+        raise ValueError("unsupported index flags")
+    names = git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z")
+    files = set(names.decode().split("\0")) - {""}
+    index = git(root, "ls-files", "--stage", "-z")
+    parsed = review_session.index_entries(index)
+    fingerprints = {name: review_session.input_fingerprint(root, name, parsed) for name in declared}
+    raw = review_session.repository.digest(root, files).encode() + b"\0" + index
+    raw += b"\0" + json.dumps(fingerprints, sort_keys=True).encode()
+    untracked = any(
+        name not in parsed and review_session.file_fingerprint(root, name) != "<absent>"
+        for name in declared
+    )
+    return {
+        "head": git(root, "rev-parse", "HEAD").decode().strip(),
+        "digest": hashlib.sha256(raw).hexdigest(),
+        "clean": not untracked and not git(root, "status", "--porcelain", "--untracked-files=all"),
+    }
+
+
+def test_capture_acquires_git_inventory_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    declared = fixture_manifest(tmp_path)
+    expected = historical_capture(tmp_path, declared)
+    git = review_session.repository.git
+    calls: list[tuple[str, ...]] = []
+
+    def observed(root: Path, *args: str) -> bytes:
+        calls.append(args)
+        return git(root, *args)
+
+    monkeypatch.setattr(review_session.repository, "git", observed)
+    assert review_session.capture_inputs(tmp_path, TEST_HEAD, declared) == expected
+    assert len([call for call in calls if call[0] == "ls-files"]) == 1
+    assert len(calls) == 3
+    assert ("rev-parse", "HEAD") in calls
+    assert ("status", "--porcelain", "--untracked-files=all") in calls
+
+
+@pytest.mark.parametrize(
+    "change",
+    ["pristine", "dirty", "staged", "deleted", "names", "ignored", "intent", "mode", "conflict"],
+)
+def test_capture_preserves_historical_fingerprint(tmp_path: Path, change: str) -> None:
+    git = review_session.repository.git
+    declared = fixture_manifest(tmp_path)
+    if change in {"dirty", "staged"}:
+        (tmp_path / "input.txt").write_text("changed\n")
+        if change == "staged":
+            git(tmp_path, "add", "input.txt")
+            (tmp_path / "input.txt").write_text("working differs from index\n")
+    elif change == "deleted":
+        (tmp_path / "input.txt").unlink()
+    elif change == "names":
+        for name in ["tab\tfile", "line\nfile", "100644 deadbeef 0\tinput.txt", "unicode-\u00e4"]:
+            (tmp_path / name).write_text("untracked\n")
+            declared[name] = review_session.file_fingerprint(tmp_path, name)
+        git(tmp_path, "add", "tab\tfile", "line\nfile")
+    elif change == "ignored":
+        (tmp_path / ".changecost").mkdir()
+        (tmp_path / ".changecost" / "ignored.txt").write_text("ignored but declared\n")
+        declared.update({".changecost/ignored.txt": "declared", "planned.txt": "<absent>"})
+    elif change == "intent":
+        (tmp_path / "new.txt").write_text("intent to add\n")
+        git(tmp_path, "add", "-N", "new.txt")
+        declared["new.txt"] = "declared"
+    elif change == "mode":
+        git(tmp_path, "update-index", "--chmod=+x", "input.txt")
+    elif change == "conflict":
+        blob = git(tmp_path, "rev-parse", "HEAD:input.txt").decode().strip()
+        subprocess.run(
+            ["git", "-C", str(tmp_path), "update-index", "--index-info"],
+            input=f"100644 {blob} 1\tother.txt\n100644 {blob} 2\tother.txt\n",
+            text=True,
+            check=True,
+        )
+    assert review_session.capture_inputs(tmp_path, TEST_HEAD, declared) == historical_capture(
+        tmp_path, declared
+    )
+
+
+@pytest.mark.parametrize("flag", ["--assume-unchanged", "--skip-worktree"])
+def test_capture_rejects_undeclared_hidden_index_flags(tmp_path: Path, flag: str) -> None:
+    review_session.repository.git(tmp_path, "update-index", flag, "input.txt")
+    with pytest.raises(ValueError, match="index flags"):
+        historical_capture(tmp_path, {})
+    with pytest.raises(ValueError, match="index flags"):
+        review_session.capture_inputs(tmp_path, TEST_HEAD, {})
+
+
+@pytest.mark.parametrize(
+    "raw", [b"H truncated", b"? \0", b"H\tname\0", b"X name\0", b"H bad\tname\0"]
+)
+def test_capture_rejects_malformed_git_inventory(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, raw: bytes
+) -> None:
+    monkeypatch.setattr(review_session.repository, "git", lambda *args: raw)
+    with pytest.raises(ValueError, match="malformed Git"):
+        review_session.capture_index(tmp_path)
+
+
 @pytest.fixture(scope="session")
 def initialized_seed(
     tmp_path_factory: pytest.TempPathFactory, committed_seed: tuple[Path, str]

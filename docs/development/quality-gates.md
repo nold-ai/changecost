@@ -734,3 +734,15 @@ from 586 cases in 23.14 seconds to 593 cases in 19.71 seconds; these observation
 are not native assurance or a guaranteed hosted speedup. All mandatory analyzers,
 complete-suite selection, signed capsule protections and time limits remain unchanged.
 Fresh full current-head Linux results on both matrix legs determine acceptance.
+
+
+The first PR #39 repair at `012ddec` passed full native assurance on Python 3.11
+(run 37836046829), but Python 3.13 still exceeded the same coverage deadline. The
+ordinary suite was also slower on that runner; this is not evidence that its host
+interpreter caused the failure. A second focused contributor-gate repair consolidates
+three Git inventory queries into one while retaining canonical bytes, global hidden
+flag rejection, independent HEAD/status reads and initialization/refresh race guards.
+Its acquisition-count test fails before implementation; compatibility cases preserve
+existing schema-8 fingerprints. Local timing probes establish reduced acquisition
+overhead only. Fresh full-suite native assurance on both Linux matrix legs remains
+required; no vendor module, test selection or time limit is altered.

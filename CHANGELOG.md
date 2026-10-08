@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Acquire review-session flags, inventory and stage entries in one Git query,
+  preserving schema-8 fingerprints, hidden-index rejection and freshness guards.
+
 - Reuse independently copied, verified pristine review-session arrangements for
   ordinary event tests, preserving real initialization/race/corruption controls,
   all original cases and mandatory complete native coverage enforcement.

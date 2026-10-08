@@ -260,3 +260,14 @@ Independent mutation controls verify that a commit, index/config/hook change or
 working-file edit in one copy cannot alter the seed or another copy. This removes
 repeated Git initialization work, including capsule launcher startup, while fresh
 required native coverage remains the authority for CI acceptance.
+
+
+Review-input capture acquires flags, visible inventory and stage records in one
+NUL-delimited Git query. Tagged untracked paths are classified before parsing any
+tab; tracked records retain their original ordered stage bytes. Hidden index flags
+remain rejected across the repository, including undeclared paths. Independent HEAD
+and status reads and the two captures around initialization/scope refresh remain;
+this optimization does not make working-tree capture atomic or change schema 8.
+Real-Git compatibility cases compare historical fingerprints for staged/working
+divergence, deleted files, unusual names, ignored declared files, planned absence,
+intent-to-add, executable mode and undeclared unmerged entries.

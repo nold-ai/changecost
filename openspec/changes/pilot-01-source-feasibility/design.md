@@ -269,3 +269,20 @@ fresh review for this post-merge reconciliation in session
 counters nor certifies the earlier review. Historical receipt recovery does not
 block this new scope; current review, applicable Linux assurance and delivery
 acceptance remain required for publication and closeout.
+
+### Contributor gate performance repair — 2026-10-08
+
+The maintainer requested repair of PR #39's native full-suite timeout. The first
+test-arrangement optimization passed full native assurance on Python 3.11, while
+Python 3.13 still timed out. The same signed native interpreter/dependency versions
+and reversed matrix pattern do not identify a host-version defect. Independent
+review found avoidable repeated Git acquisition within contributor input capture.
+
+Use one NUL-delimited tagged `git ls-files` result for index flags, stage records
+and visible untracked inventory. Distinguish untracked tags before parsing filenames,
+strip only tracked tag prefixes and retain stage order/terminal NUL so existing
+schema-8 fingerprints remain byte-identical. Reject hidden flags globally, including
+undeclared entries. Keep HEAD/status verification, ignored/absent declarations and
+both initialization/refresh captures. This consistent index observation does not
+make the entire working-tree capture atomic. Real Git parity/race tests and fresh
+full native assurance are mandatory; no vendor deadline or product API changes.

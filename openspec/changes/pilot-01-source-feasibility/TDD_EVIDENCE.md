@@ -611,3 +611,43 @@ These measurements establish reduced arrangement overhead, not native timeout
 resolution. Fresh current-head aggregate, independent closure and supported-Linux
 matrix/provider evidence remain necessary. Package version and source approvals
 remain unchanged; no runtime failing-before TDD claim is fabricated for this scaffold.
+
+
+### Canonical Git acquisition repair — 2026-10-08 (Europe/Berlin)
+
+At `012ddec`, hosted run 37836046829 passed every native analyzer on Python 3.11.15
+with full binding `ee828c6d5f7c7c1d5ff18a287f76482748c1cb7167d91e5cdd88749b772e1e78`.
+Python 3.13.14 still failed full coverage with `sandbox_launch_failed:timeout`;
+its other nine analyzers passed. Both actual jobs installed CLI 0.55.4/module 0.50.1.
+These are retained historical results for that tree, not assurance for this repair.
+
+Independent family review found redundant Git acquisition in each input capture.
+A 25-iteration local acquisition-only probe measured median 15.882 ms for three
+queries versus 5.996 ms for one. A separate 13-scenario probe retained canonical
+fingerprint/clean-state parity and rejection behavior. Neither establishes native
+timeout resolution or a host-interpreter cause.
+
+A new delta specification preceded implementation. Against unchanged source,
+`python -m pytest tests/test_review_session.py -k 'capture_acquires_git_inventory_once
+or capture_preserves_historical_fingerprint or capture_rejects_undeclared' -q`
+produced **1 failed, 11 passed**: acquisition-count expected one `ls-files` call
+and observed three. Real-Git historical byte-construction comparisons cover dirty
+working files, staged/working divergence, deletion, tab/newline/stage-looking/Unicode
+names, ignored declared content, planned absence, intent-to-add, executable index
+mode and undeclared conflict stages. Both hidden flags remain rejected even when
+the file is outside the declared manifest. Existing initialization/refresh race
+controls remain unchanged. Local red/green logs stay in the ignored bounded session.
+
+The minimal contributor-gate implementation retains ordered raw stage bytes after
+removing Git's tag, recognizes untracked paths before tabs, and fails closed for
+malformed inventory. HEAD/status checks and two captures around initialization and
+scope refresh remain independent. Schema 8 and existing receipt identities remain
+unchanged; this is not an atomic working-tree snapshot. The existing session's third
+correction batch is used without reinitializing its allowance. Fresh aggregate,
+independent closure and exact-head Linux/provider evidence remain required.
+
+The complete review-session suite passed **610 cases in 21.78 seconds** after
+implementation, including five malformed-output controls. Touched lint and format
+checks passed. The acquisition-count control now observes one inventory query plus
+separate HEAD/status queries. This passing local evidence does not substitute for
+fresh hosted coverage or resolve the exhausted publication allowance.
