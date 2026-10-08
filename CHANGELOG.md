@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Keep canonical compatibility-test setup shallow while preserving every scenario,
+  historical fingerprint assertion and complete native coverage requirement.
+
 - Acquire review-session flags, inventory and stage entries in one Git query,
   preserving schema-8 fingerprints, hidden-index rejection and freshness guards.
 

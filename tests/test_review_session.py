@@ -160,24 +160,24 @@ def test_capture_preserves_historical_fingerprint(tmp_path: Path, change: str) -
         if change == "staged":
             git(tmp_path, "add", "input.txt")
             (tmp_path / "input.txt").write_text("working differs from index\n")
-    elif change == "deleted":
+    if change == "deleted":
         (tmp_path / "input.txt").unlink()
-    elif change == "names":
+    if change == "names":
         for name in ["tab\tfile", "line\nfile", "100644 deadbeef 0\tinput.txt", "unicode-\u00e4"]:
             (tmp_path / name).write_text("untracked\n")
             declared[name] = review_session.file_fingerprint(tmp_path, name)
         git(tmp_path, "add", "tab\tfile", "line\nfile")
-    elif change == "ignored":
+    if change == "ignored":
         (tmp_path / ".changecost").mkdir()
         (tmp_path / ".changecost" / "ignored.txt").write_text("ignored but declared\n")
         declared.update({".changecost/ignored.txt": "declared", "planned.txt": "<absent>"})
-    elif change == "intent":
+    if change == "intent":
         (tmp_path / "new.txt").write_text("intent to add\n")
         git(tmp_path, "add", "-N", "new.txt")
         declared["new.txt"] = "declared"
-    elif change == "mode":
+    if change == "mode":
         git(tmp_path, "update-index", "--chmod=+x", "input.txt")
-    elif change == "conflict":
+    if change == "conflict":
         blob = git(tmp_path, "rev-parse", "HEAD:input.txt").decode().strip()
         subprocess.run(
             ["git", "-C", str(tmp_path), "update-index", "--index-info"],

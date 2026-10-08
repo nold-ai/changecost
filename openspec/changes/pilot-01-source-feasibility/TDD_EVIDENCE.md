@@ -651,3 +651,31 @@ implementation, including five malformed-output controls. Touched lint and forma
 checks passed. The acquisition-count control now observes one inventory query plus
 separate HEAD/status queries. This passing local evidence does not substitute for
 fresh hosted coverage or resolve the exhausted publication allowance.
+
+
+### Native test arrangement correction — 2026-10-08 (Europe/Berlin)
+
+At `39a38e7`, run 37841156226's Python 3.13.14 job ran all ten native analyzers.
+Full coverage passed all **3,054 collected cases, zero deselected**, with 97.6447%
+coverage. The timeout did not recur on this leg. The aggregate nevertheless failed:
+required `radon-kiss` reported `kiss.nesting.error` at compatibility-test line 155,
+with seven nesting levels against a limit of three. The exact failed native report
+SHA256 is `be230ecd419b562dac4c25a765561f87edbe700e83fd0e15a1b4eb9ae8cd5de3`.
+This introduced test-arrangement defect is distinct from the coverage-timeout family.
+
+The maintainer-approved additional correction batch flattens only that fixture's
+mutually exclusive case branches into independent guards. The case selector never
+changes, so every arrangement, parameter ID and assertion is retained. Product and
+contributor runtime source, analyzer selection, deadlines and receipt schemas remain
+unchanged. The actual required-analyzer failure provides red evidence; local affected
+tests and fresh exact-head native evidence must establish correction. Prior failures,
+passing coverage and review counters are preserved; no new allowance is initialized.
+
+The corrected review-session suite passed **610 cases in 14.16 seconds**. An
+independent AST comparison confirmed that only the six outer `elif` links changed;
+all nine case values, arrangements and assertions remain identical. A local AST
+depth probe reproduced the native red value seven and measured two after flattening;
+this development probe does not substitute for pinned native analyzer assurance.
+Independent source review retains the parser's CC14 as a justified nonblocking
+maintainability advisory: its distinct framing, global flags, untracked/index category
+and metadata guards preserve required rejection and canonical-byte behavior.

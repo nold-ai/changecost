@@ -271,3 +271,8 @@ this optimization does not make working-tree capture atomic or change schema 8.
 Real-Git compatibility cases compare historical fingerprints for staged/working
 divergence, deleted files, unusual names, ignored declared files, planned absence,
 intent-to-add, executable mode and undeclared unmerged entries.
+
+Compatibility scenarios use independent guards for distinct immutable case values,
+preserving their arrangements and assertions while keeping setup control flow shallow
+enough for the required native KISS checks. A passing local depth probe supplements
+tests; fresh full native assurance remains required.
