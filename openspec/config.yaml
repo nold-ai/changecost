@@ -11,7 +11,9 @@ context: |
   Advisory #16 merged in PR #34 on 2026-10-06 and is archived with synchronized
   main specs; the final full Codex code review was quota-blocked and accepted as
   an archive-only limitation, not a future review waiver. Source-feasibility
-  tooling merged in PR #33; #9 remains open with zero approved native profiles.
+  tooling merged in PR #33; reconciliation was accepted in PR #39 on 2026-10-08.
+  Native CLI archival synchronized source feasibility; 23 profiles retain zero
+  approvals. Offline adaptive demand #35 is next, not yet implemented.
   Normalized imports exist, but trusted coverage/replay supports synthetic billed
   USD only. Source approval alone cannot enable provider numeric authority.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring

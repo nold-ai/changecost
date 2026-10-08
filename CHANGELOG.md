@@ -12,6 +12,10 @@
   evidence-based triage and one bounded adoption trial in existing review slots;
   preserve quality gates, receipt schemas and historical review outcomes.
 
+- Archive accepted source feasibility #9 through OpenSpec CLI after PR #39,
+  synchronizing eight requirements and 57 scenarios, preserving native approval
+  gaps and review history, and selecting offline adaptive demand #35 next.
+
 - Keep canonical compatibility-test setup shallow while preserving every scenario,
   historical fingerprint assertion and complete native coverage requirement.
 

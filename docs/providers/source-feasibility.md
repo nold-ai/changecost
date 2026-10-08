@@ -2,7 +2,7 @@
 
 Assessment: **2026-10-07 (Europe/Berlin), To-Validate**.
 This is the research deliverable for
-[pilot-01-source-feasibility](../../openspec/changes/pilot-01-source-feasibility/proposal.md).
+[pilot-01-source-feasibility](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/proposal.md).
 No Copilot OTel or Cursor CSV export has been inspected. Authorized local Codex/Claude
 metadata inspection found partial usage evidence, described in
 [their assessment](codex-claude-metrics.md#observed-local-artifacts).
@@ -187,12 +187,12 @@ a wholly unavailable source needs a maintainer scope decision before its adapter
 
 [Copilot #13](https://github.com/nold-ai/changecost/issues/13) and
 [Cursor #14](https://github.com/nold-ai/changecost/issues/14) remain blocked by
-[feasibility #9](https://github.com/nold-ai/changecost/issues/9)'s incomplete source
-inspection. Settlement #12 merged in [PR #28](https://github.com/nold-ai/changecost/pull/28)
+native source-profile approval. Feasibility [#9](https://github.com/nold-ai/changecost/issues/9)
+now closes through reviewed capability dispositions; unsupported mappings remain excluded. Settlement #12 merged in [PR #28](https://github.com/nold-ai/changecost/pull/28)
 on 2026-10-02 and is accepted/archived; its implementation prerequisite is delivered.
-The [change order](../../openspec/CHANGE_ORDER.md) is unchanged. Open #9 does not
-waive task 2.2: do not archive this research change or claim provider compatibility
-until the source-profile evidence gate is satisfied.
+The [change order](../../openspec/CHANGE_ORDER.md) retains #9/#12 prerequisite
+edges. Accepted capability-based inventory closeout does not waive the native
+source-profile evidence gate before claiming provider compatibility.
 
 ## Limits, risk and rollback
 
@@ -209,7 +209,7 @@ manual inspection, with duration unknown until the exports are available.
 
 Rollback: remove/revert this research-and-fixture diff. No runtime, database,
 account configuration or collected data is changed. Verification is recorded in
-[RESEARCH_EVIDENCE.md](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md).
+[RESEARCH_EVIDENCE.md](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md).
 
 
 ## Executable closeout checks (2026-10-03)
@@ -456,13 +456,13 @@ The default checker requires the existing twelve canonical profile/evidence alia
 ## Repreparation after delivered tooling — 2026-10-06
 
 PR #33 delivered the offline register, inspector and 18-case controls. All 14
-profiles still have zero approvals. The [current research and evidence requests](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin)
+profiles still have zero approvals. The [current research and evidence requests](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#preparation-research--2026-10-06-europeberlin)
 refresh CLI/IDE export, SDK, Cursor, Codex and Claude references without treating
 documentation as native support. The 2026-09-28 Cursor team-export reply adds dated
 cost-column evidence but does not resolve personal-account availability or basis.
 
 Normalized imports exist; trusted coverage and historical replay currently support
-synthetic billed USD only. The [architecture decisions](../../openspec/changes/pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin)
+synthetic billed USD only. The [architecture decisions](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin)
 separate source approval from future provider accounting/coverage policy. VS Code
 SQLite export is a documented acquisition candidate, not a supported format of the
 current JSON/JSONL/CSV inspector. No collection, adapter, schema or runtime policy
@@ -499,7 +499,7 @@ No collector/settings change, new model call or paid infrastructure is required.
 
 The register now has **23 profiles, zero approvals**: the 14 historical objects
 are unchanged and nine profiles record separate newer/local observations.
-The [current evidence decisions](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin)
+The [current evidence decisions](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin)
 identify exact proof requests and the private inspection boundary.
 
 Codex 0.159 request/snapshot records; newly selected Claude 2.1.275 project logs;
@@ -517,3 +517,20 @@ diff; historical receipt recovery does not block that scope. Current review and
 applicable Linux/publication checks remain required. #9 stays active; source readers,
 learning eligibility and billed-money authority remain separate. PR #38 is merged
 planning history, not this diff's proof.
+
+
+## Accepted inventory and archive — 2026-10-08 (Europe/Berlin)
+
+The maintainer accepted [PR #39](https://github.com/nold-ai/changecost/pull/39) by
+merging its reviewed reconciliation. The normal OpenSpec CLI synchronized the
+accepted evidence requirements and archived the research change. Both exact-head
+[Linux jobs](https://github.com/nold-ai/changecost/actions/runs/37843823798),
+Codex code review and CodeRabbit full review completed; earlier incomplete or
+failed checkpoints remain dated history. This completes capability-based inventory
+closeout without requiring every export or any supported profile.
+
+All 23 profiles have zero approvals. Requests for native ownership, overlap,
+corrections, cache/reset and terminal coverage remain in the linked archived
+research; missing Cursor consumption remains unknown. Reader accounting approval,
+demand-learning eligibility and billed-money authority remain separate gates.
+Offline adaptive demand #35 is next; no reader or collection is added by archival.

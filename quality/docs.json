@@ -435,50 +435,50 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/pilot-01-source-feasibility/design.md",
+      "path": "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/design.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/pilot-01-source-feasibility/design.md"
+        "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/pilot-01-source-feasibility/proposal.md",
+      "path": "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/proposal.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/pilot-01-source-feasibility/proposal.md"
+        "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/pilot-01-source-feasibility/specs/bounded-review-session/spec.md",
+      "path": "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/specs/bounded-review-session/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/pilot-01-source-feasibility/specs/bounded-review-session/spec.md"
+        "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/specs/bounded-review-session/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/pilot-01-source-feasibility/specs/source-feasibility/spec.md",
+      "path": "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/specs/source-feasibility/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/pilot-01-source-feasibility/specs/source-feasibility/spec.md"
+        "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/specs/source-feasibility/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/pilot-01-source-feasibility/tasks.md",
+      "path": "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/tasks.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/pilot-01-source-feasibility/tasks.md"
+        "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/tasks.md"
       ],
       "kind": "manual"
     },
@@ -935,7 +935,7 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/pilot-01-source-feasibility/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/TDD_EVIDENCE.md",
       "owner": "source-research",
       "sources": [
         "quality/source_*.py",
@@ -1118,6 +1118,14 @@
       "owner": "specifications",
       "sources": [
         "openspec/changes/forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/source-feasibility/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/specs/source-feasibility/spec.md"
       ],
       "kind": "manual"
     },

@@ -38,7 +38,7 @@ new telemetry, provider API, paid model request, prompt retention or inferred su
 
 ## Dependencies
 
-[Source feasibility #9](../pilot-01-source-feasibility/proposal.md) and delivered
+[Source feasibility #9](../archive/2026-10-08-pilot-01-source-feasibility/proposal.md) and delivered
 [reconciliation #12](../archive/2026-10-02-settlement-01-reconciliation/proposal.md).
 Demand use additionally requires its own policy under
 [adaptive demand](../forecast-01-local-adaptive-demand/proposal.md); that feature

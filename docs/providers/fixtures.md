@@ -158,7 +158,7 @@ For the included bundle, case provenance is `hand-authored-synthetic` or
 `synthetic-values-from-observed-local-shape`. Source versions are stated only for
 inspected interfaces/local shapes; account tier remains null. No original record
 or real quantity was copied. The
-[research evidence](../../openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md)
+[research evidence](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md)
 records the reviewed digest and structural checks. Its JSON keys are exactly the
 example contract, with no pass-through attributes or content fields. Before sharing
 a new fixture, inspect every value in addition to key and credential checks.

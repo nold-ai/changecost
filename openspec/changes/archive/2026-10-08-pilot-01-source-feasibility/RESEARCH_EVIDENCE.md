@@ -22,11 +22,11 @@ applicable; no runtime test/analyzer pass is claimed.
 ## Evidence review
 
 Primary citations and their access dates are in the
-[capability matrix](../../../docs/providers/source-feasibility.md) and
-[Codex/Claude comparison](../../../docs/providers/codex-claude-metrics.md), plus the
-[Cursor local assessment](../../../docs/providers/cursor-local-metrics.md) and
-[hosted Copilot assessment](../../../docs/providers/copilot-local-metrics.md), plus the
-[Enterprise projection review](../../../docs/providers/enterprise-schema-review.md).
+[capability matrix](../../../../docs/providers/source-feasibility.md) and
+[Codex/Claude comparison](../../../../docs/providers/codex-claude-metrics.md), plus the
+[Cursor local assessment](../../../../docs/providers/cursor-local-metrics.md) and
+[hosted Copilot assessment](../../../../docs/providers/copilot-local-metrics.md), plus the
+[Enterprise projection review](../../../../docs/providers/enterprise-schema-review.md).
 Rolling documentation is not a guarantee about installed versions or account tiers.
 
 The local review inspected three recent JSONL files per tool, projecting metadata
@@ -156,7 +156,7 @@ binding remain open. No provider API was called or collector enabled.
 
 ## Enterprise v2 follow-up — 2026-09-28
 
-The [v2 review](../../../docs/providers/enterprise-v2-schema-review.md) records two
+The [v2 review](../../../../docs/providers/enterprise-v2-schema-review.md) records two
 regenerated bundles. All 28 manifest-listed hashes and the manifest sidecar match;
 31 received files were hashed unchanged. Twenty-two JSON documents, two JSONL
 records and a CSV parse. Synthetic category sums, event-ID dedupe, correction
@@ -339,7 +339,7 @@ different scopes; Cursor has context data but unusable empty/zero consumption
 counters. Seven selected JSONL inputs passed structural inspection only. The local
 private report/hashes are ignored recovery evidence, not semantic attestations.
 
-[Adaptive research](../../../docs/research/adaptive-demand-evidence.md) records
+[Adaptive research](../../../../docs/research/adaptive-demand-evidence.md) records
 primary studies, access dates, limits and concrete remaining evidence requests.
 The existing 14 canonical profiles and zero approvals remain unchanged. These
 planning findings neither certify native finality nor claim complete new inventory

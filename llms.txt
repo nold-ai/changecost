@@ -22,9 +22,10 @@
 - [Enterprise schema review](docs/providers/enterprise-schema-review.md): received projection integrity, official schema comparison, and reported session-log parsing and custom receiver with OTel disabled.
 - [Enterprise v2 review](docs/providers/enterprise-v2-schema-review.md): reported message counters, synthetic arithmetic, encoding discrepancies and unchanged hook evidence gaps.
 - [Fixture contract](docs/providers/fixtures.md): allowlists, synthetic cases and relationship-preserving transformations.
-- [Research evidence](openspec/changes/pilot-01-source-feasibility/RESEARCH_EVIDENCE.md): scenario review, checks and unresolved source inspection.
+- [Research evidence](openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md): scenario review, checks and unresolved source inspection.
 - [Python foundation specification](openspec/specs/python-foundation/spec.md): Accepted behavior synchronized from the merged implementation.
 - [Bounded review specification](openspec/specs/bounded-review-session/spec.md): Accepted behavior synchronized from the merged implementation.
+- [Source feasibility specification](openspec/specs/source-feasibility/spec.md): Accepted capability inventory and evidence gates; native support and runtime authority remain separately approved.
 - [Core-02 contracts preparation](openspec/changes/archive/2026-09-29-core-02-change-run-contracts/PREPARATION_EVIDENCE.md): Contract preparation, archive results and prerequisite evidence; implementation evidence is recorded separately.
 - [Offline CLI](docs/cli.md): Synthetic registration, lifecycle, Quote/Settlement advice, human/JSON presentation and portable claims.
 - [Contracts v1](docs/contracts.md): Exact field semantics, immutable revisions, local history and recovery limits.
