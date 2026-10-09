@@ -48,6 +48,16 @@ add a generic full local/CLI review or a receipt-only commit by default.
    unmet prerequisites go back to preparation/clarification. Do not silently
    narrow required behavior to make implementation possible.
 
+## Confirm critical proof before dependent work
+
+Use the [canonical checkpoint](../../../docs/agent-rules/30-change-workflow.md#risk-first-execution-checkpoint)
+and recheck its evidence against current inputs. Settle a disproved critical
+assumption by revising/replanning the dependent approach; unavailable proof stays
+unproven while unaffected authorized work may continue. Keep expected new-behavior
+TDD failures distinct. Name the sole writer and permitted independent read-only
+work, then hand off the actual delta, affected assumptions and unresolved blockers
+through existing artifacts rather than another receipt schema.
+
 ## Apply OpenSpec with small, testable steps
 
 For a genuinely new review session, follow the complete contract example in

@@ -26,6 +26,19 @@ product delivery order. Its original controls and empirical outcome are recorded
 completion remains unmet until the post-replan exact-head acceptance actually passes.
 This adds no new issue or product-order dependency.
 
+Supplemental risk-first execution proposal: [#40](https://github.com/nold-ai/changecost/issues/40)
+tracks [dev-workflow-03-risk-first-execution](changes/dev-workflow-03-risk-first-execution/proposal.md)
+under [Local core and contracts #6](https://github.com/nold-ai/changecost/issues/6).
+Its sole native blocked-by prerequisite is delivered/closed #26. The guidance
+adds early critical-assumption proof, evidence-based triage and one bounded
+trial within existing review slots. It preserves quality gates, receipt schemas,
+budgets and historical #26 limitations; it adds no product-delivery dependency.
+The 2026-10-08 implementation/verification request authorizes guidance and a
+verified feature push; artifacts are local until publication is verified. Trial
+and final acceptance remain pending; native User Story tracking is In Progress,
+unassigned and undated in the private ChangeCost project. Guidance is implemented locally; final verification/publication and the separately
+authorized trial remain pending.
+
 - Epic: [#4](https://github.com/nold-ai/changecost/issues/4) — ChangeCost — validate change-level cost estimation and settlement.
 - Organization project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, linked to this repository.
 - Native hierarchy: **Epic → Feature → User Story**. The original 14 issues started **Todo**,

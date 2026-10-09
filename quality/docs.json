@@ -4,7 +4,8 @@
       "path": ".agents/skills/changecost-implement/SKILL.md",
       "owner": "agent-workflow",
       "sources": [
-        ".agents/skills/changecost-implement/SKILL.md"
+        ".agents/skills/changecost-implement/SKILL.md",
+        "docs/agent-rules/30-change-workflow.md"
       ],
       "kind": "manual"
     },
@@ -12,7 +13,8 @@
       "path": ".agents/skills/changecost-prepare/SKILL.md",
       "owner": "agent-workflow",
       "sources": [
-        ".agents/skills/changecost-prepare/SKILL.md"
+        ".agents/skills/changecost-prepare/SKILL.md",
+        "docs/agent-rules/30-change-workflow.md"
       ],
       "kind": "manual"
     },
@@ -20,7 +22,8 @@
       "path": ".agents/skills/changecost-promote/SKILL.md",
       "owner": "agent-workflow",
       "sources": [
-        ".agents/skills/changecost-promote/SKILL.md"
+        ".agents/skills/changecost-promote/SKILL.md",
+        "docs/agent-rules/30-change-workflow.md"
       ],
       "kind": "manual"
     },
@@ -28,7 +31,8 @@
       "path": ".agents/skills/changecost-verify/SKILL.md",
       "owner": "agent-workflow",
       "sources": [
-        ".agents/skills/changecost-verify/SKILL.md"
+        ".agents/skills/changecost-verify/SKILL.md",
+        "docs/agent-rules/30-change-workflow.md"
       ],
       "kind": "manual"
     },
@@ -137,7 +141,8 @@
         "pyproject.toml",
         "Makefile",
         ".github/workflows/*.yml",
-        ".pre-commit*.yaml"
+        ".pre-commit*.yaml",
+        "docs/agent-rules/30-change-workflow.md"
       ],
       "kind": "manual"
     },
@@ -822,7 +827,8 @@
         "tests/test_lifecycle_stateful.py",
         "tests/behavioral_payloads.py",
         "quality/review_session.py",
-        "tests/test_review_session.py"
+        "tests/test_review_session.py",
+        "docs/agent-rules/30-change-workflow.md"
       ],
       "kind": "manual"
     },
@@ -1120,6 +1126,46 @@
       "owner": "specifications",
       "sources": [
         "openspec/specs/source-feasibility/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-03-risk-first-execution/design.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-03-risk-first-execution/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-03-risk-first-execution/proposal.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-03-risk-first-execution/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-03-risk-first-execution/specs/bounded-review-session/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-03-risk-first-execution/specs/bounded-review-session/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-03-risk-first-execution/tasks.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/dev-workflow-03-risk-first-execution/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dev-workflow-03-risk-first-execution/TDD_EVIDENCE.md",
+      "owner": "agent-workflow",
+      "sources": [
+        "openspec/changes/dev-workflow-03-risk-first-execution/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     }

@@ -3,6 +3,15 @@
 
 ## Unreleased
 
+- Implement risk-first contributor guidance across the four workflow stages: early
+  critical-assumption proof, evidence-based triage, compact delta handoffs and
+  delivery-overhead measurement, preserving existing gates and review budgets.
+  Adoption-trial benefit and final publication acceptance remain pending.
+
+- Plan risk-first contributor execution with early critical-assumption proof,
+  evidence-based triage and one bounded adoption trial in existing review slots;
+  preserve quality gates, receipt schemas and historical review outcomes.
+
 - Archive accepted source feasibility #9 through OpenSpec CLI after PR #39,
   synchronizing eight requirements and 57 scenarios, preserving native approval
   gaps and review history, and selecting offline adaptive demand #35 next.

@@ -65,6 +65,16 @@ elapsed time. Resolve ordinary implementation details using existing scope. If t
 change is already delivered or its purpose is obsolete, explain that and return
 to selection instead of forcing new implementation work.
 
+## Prepare the execution checkpoint
+
+Apply the [canonical checkpoint](../../../docs/agent-rules/30-change-workflow.md#risk-first-execution-checkpoint)
+to the selected change: record the critical assumptions, observed boundary proof,
+affected obligations and exclusions in its existing design/preparation evidence.
+Name dependent blockers and the sole writer; pass this evidence to the existing
+upfront reviewer. For documentation-only scope, record applicability and relevant
+checks without requiring an unrelated lifecycle packet. Resolve material contrary
+or unavailable evidence before representing the dependent approach as ready.
+
 ## Reconcile the plan and correlated issue
 
 Apply evidence-backed updates coherently across proposal/design/specs/tasks and

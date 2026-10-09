@@ -45,6 +45,16 @@ add a generic full local/CLI review or a receipt-only commit by default.
   in an isolated snapshot; any fixes must be inspected, incorporated by the sole
   writer, and checked again against a new fingerprint.
 
+## Close the affected execution obligations
+
+Use the [canonical checkpoint](../../../docs/agent-rules/30-change-workflow.md#risk-first-execution-checkpoint)
+with the frozen scope and current input binding. Give the existing closure reviewer
+the actual delta, affected assumptions, unresolved findings and proof limits.
+Mapped corrections receive affected-scope closure; unknown dependencies or changed
+entrypoints/trust boundaries renew broader review. Adjudicate findings using the
+canonical evidence/disposition rules. Documentation applicability does not waive
+the dispatcher's required native assurance or final mechanical/provider gates.
+
 ## Verify selected obligations
 
 Before dispatching another review or correction batch, read

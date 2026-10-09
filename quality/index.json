@@ -228,5 +228,10 @@
     "path": "openspec/changes/forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md",
     "title": "Adaptive-demand preparation evidence",
     "description": "Planning recovery, independent review, backlog reconciliation and local assurance limits."
+  },
+  {
+    "path": "openspec/changes/dev-workflow-03-risk-first-execution/proposal.md",
+    "title": "Risk-first execution guidance and pending trial",
+    "description": "Implemented contributor guidance for critical-assumption proof, evidence-based triage and existing review handoffs; publication acceptance and a separately authorized trial remain pending."
   }
 ]

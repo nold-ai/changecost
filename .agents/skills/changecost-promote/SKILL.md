@@ -71,6 +71,16 @@ time. A monitor never applies suggestions or resolves threads. If delegation is
 unavailable, report that limitation rather than silently replacing the requested
 delegated workflow with a parent-only review.
 
+## Adjudicate findings and carry the checkpoint
+
+Use the [canonical triage rules](../../../docs/agent-rules/30-change-workflow.md#evidence-based-triage-and-bounded-corrections)
+to collect compatible confirmed findings, retain report identities and evidence,
+and keep credible unverified defects pending. Give verification the actual delta,
+affected assumptions and current binding under one writer. Carry compact proof
+references into the existing PR acceptance receipt. Confirmed defects, effective
+reviewer objections, quota blocks and stale-head evidence stay blocking; no
+receipt-only source commit or additional review lane is introduced.
+
 ## Observe, verify, fix, repeat
 
 Use `python -m quality.review_session watch <change-id> --repo <owner/repo>
