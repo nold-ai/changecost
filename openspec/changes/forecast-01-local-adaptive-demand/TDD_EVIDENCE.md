@@ -228,3 +228,23 @@ All 35 demand tests pass after the guard. Red report SHA-256: `7c169c30737f4c35d
 green report SHA-256: `7c40f5592bf6f725d2765ba69efed68de76037f254a07b6f3737ab4e51613458`. Fresh complete gates, independent affected closure
 and supported-Linux assurance remain pending for this new delta. The previous Linux
 matrix covers the pre-selector-fix commit only.
+
+
+## Styled help assurance correction — 2026-10-12, Europe/Berlin
+
+Run `38178551294` at `2fda36b2350a29d61a89d8ed337f8f54b7c0d2fc`, Python 3.13.14,
+produced complete native PASS assurance / PASS_WITH_ADVISORY, exit zero, no unknown
+required evidence and all ten analyzers ran PASS. Native report SHA-256:
+`377b74bb52b2f6b36da839645f48185939fd5f638cf3a7d4107d83c8645a83bd`.
+The host pytest gate failed one help assertion (3,082 passed): ANSI styling split
+`--demand` in captured output. The passing native report does not waive that failed
+host gate or certify the later blank-selector/current input delta.
+
+Correction batch 6 changes only the help test oracle: explicit plain/styled controls
+retain zero exit and complete demand/assessment flag assertions, normalizing SGR color
+sequences before matching text. The styled case verifies ANSI output is present.
+Actual pre-normalization control: one failed styled case, one passing plain case.
+After normalization all 36 demand cases pass. Runtime CLI rendering is unchanged.
+Red report SHA-256: `61b3a92dacef003e86f32b7719aeb501c3db78e5317c65dd81c94be7a927a84d`; green SHA-256: `d765413853f65a735dc2abe8a1297db96bb0c192e48883a7f5988944264fa2ad`.
+Fresh staged/full gates and independent affected closure remain required; final exact-head
+Ubuntu matrix/native assurance and the explicitly requested later full scans remain pending.

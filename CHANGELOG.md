@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Verify demand help options under both plain and ANSI-styled terminal output while preserving the complete flag assertions and runtime rendering.
+
 - Reject explicitly blank demand price identifiers before opening a transaction; preserve records and operation IDs instead of silently treating the supplied selector as omission.
 
 - Simplify offline demand request handling, historical truth checks, transfer mapping and validation metrics while preserving frozen replay and serialized records; retain failed Linux assurance and require fresh native verification.

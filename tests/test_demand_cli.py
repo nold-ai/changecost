@@ -1,6 +1,7 @@
 """Demand-mode parser and unchanged financial defaults."""
 
 import json
+import re
 
 import pytest
 from typer.testing import CliRunner
@@ -9,11 +10,16 @@ from changecost.cli import app
 from tests.test_demand import World
 
 
-def test_demand_mode_is_explicit_in_quote_help():
-    result = CliRunner().invoke(app, ["quote", "--help"])
+@pytest.mark.parametrize("styled", [False, True])
+def test_demand_mode_is_explicit_in_quote_help(styled):
+    env = {"TERM": "xterm-256color" if styled else "dumb", "FORCE_COLOR": "1" if styled else ""}
+    result = CliRunner().invoke(app, ["quote", "--help"], env=env, color=True)
     assert result.exit_code == 0
-    assert "--demand" in result.stdout
-    assert "--assessment-id" in result.stdout
+    if styled:
+        assert "\x1b[" in result.stdout
+    help_text = re.sub(r"\x1b\[[0-9;]*m", "", result.stdout)
+    assert "--demand" in help_text
+    assert "--assessment-id" in help_text
 
 
 def test_incomplete_and_mixed_modes_never_create_store(tmp_path):
