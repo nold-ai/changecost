@@ -194,7 +194,8 @@ changecost --db demo.sqlite explain --record-kind demand_forecast --record-id FO
 No economic selectors are needed. Omit `--economic-kind`, `--unit`, `--currency`,
 `--basis` and `--minimum` in demand mode. Mixed or incomplete requests reject
 before opening/persisting a store. `--price-id PRICE_ID` optionally references an
-explicit compatible one-component estimated rate scenario. Monetary scenarios
+explicit compatible one-component estimated rate scenario. Supplied price identifiers
+must be nonblank; omit the option for an unpriced forecast. Monetary scenarios
 retain estimated basis and cannot feed budget `check` as financial Quotes.
 
 JSON output includes component, state, observed summaries, support count, exact

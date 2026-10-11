@@ -245,3 +245,13 @@ def test_explicit_economic_minimum_is_rejected_even_at_default(world):
     )
     assert result.exit_code == 2
     assert world.store.export_bundle() == before
+
+
+@pytest.mark.parametrize("price_id", ["", " ", "\u2003"])
+def test_blank_price_selector_rejects_without_persistence(world, price_id):
+    before = world.store.export_bundle()
+    with pytest.raises(ValueError, match="identifier"):
+        world.forecast("blank-price", price_id=price_id)
+    assert world.store.export_bundle() == before
+    forecast = world.forecast("blank-price")
+    assert forecast.price is None and forecast.price_request is None

@@ -190,3 +190,10 @@ Demand mode SHALL accept assessment/ecosystem references imported through the ex
 - **GIVEN** complete compatible historical quantities 1 and 3
 - **WHEN** an unvalidated demand forecast selects history
 - **THEN** n is 2 and observed minimum, median and maximum are 1, 2 and 3, without a calibrated percentile claim
+
+
+#### Scenario: Explicitly blank optional price selector
+
+- **GIVEN** demand mode with required assessment/ecosystem selectors and an explicitly empty or whitespace-only price identifier
+- **WHEN** the forecast operation is requested
+- **THEN** it rejects before opening or mutating the store and does not silently replace the supplied selector with omission

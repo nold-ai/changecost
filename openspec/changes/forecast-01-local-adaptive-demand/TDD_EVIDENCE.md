@@ -208,3 +208,23 @@ validation selection, estimate, measurement and computation; Run truth CC11; tra
 CC9; DemandResult/state validator CC11/10. Request/estimate/CLI helpers each take two
 parameters; the peer helper takes four. Fresh exact-commit hosted acceptance remains
 pending and is not inferred from these local measurements.
+
+
+## Explicit price-selector correction — 2026-10-12, Europe/Berlin
+
+An independent temporary-store probe at `2fda36b2350a29d61a89d8ed337f8f54b7c0d2fc`
+confirmed `--price-id ""` exited zero, inserted an unpriced forecast and changed sequence
+12 to 13, silently replacing the supplied selector with omission in the receipt. This
+violated the documented incomplete-request boundary. Correction batch 5 adds an explicit
+specification scenario, API/CLI controls for empty/ASCII/Unicode-whitespace identifiers
+and identifier validation before transaction opening. Omitted `None` and valid scenario
+selectors retain their behavior; rejected requests leave the operation ID reusable.
+
+Before the guard, three API regression cases failed; three fresh-store CLI controls
+already passed because the Change was absent. The final CLI controls additionally cover
+an existing registered store, matching the independently reproduced defective call path.
+No claim is made that those later added assertions ran red before implementation.
+All 35 demand tests pass after the guard. Red report SHA-256: `7c169c30737f4c35d580fd08bb0f88cde9ea561ed31ea40ce58f175b1ed545c7`;
+green report SHA-256: `7c40f5592bf6f725d2765ba69efed68de76037f254a07b6f3737ab4e51613458`. Fresh complete gates, independent affected closure
+and supported-Linux assurance remain pending for this new delta. The previous Linux
+matrix covers the pre-selector-fix commit only.

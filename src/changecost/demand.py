@@ -164,6 +164,8 @@ def compute_demand(store: Store, selectors: DemandRequest):
         selectors.ecosystem_id,
     ):
         identifier(value)
+    if selectors.price_id is not None:
+        identifier(selectors.price_id)
     if type(selectors.broad_baseline) is not bool:
         raise ContractError("invalid baseline selector")
     with store.transaction() as connection:
