@@ -220,3 +220,38 @@ selected records and preserving store bytes. The original cutoff-to-insertion
 anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
 the committed snapshot. Equality and later committed appends remain supported;
 portable artifact advice never consults the local store.
+
+## Additive demand records
+
+The portable union now also accepts the following strict offline records. Demand
+records carry internal `version: demand/v1` within the existing `changecost/v1`
+envelope; `demand_policy.version` identifies its explicit measurement policy.
+SQLite layout stays 2 and the package stays `0.1.0.dev0`.
+
+| kind | Main fields / authority |
+| --- | --- |
+| task_assessment | Change ref, six ordinal dimensions, scope_key, assessor, bounded evidence notes, optional supplied rehearsal budget/overhead |
+| demand_policy | Version, component category/unit/basis, accepted-and-abandoned population |
+| ecosystem | Provider, surface, model/version, runtime, reasoning, harness, review, measurement-policy ref; unknown material fields prevent equivalence |
+| demand_observation | RunRef, assessment/ecosystem refs, component, quantity or missing, start/end, final/complete, evidence refs, optional previous/reason |
+| matched_comparison | Distinct source/target Changes and ecosystems, scope key, confounding notes |
+| transfer_hypothesis | Directional ecosystems, dimensions, component, comparison refs; median-ratio method only |
+| demand_price | Effective date, bounded source, currency, explicit compatible component rates |
+| demand_forecast | Change/assessment/ecosystem refs, operation ID, cutoff, result, inputs, exclusions, peers, initial flag, assumptions, optional estimated price |
+| demand_validation_policy | Explicit ecosystem/component/population, truth minimum, coverage/tolerance, underestimation/width/overhead limits and baseline requirement |
+| demand_validation | Policy, forecast/truth/baseline cases, measured metrics, pass flag, cutoff, inputs, operation ID and previous receipt |
+
+Amounts are finite nonnegative decimal strings. Ratios, residuals and calculated
+scenario prices use exact rational strings (for example `1/3`); no precision is
+invented by rounding. Strict booleans and aware timestamps retain existing parsing
+rules. Observation revisions must retain subject identity and cannot fork. Evidence
+must be explicitly bound to the same Run; assessments reference its bound Change.
+
+Local demand computations use typed, exact-request receipts in the existing
+transaction. An imported portable result does not acquire those receipts or local
+cutoff authority. A consistent SQLite backup preserves receipts and replay; portable
+export/import preserves records as producer claims. Existing economic Quotes,
+Features, settlement, layout migration and historical replay are unchanged. Older
+checkouts may reject these additive records; retain a compatible backup before
+opening a store with new records. Roll back code only with a corresponding compatible
+backup; never delete records to downgrade a shared store.

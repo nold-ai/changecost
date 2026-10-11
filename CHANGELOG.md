@@ -3,6 +3,12 @@
 
 ## Unreleased
 
+- Implement separate offline demand forecasts, minimized task/ecosystem artifacts,
+  full-Change synthetic learning, exact directional transfer scenarios, explicit
+  price/rehearsal inputs and scoped local validation receipt/replay controls.
+  Preserve economic Quotes and budget authority. Native readers, pilot validation
+  and private preview packaging remain separate; no version is published.
+
 - Implement risk-first contributor guidance across the four workflow stages: early
   critical-assumption proof, evidence-based triage, compact delta handoffs and
   delivery-overhead measurement, preserving existing gates and review budgets.

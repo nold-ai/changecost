@@ -171,3 +171,22 @@ Rehearsal SHALL be user-invoked and separately measured; forecasts SHALL store m
 - **GIVEN** no rehearsal request or sharing consent, with or without login
 - **WHEN** local forecasting runs
 - **THEN** no LLM request, telemetry enablement or outbound contribution occurs
+
+### Requirement: Explicit demand invocation and deterministic summaries
+
+Demand mode SHALL accept assessment/ecosystem references imported through the existing portable workflow, without money selectors. Mixed modes SHALL reject atomically. Learning SHALL report observed minimum/median/maximum and sample count, selecting complete dimensions before broad known-ecosystem history. Transfer SHALL use median ratios only and retain zero-denominator pairs diagnostically.
+
+#### Scenario: Demand request without money
+- **GIVEN** imported minimized assessment and ecosystem records
+- **WHEN** quote demand mode references them without economic flags
+- **THEN** a replayable separate demand record is created and mixed modes reject before persistence
+
+#### Scenario: Complete all-attempt measurement
+- **GIVEN** synthetic bound attempts with independent compatible full coverage
+- **WHEN** an accepted or abandoned terminal Change enters history
+- **THEN** every attempt contributes once, correction chains select their current revision, and partial or incompatible mixed work stays diagnostic
+
+#### Scenario: Observed summaries
+- **GIVEN** complete compatible historical quantities 1 and 3
+- **WHEN** an unvalidated demand forecast selects history
+- **THEN** n is 2 and observed minimum, median and maximum are 1, 2 and 3, without a calibrated percentile claim

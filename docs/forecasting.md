@@ -1,12 +1,13 @@
-# Local adaptive demand forecasting — planned
+# Local adaptive demand forecasting — offline implementation
 
-Status: planning approved **2026-10-07 (Europe/Berlin)**; not implemented.
-The current CLI still provides offline synthetic economic Quotes and advisory
-checks. This document describes the separately planned
+Status: offline implementation authorized **2026-10-11 (Europe/Berlin)**, locally
+implemented on the feature branch; acceptance and native collection remain pending.
+The CLI provides separate demand forecasts alongside economic Quotes and advisory
+checks. This document describes the
 [adaptive-demand change](../openspec/changes/forecast-01-local-adaptive-demand/proposal.md).
 
-ChangeCost will assess the likely demand of a feature/task/story for individuals,
-small teams and enterprise developers using ordinary local coding-agent metadata.
+ChangeCost assesses the likely demand of a feature/task/story for individuals,
+small teams and enterprise developers using supplied minimized artifacts. Native coding-agent readers remain planned.
 No administrator export, additional telemetry, paid plan upgrade or global database
 is required. Missing measurements stay missing; a free account is not evidence of
 zero resource consumption.
@@ -26,9 +27,8 @@ with evidence and provenance. Ecosystem snapshots separately record provider,
 surface, model/version, runtime, reasoning settings, harness and review workflow.
 Changed or unknown contexts cannot inherit validation silently.
 
-The planned explicit demand mode of `quote` creates a separate versioned forecast;
-`explain` shows its frozen inputs, method, evidence state and limits. These are not
-supported command options yet. Existing economic Quote invocation and budget
+The explicit `quote --demand` mode creates a separate versioned forecast;
+`explain` shows its frozen inputs, method, evidence state and limits. See the [CLI examples](cli.md#offline-demand-forecasting). Existing economic Quote invocation and budget
 checks keep their present contract, including the synthetic billed-USD boundary.
 
 ## Learn without inventing outcomes
@@ -41,8 +41,7 @@ Repeated imports and source revisions must not create additional training sample
 Earlier forecasts remain immutable; new evidence updates later assessments.
 
 Older ecosystems remain candidate history. Matched comparisons, preferably the
-same frozen task under both ecosystems, can support directional ratios or declared
-same-unit differences. A simultaneous task/model/harness change cannot establish
+same frozen task under both ecosystems, support explicit median-ratio hypotheses. Zero donor denominators remain diagnostic. A simultaneous task/model/harness change cannot establish
 a model-only effect. Mapped observations remain hypothetical; actual target
 history is preferred as it accumulates. No universal complexity-to-token coefficient
 or automatic bridge chain is assumed.
@@ -55,7 +54,7 @@ subscription allowance cannot be inferred from list-price dollars.
 
 A user may supply a minimized read-only LLM assessment. Its own usage/overhead is
 reported separately; hidden reasoning is not free simulation and imagined execution
-is not measured truth. The CLI will not invoke a model automatically.
+is not measured truth. The CLI does not invoke a model automatically.
 
 Local learning comes first. Future shared learning requires separate contribution
 consent; login does not authorize sharing. No prompts, source transcripts or raw
@@ -70,3 +69,49 @@ unchanged and does not validate the new forecast.
 Confidence: high in these boundaries, medium in practical forecast benefit.
 Accounting, source coverage and transfer utility remain To-Validate. See
 [research and architectural decisions](research/adaptive-demand-evidence.md).
+
+## Delivered offline policy
+
+Only `synthetic-demand/v1` on registered `synthetic/fixture` Runs is eligible.
+Token categories require `tokens/observed`; wall time uses `milliseconds/elapsed`
+and effort uses `seconds/measured`. Native evidence labels, declared completeness
+and imported validation claims cannot approve a lane. Full terminal Change truth
+sums every bound attempt, including failed retries and abandoned Changes. Any
+missing, incompatible or incomplete attempt excludes the Change from learning.
+Corrections select one current revision; forecast replay retains the old cutoff.
+
+Complete six-dimension matches are selected first; otherwise a broad baseline
+uses the known ecosystem. Output exposes observed minimum, median, maximum and
+count, never calibrated percentiles. Repeated task scopes disclose dependence.
+Matched comparisons expose directional ratios, pair/donor counts, mapped scenarios
+and residuals. Donor cohorts select complete same-dimension source history
+independently from calibration pairs; their references/counts remain visible.
+Target observations stay primary and donors never increase target n.
+Competing overlapping hypotheses remain diagnostic, without automatic bridge chaining.
+
+Task and ecosystem snapshots must be locally available before work. A forecast
+before any registered attempt is marked `initial`; later demand output is diagnostic.
+Retrospective portable imports may be inspectable without being eligible local
+learning history. Backdating producer timestamps cannot establish local availability.
+
+The offline API can exercise explicitly registered synthetic validation rubrics;
+there is no automatic rubric, sample-count promotion or CLI evaluation command.
+A receipt requires reproduced local initial forecasts, complete truth and a rubric
+registered before assessed tasks. If a baseline is required, its exact frozen input
+references must match the candidate, even when their capture clocks differ.
+The latest overlapping rubric controls later applicability; equally available
+competing policies leave validation unavailable. drift, failure or a
+missing local passing receipt withdraws validation. Historical records retain their
+original status. #17 owns actual pilot protocol registration, numerical thresholds,
+chronological comparisons and measured validation before native evaluated outcomes.
+
+Optional prices cover one explicitly supported component at a time and remain
+estimated scenarios, with source, effective date, rate and currency retained.
+Supplied read-only assessment rehearsal includes a same-unit budget and overhead;
+its imagined outcomes and overhead never become task truth. Unknown fields such
+as raw prompts or reasoning are rejected. Free-text evidence notes are bounded,
+not automatically redacted: supply only minimized non-sensitive descriptions.
+
+No publication or source approval follows from these offline tests. See
+[implementation evidence](../openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md)
+for actual checks and outstanding Linux/review gates.

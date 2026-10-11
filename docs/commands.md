@@ -52,13 +52,17 @@ Implemented command surface:
 - `changecost explain --surface`
 - `changecost explain --unit`
 - `changecost quote`
+- `changecost quote --assessment-id`
 - `changecost quote --basis`
 - `changecost quote --change-id`
 - `changecost quote --currency`
+- `changecost quote --demand`
 - `changecost quote --economic-kind`
+- `changecost quote --ecosystem-id`
 - `changecost quote --help`
 - `changecost quote --minimum`
 - `changecost quote --operation-id`
+- `changecost quote --price-id`
 - `changecost quote --repository-id`
 - `changecost quote --unit`
 - `changecost settle`

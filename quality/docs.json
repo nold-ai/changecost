@@ -1003,9 +1003,14 @@
     },
     {
       "path": "docs/forecasting.md",
-      "owner": "project",
+      "owner": "adaptive-demand",
       "sources": [
-        "docs/forecasting.md"
+        "docs/forecasting.md",
+        "src/changecost/demand*.py",
+        "src/changecost/models.py",
+        "src/changecost/store.py",
+        "src/changecost/cli.py",
+        "tests/test_demand*.py"
       ],
       "kind": "manual"
     },
@@ -1166,6 +1171,14 @@
       "owner": "agent-workflow",
       "sources": [
         "openspec/changes/dev-workflow-03-risk-first-execution/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
+      "owner": "adaptive-demand",
+      "sources": [
+        "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     }

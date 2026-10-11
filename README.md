@@ -44,6 +44,11 @@ CSV fields share the existing input byte bound. The hosted research bundle also
 requires a computed conflict-free checkpoint outcome; this does not approve native
 accounting authority or finality.
 
+The feature branch implements [offline adaptive demand](docs/forecasting.md) under
+#35 authorization on 2026-10-11. `quote --demand` references supplied task and
+ecosystem artifacts; learning remains synthetic-only until reader approval.
+Acceptance is pending; this does not publish a release or establish native accuracy.
+
 ## Direction
 
 The proposed feedback loop is **quote → bind → meter → settle → calibrate**.

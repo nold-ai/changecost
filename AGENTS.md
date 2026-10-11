@@ -62,11 +62,13 @@ does not waive future reviews. Provider/live collection and calibration remain
 separate gates. Source feasibility #9 tooling merged in PR #33 and capability reconciliation
 was accepted in PR #39 on 2026-10-08. Native CLI archival synchronized its
 evidence gates; all 23 profiles retain zero approvals. Offline adaptive demand
-#35 is the next selected change; implementation still requires authorization.
+#35 was authorized on 2026-10-11 and is locally implemented; verification and
+acceptance remain pending.
 
 On 2026-10-07 the maintainer approved planning revisions for capability-based
 source closeout and local adaptive demand, including separate Codex/Claude reader
 plans. This authorizes planning/docs/backlog synchronization, not runtime readers,
 automatic collection or LLM invocation. Preserve delivered economic Quote/advisory
-contracts; the new demand record and explicit quote mode remain planned. See
+contracts. Offline demand records and explicit quote mode were authorized and
+locally implemented on 2026-10-11; acceptance remains pending. See
 [forecasting](docs/forecasting.md) and [change order](openspec/CHANGE_ORDER.md).

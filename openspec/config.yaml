@@ -13,7 +13,8 @@ context: |
   an archive-only limitation, not a future review waiver. Source-feasibility
   tooling merged in PR #33; reconciliation was accepted in PR #39 on 2026-10-08.
   Native CLI archival synchronized source feasibility; 23 profiles retain zero
-  approvals. Offline adaptive demand #35 is next, not yet implemented.
+  approvals. Offline adaptive demand #35 was authorized on 2026-10-11 and is locally
+  implemented; verification/acceptance remain pending.
   Normalized imports exist, but trusted coverage/replay supports synthetic billed
   USD only. Source approval alone cannot enable provider numeric authority.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
@@ -40,7 +41,8 @@ context: |
   Planning revision approved 2026-10-07: #9 closes through reviewed capability
   dispositions/gaps, not universal optional-export availability. Native support
   still needs independent semantics; demand eligibility and billed money are separate.
-  New Codex/Claude reader and forecast-01-local-adaptive-demand plans are not runtime.
+  New Codex/Claude readers remain plans. Offline adaptive demand is locally implemented
+  under the 2026-10-11 request, with final acceptance pending.
   Demand starts at zero knowledge, learns locally, tests matched ecosystem transfer
   hypotheses and requires scoped chronological validation before accuracy claims.
   Preserve delivered Quote/Features/advisory contracts and min-20 economic default.

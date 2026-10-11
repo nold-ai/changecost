@@ -117,7 +117,7 @@
   {
     "title": "Offline CLI",
     "path": "docs/cli.md",
-    "description": "Synthetic registration, lifecycle, Quote/Settlement advice, human/JSON presentation and portable claims."
+    "description": "Offline lifecycle, economic Quote, demand and advisory command examples."
   },
   {
     "title": "Contracts v1",
@@ -201,8 +201,8 @@
   },
   {
     "path": "docs/forecasting.md",
-    "title": "Adaptive demand \u2014 planned",
-    "description": "Zero knowledge, local observed learning, transfer hypotheses and scoped validation; no delivered demand command."
+    "title": "Adaptive demand \u2014 offline implementation",
+    "description": "Offline local demand policy, observed learning, transfer and separate native validation gates."
   },
   {
     "path": "docs/research/adaptive-demand-evidence.md",
@@ -212,7 +212,7 @@
   {
     "path": "openspec/changes/forecast-01-local-adaptive-demand/proposal.md",
     "title": "Adaptive-demand proposal",
-    "description": "Separately planned local demand contracts and explicit CLI mode; current financial authority remains unchanged."
+    "description": "Locally implemented offline demand contracts and explicit CLI mode; acceptance pending and financial authority preserved."
   },
   {
     "path": "openspec/changes/provider-03-codex-local-import/proposal.md",
@@ -233,5 +233,10 @@
     "path": "openspec/changes/dev-workflow-03-risk-first-execution/proposal.md",
     "title": "Risk-first execution guidance and pending trial",
     "description": "Implemented contributor guidance for critical-assumption proof, evidence-based triage and existing review handoffs; publication acceptance and a separately authorized trial remain pending."
+  },
+  {
+    "title": "Adaptive demand implementation evidence",
+    "path": "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
+    "description": "Actual synthetic TDD, correction history and outstanding acceptance gates."
   }
 ]

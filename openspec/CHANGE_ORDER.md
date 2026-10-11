@@ -344,3 +344,13 @@ Earlier active/pending statements above record dated history.
 The next product change is [offline adaptive demand #35](changes/forecast-01-local-adaptive-demand/proposal.md),
 starting with zero-knowledge contracts and synthetic verification. Provider readers,
 live collection and native calibration remain independently authorized work.
+
+## Focused Codex test release, 2026-10-11
+
+Offline #35 is authorized and locally implemented; acceptance remains pending.
+The conditional packaged private-alpha path is #35 → #36 → #17 → a separately
+tracked release-readiness change. #35 closes through offline contracts and synthetic
+checks; it does not depend on native comparison results. Prepare #17's protocol
+before collecting evaluated outcomes. Native #36 must independently satisfy its
+version-specific accounting gates. Copilot #13, Cursor #14 and Claude #37 can follow.
+This plan authorizes no publication or release version bump.

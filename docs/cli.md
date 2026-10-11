@@ -1,4 +1,4 @@
-# Offline lifecycle, settlement, Quote and advisory CLI
+# Offline lifecycle, settlement, Quote, demand and advisory CLI
 
 Install with the [README setup](../README.md#work-on-the-repository). Put the global
 `--db PATH` option before the subcommand. Its default is
@@ -176,10 +176,30 @@ Positive-sequence inspection with an unavailable committed timestamp still repor
 replay unavailable; budget check cannot certify that history. These reads do not
 repair or modify the store.
 
-## Planned adaptive demand mode
+## Offline demand forecasting
 
-The [adaptive-demand plan](../openspec/changes/forecast-01-local-adaptive-demand/proposal.md)
-proposes an explicit demand mode for quote and separate replay/explanation records.
-These options are not implemented. Existing default economic commands, JSON,
-min-20 cohort behavior and check authority remain unchanged. See
-[forecasting](forecasting.md) for cold-start states and learning boundaries.
+Import supplied `task_assessment`, `ecosystem` and referenced `demand_policy`
+records in a complete `changecost/v1` portable bundle using the existing importer.
+The assessment references a registered Change; ecosystem records retain known or
+unknown context fields. The command does not collect native sessions or assess
+source code automatically. See [demand contracts](contracts.md#additive-demand-records)
+and [forecasting policy](forecasting.md) before constructing these artifacts.
+
+```sh
+changecost --db demo.sqlite bind --import-artifact demand-inputs.json
+changecost --db demo.sqlite quote --demand --repository-id demo --change-id C1 --operation-id demand-C1 --assessment-id ASSESSMENT_ID --ecosystem-id ECOSYSTEM_ID
+changecost --db demo.sqlite explain --record-kind demand_forecast --record-id FORECAST_ID
+```
+
+No economic selectors are needed. Omit `--economic-kind`, `--unit`, `--currency`,
+`--basis` and `--minimum` in demand mode. Mixed or incomplete requests reject
+before opening/persisting a store. `--price-id PRICE_ID` optionally references an
+explicit compatible one-component estimated rate scenario. Monetary scenarios
+retain estimated basis and cannot feed budget `check` as financial Quotes.
+
+JSON output includes component, state, observed summaries, support count, exact
+inputs, exclusions, initial/diagnostic status, assumptions and next evidence.
+With no eligible history, quantities remain absent. `explain` distinguishes a
+reproduced local computation from an imported producer claim. Keep operation IDs
+unique across economic and demand modes; retry identical requests without changing
+the captured result. Human output supports the same minimized record presentation.

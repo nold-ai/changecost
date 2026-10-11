@@ -101,7 +101,8 @@ gates. Provider approval and calibration remain separate.
 Source feasibility #9 is accepted after PR #39 merged on 2026-10-08. Its
 offline checker, register and research controls are delivered; native CLI archival
 synchronized the evidence gates. All 23 profiles still have zero native approvals.
-Offline adaptive demand #35 is the next change to prepare for implementation. Normalized input can persist provider-shaped evidence;
+Offline adaptive demand #35 is authorized and locally implemented as of 2026-10-11,
+with verification/acceptance pending. Normalized input can persist provider-shaped evidence;
 trusted completeness and replay remain limited to synthetic billed-USD fixtures.
 Future adapters need explicit source accounting, coverage and historical replay
 policies before provider results can grant trusted numeric advice. See the
@@ -121,7 +122,8 @@ evaluation, not sample count or an LLM guess. Quick learning is a goal to measur
 #9 now uses reviewed capability-based closeout; missing optional exports or
 Enterprise/admin data are lane-specific gaps. Native semantic approval, demand
 measurement eligibility and complete billed-money authority remain separate.
-Codex/Claude readers and explicit demand quote mode are planned, not delivered.
+Codex/Claude readers remain planned. Demand quote mode is locally implemented under
+the 2026-10-11 authorization; native reader and final acceptance gates remain separate.
 Current economic Quote/check behavior and minimum remain unchanged.
 
 Optional bounded rehearsal supplies an assessment signal and separately measured
@@ -136,3 +138,14 @@ and records nine additional local/inventory representations with zero approvals.
 Reviewed gaps support capability-based closeout only after actual delivery acceptance.
 Native accounting, reader implementation and demand-learning coverage remain separate;
 see [source feasibility](providers/source-feasibility.md).
+
+## Local offline demand implementation, 2026-10-11
+
+#35 is authorized and locally implemented on `codex/forecast-01-local-adaptive-demand`;
+verification and acceptance remain pending. It adds supplied assessments/ecosystems,
+synthetic-only observed learning and directional transfer with local replay.
+No reader or automatic model invocation is delivered. The focused test-release
+path remains #35, Codex reader #36, registered evaluation #17, then a separately
+tracked private `0.1.0a1` release-readiness change. Copilot, Cursor and Claude readers
+can follow. Four changes include #35; after its acceptance three remain on that
+conditional path. Native accounting may invalidate the proposed Codex lane.
