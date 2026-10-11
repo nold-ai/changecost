@@ -191,7 +191,10 @@ synchronized the accepted offline synthetic estimation and historical replay con
 into main specs. Archived evidence preserves verification and accepted limitations.
 Provider collection and calibration remain separate gates.
 
-Source feasibility now includes [offline development evidence checks](docs/providers/source-feasibility.md#executable-closeout-checks-2026-10-03). Issue #9 remains open for native profile approval; adapters remain separate planned changes.
+Source feasibility includes [offline development evidence checks](docs/providers/source-feasibility.md#executable-closeout-checks-2026-10-03).
+Issue #9 is closed after accepted capability reconciliation in PR #39 and native
+CLI archival. All 23 profiles still have zero native approvals; reader approval
+and implementation remain separate gates.
 CLI controls exercise safe private-manifest reports, changed-hash rejection and
 matrix drift/repair; structural success does not approve native provider profiles.
 Checkpoint controls distinguish cumulative progress/replay from conflicts within
@@ -222,11 +225,13 @@ Registered citations require a parsed HTTPS destination hostname; this structura
 
 Default research checking binds the exact canonical fixture bytes to all twelve registered synthetic references before parsing. In-memory semantic checks and matrix-only rendering make no fixture-byte provenance claim.
 
-## Local adaptive demand — planning approved 2026-10-07
+## Local adaptive demand — offline implementation, 2026-10-11
 
-[Adaptive forecasting](docs/forecasting.md) is planned to begin with qualitative
-zero knowledge for unseen ecosystems, learn from eligible bound local outcomes,
-and test transfer from older models/workflows using observed comparisons. Missing
-exports/admin access do not universally block source-feasibility closeout; missing
-measurements remain unknown. Codex/Claude readers and demand quote mode are future
-work. Current CLI behavior remains the delivered synthetic economic/advisory scope.
+[Adaptive forecasting](docs/forecasting.md) is locally implemented under #35:
+`quote --demand` starts with honest zero knowledge, learns from eligible full-Change
+synthetic outcomes and exposes explicit directional transfer hypotheses. It adds
+to the delivered economic/advisory CLI; final acceptance remains pending.
+Missing measurements remain unknown. Codex/Claude readers, approved native demand
+accounting and measured pilot evaluation remain separate planned changes.
+Missing optional exports/admin access did not block accepted capability closeout;
+it did not approve native lanes or establish forecasting accuracy.

@@ -285,3 +285,28 @@ Red report SHA-256: `907f8a46f1fba7900ee0db7adcb3b8d52000a4bc7fc140935369c914a29
 Fresh affected closure, complete local/staged checks, exact-head Ubuntu assurance and
 CodeRabbit verification remain required for this new correction; earlier reports
 certify only their original commit.
+
+
+## Current-capability documentation correction — 2026-10-12, Europe/Berlin
+
+The fresh CodeRabbit review at `c6ff024c814e54bc2e5e6a571456ca74d961b3f7`
+completed all 31 changed paths and returned one `minor` finding: the README's
+retained planning summary contradicted the implemented demand CLI. No further
+runtime issue was reported. The first documentation-freshness-family escape
+received an independent complete current-summary investigation before correction.
+
+The final authorized correction set reconciles that README section, the project
+brief's unqualified no-runtime statement, financial-versus-demand replay qualifiers,
+the OpenSpec context's original pilot/planned command descriptions and current #9
+status summaries. GitHub read-only evidence on 2026-10-12 confirmed #9 closed and
+PR #39 merged; all 23 native profiles remain unapproved. Current Codex reader and
+native/evaluation/publication gates remain separate. Dated research/archives and
+historical change-order entries remain unchanged. An inherited advisory-status line
+in untouched docs/quotes.md predates #35 and is outside this introduced-change scope.
+
+Runtime and tests are unchanged from the independently closed chronology fix.
+The preserved session permits eight correction batches / 150 active minutes;
+this last documentation batch includes its closure and final exact-head checks.
+Its completed consumption will be recorded without resetting history or allowance.
+Current Linux and CodeRabbit results must cover the final committed contents;
+earlier reports remain bound only to their original inputs.

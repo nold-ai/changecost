@@ -1,9 +1,11 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-10-07**.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary reconciled **2026-10-12**.
 The Python foundation and supplemental bounded-review workflow are delivered and
-archived. Source-feasibility tooling is delivered; remaining capability-reconciliation/review
-tasks keep #9 active and In Progress under the 2026-10-07 closeout revision. Core-02 (#11) merged in PR #25 and is
+archived. Source-feasibility #9 is closed after capability reconciliation merged in
+PR #39 on 2026-10-08 and native CLI archival synchronized its evidence gates.
+All 23 profiles remain unapproved; native readers and accounting approval are separate.
+Core-02 (#11) merged in PR #25 and is
 archived with synchronized main specs. Settlement reconciliation merged in PR #28
 on 2026-10-02 and is accepted/archived with synchronized main specs. Provider
 implementation and live collection require a subsequent request.

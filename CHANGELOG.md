@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Reconcile current demand CLI and source-feasibility summaries across the README, project brief, change order and OpenSpec context; separate financial and demand authority while retaining historical planning evidence.
+
 - Reject demand validation candidates and baselines captured at or after retrospectively registered truth work starts; keep original forecast snapshots and replay immutable.
 
 - Verify demand help options under both plain and ANSI-styled terminal output while preserving the complete flag assertions and runtime rendering.

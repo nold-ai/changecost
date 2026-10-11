@@ -103,7 +103,9 @@ offline checker, register and research controls are delivered; native CLI archiv
 synchronized the evidence gates. All 23 profiles still have zero native approvals.
 Offline adaptive demand #35 is authorized and locally implemented as of 2026-10-11,
 with verification/acceptance pending. Normalized input can persist provider-shaped evidence;
-trusted completeness and replay remain limited to synthetic billed-USD fixtures.
+Trusted financial completeness and replay remain limited to synthetic billed-USD
+fixtures. Demand has a separate closed synthetic token, wall-time and effort policy
+with local replay.
 Future adapters need explicit source accounting, coverage and historical replay
 policies before provider results can grant trusted numeric advice. See the
 [architecture decisions](../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/design.md#preparation-decisions--2026-10-06-europeberlin).
@@ -130,7 +132,7 @@ Optional bounded rehearsal supplies an assessment signal and separately measured
 overhead, not free hidden implementation or observed outcomes. All learning is
 local initially; global contribution is later and requires consent independent of
 login. See [forecasting](forecasting.md) and [evidence/decisions](research/adaptive-demand-evidence.md).
-No runtime, collection, release or global service is implemented in this delivery.
+No native reader, live collection, published release or global service is implemented.
 
 
 Source-feasibility follow-through on 2026-10-07 preserves 14 historical profiles
