@@ -255,3 +255,7 @@ Features, settlement, layout migration and historical replay are unchanged. Olde
 checkouts may reject these additive records; retain a compatible backup before
 opening a store with new records. Roll back code only with a corresponding compatible
 backup; never delete records to downgrade a shared store.
+
+Offline demand computation uses a `DemandRequest` selector object and one captured
+forecast input context shared with replay. These are internal Python inputs; portable
+record shapes and the documented CLI selectors remain the contracts above.

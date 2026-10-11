@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Simplify offline demand request handling, historical truth checks, transfer mapping and validation metrics while preserving frozen replay and serialized records; retain failed Linux assurance and require fresh native verification.
+
 - Implement separate offline demand forecasts, minimized task/ecosystem artifacts,
   full-Change synthetic learning, exact directional transfer scenarios, explicit
   price/rehearsal inputs and scoped local validation receipt/replay controls.

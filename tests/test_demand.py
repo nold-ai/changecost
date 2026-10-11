@@ -1,10 +1,11 @@
 """Synthetic spec-derived demand tests; no native calibration claims."""
 
+from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from changecost.demand import compute_demand, compute_validation, inspect_demand
+from changecost.demand import DemandRequest, compute_demand, compute_validation, inspect_demand
 from changecost.models import (
     Assessment,
     DemandComponent,
@@ -39,6 +40,16 @@ COMP = DemandComponent(category="input", unit="tokens", basis="observed")
 DIMS = Dimensions(
     scope="low", coupling="low", novelty="low", ambiguity="low", validation="low", context="low"
 )
+
+
+@dataclass(frozen=True)
+class PeerOptions:
+    eco: Ecosystem | None = None
+    complete: bool = True
+    outcome: str = "accepted"
+    dims: Dimensions = DIMS
+    provider: str = "synthetic"
+    surface: str = "fixture"
 
 
 class World:
@@ -86,30 +97,21 @@ class World:
         )
         return self.add(Assessment, ident, **(fields | kwargs))
 
-    def peer(
-        self,
-        name,
-        values,
-        eco=None,
-        complete=True,
-        outcome="accepted",
-        dims=DIMS,
-        provider="synthetic",
-        surface="fixture",
-    ):
+    def peer(self, name, values, **kwargs):
+        options = PeerOptions(**kwargs)
         self.tick()
         change = register_change(self.store, "repo", name)
-        assessment = self.assess(change, name + "-a", dimensions=dims)
+        assessment = self.assess(change, name + "-a", dimensions=options.dims)
         self.tick()
-        eco = eco or self.eco
+        eco = options.eco or self.eco
         observations = []
         for i, value in enumerate(values):
             run = register_run(
                 self.store,
                 RunRef(
                     repository_id="repo",
-                    provider=provider,
-                    surface=surface,
+                    provider=options.provider,
+                    surface=options.surface,
                     run_id=f"{name}-{i}",
                 ),
                 name,
@@ -142,16 +144,15 @@ class World:
                 start=start,
                 end=self.time,
                 final=True,
-                complete=complete,
+                complete=options.complete,
                 evidence=[reference(evidence)],
             )
             observations.append(obs)
-        declare(self.store, reference(change), LifecycleDeclaration(outcome=outcome))
+        declare(self.store, reference(change), LifecycleDeclaration(outcome=options.outcome))
         return change, observations
 
     def forecast(self, operation="f", **kwargs):
-        return compute_demand(
-            self.store,
+        selectors = DemandRequest(
             "repo",
             "target",
             operation,
@@ -160,6 +161,7 @@ class World:
                 | kwargs
             ),
         )
+        return compute_demand(self.store, selectors)
 
 
 @pytest.fixture
@@ -427,18 +429,21 @@ def evaluated_task(world, name, actual, advance_baseline=False):
     change = register_change(world.store, "repo", name)
     assessment = world.assess(change, name + "-a")
     forecast = compute_demand(
-        world.store, "repo", name, name + "-f", assessment.record_id, world.eco.record_id
+        world.store,
+        DemandRequest("repo", name, name + "-f", assessment.record_id, world.eco.record_id),
     )
     if advance_baseline:
         world.tick()
     baseline = compute_demand(
         world.store,
-        "repo",
-        name,
-        name + "-baseline",
-        assessment.record_id,
-        world.eco.record_id,
-        broad_baseline=True,
+        DemandRequest(
+            "repo",
+            name,
+            name + "-baseline",
+            assessment.record_id,
+            world.eco.record_id,
+            broad_baseline=True,
+        ),
     )
     world.tick()
     run = register_run(
@@ -497,7 +502,7 @@ def test_registered_measured_validation_foreign_claim_and_withdrawal(world, tmp_
     assert inspect_demand(world.store, supported)["demand_validation"] == "reproduced"
     foreign = Store(tmp_path / "foreign-validation", clock=lambda: world.time)
     foreign.import_bundle(world.store.export_bundle())
-    claim = compute_demand(foreign, "repo", "target", "claim", "a", "eco")
+    claim = compute_demand(foreign, DemandRequest("repo", "target", "claim", "a", "eco"))
     assert claim.result.state == "zero_knowledge" and claim.result.validation is None
     failure = evaluated_task(world, "failed-evaluation", "50")
     failed = compute_validation(world.store, policy.record_id, [failure], "failed-receipt")

@@ -2,7 +2,9 @@
 
 import json
 from contextlib import closing
+from dataclasses import dataclass
 from fractions import Fraction
+from typing import Any
 from uuid import uuid4
 
 from changecost.demand_graph import demand_lookup as lookup
@@ -16,11 +18,15 @@ from changecost.demand_history import (
 )
 from changecost.demand_scenarios import estimate_price, transfer_candidate
 from changecost.models import (
+    Assessment,
+    Change,
     Cutoff,
     DemandForecast,
     DemandResult,
     DemandValidation,
+    Ecosystem,
     Exclusion,
+    PriceScenario,
     ValidationCase,
     ValidationMetrics,
     ValidationPolicy,
@@ -41,6 +47,34 @@ from changecost.store import (
     unique_computation_receipts,
     validate_graph,
 )
+
+
+@dataclass(frozen=True)
+class DemandRequest:
+    """Selectors for one explicit offline forecast operation."""
+
+    repository_id: str
+    change_id: str
+    operation_id: str
+    assessment_id: str
+    ecosystem_id: str
+    price_id: str | None = None
+    broad_baseline: bool = False
+
+
+@dataclass(frozen=True)
+class ForecastInputs:
+    """One captured forecast context, shared by computation and replay."""
+
+    change: Change
+    assessment: Assessment
+    ecosystem: Ecosystem
+    operation: str
+    cutoff: Cutoff
+    availability: dict[Any, Any]
+    price: PriceScenario | None = None
+    broad: bool = False
+    validation: DemandValidation | None = None
 
 
 def forecast_request(change, assessment, ecosystem, price=None, broad=False):
@@ -121,34 +155,33 @@ def persist_result(store, connection, records, result, request, last_at):
     return result
 
 
-def compute_demand(
-    store: Store,
-    repository_id,
-    change_id,
-    operation_id,
-    assessment_id,
-    ecosystem_id,
-    price_id=None,
-    broad_baseline=False,
-):
-    for value in (repository_id, change_id, operation_id, assessment_id, ecosystem_id):
+def compute_demand(store: Store, selectors: DemandRequest):
+    for value in (
+        selectors.repository_id,
+        selectors.change_id,
+        selectors.operation_id,
+        selectors.assessment_id,
+        selectors.ecosystem_id,
+    ):
         identifier(value)
-    if type(broad_baseline) is not bool:
+    if type(selectors.broad_baseline) is not bool:
         raise ContractError("invalid baseline selector")
     with store.transaction() as connection:
         records = read_records(connection)
-        change = change_in(records, repository_id, change_id)
+        change = change_in(records, selectors.repository_id, selectors.change_id)
         if change is None:
             raise ContractError("unknown Change")
-        assessment = records.get(("task_assessment", assessment_id))
-        ecosystem = records.get(("ecosystem", ecosystem_id))
+        assessment = records.get(("task_assessment", selectors.assessment_id))
+        ecosystem = records.get(("ecosystem", selectors.ecosystem_id))
         if assessment is None or ecosystem is None:
             raise ContractError("unknown assessment or ecosystem")
-        price = records.get(("demand_price", price_id)) if price_id else None
-        if price_id and price is None:
+        price = records.get(("demand_price", selectors.price_id)) if selectors.price_id else None
+        if selectors.price_id and price is None:
             raise ContractError("unknown price scenario")
-        request = forecast_request(change, assessment, ecosystem, price, broad_baseline)
-        existing = existing_result(connection, records, operation_id, request, "demand_forecast")
+        request = forecast_request(change, assessment, ecosystem, price, selectors.broad_baseline)
+        existing = existing_result(
+            connection, records, selectors.operation_id, request, "demand_forecast"
+        )
         if existing is not None:
             return existing
         cutoff, last_at = captured(connection, store)
@@ -158,53 +191,26 @@ def compute_demand(
             refs.append(reference(price))
         if any(key(r) not in snapshot for r in refs):
             raise ContractError("demand input unavailable at cutoff")
-        result = estimate(
-            snapshot,
-            change,
-            assessment,
-            ecosystem,
-            operation_id,
-            cutoff,
-            local_availability(connection),
-            price,
-            broad_baseline,
-            applicable_validation(connection, snapshot, change, ecosystem),
+        inputs = ForecastInputs(
+            change=change,
+            assessment=assessment,
+            ecosystem=ecosystem,
+            operation=selectors.operation_id,
+            cutoff=cutoff,
+            availability=local_availability(connection),
+            price=price,
+            broad=selectors.broad_baseline,
+            validation=applicable_validation(connection, snapshot, change, ecosystem),
         )
+        result = estimate(snapshot, inputs)
         return persist_result(store, connection, records, result, request, last_at)
 
 
-def estimate(
-    records,
-    change,
-    assessment,
-    ecosystem,
-    operation,
-    cutoff,
-    availability,
-    price=None,
-    broad=False,
-    validation=None,
-):
-    if assessment.change != reference(change) or not frozen_assessment(
-        records, assessment, availability
-    ):
-        raise ContractError("assessment is not a frozen pre-work snapshot")
-    policy = lookup(records, ecosystem.measurement_policy, "demand_policy")
-    component = policy.component
-    selected, cohort, excluded = peers(
-        records, change, assessment, ecosystem, component, availability, broad
-    )
-    if ecosystem_identity(records, ecosystem) is None:
-        selected = []
-        excluded.append((reference(ecosystem), "unknown_ecosystem"))
-    transfer, transfer_exclusions = transfer_candidate(
-        records, change, assessment, ecosystem, component, availability
-    )
-    excluded.extend(transfer_exclusions)
+def observed_result(component, selected, cohort, transfer, validation):
     state = "learning" if selected else ("transfer_hypothesis" if transfer else "zero_knowledge")
     if validation is not None and selected:
         state = "validated_forecast"
-    result = DemandResult(
+    return DemandResult(
         component=component,
         state=state,
         sample_count=len(selected),
@@ -215,38 +221,63 @@ def estimate(
         if validation is not None and state == "validated_forecast"
         else None,
     )
+
+
+def forecast_dependencies(records, validation):
     roots = set(records) - {k for k in records if k[0] in {"demand_forecast", "demand_validation"}}
     if validation is not None:
         roots.add(key(reference(validation)))
-    inputs = input_closure(records, roots)
+    return input_closure(records, roots)
+
+
+def forecast_assumptions(selected):
+    assumptions = ["synthetic_fixture_only", "observed_summaries_are_uncalibrated"]
+    if len({a.scope_key for _, _, a in selected}) < len(selected):
+        assumptions.append("repeat_task_dependence")
+    return assumptions
+
+
+def estimate(records, inputs: ForecastInputs):
+    change, assessment, ecosystem = inputs.change, inputs.assessment, inputs.ecosystem
+    if assessment.change != reference(change) or not frozen_assessment(
+        records, assessment, inputs.availability
+    ):
+        raise ContractError("assessment is not a frozen pre-work snapshot")
+    component = lookup(records, ecosystem.measurement_policy, "demand_policy").component
+    selected, cohort, excluded = peers(
+        records, change, assessment, ecosystem, component, inputs.availability, inputs.broad
+    )
+    if ecosystem_identity(records, ecosystem) is None:
+        selected = []
+        excluded.append((reference(ecosystem), "unknown_ecosystem"))
+    transfer, transfer_exclusions = transfer_candidate(
+        records, change, assessment, ecosystem, component, inputs.availability
+    )
+    excluded.extend(transfer_exclusions)
+    result = observed_result(component, selected, cohort, transfer, inputs.validation)
+    dependencies = forecast_dependencies(records, inputs.validation)
     return DemandForecast(
-        **common(cutoff.store_id, cutoff.at, str(uuid4())),
+        **common(inputs.cutoff.store_id, inputs.cutoff.at, str(uuid4())),
         change=reference(change),
         assessment=reference(assessment),
         ecosystem=reference(ecosystem),
-        operation_id=operation,
-        cutoff=cutoff,
+        operation_id=inputs.operation,
+        cutoff=inputs.cutoff,
         result=result,
-        inputs=[reference(records[k]) for k in sorted(inputs)],
+        inputs=[reference(records[k]) for k in sorted(dependencies)],
         exclusions=[
             Exclusion(reference=r, reason=reason)
             for r, reason in sorted(excluded, key=lambda e: (key(e[0]), e[1]))
         ],
         peers=[reference(c) for c, _, _ in selected],
         next_evidence=["complete_compatible_bound_outcomes", "registered_measured_validation"]
-        if state != "validated_forecast"
+        if result.state != "validated_forecast"
         else [],
-        price=estimate_price(price, result) if price else None,
-        price_request=reference(price) if price else None,
-        broad_baseline=broad,
-        initial=initial_forecast(records, change, cutoff),
-        assumptions=[
-            "synthetic_fixture_only",
-            "observed_summaries_are_uncalibrated",
-            "repeat_task_dependence",
-        ]
-        if len({a.scope_key for _, _, a in selected}) < len(selected)
-        else ["synthetic_fixture_only", "observed_summaries_are_uncalibrated"],
+        price=estimate_price(inputs.price, result) if inputs.price else None,
+        price_request=reference(inputs.price) if inputs.price else None,
+        broad_baseline=inputs.broad,
+        initial=initial_forecast(records, change, inputs.cutoff),
+        assumptions=forecast_assumptions(selected),
     )
 
 
@@ -265,15 +296,17 @@ def demand_reproduced(connection, records, forecast):
     validation = applicable_validation(connection, snapshot, change, ecosystem)
     replay = estimate(
         snapshot,
-        change,
-        assessment,
-        ecosystem,
-        forecast.operation_id,
-        forecast.cutoff,
-        local_availability(connection),
-        price,
-        forecast.broad_baseline,
-        validation,
+        ForecastInputs(
+            change=change,
+            assessment=assessment,
+            ecosystem=ecosystem,
+            operation=forecast.operation_id,
+            cutoff=forecast.cutoff,
+            availability=local_availability(connection),
+            price=price,
+            broad=forecast.broad_baseline,
+            validation=validation,
+        ),
     )
     exclude = {"record_id", "origin_store_id", "recorded_at", "effective_at"}
     return replay.model_dump(exclude=exclude) == forecast.model_dump(exclude=exclude)
@@ -308,9 +341,8 @@ def inspect_demand(store, record):
         )
 
 
-def applicable_validation(connection, records, change, ecosystem):
-    # Resolve the newest locally available overlapping rubric first. A new rubric
-    # without a passing receipt conservatively withdraws current validation.
+def latest_validation_policy(records, ecosystem, availability):
+    """Resolve the newest overlapping rubric; equally available versions fail closed."""
     identity = ecosystem_identity(records, ecosystem)
     if identity is None:
         return None
@@ -324,13 +356,12 @@ def applicable_validation(connection, records, change, ecosystem):
     ]
     if not policies:
         return None
-    availability = local_availability(connection)
     newest = max(availability[key(reference(p))] for p in policies)
     active = [p for p in policies if availability[key(reference(p))] == newest]
-    if len(active) != 1:
-        return None
-    policy = active[0]
-    local = demand_computation_refs(connection, records)
+    return active[0] if len(active) == 1 else None
+
+
+def validation_heads(records, policy, local):
     receipts = [
         r
         for r in records.values()
@@ -339,7 +370,15 @@ def applicable_validation(connection, records, change, ecosystem):
         and key(reference(r)) in local
     ]
     parents = {key(r.previous) for r in receipts if r.previous is not None}
-    heads = [r for r in receipts if key(reference(r)) not in parents]
+    return [r for r in receipts if key(reference(r)) not in parents]
+
+
+def applicable_validation(connection, records, change, ecosystem):
+    # An overlapping rubric without a passing receipt withdraws current validation.
+    policy = latest_validation_policy(records, ecosystem, local_availability(connection))
+    if policy is None:
+        return None
+    heads = validation_heads(records, policy, demand_computation_refs(connection, records))
     if len(heads) != 1:
         return None
     receipt = heads[0]
@@ -368,15 +407,7 @@ def compute_validation(store, policy_id, cases, operation_id):
         if key(reference(policy)) not in snapshot:
             raise ContractError("validation policy unavailable")
         metrics, passed = measure_validation(connection, snapshot, policy, cases)
-        current = [
-            r
-            for r in snapshot.values()
-            if isinstance(r, DemandValidation)
-            and r.policy == reference(policy)
-            and key(reference(r)) in demand_computation_refs(connection, snapshot)
-        ]
-        parents = {key(r.previous) for r in current if r.previous}
-        heads = [r for r in current if key(reference(r)) not in parents]
+        heads = validation_heads(snapshot, policy, demand_computation_refs(connection, snapshot))
         if len(heads) > 1:
             raise ContractError("ambiguous validation history")
         receipt = DemandValidation(
@@ -465,49 +496,29 @@ def baseline_error(connection, records, policy, case, forecast, actual):
     return abs(actual - Fraction(baseline.result.median))
 
 
-def measure_validation(connection, records, policy, cases):
-    availability = local_availability(connection)
-    seen = set()
-    errors, baselines, underestimates, widths, overheads = [], [], [], [], []
-    covered = 0
-    for case in cases:
-        if key(case.truth) in seen:
-            raise ContractError("duplicate validation truth")
-        seen.add(key(case.truth))
-        forecast, actual, assessment = measured_case(
-            connection, records, policy, case, availability
-        )
-        predicted = Fraction(forecast.result.median)
-        errors.append(abs(actual - predicted))
-        underestimate = max(Fraction(0), actual - predicted)
-        underestimates.append(underestimate)
-        widths.append(Fraction(forecast.result.maximum) - Fraction(forecast.result.minimum))
-        covered += Fraction(forecast.result.minimum) <= actual <= Fraction(forecast.result.maximum)
-        if (
-            assessment.rehearsal is not None
-            and assessment.rehearsal.overhead.component != policy.component
-        ):
-            raise ContractError("rubric overhead units incompatible")
-        overheads.append(
-            Fraction(assessment.rehearsal.overhead.amount) if assessment.rehearsal else Fraction(0)
-        )
-        baseline = baseline_error(connection, records, policy, case, forecast, actual)
-        if baseline is not None:
-            baselines.append(baseline)
-    count = len(cases)
-    metrics = ValidationMetrics(
-        count=count,
-        covered=covered,
-        maximum_underestimate=str(max(underestimates, default=Fraction(0))),
-        maximum_width=str(max(widths, default=Fraction(0))),
-        maximum_overhead=str(max(overheads, default=Fraction(0))),
-        mean_error=str(sum(errors) / count if count else Fraction(0)),
-        baseline_error=str(sum(baselines) / count)
-        if baselines and len(baselines) == count
-        else None,
+def case_metrics(connection, records, policy, case, availability):
+    forecast, actual, assessment = measured_case(connection, records, policy, case, availability)
+    predicted = Fraction(forecast.result.median)
+    if (
+        assessment.rehearsal is not None
+        and assessment.rehearsal.overhead.component != policy.component
+    ):
+        raise ContractError("rubric overhead units incompatible")
+    return dict(
+        error=abs(actual - predicted),
+        underestimate=max(Fraction(0), actual - predicted),
+        width=Fraction(forecast.result.maximum) - Fraction(forecast.result.minimum),
+        covered=Fraction(forecast.result.minimum) <= actual <= Fraction(forecast.result.maximum),
+        overhead=Fraction(assessment.rehearsal.overhead.amount)
+        if assessment.rehearsal
+        else Fraction(0),
+        baseline=baseline_error(connection, records, policy, case, forecast, actual),
     )
-    coverage = Fraction(covered, count) if count else Fraction(0)
-    passed = count >= policy.minimum_truth and abs(
+
+
+def validation_passes(metrics, policy):
+    coverage = Fraction(metrics.covered, metrics.count) if metrics.count else Fraction(0)
+    passed = metrics.count >= policy.minimum_truth and abs(
         coverage - Fraction(policy.nominal_coverage)
     ) <= Fraction(policy.coverage_tolerance)
     passed = (
@@ -522,4 +533,28 @@ def measure_validation(connection, records, policy, cases):
             and metrics.baseline_error is not None
             and Fraction(metrics.mean_error) <= Fraction(metrics.baseline_error)
         )
-    return metrics, bool(passed)
+    return bool(passed)
+
+
+def measure_validation(connection, records, policy, cases):
+    availability = local_availability(connection)
+    seen, measured = set(), []
+    for case in cases:
+        if key(case.truth) in seen:
+            raise ContractError("duplicate validation truth")
+        seen.add(key(case.truth))
+        measured.append(case_metrics(connection, records, policy, case, availability))
+    count = len(cases)
+    baselines = [m["baseline"] for m in measured if m["baseline"] is not None]
+    metrics = ValidationMetrics(
+        count=count,
+        covered=sum(m["covered"] for m in measured),
+        maximum_underestimate=str(max((m["underestimate"] for m in measured), default=Fraction(0))),
+        maximum_width=str(max((m["width"] for m in measured), default=Fraction(0))),
+        maximum_overhead=str(max((m["overhead"] for m in measured), default=Fraction(0))),
+        mean_error=str(sum(m["error"] for m in measured) / count if count else Fraction(0)),
+        baseline_error=str(sum(baselines) / count)
+        if baselines and len(baselines) == count
+        else None,
+    )
+    return metrics, validation_passes(metrics, policy)

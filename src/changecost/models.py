@@ -672,6 +672,17 @@ class TransferResult(Model):
     residuals: list[Rational]
 
 
+def validate_observed_summaries(result):
+    quantities = (result.minimum, result.median, result.maximum)
+    if result.sample_count:
+        if result.minimum is None or result.median is None or result.maximum is None:
+            raise ValueError("invalid observed summaries")
+        if not Decimal(result.minimum) <= Decimal(result.median) <= Decimal(result.maximum):
+            raise ValueError("invalid observed summaries")
+    elif any(q is not None for q in quantities):
+        raise ValueError("unobserved summaries must be absent")
+
+
 class DemandResult(Model):
     component: DemandComponent
     state: Literal["zero_knowledge", "learning", "transfer_hypothesis", "validated_forecast"]
@@ -685,14 +696,7 @@ class DemandResult(Model):
 
     @model_validator(mode="after")
     def state_consistent(self) -> Self:
-        quantities = (self.minimum, self.median, self.maximum)
-        if self.sample_count:
-            if self.minimum is None or self.median is None or self.maximum is None:
-                raise ValueError("invalid observed summaries")
-            if not Decimal(self.minimum) <= Decimal(self.median) <= Decimal(self.maximum):
-                raise ValueError("invalid observed summaries")
-        elif any(q is not None for q in quantities):
-            raise ValueError("unobserved summaries must be absent")
+        validate_observed_summaries(self)
         if self.state == "zero_knowledge" and (self.sample_count or self.transfer):
             raise ValueError("zero knowledge contains no numeric estimate")
         if self.state == "transfer_hypothesis" and (self.transfer is None or self.sample_count):

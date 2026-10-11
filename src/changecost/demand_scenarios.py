@@ -10,13 +10,11 @@ from changecost.serialization import ContractError
 from changecost.store import key, reference
 
 
-def transfer_candidate(records, target, assessment, ecosystem, component, availability):
-    exclusions = []
+def matching_hypotheses(records, assessment, ecosystem, component, exclusions):
     hypotheses = sorted(
         (r for r in records.values() if isinstance(r, TransferHypothesis)),
         key=lambda r: r.record_id,
     )
-    candidates = []
     for hypothesis in hypotheses:
         target_eco = lookup(records, hypothesis.target_ecosystem, "ecosystem")
         if (
@@ -27,6 +25,12 @@ def transfer_candidate(records, target, assessment, ecosystem, component, availa
         if not known_dimensions(assessment) or hypothesis.dimensions != assessment.dimensions:
             exclusions.append((reference(hypothesis), "incompatible_transfer_dimensions"))
             continue
+        yield hypothesis
+
+
+def transfer_candidate(records, target, assessment, ecosystem, component, availability):
+    exclusions, candidates = [], []
+    for hypothesis in matching_hypotheses(records, assessment, ecosystem, component, exclusions):
         ratios, pairs = pair_values(
             records, target, assessment, hypothesis, component, availability, exclusions
         )
@@ -41,23 +45,24 @@ def transfer_candidate(records, target, assessment, ecosystem, component, availa
         if not donors:
             exclusions.append((reference(hypothesis), "no_compatible_donor_history"))
             continue
-        residuals = [str(b - ratio * a) for a, b in pairs]
-        candidates.append(
-            TransferResult(
-                hypothesis=reference(hypothesis),
-                ratio=str(ratio),
-                pair_count=len(ratios),
-                donor_count=len(donors),
-                donors=[reference(c) for c, _v, _a in donors],
-                scenarios=[str(v * ratio) for _c, v, _a in donors],
-                residuals=residuals,
-            )
-        )
+        candidates.append(mapped_transfer(hypothesis, ratio, pairs, donors))
     # Competing overlapping hypotheses need a selected version, not file-order preference.
     if len(candidates) > 1:
         exclusions.extend((c.hypothesis, "ambiguous_transfer_hypotheses") for c in candidates)
         return None, exclusions
     return (candidates[0] if candidates else None), exclusions
+
+
+def mapped_transfer(hypothesis, ratio, pairs, donors):
+    return TransferResult(
+        hypothesis=reference(hypothesis),
+        ratio=str(ratio),
+        pair_count=len(pairs),
+        donor_count=len(donors),
+        donors=[reference(c) for c, _v, _a in donors],
+        scenarios=[str(v * ratio) for _c, v, _a in donors],
+        residuals=[str(b - ratio * a) for a, b in pairs],
+    )
 
 
 def pair_values(records, target, assessment, hypothesis, component, availability, exclusions):

@@ -161,3 +161,50 @@ analyzers pass. This preliminary publication is neither accepted implementation 
 a verified Linux result. The user's subsequent full local CodeRabbit/review-agent scans
 remain to be performed after this verification. No PR, merge, archive or release is
 part of this verification request.
+
+
+## Supported-Linux maintainability correction — 2026-10-11, Europe/Berlin
+
+Commit `570a5253ff36ec017c01adbcfc79c5862a590b6a` was pushed using the documented
+macOS bootstrap procedure. Repository quality run `38176917319`, Python 3.11.15,
+executed all ten required native analyzers: nine passed; Radon failed with twelve
+blocking complexity/parameter findings. Required evidence was complete, not UNKNOWN.
+The complete native test collection contained 3,083 tests. Report SHA-256:
+`3a370434fe3c8a069f1e77b2554966c836854019372787485f2442c8a9937bba`;
+full input sidecar digest:
+`3c79d0712c0dfd4582011c118a53215044bdccbd170b38b2b7f66e745fda00d8`.
+The Python 3.13.14 leg failed during a Go toolchain download before project checks;
+only that setup failure was retried. Neither failed run grants acceptance.
+
+Correction batch 4 groups explicit request selectors and captured forecast inputs,
+extracts observed-summary checks, latest rubric selection/receipt heads, per-case
+measurement and transfer mapping, and groups synthetic peer options. Exact request
+identity, cutoff/replay, validation withdrawal, terminal all-attempt truth, donor
+cohort separation, serialized records and CLI option semantics remain unchanged.
+Local Radon 6.0.1 now reports the affected functions/classes below blocking limits;
+29 demand tests pass and basedpyright reports zero errors. Native thresholds,
+suppressions and analyzer requirements were not altered. Fresh complete local and
+supported-Linux gates plus independent affected closure remain required for this delta.
+
+Nonblocking native advisories are reviewed separately: explicit schema/test names
+retain their existing concise documentation; local imports retain dependency boundaries;
+fixture naming/setup order, exact-type guards and immutable transaction callbacks are
+intentional. Complexity/parameter advisories are rechecked after decomposition; unrelated
+pre-existing warnings remain outside this change. No native defect waiver follows.
+
+
+The corrected local aggregate passed 3,083 tests in 35.79 seconds, package build/install
+smokes and 15 strict OpenSpec items. The native local leaf produced no report because
+the host's previously installed review module was no longer available; its result stays
+incomplete. The earlier unsupported report remains historical evidence only. Required
+native assurance runs in the supported Ubuntu matrix; no repeated local capsule attempt
+or accepted native exception is implied.
+
+Independent quality, runtime and documentation lanes found no issues in the frozen
+refactor. All 32 path fingerprints matched. Runtime closure passed 29 tests in 2.91
+seconds and reproduced original pre-refactor transfer forecasts and measured validation
+receipts under the corrected runtime. Current blocking metrics are CC7/10/13/8 for
+validation selection, estimate, measurement and computation; Run truth CC11; transfer
+CC9; DemandResult/state validator CC11/10. Request/estimate/CLI helpers each take two
+parameters; the peer helper takes four. Fresh exact-commit hosted acceptance remains
+pending and is not inferred from these local measurements.

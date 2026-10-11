@@ -211,17 +211,7 @@ def quote(
 
     def operation():
         if demand:
-            return demand_request(
-                context,
-                repository_id,
-                change_id,
-                operation_id,
-                assessment_id,
-                ecosystem_id,
-                price_id,
-                (economic_kind, unit, basis, currency),
-                minimum,
-            )
+            return demand_request(context, context.params)
         if any(v is not None for v in (assessment_id, ecosystem_id, price_id)):
             raise ContractError("demand selectors require explicit demand mode")
         if any(v is None for v in (economic_kind, unit, basis)):
@@ -239,27 +229,29 @@ def quote(
     execute(operation)
 
 
-def demand_request(
-    context,
-    repository_id,
-    change_id,
-    operation_id,
-    assessment_id,
-    ecosystem_id,
-    price_id,
-    economic,
-    minimum,
-):
-    from changecost.demand import compute_demand
+def demand_request(context, options):
+    from changecost.demand import DemandRequest, compute_demand
 
+    economic = [options[name] for name in ("economic_kind", "unit", "basis", "currency")]
     source = context.get_parameter_source("minimum")
-    if any(v is not None for v in economic) or minimum != 20 or source.name != "DEFAULT":
+    if any(v is not None for v in economic) or options["minimum"] != 20 or source.name != "DEFAULT":
         raise ContractError("demand cannot use economic selectors")
-    if assessment_id is None or ecosystem_id is None:
+    if options["assessment_id"] is None or options["ecosystem_id"] is None:
         raise ContractError("demand requires assessment and ecosystem")
-    return compute_demand(
-        context.obj, repository_id, change_id, operation_id, assessment_id, ecosystem_id, price_id
+    selectors = DemandRequest(
+        **{
+            name: options[name]
+            for name in (
+                "repository_id",
+                "change_id",
+                "operation_id",
+                "assessment_id",
+                "ecosystem_id",
+                "price_id",
+            )
+        }
     )
+    return compute_demand(context.obj, selectors)
 
 
 @app.command()

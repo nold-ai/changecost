@@ -101,24 +101,29 @@ def run_truth(records, run, ecosystem, component, availability):
     if len(observations) != 1:
         return None, None, "missing_demand_observation"
     observation = observations[0]
-    observed_eco = lookup(records, observation.ecosystem, "ecosystem")
-    identity = ecosystem_identity(records, observed_eco)
-    if identity is None or identity != ecosystem_identity(records, ecosystem):
-        return None, observation, "mixed_or_unknown_ecosystem"
-    if not frozen_ecosystem(records, observed_eco, observation, availability):
-        return None, observation, "late_ecosystem_snapshot"
-    if not policy_supported(records, observed_eco, component):
-        return None, observation, "unsupported_measurement_policy"
-    assessment = lookup(records, observation.assessment, "task_assessment")
-    if not frozen_assessment(records, assessment, availability):
-        return None, observation, "late_assessment"
-    intervals = [r for r in current_revisions(records, Interval) if r.run == run.ref]
-    outcomes = [r for r in current_revisions(records, Outcome) if r.subject == reference(run)]
-    if observation.quantity is None or not complete_run(observation, intervals, outcomes):
+    reason = observation_rejection(records, observation, ecosystem, component, availability)
+    if reason:
+        return None, observation, reason
+    if observation.quantity is None or not complete_run(records, run, observation):
         return None, observation, "incomplete_demand_coverage"
     if not all(synthetic_evidence(records, e) for e in observation.evidence):
         return None, observation, "unsupported_native_evidence"
     return Fraction(observation.quantity), observation, None
+
+
+def observation_rejection(records, observation, ecosystem, component, availability):
+    observed_eco = lookup(records, observation.ecosystem, "ecosystem")
+    identity = ecosystem_identity(records, observed_eco)
+    if identity is None or identity != ecosystem_identity(records, ecosystem):
+        return "mixed_or_unknown_ecosystem"
+    if not frozen_ecosystem(records, observed_eco, observation, availability):
+        return "late_ecosystem_snapshot"
+    if not policy_supported(records, observed_eco, component):
+        return "unsupported_measurement_policy"
+    assessment = lookup(records, observation.assessment, "task_assessment")
+    if not frozen_assessment(records, assessment, availability):
+        return "late_assessment"
+    return None
 
 
 def synthetic_evidence(records, ref):
@@ -130,7 +135,9 @@ def synthetic_evidence(records, ref):
     ) == ("synthetic", "fixture", POLICY)
 
 
-def complete_run(observation, intervals, outcomes):
+def complete_run(records, run, observation):
+    intervals = [r for r in current_revisions(records, Interval) if r.run == run.ref]
+    outcomes = [r for r in current_revisions(records, Outcome) if r.subject == reference(run)]
     if not observation.complete or not observation.final or observation.quantity is None:
         return False
     if len(intervals) != 1 or len(outcomes) != 1:
