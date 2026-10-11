@@ -248,3 +248,40 @@ After normalization all 36 demand cases pass. Runtime CLI rendering is unchanged
 Red report SHA-256: `61b3a92dacef003e86f32b7719aeb501c3db78e5317c65dd81c94be7a927a84d`; green SHA-256: `d765413853f65a735dc2abe8a1297db96bb0c192e48883a7f5988944264fa2ad`.
 Fresh staged/full gates and independent affected closure remain required; final exact-head
 Ubuntu matrix/native assurance and the explicitly requested later full scans remain pending.
+
+
+## Full-scan chronology correction — 2026-10-12, Europe/Berlin
+
+Commit `0dab2b12ba218f3a1c301ed4b0435970c4465e09` passed Repository quality
+run `38180838215` on Ubuntu 24.04 / Python 3.11.15 and 3.13.14. Each native report
+ran all ten required analyzers PASS, exit zero, no unknown required evidence, no
+blockers and PASS_WITH_ADVISORY. Both sidecars matched the actual 246-file digest
+`ee12f217c943a5dfc9c69ac5f7244fe54cbb85ff1bfd24594543f62454db5b38`.
+Report SHA-256 values: Python 3.11 `6eecd3cfadc404484c2bb2af079565e7292cd8abb93f9a297e82aaed4e4098c5`;
+Python 3.13 `3e8845e7cd869653534d13478cc73c20a0539af84acd7a79b90ed77e534cbd7a`.
+
+The maintainer extended the preserved session from six to eight correction batches,
+retaining its 150-minute limit. CodeRabbit CLI 0.9.0 completed the full 31-path
+committed diff review with zero findings (`review_completed`, not skipped). A fresh
+independent full review-agent scan covered the complete diff and surrounding code,
+reporting one P2 chronology defect and no additional security/code defects: a forecast
+or baseline captured after actual work starts was admitted when Run registration
+occurred later. The stored initial flag correctly described its own earlier visible
+snapshot, but could not prove chronology against subsequent complete truth.
+
+This genuine evaluation-cutoff-family escape received a family-wide invariant review
+before correction; prior findings and investigation history remain retained. Batch 7
+reuses truth work-bound derivation to check each prediction's own cutoff before
+measurement. Original forecast snapshot replay and the accepted distinct-clock,
+identical-input baseline behavior remain unchanged. No provider collection or new
+accuracy claim is introduced.
+
+Five specification-derived controls cover candidate before/equal/after work, baseline
+equal/after work and legitimately future work registered later. Before the guards,
+four invalid cases failed and the legitimate case passed. Afterward all 41 demand
+cases pass; invalid receipt creation preserves the store and does not promote later
+forecasts. Both original candidate/baseline forecasts still reproduce.
+Red report SHA-256: `907f8a46f1fba7900ee0db7adcb3b8d52000a4bc7fc140935369c914a299d370`; green: `77dbf277dfd95d88b958c973337d4d9d7531a6bc5341060a344b53c4876b9c96`.
+Fresh affected closure, complete local/staged checks, exact-head Ubuntu assurance and
+CodeRabbit verification remain required for this new correction; earlier reports
+certify only their original commit.

@@ -424,10 +424,12 @@ def registered_policy(world, ident="rubric", **kwargs):
     return world.add(ValidationPolicy, ident, **(fields | kwargs))
 
 
-def evaluated_task(world, name, actual, advance_baseline=False):
+def evaluated_task(world, name, actual, advance_baseline=False, retrospective_offset=None):
     world.tick()
     change = register_change(world.store, "repo", name)
     assessment = world.assess(change, name + "-a")
+    if retrospective_offset is not None:
+        world.tick()
     forecast = compute_demand(
         world.store,
         DemandRequest("repo", name, name + "-f", assessment.record_id, world.eco.record_id),
@@ -446,12 +448,17 @@ def evaluated_task(world, name, actual, advance_baseline=False):
         ),
     )
     world.tick()
+    start = (
+        forecast.cutoff.at + timedelta(microseconds=retrospective_offset)
+        if retrospective_offset is not None
+        else world.time
+    )
     run = register_run(
         world.store,
         RunRef(repository_id="repo", provider="synthetic", surface="fixture", run_id=name),
         name,
+        work_start=start if retrospective_offset is not None else None,
     )
-    start = world.time
     world.tick()
     declare(
         world.store,
@@ -605,3 +612,29 @@ def test_transfer_maps_donor_cohort_separately_from_pair_support(world):
     assert forecast.result.sample_count == 1
     assert transfer.residuals == ["0"]
     assert inspect_demand(world.store, old)["demand_validation"] == "reproduced"
+
+
+@pytest.mark.parametrize("offset", [-500_000, 0, 500_000, 1_000_000, 1_500_000])
+def test_validation_rechecks_late_registered_truth_cutoffs(world, offset):
+    world.peer("one", ["1"])
+    world.peer("three", ["3"])
+    world.tick()
+    policy = registered_policy(world)
+    case = evaluated_task(world, "retrospective", "2", True, offset)
+    records = {(r.kind, r.record_id): r for r in world.store.export_bundle().records}
+    forecast = records[(case.forecast.kind, case.forecast.record_id)]
+    assert case.baseline is not None
+    baseline = records[(case.baseline.kind, case.baseline.record_id)]
+    assert forecast.initial and baseline.initial
+    before = world.store.export_bundle()
+    if offset <= 1_000_000:
+        with pytest.raises(ContractError, match="before truth work"):
+            compute_validation(world.store, policy.record_id, [case], "retrospective-receipt")
+        assert world.store.export_bundle() == before
+        assert world.forecast("not-promoted").result.state == "learning"
+    else:
+        receipt = compute_validation(world.store, policy.record_id, [case], "retrospective-receipt")
+        assert receipt.passed
+        assert world.forecast("promoted").result.state == "validated_forecast"
+    for prediction in (forecast, baseline):
+        assert inspect_demand(world.store, prediction)["demand_validation"] == "reproduced"

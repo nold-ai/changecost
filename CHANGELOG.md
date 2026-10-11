@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Reject demand validation candidates and baselines captured at or after retrospectively registered truth work starts; keep original forecast snapshots and replay immutable.
+
 - Verify demand help options under both plain and ANSI-styled terminal output while preserving the complete flag assertions and runtime rendering.
 
 - Reject explicitly blank demand price identifiers before opening a transaction; preserve records and operation IDs instead of silently treating the supplied selector as omission.

@@ -259,3 +259,9 @@ backup; never delete records to downgrade a shared store.
 Offline demand computation uses a `DemandRequest` selector object and one captured
 forecast input context shared with replay. These are internal Python inputs; portable
 record shapes and the documented CLI selectors remain the contracts above.
+
+A measured demand validation receipt must recheck each candidate and baseline's own
+cutoff against the complete truth snapshot's work bounds. A previously stored `initial`
+flag alone cannot prove chronological eligibility after a retrospective Run registration.
+Invalid chronology rejects before receipt persistence; original forecast replay keeps
+its own frozen snapshot.

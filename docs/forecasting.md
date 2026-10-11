@@ -89,9 +89,12 @@ independently from calibration pairs; their references/counts remain visible.
 Target observations stay primary and donors never increase target n.
 Competing overlapping hypotheses remain diagnostic, without automatic bridge chaining.
 
-Task and ecosystem snapshots must be locally available before work. A forecast
-before any registered attempt is marked `initial`; later demand output is diagnostic.
-Retrospective portable imports may be inspectable without being eligible local
+Task and ecosystem snapshots must be locally available before work. The `initial`
+flag records cutoff-visible evidence: no registered attempt, or only known future
+work bounds. Validation separately checks each candidate and baseline cutoff against
+complete truth work bounds, including retrospectively registered Runs; equality or
+later capture rejects measurement. Original forecast records and their snapshot
+replay remain immutable. Retrospective portable imports may be inspectable without being eligible local
 learning history. Backdating producer timestamps cannot establish local availability.
 
 The offline API can exercise explicitly registered synthetic validation rubrics;

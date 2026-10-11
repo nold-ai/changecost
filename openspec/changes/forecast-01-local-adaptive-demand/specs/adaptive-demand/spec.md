@@ -197,3 +197,10 @@ Demand mode SHALL accept assessment/ecosystem references imported through the ex
 - **GIVEN** demand mode with required assessment/ecosystem selectors and an explicitly empty or whitespace-only price identifier
 - **WHEN** the forecast operation is requested
 - **THEN** it rejects before opening or mutating the store and does not silently replace the supplied selector with omission
+
+
+#### Scenario: Retrospective work registration in validation
+
+- **GIVEN** candidate and baseline records marked initial before a Run was visible, followed by complete truth showing earlier work
+- **WHEN** local validation is computed
+- **THEN** each prediction's own cutoff must strictly precede all truth work bounds, otherwise measurement rejects without persistence; historical prediction replay remains unchanged

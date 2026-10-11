@@ -471,6 +471,8 @@ def measured_case(connection, records, policy, case, availability):
         raise ContractError("complete validation truth unavailable")
     if not frozen_assessment(records, assessment, availability):
         raise ContractError("late validation predictors")
+    if not initial_forecast(records, truth, forecast.cutoff):
+        raise ContractError("forecast was not captured before truth work")
     return forecast, actual, assessment
 
 
@@ -495,6 +497,9 @@ def baseline_error(connection, records, policy, case, forecast, actual):
         or baseline.result.median is None
     ):
         raise ContractError("baseline unavailable")
+    truth = lookup(records, case.truth, "change")
+    if not initial_forecast(records, truth, baseline.cutoff):
+        raise ContractError("baseline was not captured before truth work")
     return abs(actual - Fraction(baseline.result.median))
 
 
