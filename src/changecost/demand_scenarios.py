@@ -4,7 +4,13 @@ from fractions import Fraction
 from statistics import median
 
 from changecost.demand_graph import demand_lookup as lookup
-from changecost.demand_history import aggregate, ecosystem_identity, known_dimensions, peers
+from changecost.demand_history import (
+    CohortSelection,
+    aggregate,
+    ecosystem_identity,
+    known_dimensions,
+    peers,
+)
 from changecost.models import EstimatedPrice, TransferHypothesis, TransferResult
 from changecost.serialization import ContractError
 from changecost.store import key, reference
@@ -28,18 +34,26 @@ def matching_hypotheses(records, assessment, ecosystem, component, exclusions):
         yield hypothesis
 
 
-def transfer_candidate(records, target, assessment, ecosystem, component, availability):
+def transfer_candidate(
+    records, target, assessment, ecosystem, component, availability, algorithm="observed-summary/v3"
+):
     exclusions, candidates = [], []
     for hypothesis in matching_hypotheses(records, assessment, ecosystem, component, exclusions):
         ratios, pairs = pair_values(
-            records, target, assessment, hypothesis, component, availability, exclusions
+            records, target, assessment, hypothesis, availability, exclusions, algorithm
         )
         if not ratios:
             continue
         ratio = median(ratios)
         source_eco = lookup(records, hypothesis.source_ecosystem, "ecosystem")
         donor_history, _cohort, _diagnostics = peers(
-            records, target, assessment, source_eco, component, availability
+            records,
+            target,
+            assessment,
+            source_eco,
+            component,
+            availability,
+            selection=CohortSelection(algorithm=algorithm),
         )
         donors = [d for d in donor_history if d[2].dimensions == assessment.dimensions]
         if not donors:
@@ -65,8 +79,26 @@ def mapped_transfer(hypothesis, ratio, pairs, donors):
     )
 
 
-def pair_values(records, target, assessment, hypothesis, component, availability, exclusions):
-    ratios, pairs, used = [], [], set()
+def pair_values(
+    records,
+    target,
+    assessment,
+    hypothesis,
+    availability,
+    exclusions,
+    algorithm="observed-summary/v3",
+):
+    selected = eligible_comparisons(
+        records, target, assessment, hypothesis, availability, exclusions, algorithm
+    )
+    return [b / a for _pair, a, b in selected], [(a, b) for _pair, a, b in selected]
+
+
+def eligible_comparisons(
+    records, target, assessment, hypothesis, availability, exclusions, algorithm
+):
+    component = hypothesis.component
+    selected, used = [], set()
     source_eco = lookup(records, hypothesis.source_ecosystem, "ecosystem")
     target_eco = lookup(records, hypothesis.target_ecosystem, "ecosystem")
     for ref in hypothesis.comparisons:
@@ -77,8 +109,8 @@ def pair_values(records, target, assessment, hypothesis, component, availability
             continue
         source = lookup(records, pair.source_change, "change")
         destination = lookup(records, pair.target_change, "change")
-        a, sa, ar = aggregate(records, source, source_eco, component, availability)
-        b, ta, br = aggregate(records, destination, target_eco, component, availability)
+        a, sa, ar = aggregate(records, source, source_eco, component, availability, algorithm)
+        b, ta, br = aggregate(records, destination, target_eco, component, availability, algorithm)
         if (
             ar
             or br
@@ -97,9 +129,8 @@ def pair_values(records, target, assessment, hypothesis, component, availability
             exclusions.append((ref, "zero_donor_denominator"))
             continue
         used.update([key(pair.source_change), key(pair.target_change)])
-        ratios.append(b / a)
-        pairs.append((a, b))
-    return ratios, pairs
+        selected.append((pair, a, b))
+    return selected
 
 
 def pair_rejection(pair, target, hypothesis, used):

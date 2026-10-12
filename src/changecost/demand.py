@@ -9,6 +9,7 @@ from uuid import uuid4
 
 from changecost.demand_graph import demand_lookup as lookup
 from changecost.demand_history import (
+    CohortSelection,
     aggregate,
     ecosystem_identity,
     frozen_assessment,
@@ -17,6 +18,7 @@ from changecost.demand_history import (
     summaries,
 )
 from changecost.demand_scenarios import estimate_price, transfer_candidate
+from changecost.demand_support import selected_validation_support
 from changecost.models import (
     Assessment,
     Change,
@@ -75,7 +77,9 @@ class ForecastInputs:
     price: PriceScenario | None = None
     broad: bool = False
     validation: DemandValidation | None = None
-    algorithm: Literal["observed-summary/v1", "observed-summary/v2"] = "observed-summary/v2"
+    algorithm: Literal["observed-summary/v1", "observed-summary/v2", "observed-summary/v3"] = (
+        "observed-summary/v3"
+    )
 
 
 @dataclass
@@ -106,9 +110,22 @@ def forecast_request(change, assessment, ecosystem, price=None, broad=False):
     )
 
 
-def validation_request(policy, cases):
+def validation_request(policy, cases, generation="demand-validation/v2"):
     return json.dumps(
-        ["demand-validation/v1", policy.record_id, [c.model_dump() for c in cases]], sort_keys=True
+        [generation, policy.record_id, [c.model_dump() for c in cases]], sort_keys=True
+    )
+
+
+def validation_generation(request):
+    try:
+        generation = json.loads(request)[0]
+    except (ValueError, IndexError, TypeError, KeyError):
+        return None
+    return (
+        generation
+        if isinstance(generation, str)
+        and generation in {"demand-validation/v1", "demand-validation/v2"}
+        else None
     )
 
 
@@ -134,8 +151,11 @@ def demand_computation_refs(connection, records):
         validation = records.get(("demand_validation", ident))
         if isinstance(validation, DemandValidation):
             policy = lookup(records, validation.policy, "demand_validation_policy")
-            if operation == validation.operation_id and request == validation_request(
-                policy, validation.cases
+            generation = validation_generation(request)
+            if (
+                generation is not None
+                and operation == validation.operation_id
+                and request == validation_request(policy, validation.cases, generation)
             ):
                 result.add(("demand_validation", ident))
     return result
@@ -149,13 +169,15 @@ def captured(connection, store):
     return Cutoff(store_id=store_id, sequence=sequence, at=now), last_at
 
 
-def existing_result(connection, records, operation, request, kind):
+def existing_result(connection, records, operation, request, kind, legacy_request=None):
     row = connection.execute(
         "SELECT request,record_id FROM computations WHERE operation_id=?", (operation,)
     ).fetchone()
     if row is None:
         return None
-    if row[0] != request or (kind, row[1]) not in demand_computation_refs(connection, records):
+    if row[0] not in (request, legacy_request) or (kind, row[1]) not in demand_computation_refs(
+        connection, records
+    ):
         raise ContractError("operation ID already used for a different request")
     return records[(kind, row[1])]
 
@@ -251,7 +273,7 @@ def forecast_dependencies(records, validation):
 def forecast_assumptions(selected, assessment, algorithm):
     assumptions = ["synthetic_fixture_only", "observed_summaries_are_uncalibrated"]
     scopes = [a.scope_key for _, _, a in selected]
-    if algorithm == "observed-summary/v2":
+    if algorithm != "observed-summary/v1":
         scopes.append(assessment.scope_key)
     if len(set(scopes)) < len(scopes):
         assumptions.append("repeat_task_dependence")
@@ -261,18 +283,24 @@ def forecast_assumptions(selected, assessment, algorithm):
 def estimate(records, inputs: ForecastInputs):
     change, assessment, ecosystem = inputs.change, inputs.assessment, inputs.ecosystem
     if assessment.change != reference(change) or not frozen_assessment(
-        records, assessment, inputs.availability
+        records, assessment, inputs.availability, inputs.algorithm
     ):
         raise ContractError("assessment is not a frozen pre-work snapshot")
     component = lookup(records, ecosystem.measurement_policy, "demand_policy").component
     selected, cohort, excluded = peers(
-        records, change, assessment, ecosystem, component, inputs.availability, inputs.broad
+        records,
+        change,
+        assessment,
+        ecosystem,
+        component,
+        inputs.availability,
+        CohortSelection(inputs.broad, inputs.algorithm),
     )
     if ecosystem_identity(records, ecosystem) is None:
         selected = []
         excluded.append((reference(ecosystem), "unknown_ecosystem"))
     transfer, transfer_exclusions = transfer_candidate(
-        records, change, assessment, ecosystem, component, inputs.availability
+        records, change, assessment, ecosystem, component, inputs.availability, inputs.algorithm
     )
     excluded.extend(transfer_exclusions)
     result = observed_result(component, selected, cohort, transfer, inputs.validation)
@@ -298,7 +326,7 @@ def estimate(records, inputs: ForecastInputs):
         price=estimate_price(inputs.price, result) if inputs.price else None,
         price_request=reference(inputs.price) if inputs.price else None,
         broad_baseline=inputs.broad,
-        initial=initial_forecast(records, change, inputs.cutoff),
+        initial=initial_forecast(records, change, inputs.cutoff, inputs.algorithm),
         assumptions=forecast_assumptions(selected, assessment, inputs.algorithm),
     )
 
@@ -319,7 +347,7 @@ def demand_reproduced(context, records, forecast):
     price = (
         lookup(snapshot, forecast.price_request, "demand_price") if forecast.price_request else None
     )
-    validation = applicable_validation(context, snapshot, change, ecosystem)
+    validation = applicable_validation(context, snapshot, change, ecosystem, forecast.algorithm)
     replay = estimate(
         snapshot,
         ForecastInputs(
@@ -402,7 +430,7 @@ def validation_heads(records, policy):
     return [r for r in receipts if key(reference(r)) not in parents]
 
 
-def applicable_validation(context, records, change, ecosystem):
+def applicable_validation(context, records, change, ecosystem, algorithm="observed-summary/v3"):
     connection = context.connection
     # An overlapping rubric without a passing receipt withdraws current validation.
     policy = latest_validation_policy(records, ecosystem, local_availability(connection))
@@ -417,6 +445,10 @@ def applicable_validation(context, records, change, ecosystem):
     if any(case.truth == reference(change) for case in receipt.cases):
         return None
     if receipt.passed and validation_reproduced(context, records, receipt):
+        if algorithm == "observed-summary/v3" and reference(change) in selected_validation_support(
+            context.connection, records, receipt
+        ):
+            return None
         return receipt
     return None
 
@@ -431,7 +463,14 @@ def compute_validation(store, policy_id, cases, operation_id):
         if not isinstance(policy, ValidationPolicy):
             raise ContractError("unknown validation policy")
         request = validation_request(policy, cases)
-        existing = existing_result(connection, records, operation_id, request, "demand_validation")
+        existing = existing_result(
+            connection,
+            records,
+            operation_id,
+            request,
+            "demand_validation",
+            validation_request(policy, cases, "demand-validation/v1"),
+        )
         if existing is not None:
             return existing
         cutoff, last_at = captured(connection, store)
@@ -458,6 +497,18 @@ def compute_validation(store, policy_id, cases, operation_id):
         return persist_result(store, connection, records, receipt, request, last_at)
 
 
+def receipt_measurement_algorithm(connection, receipt):
+    matches = [
+        request
+        for operation, request, ident in unique_computation_receipts(connection)
+        if operation == receipt.operation_id and ident == receipt.record_id
+    ]
+    generation = validation_generation(matches[0]) if len(matches) == 1 else None
+    if generation is None:
+        return None
+    return "observed-summary/v1" if generation == "demand-validation/v1" else "observed-summary/v3"
+
+
 def validation_reproduced(context, records, receipt):
     connection = context.connection
     if not original_computation_cutoff(connection, receipt):
@@ -465,7 +516,12 @@ def validation_reproduced(context, records, receipt):
     snapshot = snapshot_records(connection, receipt.cutoff, records)
     if any(key(r) not in snapshot for r in receipt.inputs):
         return False
-    identity = replay_identity(receipt, snapshot)
+    if key(reference(receipt)) not in demand_computation_refs(connection, records):
+        return False
+    algorithm = receipt_measurement_algorithm(connection, receipt)
+    if algorithm is None:
+        return False
+    identity = (*replay_identity(receipt, snapshot), algorithm)
     if identity in context.completed:
         return context.completed[identity]
     try:
@@ -474,6 +530,7 @@ def validation_reproduced(context, records, receipt):
             snapshot,
             lookup(snapshot, receipt.policy, "demand_validation_policy"),
             receipt.cases,
+            algorithm,
         )
     except (ValueError, KeyError):
         return False
@@ -482,7 +539,7 @@ def validation_reproduced(context, records, receipt):
     return reproduced
 
 
-def measured_case(context, records, policy, case, availability):
+def measured_case(context, records, policy, case, availability, algorithm):
     connection = context.connection
     forecast = lookup(records, case.forecast, "demand_forecast")
     truth = lookup(records, case.truth, "change")
@@ -505,17 +562,19 @@ def measured_case(context, records, policy, case, availability):
     assessment = lookup(records, forecast.assessment, "task_assessment")
     if availability[key(reference(policy))] >= availability[key(reference(assessment))]:
         raise ContractError("rubric was not registered before evaluated task")
-    actual, _assessment, reason = aggregate(records, truth, eco, policy.component, availability)
+    actual, _assessment, reason = aggregate(
+        records, truth, eco, policy.component, availability, algorithm
+    )
     if reason or actual is None:
         raise ContractError("complete validation truth unavailable")
-    if not frozen_assessment(records, assessment, availability):
+    if not frozen_assessment(records, assessment, availability, algorithm):
         raise ContractError("late validation predictors")
-    if not initial_forecast(records, truth, forecast.cutoff):
+    if not initial_forecast(records, truth, forecast.cutoff, algorithm):
         raise ContractError("forecast was not captured before truth work")
     return forecast, actual, assessment
 
 
-def baseline_error(context, records, policy, case, forecast, actual):
+def baseline_error(context, records, policy, case, forecast, actual, algorithm):
     connection = context.connection
     if case.baseline is None:
         if policy.require_baseline:
@@ -538,13 +597,15 @@ def baseline_error(context, records, policy, case, forecast, actual):
     ):
         raise ContractError("baseline unavailable")
     truth = lookup(records, case.truth, "change")
-    if not initial_forecast(records, truth, baseline.cutoff):
+    if not initial_forecast(records, truth, baseline.cutoff, algorithm):
         raise ContractError("baseline was not captured before truth work")
     return abs(actual - Fraction(baseline.result.median))
 
 
-def case_metrics(context, records, policy, case, availability):
-    forecast, actual, assessment = measured_case(context, records, policy, case, availability)
+def case_metrics(context, records, policy, case, availability, algorithm):
+    forecast, actual, assessment = measured_case(
+        context, records, policy, case, availability, algorithm
+    )
     predicted = Fraction(forecast.result.median)
     if (
         assessment.rehearsal is not None
@@ -559,7 +620,7 @@ def case_metrics(context, records, policy, case, availability):
         overhead=Fraction(assessment.rehearsal.overhead.amount)
         if assessment.rehearsal
         else Fraction(0),
-        baseline=baseline_error(context, records, policy, case, forecast, actual),
+        baseline=baseline_error(context, records, policy, case, forecast, actual, algorithm),
     )
 
 
@@ -583,7 +644,7 @@ def validation_passes(metrics, policy):
     return bool(passed)
 
 
-def measure_validation(context, records, policy, cases):
+def measure_validation(context, records, policy, cases, algorithm="observed-summary/v3"):
     connection = context.connection
     availability = local_availability(connection)
     seen, measured = set(), []
@@ -591,7 +652,7 @@ def measure_validation(context, records, policy, cases):
         if key(case.truth) in seen:
             raise ContractError("duplicate validation truth")
         seen.add(key(case.truth))
-        measured.append(case_metrics(context, records, policy, case, availability))
+        measured.append(case_metrics(context, records, policy, case, availability, algorithm))
     count = len(cases)
     baselines = [m["baseline"] for m in measured if m["baseline"] is not None]
     metrics = ValidationMetrics(

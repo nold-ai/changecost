@@ -730,7 +730,9 @@ class DemandForecast(DemandRecord):
     assessment: RecordRef
     ecosystem: RecordRef
     operation_id: Identifier
-    algorithm: Literal["observed-summary/v1", "observed-summary/v2"] = "observed-summary/v2"
+    algorithm: Literal["observed-summary/v1", "observed-summary/v2", "observed-summary/v3"] = (
+        "observed-summary/v3"
+    )
     cutoff: Cutoff
     result: DemandResult
     inputs: list[RecordRef]

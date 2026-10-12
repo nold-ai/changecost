@@ -274,3 +274,21 @@ Demand mode SHALL accept assessment/ecosystem references imported through the ex
 - **GIVEN** candidate and baseline records marked initial before a Run was visible, followed by complete truth showing earlier work
 - **WHEN** local validation is computed
 - **THEN** each prediction's own cutoff must strictly precede all truth work bounds, otherwise measurement rejects without persistence; historical prediction replay remains unchanged
+
+### Requirement: Versioned current temporal evidence and selected validation support
+New forecasts SHALL use observed-summary/v3. At each cutoff, pre-work and validation truth guards SHALL inspect current Interval and DemandObservation revision heads, retain immutable Run.observed_start, and preserve registration/capture ordering. Superseded erroneous bounds SHALL NOT override the current correction. All existing observed-summary/v1 and v2 forecasts SHALL replay with their exact original temporal and validation applicability rules.
+
+#### Scenario: Corrected historical temporal bound
+- **GIVEN** a missing immutable Run start and an erroneous early interval or observation corrected to valid current bounds
+- **WHEN** a new forecast or live validation is computed
+- **THEN** current revision bounds determine eligibility, while a saved v1/v2 forecast retains its exact payload and idempotent retry.
+
+#### Scenario: Target occurs in actual validation support
+- **GIVEN** a passing local receipt whose candidate or baseline selected peers, donors, eligible bridge pair owners, or recursively selected validation evidence includes the current target
+- **WHEN** a v3 forecast is computed for that target
+- **THEN** the receipt cannot promote that forecast, including all target attempts and revisions. Generic frozen input metadata, excluded/zero-denominator comparisons and structural receipt predecessors alone do not count as selected training support.
+
+#### Scenario: Explicit local receipt generation
+- **GIVEN** a locally computed historical receipt with exact demand-validation/v1 request provenance
+- **WHEN** it is replayed or retried with the same operation
+- **THEN** its original temporal measurement rules and exact payload remain authoritative locally. New receipts use internal demand-validation/v2 request provenance and current revision measurement rules, including when evaluating legacy forecasts; imported labels confer no local authority. No portable schema field is added.

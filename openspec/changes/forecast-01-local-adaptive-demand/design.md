@@ -198,3 +198,24 @@ forecasts unvalidated. Target Changes are excluded from receipt cases and bridge
 Offline acceptance does not require #36 or #17 delivery. Native integration requires
 its independently approved reader/policy; #17 protocol preparation must precede
 evaluated outcomes. Actual live comparisons and publication remain later stages.
+
+## Corrected temporal evidence and selected validation support
+New observed-summary/v3 forecasts select current cutoff-visible Interval and
+DemandObservation heads for pre-work and truth chronology, retaining immutable Run
+points and local capture/registration bounds. Old v1/v2 estimate and applicability
+replay dispatch explicitly retains prior semantics. Internal local computation request
+generation demand-validation/v1 versus v2 distinguishes original receipt measurement
+from current live measurement without a new portable field or database schema. Exact
+legacy request retries are accepted before constructing a new receipt; malformed,
+unknown, imported or aliased provenance remains non-authoritative.
+
+Validation applicability excludes the target from actual selected candidate/baseline
+peers, transfer donors, eligible bridge pair owners and recursively selected receipts
+at each stored cutoff/algorithm. Generic input inventory and structural previous links
+are not training support. Shared eligibility logic derives selected pairs; zero,
+confounded, future, duplicate and otherwise rejected comparisons remain diagnostic.
+The traversal uses operation-local visited identities. Exact old forecast and receipt
+payload comparisons, import authority and backup markers remain intact. Reverting the
+default retains v3 decoder/replay; full old-code rollback requires a compatible backup.
+Package version 0.1.0.dev0 and database schema2 remain unchanged; internal generations
+are not published product versions.

@@ -143,3 +143,19 @@ not automatically redacted: supply only minimized non-sensitive descriptions.
 No publication or source approval follows from these offline tests. See
 [implementation evidence](../openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md)
 for actual checks and outstanding Linux/review gates.
+
+New forecasts use `observed-summary/v3`: chronology uses the current Interval and
+DemandObservation revision heads visible at each cutoff, together with an immutable
+known Run start. A corrected erroneous bound does not permanently exclude otherwise
+eligible history. A v3 forecast cannot use a validation receipt supported by its own
+Change, including selected candidate/baseline peers, transfer donors, eligible bridge
+owners and recursively selected validation receipts. Broad frozen metadata and
+structural predecessors alone are not training support.
+
+Stored v1/v2 forecasts replay their exact original rules. The existing private local
+computation request distinguishes original `demand-validation/v1` receipt measurement
+from new `demand-validation/v2` measurement; new live receipts use current truth rules
+even with legacy candidates. Exact legacy retries preserve their request and payload.
+These request markers are local provenance, not portable authority or schema fields.
+A rollback of the default must retain v3 decoding/replay for already saved or exported
+records, or restore a compatible pre-v3 backup when reverting the complete code.

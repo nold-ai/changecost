@@ -1,5 +1,6 @@
 """Cutoff-derived full terminal Change demand; partial quantities stay diagnostic."""
 
+from dataclasses import dataclass
 from fractions import Fraction
 from statistics import median
 
@@ -27,6 +28,14 @@ ECOSYSTEM_FIELDS = (
     "harness",
     "review",
 )
+
+
+@dataclass(frozen=True)
+class CohortSelection:
+    """Paired cohort and chronology choices for one internal estimate."""
+
+    broad: bool = False
+    algorithm: str = "observed-summary/v3"
 
 
 def ecosystem_identity(records, ecosystem):
@@ -66,31 +75,20 @@ def change_members(records, change):
     return [(runs[run_key(m.run)], m) for m in mappings]
 
 
-def frozen_assessment(records, assessment, availability):
+def frozen_assessment(records, assessment, availability, algorithm="observed-summary/v3"):
     change = lookup(records, assessment.change, "change")
     captured = availability[key(reference(assessment))]
     bound = max(assessment.recorded_at, assessment.effective_at, captured[0])
     for run, _ in change_members(records, change):
         if captured >= availability[key(reference(run))]:
             return False
-        points = [run.observed_start]
-        points.extend(
-            point
-            for r in records.values()
-            if isinstance(r, Interval) and r.run == run.ref
-            for point in (r.start, r.end)
-        )
-        points.extend(
-            r.start
-            for r in records.values()
-            if isinstance(r, DemandObservation) and r.run == run.ref
-        )
+        points = work_points(records, run, algorithm)
         if any(p is not None and bound >= p for p in points):
             return False
     return True
 
 
-def run_truth(records, run, ecosystem, component, availability):
+def run_truth(records, run, ecosystem, component, availability, algorithm="observed-summary/v3"):
     if (run.ref.provider, run.ref.surface) != ("synthetic", "fixture"):
         return None, None, "unsupported_native_run"
     observations = [
@@ -101,7 +99,9 @@ def run_truth(records, run, ecosystem, component, availability):
     if len(observations) != 1:
         return None, None, "missing_demand_observation"
     observation = observations[0]
-    reason = observation_rejection(records, observation, ecosystem, component, availability)
+    reason = observation_rejection(
+        records, observation, ecosystem, component, availability, algorithm
+    )
     if reason:
         return None, observation, reason
     if observation.quantity is None or not complete_run(records, run, observation):
@@ -111,7 +111,7 @@ def run_truth(records, run, ecosystem, component, availability):
     return Fraction(observation.quantity), observation, None
 
 
-def observation_rejection(records, observation, ecosystem, component, availability):
+def observation_rejection(records, observation, ecosystem, component, availability, algorithm):
     observed_eco = lookup(records, observation.ecosystem, "ecosystem")
     identity = ecosystem_identity(records, observed_eco)
     if identity is None or identity != ecosystem_identity(records, ecosystem):
@@ -121,7 +121,7 @@ def observation_rejection(records, observation, ecosystem, component, availabili
     if not policy_supported(records, observed_eco, component):
         return "unsupported_measurement_policy"
     assessment = lookup(records, observation.assessment, "task_assessment")
-    if not frozen_assessment(records, assessment, availability):
+    if not frozen_assessment(records, assessment, availability, algorithm):
         return "late_assessment"
     return None
 
@@ -154,7 +154,7 @@ def complete_run(records, run, observation):
     )
 
 
-def aggregate(records, change, ecosystem, component, availability):
+def aggregate(records, change, ecosystem, component, availability, algorithm="observed-summary/v3"):
     terminal = [r for r in current_revisions(records, Outcome) if r.subject == reference(change)]
     if len(terminal) != 1:
         return None, None, "open_change"
@@ -163,7 +163,9 @@ def aggregate(records, change, ecosystem, component, availability):
         return None, None, "no_bound_attempts"
     total, assessments = Fraction(0), []
     for run, _mapping in members:
-        value, observation, reason = run_truth(records, run, ecosystem, component, availability)
+        value, observation, reason = run_truth(
+            records, run, ecosystem, component, availability, algorithm
+        )
         if reason or value is None or observation is None:
             return None, None, reason or "missing_demand_observation"
         total += value
@@ -176,7 +178,8 @@ def aggregate(records, change, ecosystem, component, availability):
     return total, assessments[0], None
 
 
-def peers(records, target, assessment, ecosystem, component, availability, broad=False):
+def peers(records, target, assessment, ecosystem, component, availability, selection=None):
+    selection = selection or CohortSelection()
     candidates, exclusions = [], []
     for change in sorted(
         (
@@ -189,7 +192,7 @@ def peers(records, target, assessment, ecosystem, component, availability, broad
         if change.record_id == target.record_id:
             continue
         value, peer_assessment, reason = aggregate(
-            records, change, ecosystem, component, availability
+            records, change, ecosystem, component, availability, selection.algorithm
         )
         if reason:
             exclusions.append((reference(change), reason))
@@ -201,8 +204,8 @@ def peers(records, target, assessment, ecosystem, component, availability, broad
         else []
     )
     return (
-        (exact if exact and not broad else candidates),
-        ("dimensions" if exact and not broad else "ecosystem"),
+        (exact if exact and not selection.broad else candidates),
+        ("dimensions" if exact and not selection.broad else "ecosystem"),
         exclusions,
     )
 
@@ -242,25 +245,32 @@ def summaries(values):
     )
 
 
-def work_points(records, run):
+def temporal_rows(records, cls, algorithm):
+    if algorithm == "observed-summary/v3":
+        return current_revisions(records, cls)
+    return [r for r in records.values() if isinstance(r, cls)]
+
+
+def work_points(records, run, algorithm="observed-summary/v3"):
     points = [run.observed_start]
     points.extend(
         p
-        for r in records.values()
-        if isinstance(r, Interval) and r.run == run.ref
+        for r in temporal_rows(records, Interval, algorithm)
+        if r.run == run.ref
         for p in (r.start, r.end)
     )
     points.extend(
-        r.start for r in records.values() if isinstance(r, DemandObservation) and r.run == run.ref
+        r.start for r in temporal_rows(records, DemandObservation, algorithm) if r.run == run.ref
     )
     return [p for p in points if p is not None]
 
 
-def initial_forecast(records, change, cutoff):
+def initial_forecast(records, change, cutoff, algorithm="observed-summary/v3"):
     members = change_members(records, change)
     # A registered Run with unknown work bounds cannot prove a pre-execution quote.
     return not members or all(
-        work_points(records, run) and cutoff.at < min(work_points(records, run))
+        work_points(records, run, algorithm)
+        and cutoff.at < min(work_points(records, run, algorithm))
         for run, _ in members
     )
 

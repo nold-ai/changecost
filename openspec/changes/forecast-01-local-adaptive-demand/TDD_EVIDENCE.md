@@ -374,3 +374,40 @@ The minimum new-demand-only guard bounds aligned decimal integer/fractional span
 Red SHA-256 `91de49f9b14cd0d1cb6663b971204abce066fd49b33b4911a98d5577703708b8`; focused green `b8639ce27b80618c748a990ad0ee8975d8e09d0410931c53ae2523bba00ca213`; corrected serial old-guard detector `1958e9804110fd800ca89afcf10a3f15653c19eddd6fc783006e65a0faa0f53e`.
 
 The preceding 29a5378 Linux run 38297515631 passed Python3.13 with all ten native analyzers; Python3.11 failed Pylint4.0.7 after the signed 30-second full-source/tests timeout, leaving UNKNOWN assurance while the other nine analyzers passed. All 3,127 ordinary tests passed. Signed module0.50.1 operating code and signature were independently inspected; jobs2 is supported and already configured, but no project deadline override or proven remedy was identified. No vendor patch, analyzer/file reduction, timeout change or selected-diagnostic substitution is authorized. Fresh final-head full native matrix and both provider reviews remain mandatory.
+
+## PR batch13: current temporal revisions and target validation support (2026-10-12 Europe/Berlin)
+Maintainer approved scoped replanning and one correction batch plus60 active minutes,
+retaining prior counters. Specs precede tests and runtime. Initial four-test red run
+recorded three expected behavioral failures (own support, corrected Interval, v3
+selection) and one invalid Observation fixture. Its corrected fixture was still
+invalid because graph admission requires producer assessment time before observation
+start; neither fixture error counts as behavioral red. A public valid Observation
+correction uses a start after assessment but before an advanced baseline cutoff.
+An immutable8e source snapshot detector after implementation fails precisely with
+`baseline was not captured before truth work`; this is post-implementation detector
+evidence, not pre-implementation red. Actual logs remain ignored in promote/batch13-*.
+The expanded current suite passes18 tests, including selected nested receipt evidence,
+metadata contrary controls, corrected Interval/Observation, old algorithms, private
+request generations and exact legacy retry. Additional closure/check results follow.
+Internal algorithmv3 and local requestv2 are additive decoder/provenance choices;
+package0.1.0.dev0, database schema2 and exact payload comparison are unchanged.
+
+First frozen snapshot42: full3184 tests passed27.06s and15 strict items passed.
+Independent broad review found no runtime defect, but signed native parameter analysis
+found three eight-parameter helpers above its seven-parameter limit. The type checker
+also found optional-generation narrowing and a missing baseline assertion. These draft
+mechanical failures are retained; cohort options and hypothesis-owned component
+selection remove redundant arguments without suppressions or threshold changes.
+The initial sandbox aggregate also could not open protected skill files for hygiene
+and could not reach pinned build dependencies; it is not a passing aggregate.
+Independent actual legacy v1/v2 databases reproduced exactly, including receipts,
+retries, new-generation validation of old cases, backup/reimport and foreign claims.
+Selected transfer/nested support and diagnostic/structural-predecessor contrary probes
+passed; final corrected snapshot evidence follows.
+
+After mechanical stabilization,124 demand/CLI/revision tests passed4.90s and
+basedpyright reported zero errors/warnings. The earlier invalid fixtures and failing
+mechanical/native parameter evidence remain recorded. No signed analyzer limit,
+coverage obligation, checker, source file or deadline was changed. Full Linux timeout
+cause remains unknown; diagnostic facts/proposed complete-scope profiling are retained,
+and fresh native assurance on both matrix legs is still required for acceptance.

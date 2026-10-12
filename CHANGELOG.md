@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Use corrected current temporal revisions and exclude actual transitive target support from new demand validation applicability through observed-summary/v3; preserve exact v1/v2 replay and legacy local receipt requests without portable schema changes.
+
 - Bound new demand decimal span and rational components to 4096 digits before exact arithmetic, including extreme zero exponents; reject unsupported artifacts atomically while preserving ordinary historical replay and legacy economic Amount admission.
 
 - Require a corrected complete-demand window to contain a known immutable Run start at both endpoints; continue imported validation lineage without inheriting producer authority or bypassing cutoff-unavailable heads.

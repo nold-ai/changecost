@@ -359,7 +359,7 @@ def test_repeat_scope_disclosure_includes_target_without_changing_samples(world,
 
 
 def test_new_forecasts_select_versioned_disclosure_algorithm(world):
-    assert world.forecast().algorithm == "observed-summary/v2"
+    assert world.forecast().algorithm == "observed-summary/v3"
 
 
 def test_v1_v2_disclosure_preserves_receipt_replay_retry_and_import(world, monkeypatch, tmp_path):
@@ -379,7 +379,7 @@ def test_v1_v2_disclosure_preserves_receipt_replay_retry_and_import(world, monke
     assert "repeat_task_dependence" not in old.assumptions
     assert receipt.passed
     current = world.forecast("new-disclosure")
-    assert current.algorithm == "observed-summary/v2"
+    assert current.algorithm == "observed-summary/v3"
     assert current.result == old_validated.result
     assert "repeat_task_dependence" in current.assumptions
     before = world.store.export_bundle()
@@ -390,7 +390,7 @@ def test_v1_v2_disclosure_preserves_receipt_replay_retry_and_import(world, monke
             assert inspect_demand(world.store, forecast)["demand_validation"] == "reproduced"
     assert_mixed_version_replay_cache(world, old, current)
     assert_mixed_version_recovery(world, old, current, before, tmp_path)
-    invalid = current.model_dump(mode="json") | {"algorithm": "observed-summary/v3"}
+    invalid = current.model_dump(mode="json") | {"algorithm": "observed-summary/v4"}
     with pytest.raises(ValueError):
         type(current).model_validate(invalid)
 
@@ -404,7 +404,7 @@ def assert_mixed_version_replay_cache(world, old, current):
         for forecast in (old, current, old, current):
             assert demand.demand_reproduced(context, records, forecast)
         versions = {json.loads(identity[0]).get("algorithm") for identity in context.completed}
-        assert {"observed-summary/v1", "observed-summary/v2"} <= versions
+        assert {"observed-summary/v1", "observed-summary/v3"} <= versions
     finally:
         connection.close()
 
