@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Require a corrected complete-demand window to contain a known immutable Run start at both endpoints; continue imported validation lineage without inheriting producer authority or bypassing cutoff-unavailable heads.
+
 - Default new demand forecasts to observed-summary/v2 with target-aware repeat-task disclosure; preserve exact v1 historical forecast/receipt replay and retries, support both algorithm labels in portable records and backups, and keep numerical estimates and economic authority unchanged.
 
 - Require complete demand observations to cover a Run's immutable observed start after interval correction, and reuse completed receipt replay only within one authority- and visibility-bound local operation to avoid exponential repeated work.

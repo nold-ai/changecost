@@ -13,6 +13,7 @@ from changecost.models import (
     Assessment,
     DemandComponent,
     DemandObservation,
+    DemandValidation,
     Dimensions,
     Ecosystem,
     Evidence,
@@ -261,7 +262,9 @@ def test_correction_selected_once_and_historical_replay(world):
     assert world.store.export_bundle() == before
 
 
-def correct_observation_window(world, observation, interval_start, observation_start):
+def correct_observation_window(
+    world, observation, interval_start, observation_start, interval_end=None, observation_end=None
+):
     run = next(
         r
         for r in world.store.export_bundle().records
@@ -272,7 +275,10 @@ def correct_observation_window(world, observation, interval_start, observation_s
         world.store,
         reference(run),
         LifecycleDeclaration(
-            start=interval_start, correct_interval=True, reason="fixture interval correction"
+            start=interval_start,
+            end=interval_end,
+            correct_interval=True,
+            reason="fixture interval correction",
         ),
     )
     return world.add(
@@ -289,9 +295,11 @@ def correct_observation_window(world, observation, interval_start, observation_s
                 "previous",
                 "reason",
                 "start",
+                "end",
             }
         ),
         start=observation_start,
+        end=observation_end if observation_end is not None else observation.end,
         previous=reference(observation),
         reason="fixture observation window correction",
     )
@@ -380,6 +388,14 @@ def test_v1_v2_disclosure_preserves_receipt_replay_retry_and_import(world, monke
     for forecast in (old, old_validated, current):
         for _ in range(2):
             assert inspect_demand(world.store, forecast)["demand_validation"] == "reproduced"
+    assert_mixed_version_replay_cache(world, old, current)
+    assert_mixed_version_recovery(world, old, current, before, tmp_path)
+    invalid = current.model_dump(mode="json") | {"algorithm": "observed-summary/v3"}
+    with pytest.raises(ValueError):
+        type(current).model_validate(invalid)
+
+
+def assert_mixed_version_replay_cache(world, old, current):
     connection = world.store.connect(readonly=True)
     try:
         connection.execute("BEGIN")
@@ -391,6 +407,9 @@ def test_v1_v2_disclosure_preserves_receipt_replay_retry_and_import(world, monke
         assert {"observed-summary/v1", "observed-summary/v2"} <= versions
     finally:
         connection.close()
+
+
+def assert_mixed_version_recovery(world, old, current, before, tmp_path):
     world.store.backup(tmp_path / "mixed-version-backup")
     recovered = Store(tmp_path / "mixed-version-backup", clock=lambda: world.time)
     assert recovered.export_bundle() == before
@@ -400,9 +419,6 @@ def test_v1_v2_disclosure_preserves_receipt_replay_retry_and_import(world, monke
     foreign.import_bundle(loads_bundle(dumps_bundle(before)))
     for forecast in (old, current):
         assert inspect_demand(foreign, forecast)["demand_validation"] == "producer_claim"
-    invalid = current.model_dump(mode="json") | {"algorithm": "observed-summary/v3"}
-    with pytest.raises(ValueError):
-        type(current).model_validate(invalid)
 
 
 def test_late_assessment_unknown_dimensions_and_mixed_models(world):
@@ -835,4 +851,137 @@ def test_shared_validation_replay_is_operation_scoped_and_bounded(world, monkeyp
         world.store, failed_policy.record_id, [failed_case], "failed-memo-receipt"
     ).passed
     assert world.forecast("after-failed-rubric").result.state == "learning"
+    assert inspect_demand(world.store, current)["demand_validation"] == "reproduced"
+
+
+@pytest.mark.parametrize("outcome", ["accepted", "abandoned"])
+@pytest.mark.parametrize("observed_start", [True, False])
+@pytest.mark.parametrize("offset", [-250000, 0, 250000])
+def test_complete_window_contains_immutable_point_on_both_sides(
+    world, outcome, observed_start, offset
+):
+    _, observations = world.peer(
+        "point-window", ["2", "9"], outcome=outcome, observed_start=observed_start
+    )
+    old = world.forecast("before-point-window-correction")
+    observation = observations[1]
+    start = observation.start - timedelta(microseconds=750000)
+    end = observation.start + timedelta(microseconds=offset)
+    correct_observation_window(world, observation, start, start, end, end)
+    current = world.forecast("after-point-window-correction")
+    assert inspect_demand(world.store, old)["demand_validation"] == "reproduced"
+    if observed_start and offset < 0:
+        assert current.result.state == "zero_knowledge" and current.result.sample_count == 0
+        assert any(e.reason == "incomplete_demand_coverage" for e in current.exclusions)
+    else:
+        assert current.result.sample_count == 1 and current.result.median == "11"
+
+
+def test_validation_truth_window_contains_known_point(world):
+    world.peer("point-seed", ["2"])
+    policy = registered_policy(world)
+    case = evaluated_task(world, "point-evaluation", "2", retrospective_offset=1000000)
+    observation = next(
+        r for r in world.store.export_bundle().records if r.record_id == "point-evaluation-o"
+    )
+    start = observation.start - timedelta(microseconds=750000)
+    end = observation.start - timedelta(microseconds=250000)
+    correct_observation_window(world, observation, start, start, end, end)
+    before = world.store.export_bundle()
+    with pytest.raises(ContractError, match="complete validation truth unavailable"):
+        compute_validation(world.store, policy.record_id, [case], "invalid-point-receipt")
+    assert world.store.export_bundle() == before
+
+
+def imported_validation_world(tmp_path, future=False):
+    source = World(tmp_path / "validation-origin")
+    source.peer("source-seed", ["2"])
+    policy = registered_policy(source)
+    case = evaluated_task(source, "source-evaluation", "2")
+    head = compute_validation(source.store, policy.record_id, [case], "source-receipt")
+    ready = source.time
+    if future:
+        source.time += timedelta(days=1)
+        head = compute_validation(source.store, policy.record_id, [case], "future-source-receipt")
+    bundle = source.store.export_bundle()
+    imported = World.__new__(World)
+    imported.time = ready + timedelta(minutes=1)
+    imported.store = Store(tmp_path / "validation-target", clock=lambda: imported.time)
+    imported.store.import_bundle(bundle)
+    imported.policy, imported.eco = source.policy, source.eco
+    imported.change, imported.assessment = source.change, source.assessment
+    imported.peer("local-seed", ["2"])
+    return imported, policy, head, bundle
+
+
+def test_imported_validation_history_can_continue_without_inheriting_authority(tmp_path):
+    world, policy, imported_head, bundle = imported_validation_world(tmp_path)
+    assert world.forecast("before-local-validation").result.state == "learning"
+    case = evaluated_task(world, "local-evaluation", "2")
+    receipt = compute_validation(world.store, policy.record_id, [case], "local-receipt")
+    assert receipt.passed and receipt.previous == reference(imported_head)
+    current = world.forecast("after-local-validation")
+    assert current.result.validation == reference(receipt)
+    before = world.store.export_bundle()
+    assert compute_validation(world.store, policy.record_id, [case], "local-receipt") == receipt
+    world.store.import_bundle(bundle)
+    assert world.store.export_bundle() == before
+    assert inspect_demand(world.store, current)["demand_validation"] == "reproduced"
+
+
+def test_future_validation_head_cannot_be_bypassed_into_new_root(tmp_path):
+    world, policy, future_head, _bundle = imported_validation_world(tmp_path, future=True)
+    case = evaluated_task(world, "future-local-evaluation", "2")
+    before = world.store.export_bundle()
+    with pytest.raises(ContractError, match="validation history unavailable at cutoff"):
+        compute_validation(world.store, policy.record_id, [case], "after-future-receipt")
+    assert world.store.export_bundle() == before
+    world.time = future_head.recorded_at + timedelta(seconds=1)
+    receipt = compute_validation(world.store, policy.record_id, [case], "after-future-receipt")
+    assert receipt.passed and receipt.previous == reference(future_head)
+
+
+def test_zero_width_current_window_covers_known_point(world):
+    _, observations = world.peer("point", ["2"], observed_start=True)
+    point = observations[0].start
+    correct_observation_window(world, observations[0], point, point, point, point)
+    assert world.forecast("point-covered").result.median == "2"
+
+
+def test_foreign_structural_successor_withdraws_only_current_authority(tmp_path):
+    world, policy, _head, _bundle = imported_validation_world(tmp_path)
+    case = evaluated_task(world, "local-chain", "2")
+    local = compute_validation(world.store, policy.record_id, [case], "local-chain-receipt")
+    old = world.forecast("before-foreign-successor")
+    saved = world.store.export_bundle()
+    foreign = World.__new__(World)
+    foreign.time = world.time + timedelta(seconds=1)
+    foreign.store = Store(tmp_path / "claim-producer", clock=lambda: foreign.time)
+    foreign.store.import_bundle(saved)
+    claim = foreign.add(
+        DemandValidation,
+        "foreign-successor",
+        policy=reference(policy),
+        cases=local.cases,
+        metrics=local.metrics,
+        passed=True,
+        operation_id="foreign-claim",
+        cutoff=foreign.store.export_bundle().source,
+        inputs=local.inputs,
+        previous=reference(local),
+    )
+    world.time = foreign.time + timedelta(seconds=1)
+    world.store.import_bundle(foreign.store.export_bundle())
+    assert world.forecast("after-foreign-successor").result.state == "learning"
+    assert inspect_demand(world.store, old)["demand_validation"] == "reproduced"
+    next_case = evaluated_task(world, "next-local-chain", "2")
+    next_receipt = compute_validation(
+        world.store, policy.record_id, [next_case], "next-local-chain-receipt"
+    )
+    assert next_receipt.passed and next_receipt.previous == reference(claim)
+    current = world.forecast("after-next-local-successor")
+    assert current.result.validation == reference(next_receipt)
+    before = world.store.export_bundle()
+    world.store.import_bundle(saved)
+    assert world.store.export_bundle() == before
     assert inspect_demand(world.store, current)["demand_validation"] == "reproduced"

@@ -102,6 +102,12 @@ Learning SHALL derive one eligible full terminal Change aggregate per compatible
 - **WHEN** its final observation covers the corrected interval but omits the earlier observed start
 - **THEN** the attempt remains incomplete for learning and validation truth; observations covering both bounds remain eligible and earlier forecast replay remains unchanged
 
+#### Scenario: The immutable known point follows the corrected window
+
+- **GIVEN** a corrected interval and observation ending before the Run's immutable observed start
+- **WHEN** complete accepted or abandoned Change truth is selected
+- **THEN** the observation must contain the known point on both sides or remain incomplete, with equality eligible and valid earlier snapshots unchanged
+
 #### Scenario: Missing observed start and corrected end
 
 - **GIVEN** a Run without an observed start and a valid corrected interval
@@ -163,6 +169,18 @@ Forecasting SHALL prefer applicable target evidence, keep mapped donor data hypo
 - **GIVEN** a validated profile changes or later evaluation fails
 - **WHEN** a subsequent forecast is requested
 - **THEN** old validation is inapplicable while earlier immutable records remain inspectable
+
+#### Scenario: Imported validation history continues structurally
+
+- **GIVEN** an imported validation head and later independently eligible local evaluated outcomes
+- **WHEN** a new local receipt is computed
+- **THEN** it links the unique cutoff-visible structural predecessor without inheriting imported authority; reimport/retry remain idempotent and only the current locally reproduced head can support validation
+
+#### Scenario: Future validation history cannot be bypassed
+
+- **GIVEN** a structural receipt head unavailable at the requested local cutoff
+- **WHEN** a new receipt is requested
+- **THEN** computation rejects before persistence rather than creating a parallel root or treating the future claim as local validation
 
 ### Requirement: Explicit economic scenarios
 

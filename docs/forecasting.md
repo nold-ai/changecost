@@ -39,6 +39,8 @@ Only eligible complete measurements supply full-task learning truth. Partial log
 unbound work, imaginary tests and absent counters remain diagnostic/unknown.
 Complete observations cover the latest corrected interval and the Run's immutable
 observed start when present. An absent observed start uses the current interval;
+the known start must lie between both observation endpoints, including equal
+endpoints. A corrected window ending before that point is incomplete.
 registration time and superseded interval bounds do not become coverage boundaries.
 Repeated imports and source revisions must not create additional training samples.
 Earlier forecasts remain immutable; new evidence updates later assessments.
@@ -113,6 +115,14 @@ competing policies leave validation unavailable. drift, failure or a
 missing local passing receipt withdraws validation. Historical records retain their
 original status. #17 owns actual pilot protocol registration, numerical thresholds,
 chronological comparisons and measured validation before native evaluated outcomes.
+
+Validation history includes imported structural predecessors. A new local receipt
+links the unique cutoff-visible head but computes its own metrics from locally
+eligible forecasts and truth. Imported claims never grant local validation authority.
+A cutoff-visible foreign head prevents an older local receipt from representing
+the current forecast lineage. A cutoff-unavailable structural head blocks new
+receipt construction; forecasts still use their cutoff-visible history, and earlier
+frozen forecasts replay unchanged.
 
 Optional prices cover one explicitly supported component at a time and remain
 estimated scenarios, with source, effective date, rate and currency retained.

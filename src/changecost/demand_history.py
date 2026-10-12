@@ -147,7 +147,9 @@ def complete_run(records, run, observation):
         interval.start is not None
         and interval.end is not None
         and observation.start <= interval.start
-        and (run.observed_start is None or observation.start <= run.observed_start)
+        and (
+            run.observed_start is None or observation.start <= run.observed_start <= observation.end
+        )
         and observation.end >= interval.end
     )
 

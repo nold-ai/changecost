@@ -392,13 +392,11 @@ def latest_validation_policy(records, ecosystem, availability):
     return active[0] if len(active) == 1 else None
 
 
-def validation_heads(records, policy, local):
+def validation_heads(records, policy):
     receipts = [
         r
         for r in records.values()
-        if isinstance(r, DemandValidation)
-        and r.policy == reference(policy)
-        and key(reference(r)) in local
+        if isinstance(r, DemandValidation) and r.policy == reference(policy)
     ]
     parents = {key(r.previous) for r in receipts if r.previous is not None}
     return [r for r in receipts if key(reference(r)) not in parents]
@@ -410,10 +408,12 @@ def applicable_validation(context, records, change, ecosystem):
     policy = latest_validation_policy(records, ecosystem, local_availability(connection))
     if policy is None:
         return None
-    heads = validation_heads(records, policy, demand_computation_refs(connection, records))
+    heads = validation_heads(records, policy)
     if len(heads) != 1:
         return None
     receipt = heads[0]
+    if key(reference(receipt)) not in demand_computation_refs(connection, records):
+        return None
     if any(case.truth == reference(change) for case in receipt.cases):
         return None
     if receipt.passed and validation_reproduced(context, records, receipt):
@@ -438,10 +438,12 @@ def compute_validation(store, policy_id, cases, operation_id):
         snapshot = snapshot_records(connection, cutoff, records)
         if key(reference(policy)) not in snapshot:
             raise ContractError("validation policy unavailable")
-        metrics, passed = measure_validation(ReplayContext(connection), snapshot, policy, cases)
-        heads = validation_heads(snapshot, policy, demand_computation_refs(connection, snapshot))
+        heads = validation_heads(records, policy)
         if len(heads) > 1:
             raise ContractError("ambiguous validation history")
+        if heads and key(reference(heads[0])) not in snapshot:
+            raise ContractError("validation history unavailable at cutoff")
+        metrics, passed = measure_validation(ReplayContext(connection), snapshot, policy, cases)
         receipt = DemandValidation(
             **common(cutoff.store_id, cutoff.at, str(uuid4())),
             policy=reference(policy),
