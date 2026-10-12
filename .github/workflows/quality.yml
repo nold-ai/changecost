@@ -1,165 +1,77 @@
-name: Repository quality
-
+name: Frozen demand Pylint diagnostic
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       comparison_base:
-        description: Full comparison commit SHA
+        description: Recorded main SHA (diagnostic only)
         required: true
         type: string
-
 permissions:
   contents: read
-
-concurrency:
-  group: quality-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  quality:
+  profile:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 15
     defaults:
       run:
         shell: /bin/bash --noprofile --norc -p -e -o pipefail {0}
-        working-directory: .
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ['3.11.15', '3.13.14']
-    env:
-      UV_PYTHON: ${{ matrix.python }}
-      OPENSPEC_TELEMETRY: '0'
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: 71518ca866b565f70b3943ec1e76053b9ef2b5eb
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
-          python-version: ${{ matrix.python }}
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: '24'
-      - name: Install pinned bootstrap tools
+          python-version: '3.13.11'
+      - name: Install frozen project and observed Pylint dependencies
         env:
-          UV_PYTHON: ${{ matrix.python }}
+          UV_PYTHON: '3.13.11'
         run: |
           python -m pip install uv==0.12.19
-          npm install --global @fission-ai/openspec@1.13.2
-          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
-          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
-          uv tool install specfact-cli==0.55.4
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-      - name: Resolve comparison base
+          uv sync --locked --group build
+          uv pip install --python .venv/bin/python pylint==4.0.7 astroid==4.0.4 dill==0.4.1 isort==8.0.1 mccabe==0.7.0 tomlkit==0.15.1 platformdirs==4.12.1
+      - name: Profile full observed Pylint call without changing acceptance policy
         env:
-          UV_PYTHON: ${{ matrix.python }}
-          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          EVENT: ${{ github.event_name }}
-          PR_BASE: ${{ github.event.pull_request.base.sha }}
-          PUSH_BASE: ${{ github.event.before }}
-          MANUAL_BASE: ${{ inputs.comparison_base }}
-        run: |
-          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
-          case "$EVENT" in
-            pull_request) base=$(git merge-base HEAD "$PR_BASE") ;;
-            push) base=$PUSH_BASE ;;
-            workflow_dispatch) base=$MANUAL_BASE ;;
-            *) exit 1 ;;
-          esac
-          resolved=$(git rev-parse --verify --end-of-options "$base^{commit}")
-          if test "$EVENT" = workflow_dispatch; then
-            test "$resolved" != "$EXPECTED_HEAD"
-          fi
-          echo "BASE_REF=$resolved" >> "$GITHUB_ENV"
-      - name: Install locked project environment
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-        run: uv sync --locked --group build
-      - name: Install pinned review module
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-          SPECFACT_REGISTRY_INDEX_URL: https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json
-        run: specfact module install nold-ai/specfact-code-review --version 0.50.1
-      - name: Allow namespaces for this job's capsule launcher paths
-        id: capsule-userns
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-          SPECFACT_CODE_REVIEW_CAPSULE_CACHE: ${{ runner.temp }}/changecost-capsules
-        shell: /bin/bash --noprofile --norc -p -e -o pipefail {0}
-        run: |
-          set -euo pipefail
-          test "$(id -u)" -ne 0
-          test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
-          test "$SPECFACT_CODE_REVIEW_CAPSULE_CACHE" = "$RUNNER_TEMP/changecost-capsules"
-          echo "SPECFACT_CODE_REVIEW_CAPSULE_CACHE=$SPECFACT_CODE_REVIEW_CAPSULE_CACHE" >> "$GITHUB_ENV"
-          mkdir -p "$SPECFACT_CODE_REVIEW_CAPSULE_CACHE"
-          profile="$RUNNER_TEMP/changecost-capsule.apparmor"
-          cat > "$profile" <<EOF
-          abi <abi/4.0>,
-          include <tunables/global>
-          profile changecost-capsule "$SPECFACT_CODE_REVIEW_CAPSULE_CACHE/**/opt/specfact/bin/bwrap-static" flags=(unconfined) {
-            userns,
-          }
-          EOF
-          # Cache paths are not an authentication boundary on this disposable sudo-capable VM.
-          # Only policy installation is administrative; analysis stays unprivileged.
-          sudo apparmor_parser -r "$profile"
-          test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
-      - name: Observe bounded host resource context
-        env:
-          UV_PYTHON: ${{ matrix.python }}
+          EXPECTED_HEAD: 71518ca866b565f70b3943ec1e76053b9ef2b5eb
         run: |
           .venv/bin/python - <<'PY'
-          import json
-          from quality.runtime_diagnostics import host_context
-          print(json.dumps(host_context(), sort_keys=True))
+          import hashlib, importlib.metadata, json, os, pathlib, pstats, signal, subprocess, sys, time
+          head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          assert head == os.environ['EXPECTED_HEAD']
+          files = sorted(x for x in subprocess.check_output(['git','ls-files'],text=True).splitlines() if x.endswith('.py'))
+          assert len(files) == 67
+          out = pathlib.Path('.profile-evidence'); out.mkdir()
+          pins = {name:importlib.metadata.version(name) for name in ('pylint','astroid','dill','isort','mccabe','tomlkit','platformdirs')}
+          assert pins == {'pylint':'4.0.7','astroid':'4.0.4','dill':'0.4.1','isort':'8.0.1','mccabe':'0.7.0','tomlkit':'0.15.1','platformdirs':'4.12.1'}
+          assert tuple(sys.version_info[:3]) == (3,13,11)
+          data = {'head':head,'python':list(sys.version_info[:3]),'pins':pins,'files':{f:hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest() for f in files},'config_sha256':hashlib.sha256(pathlib.Path('pyproject.toml').read_bytes()).hexdigest(),'cpu_count':os.cpu_count(),'cpu_affinity':len(os.sched_getaffinity(0)),'runs':[], 'limits':'Host direct diagnostic with actual observed analyzer pins and recorded snapshot root source root, not sealed native assurance. Native required30/300second policies unchanged. cProfile jobs2 primarily profiles parent; jobs1 exposes in-process inference. Diagnostic120second cap grants no acceptance waiver.'}
+          for jobs in (2,1):
+              profile = out / f'pylint-jobs{jobs}.prof'
+              args = ['/usr/bin/time','-v','-o',str(out/f'resources-jobs{jobs}.txt'),sys.executable,'-m','cProfile','-o',str(profile),'-m','pylint','--output-format','json',f'--jobs={jobs}',f'--source-roots={pathlib.Path.cwd()}',*files]
+              started=time.monotonic()
+              with (out/f'pylint-jobs{jobs}.json').open('wb') as stdout, (out/f'pylint-jobs{jobs}.stderr').open('wb') as stderr:
+                  try:
+                      run=subprocess.Popen(args,stdout=stdout,stderr=stderr,start_new_session=True)
+                      run.communicate(timeout=120)
+                      result={'jobs':jobs,'returncode':run.returncode,'seconds':time.monotonic()-started,'timed_out':False}
+                  except subprocess.TimeoutExpired as exc:
+                      os.killpg(run.pid, signal.SIGKILL)
+                      run.communicate()
+                      result={'jobs':jobs,'seconds':time.monotonic()-started,'timed_out':True,'error':type(exc).__name__}
+              if profile.exists():
+                  with (out/f'pstats-jobs{jobs}.txt').open('w') as stream:
+                      pstats.Stats(str(profile),stream=stream).sort_stats('cumulative').print_stats(40)
+              data['runs'].append(result)
+              (out/'profile-summary.json').write_text(json.dumps(data,indent=2)+'\n')
+          print(json.dumps({'head':head,'runs':data['runs'],'diagnostic_only':True}))
           PY
-      - name: Check repository
-        id: repository-check
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-        run: /usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check
-      - name: Diagnose selected review-session tests after failure
-        if: failure() && steps.repository-check.outcome == 'failure'
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-        # This selected report never replaces the failed complete-suite gate.
-        run: >-
-          specfact code review run tests/test_review_session.py
-          --include-tests --bug-hunt --enforcement full --json
-          --out .specfact/selected-review-session-diagnostic.json
-      - name: Collect privacy-safe runtime metadata
+      - name: Preserve diagnostic evidence
         if: always()
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-        run: .venv/bin/python -m quality.runtime_diagnostics .specfact/code-review.json "$HOME/.cache/specfact/code-review/project-runtimes-v2" .specfact/runtime-diagnostic.json
-      - name: Preserve native review evidence
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: review-evidence-${{ matrix.python }}
-          path: |
-            .specfact/code-review*.json
-            .specfact/review-binding.json
-            .specfact/runtime-diagnostic.json
-            .specfact/native-process-*.json
-            .specfact/selected-review-session-diagnostic.json
+          name: frozen-715-pylint-profile
+          path: .profile-evidence/
           include-hidden-files: true
-          if-no-files-found: warn
           retention-days: 7
-      - name: Remove job-local capsule profile
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-        if: always()
-        shell: /bin/bash --noprofile --norc -p -e -o pipefail {0}
-        run: |
-          profile="$RUNNER_TEMP/changecost-capsule.apparmor"
-          if test -f "$profile"; then
-            sudo apparmor_parser -R "$profile"
-          fi
+          if-no-files-found: error
