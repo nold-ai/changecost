@@ -1,13 +1,16 @@
 """Adversarial demand boundary controls complement ordinary scenarios."""
 
+import json
 from datetime import datetime, timedelta
 
 import pytest
+from pydantic import TypeAdapter
 from typer.testing import CliRunner
 
 from changecost.cli import app
 from changecost.demand import inspect_demand
 from changecost.models import (
+    Amount,
     Assessment,
     DemandComponent,
     DemandObservation,
@@ -15,12 +18,13 @@ from changecost.models import (
     PriceRate,
     PriceScenario,
     Quantity,
+    Rational,
     Rehearsal,
     TransferHypothesis,
 )
 from changecost.quotes import compute_quote
-from changecost.serialization import ContractError
-from changecost.store import reference
+from changecost.serialization import ContractError, loads_bundle
+from changecost.store import Store, reference
 from tests.test_demand import COMP, DIMS, NOW, World, make_bridge
 from tests.test_reconciliation import scope
 
@@ -28,6 +32,112 @@ from tests.test_reconciliation import scope
 @pytest.fixture
 def world(tmp_path):
     return World(tmp_path / "db")
+
+
+@pytest.mark.parametrize("record_type", [Quantity, PriceRate])
+@pytest.mark.parametrize(
+    "value",
+    [
+        "1e1000000000",
+        "1e-1000000000",
+        "0e1000000000",
+        "0e-1000000000",
+        "1e4096",
+        "1e-4096",
+        "9" * 4097,
+        "0." + "0" * 4095 + "1",
+    ],
+    ids=[
+        "huge-positive",
+        "huge-negative",
+        "zero-positive",
+        "zero-negative",
+        "positive-over",
+        "negative-over",
+        "coefficient-over",
+        "scale-over",
+    ],
+)
+def test_demand_decimal_resource_budget_rejects(record_type, value):
+    field = "amount" if record_type is Quantity else "rate"
+    with pytest.raises(ValueError, match="digit limit"):
+        record_type(component=COMP, **{field: value})
+
+
+@pytest.mark.parametrize("record_type", [Quantity, PriceRate])
+@pytest.mark.parametrize(
+    "value",
+    ["0", "0.00", "1e4095", "1e-4095", "9" * 4096],
+    ids=["zero", "decimal-zero", "positive-edge", "negative-edge", "coefficient-edge"],
+)
+def test_demand_decimal_resource_budget_inclusive_boundary(record_type, value):
+    field = "amount" if record_type is Quantity else "rate"
+    assert getattr(record_type(component=COMP, **{field: value}), field) == value
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["1" * 4097, "-" + "1" * 4097, "1/" + "1" * 4097, "0/" + "1" * 4097],
+    ids=["numerator", "negative-numerator", "denominator", "zero-denominator-span"],
+)
+def test_demand_rational_component_budget_precedes_fraction(value, monkeypatch):
+    import fractions
+
+    def forbidden_conversion(_value):
+        pytest.fail("oversized rational reached Fraction conversion")
+
+    monkeypatch.setattr(fractions, "Fraction", forbidden_conversion)
+    with pytest.raises(ValueError, match="digit limit"):
+        TypeAdapter(Rational).validate_python(value)
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["-1/2", "0", "9" * 4096, "1/" + "9" * 4096],
+    ids=["negative", "zero", "numerator-edge", "denominator-edge"],
+)
+def test_demand_rational_resource_budget_inclusive_boundary(value):
+    assert TypeAdapter(Rational).validate_python(value) == value
+
+
+@pytest.mark.parametrize("record_kind", ["demand_observation", "demand_price"])
+def test_unbounded_demand_bundle_import_rejects_atomically(tmp_path, record_kind):
+    source = World(tmp_path / "numeric-source")
+    source.peer("numeric-peer", ["2"])
+    source.add(
+        PriceScenario,
+        "numeric-price",
+        effective_date=source.time,
+        source="fixture",
+        currency="EUR",
+        rates=[PriceRate(component=COMP, rate="0.1")],
+    )
+    raw = source.store.export_bundle().model_dump(mode="json", by_alias=True)
+    selected = next(record for record in raw["records"] if record["kind"] == record_kind)
+    if record_kind == "demand_observation":
+        selected["quantity"] = "1e1000000000"
+    else:
+        selected["rates"][0]["rate"] = "1e-1000000000"
+    target = World(tmp_path / "numeric-target").store
+    before = target.export_bundle()
+    with pytest.raises(ContractError, match="invalid portable record fields or values"):
+        target.import_bundle(loads_bundle(json.dumps(raw)))
+    assert target.export_bundle() == before
+
+
+def test_legacy_economic_amount_admission_is_unchanged():
+    assert TypeAdapter(Amount).validate_python("1e1000000000") == "1e1000000000"
+
+
+@pytest.mark.parametrize("value", ["1e4095", "1e-4095"], ids=["positive", "negative"])
+def test_supported_decimal_boundary_learning_and_recovery(world, tmp_path, value):
+    world.peer("boundary-peer", [value])
+    forecast = world.forecast("boundary-forecast")
+    assert forecast.result.sample_count == 1
+    assert inspect_demand(world.store, forecast)["demand_validation"] == "reproduced"
+    world.store.backup(tmp_path / "boundary-backup")
+    restored = Store(tmp_path / "boundary-backup", clock=lambda: world.time)
+    assert inspect_demand(restored, forecast)["demand_validation"] == "reproduced"
 
 
 def test_local_economic_id_cannot_launder_demand_authority(world):

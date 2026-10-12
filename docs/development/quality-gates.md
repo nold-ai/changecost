@@ -664,6 +664,14 @@ actual supported-Linux native completion remains required. Official
 accessed 2026-10-05 (Europe/Berlin); the installed 4.0.7 implementation and signed
 module 0.50.1 configuration projection were inspected separately.
 
+On 2026-10-12, PR #43 run 38297515631 passed Python3.13 native assurance but
+Python3.11 Pylint4.0.7 timed out at that full-source/tests deadline, leaving UNKNOWN
+assurance while the other nine analyzers passed. The signed module0.50.1 adapter
+and signature were independently inspected; no supported project deadline override
+or proven timeout remedy was identified. A selected-test diagnostic pass cannot
+replace full native evidence. Fresh corrected-head assurance must retain the complete
+scope, checker policy, versions and deadline; missing analysis remains blocking.
+
 The four-worker configuration followed repeated signed coverage timeouts on both
 Python matrix legs. A same-source host run passed all 2,657 tests in 34.97 seconds
 with four workers versus 63.09 seconds with two. The earlier improperly configured

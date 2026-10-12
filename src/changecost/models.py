@@ -500,10 +500,17 @@ class ComputedSettlement(Record):
     previous: RecordRef | None = None
 
 
+MAX_DEMAND_DIGITS = 4096
+
+
 def nonnegative(value: object) -> str:
     result = amount(value)
     if result is None or Decimal(result) < 0:
         raise ValueError("expected nonnegative finite quantity")
+    parts = Decimal(result).as_tuple()
+    exponent = int(parts.exponent)
+    if max(1, len(parts.digits) + exponent) - min(0, exponent) > MAX_DEMAND_DIGITS:
+        raise ValueError("demand decimal digit limit exceeded")
     return result
 
 
@@ -512,6 +519,8 @@ def rational(value: object) -> str:
 
     if not isinstance(value, str) or not re.fullmatch(r"-?\d+(?:/\d+)?", value):
         raise ValueError("expected exact rational string")
+    if any(len(part.lstrip("-")) > MAX_DEMAND_DIGITS for part in value.split("/")):
+        raise ValueError("demand rational digit limit exceeded")
     try:
         return str(Fraction(value))
     except (ValueError, ZeroDivisionError) as exc:

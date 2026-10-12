@@ -6,6 +6,15 @@ The CLI provides separate demand forecasts alongside economic Quotes and advisor
 checks. This document describes the
 [adaptive-demand change](../openspec/changes/forecast-01-local-adaptive-demand/proposal.md).
 
+Demand quantities, rates and decimal limits use a 4096-digit aligned integer and
+fractional representation budget, including coefficients and either exponent
+direction. Zero obeys the same bound. Each rational numerator and denominator is
+limited to 4096 digits before exact conversion. Unsupported artifacts reject before
+import persistence; ordinary exact values and v1/v2 replay remain supported.
+Previously admitted values outside this budget now reject typed decoding. Preserve
+their original exports and backups for diagnosis; records are never rewritten to
+fit the limit. Legacy economic Amount admission is unchanged.
+
 ChangeCost assesses the likely demand of a feature/task/story for individuals,
 small teams and enterprise developers using supplied minimized artifacts. Native coding-agent readers remain planned.
 No administrator export, additional telemetry, paid plan upgrade or global database

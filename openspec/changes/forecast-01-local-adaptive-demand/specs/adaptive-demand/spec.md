@@ -2,6 +2,28 @@
 
 ## ADDED Requirements
 
+### Requirement: Bounded exact demand arithmetic
+
+Demand decimal values SHALL have at most 4096 aligned integer and fractional digits, including their coefficient and positive or negative exponent span, before downstream exact arithmetic. Zero SHALL obey the same representational bound. Demand rational values SHALL have at most 4096 digits in each numerator and denominator component before Fraction conversion. Ordinary supported exact values and original numeric representations SHALL retain their existing behavior; legacy economic Amount admission SHALL remain unchanged.
+
+#### Scenario: Compact extreme decimal exponent
+
+- **GIVEN** a supplied demand observation, price rate or other demand decimal containing an extreme exponent, including zero or a negative exponent
+- **WHEN** its typed artifact or portable bundle is admitted
+- **THEN** it rejects before exact exponent expansion or persistence, leaves the existing store unchanged and does not echo the rejected value
+
+#### Scenario: Oversized rational component
+
+- **GIVEN** a supplied demand ratio with an oversized numerator or denominator
+- **WHEN** its typed record is validated
+- **THEN** it rejects before Fraction conversion, without changing interpreter limits
+
+#### Scenario: Supported boundary and historical records
+
+- **GIVEN** ordinary exact demand values and values within the inclusive digit bounds
+- **WHEN** they are admitted, computed, retried, imported, replayed or recovered
+- **THEN** their normal exact behavior and supported v1/v2 historical authority remain unchanged; economic Amount retains its existing contract
+
 ### Requirement: Honest zero knowledge
 
 Demand forecasting SHALL return zero_knowledge with qualitative dimensions and missing-evidence requests when no applicable observations or bridge exist; it SHALL NOT invent empirical quantities, percentiles or charges.

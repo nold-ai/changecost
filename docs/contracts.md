@@ -260,6 +260,14 @@ Offline demand computation uses a `DemandRequest` selector object and one captur
 forecast input context shared with replay. These are internal Python inputs; portable
 record shapes and the documented CLI selectors remain the contracts above.
 
+New demand decimal primitives have a 4096-digit aligned integer/fractional span
+budget, including the coefficient and positive or negative exponent, even for zero.
+Each exact rational numerator and denominator has a 4096-digit component limit
+before Fraction conversion. Unsupported typed artifacts reject before persistence;
+previously admitted out-of-budget demand records reject decoding without being
+rewritten. Preserve original export/backup bytes for diagnosis. Supported ordinary
+records, v1/v2 replay and legacy economic Amount admission remain unchanged.
+
 A measured demand validation receipt must recheck each candidate and baseline's own
 cutoff against the complete truth snapshot's work bounds. A previously stored `initial`
 flag alone cannot prove chronological eligibility after a retrospective Run registration.
