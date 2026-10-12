@@ -1,4 +1,4 @@
-name: Frozen demand unprofiled Pylint diagnostic
+name: Frozen demand module-timing Pylint diagnostic
 on:
   workflow_dispatch:
     inputs:
@@ -31,12 +31,45 @@ jobs:
           python -m pip install uv==0.12.19
           uv sync --locked --group build
           uv pip install --python .venv/bin/python pylint==4.0.7 astroid==4.0.4 dill==0.4.1 isort==8.0.1 mccabe==0.7.0 tomlkit==0.15.1 platformdirs==4.12.1
-      - name: Measure full observed Pylint call without profiler overhead
+      - name: Observe full-file serial Pylint module callbacks
         env:
           EXPECTED_HEAD: 71518ca866b565f70b3943ec1e76053b9ef2b5eb
         run: |
           .venv/bin/python - <<'PY'
           import hashlib, importlib.metadata, json, os, pathlib, signal, subprocess, sys, time
+          REPORTER_SOURCE = r'''
+          from pathlib import Path
+          import json, sys, time
+          from pylint.reporters.json_reporter import JSONReporter
+          class TimingReporter(JSONReporter):
+              def __init__(self, *args, **kwargs):
+                  super().__init__(*args, **kwargs)
+                  self.observed = []
+                  self.root = Path.cwd().resolve()
+                  self.allowed = set(json.loads((self.root / '.profile-evidence/module-manifest.json').read_text()))
+              def on_set_current_module(self, module, filepath):
+                  result = super().on_set_current_module(module, filepath)
+                  try:
+                      phase = sys._getframe(2).f_code.co_name
+                  except ValueError:
+                      phase = 'unavailable'
+                  if phase not in ('_get_asts', '_lint_file', '_check_file', 'generate_reports'):
+                      phase = 'other'
+                  try:
+                      path = str(Path(filepath).resolve().relative_to(self.root)) if filepath else None
+                  except (ValueError, TypeError):
+                      path = None
+                  if path not in self.allowed:
+                      path = None
+                  if len(self.observed) < 300:
+                      self.observed.append({'event':'module_start','phase':phase,'path':path,'seconds':time.monotonic()})
+                  return result
+              def on_close(self, stats, previous_stats):
+                  result = super().on_close(stats, previous_stats)
+                  self.observed.append({'event':'aggregate_close','seconds':time.monotonic()})
+                  (self.root / '.profile-evidence/module-events.json').write_text(json.dumps(self.observed,indent=2)+'\n')
+                  return result
+          '''
           head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
           assert head == os.environ['EXPECTED_HEAD']
           files = sorted(x for x in subprocess.check_output(['git','ls-files'],text=True).splitlines() if x.endswith('.py'))
@@ -45,13 +78,16 @@ jobs:
           pins = {name:importlib.metadata.version(name) for name in ('pylint','astroid','dill','isort','mccabe','tomlkit','platformdirs')}
           assert pins == {'pylint':'4.0.7','astroid':'4.0.4','dill':'0.4.1','isort':'8.0.1','mccabe':'0.7.0','tomlkit':'0.15.1','platformdirs':'4.12.1'}
           assert tuple(sys.version_info[:3]) == (3,13,11)
-          data = {'head':head,'python':list(sys.version_info[:3]),'pins':pins,'files':{f:hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest() for f in files},'config_sha256':hashlib.sha256(pathlib.Path('pyproject.toml').read_bytes()).hexdigest(),'cpu_count':os.cpu_count(),'cpu_affinity':len(os.sched_getaffinity(0)),'runs':[], 'limits':'Unprofiled host direct diagnostic, all67files, observed pins/config/root; real CLI exit captured. Native required30/300second policies unchanged. Fixed order jobs2 thenjobs1 ononehost isnot causalworker/cold-cache proof. Diagnostic120second cap grants no nativeacceptance waiver.'}
-          for jobs in (2,1):
-              args = ['/usr/bin/time','-v','-o',str(out/f'resources-jobs{jobs}.txt'),sys.executable,'-m','pylint','--output-format','json',f'--jobs={jobs}',f'--source-roots={pathlib.Path.cwd()}',*files]
+          data = {'head':head,'python':list(sys.version_info[:3]),'pins':pins,'files':{f:hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest() for f in files},'config_sha256':hashlib.sha256(pathlib.Path('pyproject.toml').read_bytes()).hexdigest(),'cpu_count':os.cpu_count(),'cpu_affinity':len(os.sched_getaffinity(0)),'runs':[], 'limits':'Serial full67 host diagnostic, numeric public reporter callbacks forwarding original methods/checkers, no nativeacceptance. Native30/300 unchanged. Module intervals betweencallbacks are observations; finaltail includes aggregatecheckerclose, not perfilecause. Diagnostic120scap grants no waiver.'}
+          for jobs in (1,):
+              (out/'module-manifest.json').write_text(json.dumps(files))
+              (out/'timing_reporter.py').write_text(REPORTER_SOURCE)
+              args = ['/usr/bin/time','-v','-o',str(out/f'resources-jobs{jobs}.txt'),sys.executable,'-m','pylint','--output-format','timing_reporter.TimingReporter',f'--jobs={jobs}',f'--source-roots={pathlib.Path.cwd()}',*files]
               started=time.monotonic()
               with (out/f'pylint-jobs{jobs}.json').open('wb') as stdout, (out/f'pylint-jobs{jobs}.stderr').open('wb') as stderr:
                   try:
-                      run=subprocess.Popen(args,stdout=stdout,stderr=stderr,start_new_session=True)
+                      observer_env=dict(os.environ, PYTHONPATH=str(out.resolve()))
+                      run=subprocess.Popen(args,stdout=stdout,stderr=stderr,start_new_session=True,env=observer_env)
                       run.communicate(timeout=120)
                       result={'jobs':jobs,'returncode':run.returncode,'seconds':time.monotonic()-started,'timed_out':False}
                   except subprocess.TimeoutExpired as exc:
@@ -66,7 +102,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: frozen-715-pylint-unprofiled
+          name: frozen-715-pylint-module-timing
           path: .profile-evidence/
           include-hidden-files: true
           retention-days: 7
