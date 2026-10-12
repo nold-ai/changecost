@@ -1,4 +1,4 @@
-name: Frozen demand Pylint diagnostic
+name: Frozen demand unprofiled Pylint diagnostic
 on:
   workflow_dispatch:
     inputs:
@@ -31,12 +31,12 @@ jobs:
           python -m pip install uv==0.12.19
           uv sync --locked --group build
           uv pip install --python .venv/bin/python pylint==4.0.7 astroid==4.0.4 dill==0.4.1 isort==8.0.1 mccabe==0.7.0 tomlkit==0.15.1 platformdirs==4.12.1
-      - name: Profile full observed Pylint call without changing acceptance policy
+      - name: Measure full observed Pylint call without profiler overhead
         env:
           EXPECTED_HEAD: 71518ca866b565f70b3943ec1e76053b9ef2b5eb
         run: |
           .venv/bin/python - <<'PY'
-          import hashlib, importlib.metadata, json, os, pathlib, pstats, signal, subprocess, sys, time
+          import hashlib, importlib.metadata, json, os, pathlib, signal, subprocess, sys, time
           head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
           assert head == os.environ['EXPECTED_HEAD']
           files = sorted(x for x in subprocess.check_output(['git','ls-files'],text=True).splitlines() if x.endswith('.py'))
@@ -45,10 +45,9 @@ jobs:
           pins = {name:importlib.metadata.version(name) for name in ('pylint','astroid','dill','isort','mccabe','tomlkit','platformdirs')}
           assert pins == {'pylint':'4.0.7','astroid':'4.0.4','dill':'0.4.1','isort':'8.0.1','mccabe':'0.7.0','tomlkit':'0.15.1','platformdirs':'4.12.1'}
           assert tuple(sys.version_info[:3]) == (3,13,11)
-          data = {'head':head,'python':list(sys.version_info[:3]),'pins':pins,'files':{f:hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest() for f in files},'config_sha256':hashlib.sha256(pathlib.Path('pyproject.toml').read_bytes()).hexdigest(),'cpu_count':os.cpu_count(),'cpu_affinity':len(os.sched_getaffinity(0)),'runs':[], 'limits':'Host direct diagnostic with actual observed analyzer pins and recorded snapshot root source root, not sealed native assurance. Native required30/300second policies unchanged. cProfile jobs2 primarily profiles parent; jobs1 exposes in-process inference. Diagnostic120second cap grants no acceptance waiver.'}
+          data = {'head':head,'python':list(sys.version_info[:3]),'pins':pins,'files':{f:hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest() for f in files},'config_sha256':hashlib.sha256(pathlib.Path('pyproject.toml').read_bytes()).hexdigest(),'cpu_count':os.cpu_count(),'cpu_affinity':len(os.sched_getaffinity(0)),'runs':[], 'limits':'Unprofiled host direct diagnostic, all67files, observed pins/config/root; real CLI exit captured. Native required30/300second policies unchanged. Fixed order jobs2 thenjobs1 ononehost isnot causalworker/cold-cache proof. Diagnostic120second cap grants no nativeacceptance waiver.'}
           for jobs in (2,1):
-              profile = out / f'pylint-jobs{jobs}.prof'
-              args = ['/usr/bin/time','-v','-o',str(out/f'resources-jobs{jobs}.txt'),sys.executable,'-m','cProfile','-o',str(profile),'-m','pylint','--output-format','json',f'--jobs={jobs}',f'--source-roots={pathlib.Path.cwd()}',*files]
+              args = ['/usr/bin/time','-v','-o',str(out/f'resources-jobs{jobs}.txt'),sys.executable,'-m','pylint','--output-format','json',f'--jobs={jobs}',f'--source-roots={pathlib.Path.cwd()}',*files]
               started=time.monotonic()
               with (out/f'pylint-jobs{jobs}.json').open('wb') as stdout, (out/f'pylint-jobs{jobs}.stderr').open('wb') as stderr:
                   try:
@@ -59,9 +58,6 @@ jobs:
                       os.killpg(run.pid, signal.SIGKILL)
                       run.communicate()
                       result={'jobs':jobs,'seconds':time.monotonic()-started,'timed_out':True,'error':type(exc).__name__}
-              if profile.exists():
-                  with (out/f'pstats-jobs{jobs}.txt').open('w') as stream:
-                      pstats.Stats(str(profile),stream=stream).sort_stats('cumulative').print_stats(40)
               data['runs'].append(result)
               (out/'profile-summary.json').write_text(json.dumps(data,indent=2)+'\n')
           print(json.dumps({'head':head,'runs':data['runs'],'diagnostic_only':True}))
@@ -70,7 +66,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: frozen-715-pylint-profile
+          name: frozen-715-pylint-unprofiled
           path: .profile-evidence/
           include-hidden-files: true
           retention-days: 7
