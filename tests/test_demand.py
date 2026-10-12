@@ -5,6 +5,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
+import changecost.demand as demand
 from changecost.demand import DemandRequest, compute_demand, compute_validation, inspect_demand
 from changecost.models import (
     Assessment,
@@ -50,6 +51,7 @@ class PeerOptions:
     dims: Dimensions = DIMS
     provider: str = "synthetic"
     surface: str = "fixture"
+    observed_start: bool = False
 
 
 class World:
@@ -115,6 +117,7 @@ class World:
                     run_id=f"{name}-{i}",
                 ),
                 name,
+                work_start=self.time if options.observed_start else None,
             )
             start = self.time
             self.tick()
@@ -251,6 +254,62 @@ def test_correction_selected_once_and_historical_replay(world):
             reason="fork",
         )
     assert world.store.export_bundle() == before
+
+
+def correct_observation_window(world, observation, interval_start, observation_start):
+    run = next(
+        r
+        for r in world.store.export_bundle().records
+        if r.kind == "run" and r.ref == observation.run
+    )
+    world.tick()
+    declare(
+        world.store,
+        reference(run),
+        LifecycleDeclaration(
+            start=interval_start, correct_interval=True, reason="fixture interval correction"
+        ),
+    )
+    return world.add(
+        DemandObservation,
+        observation.record_id + "-window-correction",
+        **observation.model_dump(
+            exclude={
+                "kind",
+                "schema_version",
+                "record_id",
+                "origin_store_id",
+                "recorded_at",
+                "effective_at",
+                "previous",
+                "reason",
+                "start",
+            }
+        ),
+        start=observation_start,
+        previous=reference(observation),
+        reason="fixture observation window correction",
+    )
+
+
+@pytest.mark.parametrize("observed_start", [True, False])
+@pytest.mark.parametrize("offset", [-500000, 0, 500000])
+def test_complete_coverage_respects_known_start_and_latest_interval(world, observed_start, offset):
+    _, observations = world.peer("window", ["9"], observed_start=observed_start)
+    old = world.forecast("before-window-correction")
+    observation = observations[0]
+    corrected_start = observation.start + timedelta(microseconds=500000)
+    boundary = observation.start if observed_start else corrected_start
+    correct_observation_window(
+        world, observation, corrected_start, boundary + timedelta(microseconds=offset)
+    )
+    current = world.forecast("after-window-correction")
+    assert inspect_demand(world.store, old)["demand_validation"] == "reproduced"
+    if offset <= 0:
+        assert current.result.sample_count == 1 and current.result.median == "9"
+    else:
+        assert current.result.state == "zero_knowledge" and current.result.sample_count == 0
+        assert any(e.reason == "incomplete_demand_coverage" for e in current.exclusions)
 
 
 def test_target_unknown_ecosystem_and_exact_dimensions(world):
@@ -638,3 +697,62 @@ def test_validation_rechecks_late_registered_truth_cutoffs(world, offset):
         assert world.forecast("promoted").result.state == "validated_forecast"
     for prediction in (forecast, baseline):
         assert inspect_demand(world.store, prediction)["demand_validation"] == "reproduced"
+
+
+def test_validation_excludes_uncovered_immutable_run_start(world):
+    world.peer("seed", ["2"])
+    policy = registered_policy(world)
+    case = evaluated_task(world, "coverage-evaluation", "2", retrospective_offset=1000000)
+    observations = [
+        r
+        for r in world.store.export_bundle().records
+        if r.kind == "demand_observation" and r.record_id == "coverage-evaluation-o"
+    ]
+    observation = observations[0]
+    before_receipt = compute_validation(world.store, policy.record_id, [case], "complete-receipt")
+    assert before_receipt.passed
+    corrected_start = observation.start + timedelta(microseconds=500000)
+    correct_observation_window(world, observation, corrected_start, corrected_start)
+    before = world.store.export_bundle()
+    with pytest.raises(ContractError, match="complete validation truth unavailable"):
+        compute_validation(world.store, policy.record_id, [case], "partial-receipt")
+    assert world.store.export_bundle() == before
+
+
+def test_shared_validation_replay_is_operation_scoped_and_bounded(world, monkeypatch, tmp_path):
+    world.peer("seed", ["2"])
+    policy = registered_policy(world)
+    for generation in range(4):
+        case = evaluated_task(world, f"generation-{generation}", "2")
+        assert compute_validation(
+            world.store, policy.record_id, [case], f"receipt-{generation}"
+        ).passed
+    case = evaluated_task(world, "generation-final", "2")
+    measured = []
+    original = demand.measure_validation
+
+    def counted(*args, **kwargs):
+        measured.append(tuple(c.truth.record_id for c in args[3]))
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(demand, "measure_validation", counted)
+    assert compute_validation(world.store, policy.record_id, [case], "receipt-final").passed
+    assert len(measured) == len(set(measured)) == 5
+    current = world.forecast("after-chain")
+    before = world.store.export_bundle()
+    for _ in range(2):
+        measured.clear()
+        assert inspect_demand(world.store, current)["demand_validation"] == "reproduced"
+        assert len(measured) == len(set(measured)) == 5
+    assert world.store.export_bundle() == before
+    foreign = Store(tmp_path / "foreign-memo", clock=lambda: world.time + timedelta(days=1))
+    foreign.import_bundle(loads_bundle(dumps_bundle(before)))
+    assert inspect_demand(foreign, current)["demand_validation"] == "producer_claim"
+    world.tick()
+    failed_policy = registered_policy(world, "failed-rubric")
+    failed_case = evaluated_task(world, "failed-memo-evaluation", "50")
+    assert not compute_validation(
+        world.store, failed_policy.record_id, [failed_case], "failed-memo-receipt"
+    ).passed
+    assert world.forecast("after-failed-rubric").result.state == "learning"
+    assert inspect_demand(world.store, current)["demand_validation"] == "reproduced"

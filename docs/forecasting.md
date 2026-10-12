@@ -37,6 +37,9 @@ Freeze the task profile before implementation. Explicitly bind source evidence t
 Runs and Changes, include retries and abandoned attempts, and retain corrections.
 Only eligible complete measurements supply full-task learning truth. Partial logs,
 unbound work, imaginary tests and absent counters remain diagnostic/unknown.
+Complete observations cover the latest corrected interval and the Run's immutable
+observed start when present. An absent observed start uses the current interval;
+registration time and superseded interval bounds do not become coverage boundaries.
 Repeated imports and source revisions must not create additional training samples.
 Earlier forecasts remain immutable; new evidence updates later assessments.
 

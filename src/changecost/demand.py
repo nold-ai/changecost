@@ -2,7 +2,7 @@
 
 import json
 from contextlib import closing
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Any
 from uuid import uuid4
@@ -75,6 +75,19 @@ class ForecastInputs:
     price: PriceScenario | None = None
     broad: bool = False
     validation: DemandValidation | None = None
+
+
+@dataclass
+class ReplayContext:
+    """Completed replay results for one fixed local transaction only."""
+
+    connection: Any
+    completed: dict[tuple[Any, ...], bool] = field(default_factory=dict)
+
+
+def replay_identity(record, snapshot):
+    # Bind actual immutable record/cutoff and the supplied visible revision set.
+    return record.model_dump_json(), tuple(sorted(snapshot))
 
 
 def forecast_request(change, assessment, ecosystem, price=None, broad=False):
@@ -202,7 +215,9 @@ def compute_demand(store: Store, selectors: DemandRequest):
             availability=local_availability(connection),
             price=price,
             broad=selectors.broad_baseline,
-            validation=applicable_validation(connection, snapshot, change, ecosystem),
+            validation=applicable_validation(
+                ReplayContext(connection), snapshot, change, ecosystem
+            ),
         )
         result = estimate(snapshot, inputs)
         return persist_result(store, connection, records, result, request, last_at)
@@ -283,19 +298,23 @@ def estimate(records, inputs: ForecastInputs):
     )
 
 
-def demand_reproduced(connection, records, forecast):
+def demand_reproduced(context, records, forecast):
+    connection = context.connection
     if not original_computation_cutoff(connection, forecast):
         return False
     snapshot = snapshot_records(connection, forecast.cutoff, records)
     if any(key(r) not in snapshot for r in forecast.inputs):
         return False
+    identity = replay_identity(forecast, snapshot)
+    if identity in context.completed:
+        return context.completed[identity]
     change = lookup(snapshot, forecast.change, "change")
     assessment = lookup(snapshot, forecast.assessment, "task_assessment")
     ecosystem = lookup(snapshot, forecast.ecosystem, "ecosystem")
     price = (
         lookup(snapshot, forecast.price_request, "demand_price") if forecast.price_request else None
     )
-    validation = applicable_validation(connection, snapshot, change, ecosystem)
+    validation = applicable_validation(context, snapshot, change, ecosystem)
     replay = estimate(
         snapshot,
         ForecastInputs(
@@ -311,7 +330,9 @@ def demand_reproduced(connection, records, forecast):
         ),
     )
     exclude = {"record_id", "origin_store_id", "recorded_at", "effective_at"}
-    return replay.model_dump(exclude=exclude) == forecast.model_dump(exclude=exclude)
+    reproduced = replay.model_dump(exclude=exclude) == forecast.model_dump(exclude=exclude)
+    context.completed[identity] = reproduced
+    return reproduced
 
 
 def inspect_demand(store, record):
@@ -333,7 +354,9 @@ def inspect_demand(store, record):
             and stored.cutoff.sequence <= current.sequence
             and stored.cutoff.at <= current.at
         )
-        reproduced = local and eligible and demand_reproduced(connection, records, stored)
+        reproduced = (
+            local and eligible and demand_reproduced(ReplayContext(connection), records, stored)
+        )
         return dict(
             record=stored.model_dump(mode="json", by_alias=True),
             local_computation=local,
@@ -375,7 +398,8 @@ def validation_heads(records, policy, local):
     return [r for r in receipts if key(reference(r)) not in parents]
 
 
-def applicable_validation(connection, records, change, ecosystem):
+def applicable_validation(context, records, change, ecosystem):
+    connection = context.connection
     # An overlapping rubric without a passing receipt withdraws current validation.
     policy = latest_validation_policy(records, ecosystem, local_availability(connection))
     if policy is None:
@@ -386,7 +410,7 @@ def applicable_validation(connection, records, change, ecosystem):
     receipt = heads[0]
     if any(case.truth == reference(change) for case in receipt.cases):
         return None
-    if receipt.passed and validation_reproduced(connection, records, receipt):
+    if receipt.passed and validation_reproduced(context, records, receipt):
         return receipt
     return None
 
@@ -408,7 +432,7 @@ def compute_validation(store, policy_id, cases, operation_id):
         snapshot = snapshot_records(connection, cutoff, records)
         if key(reference(policy)) not in snapshot:
             raise ContractError("validation policy unavailable")
-        metrics, passed = measure_validation(connection, snapshot, policy, cases)
+        metrics, passed = measure_validation(ReplayContext(connection), snapshot, policy, cases)
         heads = validation_heads(snapshot, policy, demand_computation_refs(connection, snapshot))
         if len(heads) > 1:
             raise ContractError("ambiguous validation history")
@@ -426,31 +450,38 @@ def compute_validation(store, policy_id, cases, operation_id):
         return persist_result(store, connection, records, receipt, request, last_at)
 
 
-def validation_reproduced(connection, records, receipt):
+def validation_reproduced(context, records, receipt):
+    connection = context.connection
     if not original_computation_cutoff(connection, receipt):
         return False
     snapshot = snapshot_records(connection, receipt.cutoff, records)
     if any(key(r) not in snapshot for r in receipt.inputs):
         return False
+    identity = replay_identity(receipt, snapshot)
+    if identity in context.completed:
+        return context.completed[identity]
     try:
         metrics, passed = measure_validation(
-            connection,
+            context,
             snapshot,
             lookup(snapshot, receipt.policy, "demand_validation_policy"),
             receipt.cases,
         )
     except (ValueError, KeyError):
         return False
-    return metrics == receipt.metrics and passed == receipt.passed
+    reproduced = metrics == receipt.metrics and passed == receipt.passed
+    context.completed[identity] = reproduced
+    return reproduced
 
 
-def measured_case(connection, records, policy, case, availability):
+def measured_case(context, records, policy, case, availability):
+    connection = context.connection
     forecast = lookup(records, case.forecast, "demand_forecast")
     truth = lookup(records, case.truth, "change")
     eco = lookup(records, policy.ecosystem, "ecosystem")
     if key(case.forecast) not in demand_computation_refs(
         connection, records
-    ) or not demand_reproduced(connection, records, forecast):
+    ) or not demand_reproduced(context, records, forecast):
         raise ContractError("validation needs reproduced local forecast")
     if (
         forecast.change != case.truth
@@ -476,7 +507,8 @@ def measured_case(connection, records, policy, case, availability):
     return forecast, actual, assessment
 
 
-def baseline_error(connection, records, policy, case, forecast, actual):
+def baseline_error(context, records, policy, case, forecast, actual):
+    connection = context.connection
     if case.baseline is None:
         if policy.require_baseline:
             raise ContractError("registered rubric requires baseline")
@@ -493,7 +525,7 @@ def baseline_error(connection, records, policy, case, forecast, actual):
         raise ContractError("baseline uses different frozen evidence")
     if (
         key(case.baseline) not in demand_computation_refs(connection, records)
-        or not demand_reproduced(connection, records, baseline)
+        or not demand_reproduced(context, records, baseline)
         or baseline.result.median is None
     ):
         raise ContractError("baseline unavailable")
@@ -503,8 +535,8 @@ def baseline_error(connection, records, policy, case, forecast, actual):
     return abs(actual - Fraction(baseline.result.median))
 
 
-def case_metrics(connection, records, policy, case, availability):
-    forecast, actual, assessment = measured_case(connection, records, policy, case, availability)
+def case_metrics(context, records, policy, case, availability):
+    forecast, actual, assessment = measured_case(context, records, policy, case, availability)
     predicted = Fraction(forecast.result.median)
     if (
         assessment.rehearsal is not None
@@ -519,7 +551,7 @@ def case_metrics(connection, records, policy, case, availability):
         overhead=Fraction(assessment.rehearsal.overhead.amount)
         if assessment.rehearsal
         else Fraction(0),
-        baseline=baseline_error(connection, records, policy, case, forecast, actual),
+        baseline=baseline_error(context, records, policy, case, forecast, actual),
     )
 
 
@@ -543,14 +575,15 @@ def validation_passes(metrics, policy):
     return bool(passed)
 
 
-def measure_validation(connection, records, policy, cases):
+def measure_validation(context, records, policy, cases):
+    connection = context.connection
     availability = local_availability(connection)
     seen, measured = set(), []
     for case in cases:
         if key(case.truth) in seen:
             raise ContractError("duplicate validation truth")
         seen.add(key(case.truth))
-        measured.append(case_metrics(connection, records, policy, case, availability))
+        measured.append(case_metrics(context, records, policy, case, availability))
     count = len(cases)
     baselines = [m["baseline"] for m in measured if m["baseline"] is not None]
     metrics = ValidationMetrics(

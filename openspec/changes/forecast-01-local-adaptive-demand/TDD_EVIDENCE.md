@@ -310,3 +310,22 @@ this last documentation batch includes its closure and final exact-head checks.
 Its completed consumption will be recorded without resetting history or allowance.
 Current Linux and CodeRabbit results must cover the final committed contents;
 earlier reports remain bound only to their original inputs.
+
+
+## PR #43 coverage and replay corrections — 2026-10-12, Europe/Berlin
+
+Both current-head providers completed code review at `0e32a9a298fc3229d916a635cd68d28484032cd2`. Codex review 5494547632 reported a P1 unknown-transfer allegation and a P2 incomplete Run-start coverage defect; CodeRabbit review 5494582211 reported one Major repeated-replay performance defect. The P1 allegation was independently disproved: a known bridge control works, while 24 source/target/both unknown-field controls either reject typed provider/surface omissions or produce no transfer through the existing observation identity guard. The scoped reply and resolved thread retain that concrete non-finding; no defensive preference change is made.
+
+The P2 is reproducible through supported interval/observation corrections: an immutable Run start at 10:00:02, with both current interval and observation moved to 10:00:02.500000, previously admitted a partial quantity as learning truth. Coverage eligibility is distinct from the earlier forecast-capture chronology family. Run has no observed-end field: the latest interval supplies end. The correction requires coverage of the known immutable start as well as the latest interval, while absent starts retain current-interval semantics. Registration time and superseded interval bounds are not new measurement boundaries.
+
+The Major performance defect is independently demonstrated with six public validation generations under BEGIN IMMEDIATE: forecast replay calls grow 2, 6, 14, 30, 62, 126 for only 2, 4, 6, 8, 10, 12 distinct forecasts; validation replay calls grow 0, 2, 6, 14, 30, 62 for zero through five distinct receipts. The new repeated-replay family does not reinterpret rubric applicability or capture authority. One ephemeral ReplayContext per public operation now reuses only completed results, binding the actual record serialization/cutoff and visible revision identities. Original local cutoff authority and required-input availability are checked before cache use. No global or persisted cache, provisional cycle sentinel, provider admission or package/version change is introduced.
+
+Specifications preceded tests and implementation. The first selected run reported three failures and five passing controls: the learning-coverage and 31-versus-five replay-count assertions failed on the intended behavior; the initial validation fixture separately failed because its observed start postdated registration. That fixture failure is not product red evidence. The corrected fixture uses a valid later work start, and an isolated detector control restoring the exact pre-fix complete_run function subsequently fails because partial truth is accepted. This is a post-implementation old-behavior detector control, not a claim of earlier per-scenario red execution.
+
+After correction, all 49 demand cases pass (1.00 seconds). Six before/equal/after controls cover known and absent start bounds, preserving original forecast replay. Validation excludes partial truth without persistence. A five-generation call-count detector measures each validation result once per operation, checks two independent cold inspections, read-only exports, foreign imported authority, a new failed rubric withdrawing validation, and preserved older replay. Ruff and BasedPyright report no errors.
+
+batch9-red.txt SHA-256: `a93674b30f46f3c1849a47ddde941b1fd352f5b65e4cc62dea7da6c80fa584df`.
+batch9-corrected-validation-old-guard-control.txt SHA-256: `8c82c11ab30d78f5df27de070bd7539e3502d772a1d8f0a612f8d386aae50423`.
+batch9-green-corrected.txt SHA-256: `69ca42c31df6b9f86a3574e230b22b236b66613020d5d8431960392ba91e53e5`.
+
+The maintainer explicitly extended the preserved review session to eleven correction batches and 240 active minutes and approved the private diff's CodeRabbit review. This is the ninth collected correction batch; the final current-input independent closure, complete applicable checks, supported-Linux matrix and fresh PR-provider results remain required before acceptance. No historical counters, prior findings or accepted initial TDD limitation are reset. The PR live verification index and ignored receipt will carry exact-head completion without a receipt-only source commit.

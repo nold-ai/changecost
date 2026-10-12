@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Require complete demand observations to cover a Run's immutable observed start after interval correction, and reuse completed receipt replay only within one authority- and visibility-bound local operation to avoid exponential repeated work.
+
 - Reconcile current demand CLI and source-feasibility summaries across the README, project brief, change order and OpenSpec context; separate financial and demand authority while retaining historical planning evidence.
 
 - Reject demand validation candidates and baselines captured at or after retrospectively registered truth work starts; keep original forecast snapshots and replay immutable.

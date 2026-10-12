@@ -84,6 +84,24 @@ Learning SHALL derive one eligible full terminal Change aggregate per compatible
 - **WHEN** history is selected
 - **THEN** the partial quantity remains diagnostic and excluded from full-task truth rather than zero or successful-only training
 
+#### Scenario: Known work start survives an interval correction
+
+- **GIVEN** a Run with an immutable observed start and a later corrected interval start
+- **WHEN** its final observation covers the corrected interval but omits the earlier observed start
+- **THEN** the attempt remains incomplete for learning and validation truth; observations covering both bounds remain eligible and earlier forecast replay remains unchanged
+
+#### Scenario: Missing observed start and corrected end
+
+- **GIVEN** a Run without an observed start and a valid corrected interval
+- **WHEN** complete coverage is assessed
+- **THEN** the latest interval start/end govern completeness without treating registration time or superseded interval bounds as work boundaries
+
+#### Scenario: Shared replay dependencies remain bounded
+
+- **GIVEN** local validation generations sharing earlier forecast and receipt dependencies
+- **WHEN** one forecast, validation or inspection operation reproduces those dependencies
+- **THEN** each complete replay result is reused only within that operation and its exact authority/visible-input context; later operations, corrections, failed rubrics and imported claims cannot inherit cached authority
+
 ### Requirement: Scoped directional transfer
 
 A transfer hypothesis SHALL bind cutoff-visible matched comparisons, direction, measurement semantics, selection/mapping policy, support counts and residuals. Unresolved confounding SHALL NOT establish an isolated model effect.
