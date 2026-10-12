@@ -85,7 +85,10 @@ Corrections select one current revision; forecast replay retains the old cutoff.
 
 Complete six-dimension matches are selected first; otherwise a broad baseline
 uses the known ecosystem. Output exposes observed minimum, median, maximum and
-count, never calibrated percentiles. Repeated task scopes disclose dependence.
+count, never calibrated percentiles. New observed-summary/v2 forecasts disclose
+dependence when historical peers repeat each other's scope or the target's scope,
+including one matching historical Change. Observed-summary/v1 snapshots retain
+their original disclosure and exact replay; quantities and sample counts are unchanged.
 Matched comparisons expose directional ratios, pair/donor counts, mapped scenarios
 and residuals. Donor cohorts select complete same-dimension source history
 independently from calibration pairs; their references/counts remain visible.

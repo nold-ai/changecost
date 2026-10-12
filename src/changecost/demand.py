@@ -4,7 +4,7 @@ import json
 from contextlib import closing
 from dataclasses import dataclass, field
 from fractions import Fraction
-from typing import Any
+from typing import Any, Literal
 from uuid import uuid4
 
 from changecost.demand_graph import demand_lookup as lookup
@@ -75,6 +75,7 @@ class ForecastInputs:
     price: PriceScenario | None = None
     broad: bool = False
     validation: DemandValidation | None = None
+    algorithm: Literal["observed-summary/v1", "observed-summary/v2"] = "observed-summary/v2"
 
 
 @dataclass
@@ -247,9 +248,12 @@ def forecast_dependencies(records, validation):
     return input_closure(records, roots)
 
 
-def forecast_assumptions(selected):
+def forecast_assumptions(selected, assessment, algorithm):
     assumptions = ["synthetic_fixture_only", "observed_summaries_are_uncalibrated"]
-    if len({a.scope_key for _, _, a in selected}) < len(selected):
+    scopes = [a.scope_key for _, _, a in selected]
+    if algorithm == "observed-summary/v2":
+        scopes.append(assessment.scope_key)
+    if len(set(scopes)) < len(scopes):
         assumptions.append("repeat_task_dependence")
     return assumptions
 
@@ -279,6 +283,7 @@ def estimate(records, inputs: ForecastInputs):
         assessment=reference(assessment),
         ecosystem=reference(ecosystem),
         operation_id=inputs.operation,
+        algorithm=inputs.algorithm,
         cutoff=inputs.cutoff,
         result=result,
         inputs=[reference(records[k]) for k in sorted(dependencies)],
@@ -294,7 +299,7 @@ def estimate(records, inputs: ForecastInputs):
         price_request=reference(inputs.price) if inputs.price else None,
         broad_baseline=inputs.broad,
         initial=initial_forecast(records, change, inputs.cutoff),
-        assumptions=forecast_assumptions(selected),
+        assumptions=forecast_assumptions(selected, assessment, inputs.algorithm),
     )
 
 
@@ -327,6 +332,7 @@ def demand_reproduced(context, records, forecast):
             price=price,
             broad=forecast.broad_baseline,
             validation=validation,
+            algorithm=forecast.algorithm,
         ),
     )
     exclude = {"record_id", "origin_store_id", "recorded_at", "effective_at"}

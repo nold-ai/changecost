@@ -237,7 +237,7 @@ SQLite layout stays 2 and the package stays `0.1.0.dev0`.
 | matched_comparison | Distinct source/target Changes and ecosystems, scope key, confounding notes |
 | transfer_hypothesis | Directional ecosystems, dimensions, component, comparison refs; median-ratio method only |
 | demand_price | Effective date, bounded source, currency, explicit compatible component rates |
-| demand_forecast | Change/assessment/ecosystem refs, operation ID, cutoff, result, inputs, exclusions, peers, initial flag, assumptions, optional estimated price |
+| demand_forecast | Change/assessment/ecosystem refs, operation ID, observed-summary/v1 or v2 algorithm, cutoff, result, inputs, exclusions, peers, initial flag, assumptions, optional estimated price |
 | demand_validation_policy | Explicit ecosystem/component/population, truth minimum, coverage/tolerance, underestimation/width/overhead limits and baseline requirement |
 | demand_validation | Policy, forecast/truth/baseline cases, measured metrics, pass flag, cutoff, inputs, operation ID and previous receipt |
 

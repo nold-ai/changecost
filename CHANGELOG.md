@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Default new demand forecasts to observed-summary/v2 with target-aware repeat-task disclosure; preserve exact v1 historical forecast/receipt replay and retries, support both algorithm labels in portable records and backups, and keep numerical estimates and economic authority unchanged.
+
 - Require complete demand observations to cover a Run's immutable observed start after interval correction, and reuse completed receipt replay only within one authority- and visibility-bound local operation to avoid exponential repeated work.
 
 - Reconcile current demand CLI and source-feasibility summaries across the README, project brief, change order and OpenSpec context; separate financial and demand authority while retaining historical planning evidence.

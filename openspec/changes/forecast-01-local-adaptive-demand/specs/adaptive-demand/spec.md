@@ -78,6 +78,18 @@ Learning SHALL derive one eligible full terminal Change aggregate per compatible
 - **WHEN** learning is recomputed
 - **THEN** the Change contributes once using the selected revision and earlier forecasts remain unchanged
 
+#### Scenario: A single historical task repeats the target scope
+
+- **GIVEN** one eligible historical Change sharing the current target's frozen task scope
+- **WHEN** a new forecast is computed
+- **THEN** repeat-task dependence is disclosed even with n=1, without admitting target truth or changing observed quantities/counts; repeated peer scopes also retain the disclosure
+
+#### Scenario: Versioned disclosure preserves historical replay
+
+- **GIVEN** locally computed observed-summary/v1 forecasts and validation receipts
+- **WHEN** a new observed-summary/v2 forecast adds target-aware dependence disclosure
+- **THEN** v1 replay and idempotent retries retain their original payloads, v2 is separately reproducible, and portable decoding/recovery supports both versions without a product or database-schema version change
+
 #### Scenario: Partial abandoned work
 
 - **GIVEN** an abandoned multi-attempt Change with missing coverage for one attempt

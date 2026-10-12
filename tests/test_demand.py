@@ -1,7 +1,9 @@
 """Synthetic spec-derived demand tests; no native calibration claims."""
 
+import json
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
+from functools import partial
 
 import pytest
 
@@ -52,6 +54,7 @@ class PeerOptions:
     provider: str = "synthetic"
     surface: str = "fixture"
     observed_start: bool = False
+    scope_key: str = "same-task"
 
 
 class World:
@@ -103,7 +106,9 @@ class World:
         options = PeerOptions(**kwargs)
         self.tick()
         change = register_change(self.store, "repo", name)
-        assessment = self.assess(change, name + "-a", dimensions=options.dims)
+        assessment = self.assess(
+            change, name + "-a", dimensions=options.dims, scope_key=options.scope_key
+        )
         self.tick()
         eco = options.eco or self.eco
         observations = []
@@ -323,6 +328,81 @@ def test_target_unknown_ecosystem_and_exact_dimensions(world):
     # The terminal target never supplies its own truth, including later forecasts.
     declare(world.store, reference(world.change), LifecycleDeclaration(outcome="abandoned"))
     assert world.forecast("later").result.sample_count == 1
+
+
+@pytest.mark.parametrize(
+    "scopes,dependent",
+    [
+        (["same-task"], True),
+        (["different-task"], False),
+        (["different-task", "different-task"], True),
+        (["different-task", "another-task"], False),
+        (["same-task", "different-task"], True),
+    ],
+)
+def test_repeat_scope_disclosure_includes_target_without_changing_samples(world, scopes, dependent):
+    for index, scope in enumerate(scopes):
+        world.peer(f"repeat-peer-{index}", ["2"], scope_key=scope)
+    forecast = world.forecast()
+    assert ("repeat_task_dependence" in forecast.assumptions) is dependent
+    assert forecast.result.sample_count == len(scopes)
+    assert forecast.result.minimum == forecast.result.median == forecast.result.maximum == "2"
+    assert reference(world.change) not in forecast.peers
+
+
+def test_new_forecasts_select_versioned_disclosure_algorithm(world):
+    assert world.forecast().algorithm == "observed-summary/v2"
+
+
+def test_v1_v2_disclosure_preserves_receipt_replay_retry_and_import(world, monkeypatch, tmp_path):
+    world.peer("legacy-seed", ["2"])
+    with monkeypatch.context() as legacy:
+        legacy.setattr(
+            demand,
+            "ForecastInputs",
+            partial(demand.ForecastInputs, algorithm="observed-summary/v1"),
+        )
+        old = world.forecast("legacy-one")
+        policy = registered_policy(world)
+        case = evaluated_task(world, "legacy-truth", "2")
+        receipt = compute_validation(world.store, policy.record_id, [case], "legacy-receipt")
+        old_validated = world.forecast("legacy-validated")
+    assert old.algorithm == old_validated.algorithm == "observed-summary/v1"
+    assert "repeat_task_dependence" not in old.assumptions
+    assert receipt.passed
+    current = world.forecast("new-disclosure")
+    assert current.algorithm == "observed-summary/v2"
+    assert current.result == old_validated.result
+    assert "repeat_task_dependence" in current.assumptions
+    before = world.store.export_bundle()
+    assert world.forecast("legacy-one") == old
+    assert world.store.export_bundle() == before
+    for forecast in (old, old_validated, current):
+        for _ in range(2):
+            assert inspect_demand(world.store, forecast)["demand_validation"] == "reproduced"
+    connection = world.store.connect(readonly=True)
+    try:
+        connection.execute("BEGIN")
+        records = demand.read_records(connection)
+        context = demand.ReplayContext(connection)
+        for forecast in (old, current, old, current):
+            assert demand.demand_reproduced(context, records, forecast)
+        versions = {json.loads(identity[0]).get("algorithm") for identity in context.completed}
+        assert {"observed-summary/v1", "observed-summary/v2"} <= versions
+    finally:
+        connection.close()
+    world.store.backup(tmp_path / "mixed-version-backup")
+    recovered = Store(tmp_path / "mixed-version-backup", clock=lambda: world.time)
+    assert recovered.export_bundle() == before
+    for forecast in (old, current):
+        assert inspect_demand(recovered, forecast)["demand_validation"] == "reproduced"
+    foreign = Store(tmp_path / "mixed-version-import", clock=lambda: world.time + timedelta(days=1))
+    foreign.import_bundle(loads_bundle(dumps_bundle(before)))
+    for forecast in (old, current):
+        assert inspect_demand(foreign, forecast)["demand_validation"] == "producer_claim"
+    invalid = current.model_dump(mode="json") | {"algorithm": "observed-summary/v3"}
+    with pytest.raises(ValueError):
+        type(current).model_validate(invalid)
 
 
 def test_late_assessment_unknown_dimensions_and_mixed_models(world):
