@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- Pin the official signed SpecFact review module0.51.2 and its immutable registry to reuse the supplier's bounded Pylint similarity cache; preserve full scope, checks, signatures and native30/300-second limits, with fresh current-head assurance still required.
+
 - Use corrected current temporal revisions and exclude actual transitive target support from new demand validation applicability through observed-summary/v3; preserve exact v1/v2 replay and legacy local receipt requests without portable schema changes.
 
 - Bound new demand decimal span and rational components to 4096 digits before exact arithmetic, including extreme zero exponents; reject unsupported artifacts atomically while preserving ordinary historical replay and legacy economic Amount admission.

@@ -8,7 +8,7 @@ are bootstrap pins. The actionlint version check accepts the release/Homebrew
 `1.7.12` and Go-module `v1.7.12` spellings only. The lock resolves Python runtime, dev and build dependencies.
 The dev group includes the test tools and pins uv so isolated repository tests can
 invoke it. Host typing uses BasedPyright 1.40.1; its Node wheel remains constrained
-to 24.16.0. The separate test group lets SpecFact 0.50.1 retain its signed
+to 24.16.0. The separate test group lets SpecFact 0.51.2 retain its signed
 BasedPyright 1.39.10 analyzer without a conflicting project copy. These are
 development dependencies; analyzer coverage and type-checking rules remain intact. Pytest
 explicitly imports repository helpers from the checkout root; they stay outside
@@ -345,7 +345,7 @@ Full review enables `--bug-hunt`, including the required semgrep-bugs member.
 `pythonpath` supplies the repository import root. These declarations repair
 known setup defects but do not prove capsule execution on an unsupported host.
 
-SpecFact CLI 0.55.4 and review module 0.50.1 produce the native ignored
+SpecFact CLI 0.55.4 and review module 0.51.2 produce the native ignored
 `.specfact/code-review.json`. The runner binds its scope to a digest of the complete
 input set in a sidecar and checks actual required analyzer states and assurance.
 Behavior-affecting source, tests, dependencies, validator or CI edits require review;
@@ -354,7 +354,7 @@ the shared hygiene policy, also require review. Docs-only work states non-applic
 analyzers fail. The manual hook alone is not review completion.
 
 The default `dev` dependency group includes `test` and BasedPyright 1.40.1;
-locked local and CI typing use that current project tool. SpecFact module 0.50.1
+locked local and CI typing use that current project tool. SpecFact module 0.51.2
 auto-selects the explicit `test` group and syncs it with `--no-default-groups`,
 so its project runtime receives all existing test dependencies without installing
 a second BasedPyright. The required capsule analyzer remains its signed 1.39.10
@@ -380,7 +380,7 @@ turn an unavailable analyzer into a pass or disable the CI gate.
 
 ## Hosted capsule prerequisite
 
-The review-module installation step sets `SPECFACT_REGISTRY_INDEX_URL` to the
+The earlier0.50.1 installation step set `SPECFACT_REGISTRY_INDEX_URL` to the
 [official registry at da006b47](https://github.com/nold-ai/specfact-cli-modules/blob/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json)
 (checked 2026-10-06). The rolling index replaced its 0.50.1 entry with 0.51.0;
 the existing version argument then failed before analysis with “not found in
@@ -392,6 +392,22 @@ validation. No installation bypass or module modification is used. This repairs
 bootstrap availability; it does not explain or resolve the separate native
 coverage timeout. Rollback removes the registry pin, which leaves older-release
 installation dependent on the rolling index again.
+
+The current installation pins the [official0.51.2 registry at209b4ed8](https://github.com/nold-ai/specfact-cli-modules/blob/209b4ed835187ea857d1fa847abdd351f6f6232a/registry/index.json)
+(accessed2026-10-13, Europe/Berlin), keeping CLI0.55.4 and strict checksum,
+publisher/signature and compatibility checks. The published adapter adds an
+invocation-local bounded cache of immutable Pylint similarity windows and restores
+upstream state on every exit. Its supplier cold/warm/eviction/error controls passed16
+cases; the signed Pylint30-second and capsule300-second limits, all files/checkers,
+full test inventory and coverage policy remain unchanged. A frozen71518ca diagnostic
+observed the actual signed adapter in the running namespace and completed all10
+analyzers plus3184 tests at97.499715% line coverage. Initial candidate matrix
+coverage timeouts and prior native failures remain retained; one isolated success
+does not establish repeatability or replace both current primary matrix reports.
+The post-run composition is intentionally removed, so an empty later cache scan
+cannot attest which adapter ran. Missing execution/binding remains incomplete.
+No vendor edit, unsigned installation or deadline waiver is used. Rollback restores
+the previous immutable registry/module pins without altering product records.
 
 CI pins Ubuntu 24.04 and assigns a fresh job-local capsule cache under RUNNER_TEMP.
 Before review, it loads an AppArmor profile granting `userns` to that cache's

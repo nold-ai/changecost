@@ -65,5 +65,5 @@ pythonVersion = "3.11"
 typeCheckingMode = "standard"
 
 [tool.uv]
-# Match the signed SpecFact 0.50.1 analyzer composition.
+# Match the signed SpecFact 0.51.2 analyzer composition.
 constraint-dependencies = ["nodejs-wheel-binaries==24.16.0"]

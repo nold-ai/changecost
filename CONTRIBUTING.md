@@ -157,8 +157,8 @@ put its binary on PATH. Install separate review tooling with
 use the immutable official registry with the native installer:
 
 ```sh
-SPECFACT_REGISTRY_INDEX_URL=https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json \
-  specfact module install nold-ai/specfact-code-review --version 0.50.1
+SPECFACT_REGISTRY_INDEX_URL=https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/209b4ed835187ea857d1fa847abdd351f6f6232a/registry/index.json \
+  specfact module install nold-ai/specfact-code-review --version 0.51.2
 ```
 
 The rolling registry lists the latest module version, so the version argument

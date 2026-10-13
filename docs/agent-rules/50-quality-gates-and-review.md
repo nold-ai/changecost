@@ -10,9 +10,9 @@ typing/tests, documentation ownership/links, generated references, metadata,
 workflow syntax, package builds, dependencies and applicable SpecFact review.
 Missing tooling or analyzer coverage remains a failed/incomplete gate.
 
-SpecFact CLI 0.55.4 and module 0.50.1 are contributor tooling, never package runtime.
-The current macOS controller reports unsupported capsule execution; run the full
-review in supported Linux x86-64 before claiming it passed. Keep actual report,
+SpecFact CLI 0.55.4 and module 0.51.2 are contributor tooling, never package runtime.
+Full supported-Linux x86-64 assurance is required here. Missing or unsupported
+local capsule evidence remains incomplete; run the full Linux review before claiming it passed. Keep actual report,
 versions, content digest and outcomes in ignored .specfact and summarize them in
 TDD_EVIDENCE.md. Review evidence supplements tests and security analysis.
 

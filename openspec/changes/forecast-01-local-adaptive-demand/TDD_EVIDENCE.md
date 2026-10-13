@@ -411,3 +411,41 @@ mechanical/native parameter evidence remain recorded. No signed analyzer limit,
 coverage obligation, checker, source file or deadline was changed. Full Linux timeout
 cause remains unknown; diagnostic facts/proposed complete-scope profiling are retained,
 and fresh native assurance on both matrix legs is still required for acceptance.
+
+## PR #43 separately approved tooling correction batch 14
+
+The maintainer approved14 correction batches/450 active minutes on2026-10-13,
+retaining prior counters, checks and negative history. The bounded correction adopts
+the already published, strictly signed review module0.51.2 through its immutable
+registry209b4ed835187ea857d1fa847abdd351f6f6232a. It keeps CLI0.55.4,
+all67 Python inputs, all10 analyzers, four pytest workers, coverage policy and the
+native Pylint30-second/member300-second limits. No supplier patch, signature
+bypass, runtime dependency, portable field or product/schema version is introduced.
+
+Original71518ca assurance failures remain negative evidence. The initial signed
+candidate matrix38438791168 had nine passing analyzers including Pylint on both
+legs, but complete coverage remained UNKNOWN at300seconds. The existing upstream
+bounded similarity-window cache passed16 actual supplier controls: cold/warm output,
+minimum/ignore settings,256-entry bound and eviction, restoration on error/SystemExit,
+message/statistic/exit parity. These functional controls are not native timing proof.
+
+A separately reviewed, read-only live metadata diagnostic38442321709 checked frozen
+71518ca with unchanged pins/configuration and deadlines. Its original full check
+returned0. The actual report has all10 unique analyzers ran/PASS, no UNKNOWN and
+PASS_WITH_ADVISORY. It collected/called all3184 unique cases (3188 passing call
+records), matching the prior complete71518ca inventory; coverage is17119/17558lines
+(97.499715%). Actual namespace adapter SHA256
+62f4855a347c857039b7741448a770f7a7aa063dfca52417c552d662c2984c90 was joined to
+owned Pylint/coverage request identities; both requests retain all67 Python files.
+The observer returned the original checker exit and never changed analysis inputs,
+bootstrap, isolation or deadlines. It establishes loaded-byte and full-scope proof,
+not repeatability or primary-PR acceptance. Earlier slower host/native outcomes
+remain retained; setup versus test versus export timing is only coarsely observed.
+
+This is a contributor-tool pin correction, not new product behavior. The supplier's
+actual controls and original failed/current positive native reports are its proof;
+no fabricated product TDD or timeout waiver is claimed. Consumer pin/docs checks,
+affected independent closure, and fresh full assurance on both primary matrix legs
+plus both current-head code providers remain required after publication. Rollback
+restores the prior signed module/registry pins; retained exports and demand v3/private
+request-v2 replay requirements are unchanged. Package0.1.0.dev0/database2 remain.
