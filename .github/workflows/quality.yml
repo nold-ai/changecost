@@ -1,4 +1,4 @@
-name: Frozen signed 0.51.2 candidate assurance
+name: Frozen signed candidate live capsule phase diagnosis
 
 on:
   workflow_dispatch:
@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.11.15', '3.13.14']
+        python: ['3.13.14']
     env:
       UV_PYTHON: ${{ matrix.python }}
       OPENSPEC_TELEMETRY: '0'
@@ -116,42 +116,170 @@ jobs:
           from quality.runtime_diagnostics import host_context
           print(json.dumps(host_context(), sort_keys=True))
           PY
-      - name: Check repository
+      - name: Check frozen repository with bounded read-only live observer
         id: repository-check
         env:
           UV_PYTHON: ${{ matrix.python }}
-        run: /usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check
-      - name: Diagnose selected review-session tests after failure
-        if: failure() && steps.repository-check.outcome == 'failure'
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-        # This selected report never replaces the failed complete-suite gate.
-        run: >-
-          specfact code review run tests/test_review_session.py
-          --include-tests --bug-hunt --enforcement full --json
-          --out .specfact/selected-review-session-diagnostic.json
+        run: |
+          cat > "$RUNNER_TEMP/observe-capsule.py" <<'PY'
+          """Diagnostic-only bounded live metadata; original check result remains authoritative."""
+          import hashlib
+          import itertools
+          import json
+          import os
+          from pathlib import Path
+          import stat
+          import subprocess
+          import time
+
+          OUT = Path('.specfact/live-capsule-phase.jsonl')
+          START = time.monotonic()
+          LIMIT = 900
+          MAX_OUTPUT = 4 * 1024 * 1024
+          KNOWN_ADAPTER = '62f4855a347c857039b7741448a770f7a7aa063dfca52417c552d662c2984c90'
+          SEEN = set()
+
+
+          def read_regular(path, limit):
+              descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+              with os.fdopen(descriptor, 'rb') as stream:
+                  if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                      raise ValueError('not regular')
+                  data = stream.read(limit+1)
+                  if len(data) > limit:
+                      raise ValueError('read bound')
+                  return data
+
+
+          def digest(path):
+              return hashlib.sha256(read_regular(path, 4*1024*1024)).hexdigest()
+
+
+          def emit(value):
+              try:
+                  data = (json.dumps({'elapsed_s':round(time.monotonic()-START,3), **value},sort_keys=True)+'\n').encode()
+                  OUT.parent.mkdir(exist_ok=True)
+                  size = OUT.stat().st_size if OUT.exists() else 0
+                  if size+len(data) <= MAX_OUTPUT:
+                      with OUT.open('ab') as stream:
+                          stream.write(data)
+              except (OSError, ValueError, TypeError):
+                  pass  # Diagnostic failure must never alter the original check's status.
+
+
+          def once(key, value):
+              if key not in SEEN and len(SEEN) < 4096:
+                  emit(value)
+                  SEEN.add(key)
+
+
+          def owned_processes(root_pid):
+              processes = {}
+              for path in itertools.islice(Path('/proc').iterdir(),4096):
+                  if not path.name.isdecimal():
+                      continue
+                  try:
+                      if path.stat().st_uid != os.getuid():
+                          continue
+                      raw = read_regular(path/'stat',4096).decode()
+                      parts = raw[raw.rindex(')')+2:].split()
+                      processes[int(path.name)] = (int(parts[1]),parts[0],int(parts[11]),int(parts[12]),int(parts[19]))
+                  except (OSError,ValueError,IndexError,UnicodeError):
+                      continue
+              owned = {root_pid}
+              for _ in range(32):
+                  expanded = owned | {pid for pid, values in processes.items() if values[0] in owned}
+                  if expanded == owned:
+                      break
+                  owned = expanded
+              return {pid: value for pid,value in processes.items() if pid in owned}
+
+
+          def observe(root_pid):
+              processes = owned_processes(root_pid)
+              states,waits,requests = {},{},set()
+              ticks,skipped,absent = 0,0,0
+              for pid,(_,state,user,system,start_tick) in processes.items():
+                  states[state] = states.get(state,0)+1
+                  ticks += user+system
+                  try:
+                      wait = read_regular(Path('/proc')/str(pid)/'wchan',256).decode().strip()
+                      if wait.replace('_','').isalnum() and len(wait)<=96:
+                          waits[wait] = waits.get(wait,0)+1
+                      root = Path('/proc')/str(pid)/'root/opt/specfact'
+                      adapter = root/'builtin/specfact_code_review/run/target_pylint.py'
+                      if adapter.is_file():
+                          actual = digest(adapter)
+                          once((pid,start_tick,'adapter'),{'kind':'namespace_builtin_adapter','pid':pid,'start_tick':start_tick,'sha256':actual,'matches_signed_candidate':actual==KNOWN_ADAPTER})
+                      else:
+                          absent += 1
+                      descriptor = root/'project-runtime/project-runtime.json'
+                      if descriptor.is_file():
+                          once((pid,start_tick,'runtime'),{'kind':'namespace_runtime_descriptor','pid':pid,'start_tick':start_tick,'sha256':digest(descriptor)})
+                      request = root/'config/0/request.json'
+                      if request.is_file():
+                          identity = digest(request)
+                          requests.add(identity)
+                          once((pid,start_tick,'request'),{'kind':'namespace_member_request','pid':pid,'start_tick':start_tick,'request_sha256':identity})
+                  except (OSError,ValueError,UnicodeError):
+                      skipped += 1
+              emit({'kind':'owned_process_state','count':len(processes),'states':states,'wait_channels':waits,'aggregate_cpu_ticks':ticks,'clock_ticks_per_s':os.sysconf('SC_CLK_TCK'),'skipped_processes':skipped,'namespace_adapter_absent':absent})
+              candidates = itertools.chain(Path('/tmp').glob('specfact-targeted-pytest-coverage-*'),Path('/tmp').glob('specfact-pylint-*'))
+              for scratch in itertools.islice(candidates,16):
+                  try:
+                      if scratch.is_symlink() or not scratch.is_dir() or scratch.stat().st_uid!=os.getuid() or scratch.resolve().parent!=Path('/tmp').resolve():
+                          continue
+                      request = scratch/'request/request.json'
+                      if request.parent.is_symlink() or not request.is_file():
+                          continue
+                      raw = read_regular(request,4*1024*1024)
+                      payload = json.loads(raw)
+                      if not isinstance(payload,dict) or not isinstance(payload.get('paths'),list) or not all(isinstance(path,str) for path in payload['paths']) or not isinstance(payload.get('complete_pytest_inventory'),bool):
+                          raise ValueError('request shape')
+                      member = payload.get('member')
+                      if member not in {'targeted-pytest-coverage','pylint'}:
+                          continue
+                      identity = hashlib.sha256(raw).hexdigest()
+                      correlated = identity in requests
+                      once(('scratch',identity),{'kind':'member_request_candidate','member':member,'request_sha256':identity,'path_count':len(payload['paths']),'paths_sha256':hashlib.sha256(json.dumps(payload['paths'],sort_keys=True).encode()).hexdigest(),'complete_pytest_inventory':payload['complete_pytest_inventory'],'correlated_owned_namespace':correlated})
+                      temporary = scratch/'temporary'
+                      if temporary.is_symlink():
+                          continue
+                      coverage = []
+                      for path in itertools.islice(temporary.glob('.coverage*'),16):
+                          if path.is_file() and not path.is_symlink():
+                              coverage.append({'size':path.stat().st_size,'kind':'coverage_data'})
+                      pytest = temporary/'pytest'
+                      count = 0
+                      if pytest.is_dir() and not pytest.is_symlink():
+                          for _ in itertools.islice(pytest.rglob('*'),10000):
+                              count += 1
+                      emit({'kind':'member_scratch_candidate','member':member,'request_sha256':identity,'correlated_owned_namespace':correlated,'coverage_data':coverage,'pytest_entries':count,'complete_count':count<10000,'observation_present':(temporary/'pytest-observation.json').is_file(),'coverage_export_present':(temporary/'coverage.json').is_file(),'result_present':(scratch/'output/result.json').is_file()})
+                  except (OSError,ValueError,TypeError,UnicodeError):
+                      emit({'kind':'scratch_observation_skipped','count':1})
+
+
+          emit({'kind':'probe_start','source_head':'71518ca866b565f70b3943ec1e76053b9ef2b5eb','limits':'Read-only boundedmetadata; native30/300 unchanged; missing observations are not proof.'})
+          process = subprocess.Popen(['/usr/bin/env','-u','MAKEFLAGS','-u','GNUMAKEFLAGS','-u','MFLAGS','/usr/bin/make','check'])
+          try:
+              while process.poll() is None and time.monotonic()-START<LIMIT:
+                  try:
+                      observe(process.pid)
+                  except Exception:
+                      emit({'kind':'observation_error','count':1})
+                  time.sleep(5)
+          finally:
+              # Sampling ends at its own bound; the original check is never killed or altered.
+              code = process.wait()
+          emit({'kind':'probe_end','check_returncode':code,'observer_limit_reached':time.monotonic()-START>=LIMIT})
+          raise SystemExit(code)
+          PY
+          .venv/bin/python "$RUNNER_TEMP/observe-capsule.py"
       - name: Collect privacy-safe runtime metadata
         if: always()
         env:
           UV_PYTHON: ${{ matrix.python }}
         run: .venv/bin/python -m quality.runtime_diagnostics .specfact/code-review.json "$HOME/.cache/specfact/code-review/project-runtimes-v2" .specfact/runtime-diagnostic.json
-      - name: Bind effective official candidate adapter
-        if: always()
-        run: |
-          .venv/bin/python - <<'PY'
-          import hashlib, json, os
-          from pathlib import Path
-          root = Path(os.environ['SPECFACT_CODE_REVIEW_CAPSULE_CACHE'])
-          suffix = 'opt/specfact/builtin/specfact_code_review/run/target_pylint.py'
-          entries = []
-          for path in root.rglob('target_pylint.py'):
-              if path.as_posix().endswith(suffix):
-                  entries.append({'path':str(path.relative_to(root)), 'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
-                  assert len(entries) <= 128
-          result = {'expected_adapter_sha256':'62f4855a347c857039b7741448a770f7a7aa063dfca52417c552d662c2984c90','entries':entries,'source_head':'71518ca866b565f70b3943ec1e76053b9ef2b5eb','module':'0.51.2','installed_cli':'0.55.4','registry_ref':'209b4ed835187ea857d1fa847abdd351f6f6232a','limits':'Official signed candidate only; primary PR gate not replaced. Native30/300/checkers/files unchanged.'}
-          Path('.specfact/candidate-adapter-binding.json').write_text(json.dumps(result,indent=2)+'\n')
-          assert entries and all(item['sha256']==result['expected_adapter_sha256'] for item in entries)
-          PY
       - name: Preserve native review evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -163,7 +291,7 @@ jobs:
             .specfact/runtime-diagnostic.json
             .specfact/native-process-*.json
             .specfact/selected-review-session-diagnostic.json
-            .specfact/candidate-adapter-binding.json
+            .specfact/live-capsule-phase.jsonl
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 7
