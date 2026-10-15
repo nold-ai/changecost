@@ -1178,7 +1178,8 @@
       "path": "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
       "owner": "adaptive-demand",
       "sources": [
-        "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md"
+        "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
+        "tests/test_cli.py"
       ],
       "kind": "manual"
     }

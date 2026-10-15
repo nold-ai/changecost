@@ -8,9 +8,11 @@ for scope and limitations. Host observations never replace signed native accepta
 
 Native pytest coverage explicitly measures the installed `changecost` package and
 repository `quality` tooling. The reviewer still collects and executes every test
-with eight workers under the existing load scheduler. The higher concurrency is a
-bounded candidate based on complete local runs; only complete signed Linux reports
-on both matrix legs can accept it. It applies the
+with four workers under load scheduling and dispatches at most one pending test per
+scheduling step. The installed CLI proof uses separate isolated cases so the
+scheduler can place its smoke, portable lifecycle, economic and Quote work on
+different workers without dropping assertions. Only complete signed Linux reports
+on both matrix legs can accept this correction. It applies the
 unchanged production-source coverage threshold and runs the full analyzer set under
 the existing limits. Test modules
 remain execution evidence rather than coverage targets; tracing their implementation

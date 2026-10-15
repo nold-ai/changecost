@@ -14,7 +14,8 @@ development dependencies; analyzer coverage and type-checking rules remain intac
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package.
 The test group locks pytest-xdist 3.8.0; repository pytest configuration runs the
-complete suite with eight local workers using load distribution. Each worker retains
+complete suite with four local workers using load distribution and one-test maximum
+scheduler chunks. Each worker retains
 its isolated fixtures. The signed native observer supports distributed collection
 and terminal reports, while the coverage adapter combines worker coverage and
 rejects worker errors or missing coverage. Selection, required analyzers, enforcement
@@ -717,10 +718,22 @@ four-worker `load` runs had a 33-second median and 33 to 34-second range, while
 `worksteal` had a 34-second median and 31 to 35-second range. Two complete runs per
 worker count finished in 33 to 34 seconds with four workers, 28 seconds with six,
 and 25 seconds with eight. All runs executed 3,185 tests with unchanged coverage.
-The repository uses eight workers as the next single-variable Linux candidate and
-keeps load distribution, isolated fixtures, combined coverage, thresholds,
-analyzers and deadlines. These macOS timings do not predict Linux acceptance.
-Fresh complete signed reports on both matrix legs remain required.
+The next candidate used eight workers while keeping load distribution, isolated
+fixtures, combined coverage, thresholds, analyzers and deadlines. Exact Linux run
+38788058844 disproved that candidate: Python 3.11 passed all ten analyzers, but
+Python 3.13 coverage reached the unchanged 300-second deadline. Its ordinary suite
+also inflated the serial installed-CLI case to 78.62 seconds, versus 14.34 to 30.63
+seconds in the preceding four-worker matrix.
+
+The current correction restores four workers and sets `--maxschedchunk=1`. The
+installed CLI smoke, portable lifecycle, economic and Quote proofs use independent
+temporary state while retaining their console-script, network-isolation,
+idempotency, replay, human-output and recovery assertions. A complete local verbose
+run placed the four scenarios on four distinct workers and passed 3,188 tests plus
+four subtests in 27.08 seconds. The matching coverage run passed all 3,188 tests with
+the same 6,246 of 6,586 measured statements in 32.34 seconds. These macOS results prove
+dispatch and behavior locally, not Linux acceptance. Fresh complete signed reports
+on both matrix legs remain required.
 
 The existing host pytest run now reports its slowest 25 durations. Before the
 aggregate gate, the workflow logs only Python-version integers, logical CPU and

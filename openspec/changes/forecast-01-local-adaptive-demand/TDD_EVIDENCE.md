@@ -559,3 +559,42 @@ and thresholds, analyzers, signatures, execution identity and 30/300-second limi
 remain unchanged. Both exact-head signed Linux legs must complete before acceptance.
 Rollback restores four workers and matching contract/docs; every failed and passing
 report remains retained.
+
+## PR #43 bounded CLI-tail scheduling correction, 2026-10-15 Europe/Berlin
+
+Exact-head run 38788058844 disproved the eight-worker candidate. Python 3.11 passed
+all ten signed analyzers, collected all 3,185 tests and measured the expected 38
+runtime files at 94.837534% coverage. Python 3.13 passed the other nine analyzers but
+its complete coverage member reached the unchanged 300-second limit. Its ordinary
+suite passed all 3,185 tests in 137.86 seconds, while the single installed CLI proof
+consumed 78.62 seconds. The same proof had consumed 14.34 to 30.63 seconds in the prior
+four-worker matrix and 17.85 to 18.73 seconds with two workers. This establishes an
+eight-worker regression for the serial subprocess proof; it does not attribute all
+native coverage time to that case.
+
+An independent plan review rejected a split-only correction. With 3,185 collected
+tests, xdist 3.8.0 load scheduling initially assigns 199 consecutive cases to each of
+four workers; the installed CLI case at collection index 684 and adjacent split
+cases would remain on one worker. The bounded correction therefore restores four
+workers, retains `load`, and adds `--maxschedchunk=1` so slow split cases are
+dispatched independently. One installed proof became four cases with fresh
+temporary HOME/work/database state: read-only invocation, portable lifecycle,
+economic settlement/replay and Quote/budget presentation. The shared economic seed
+recreates the original Change, Run and failed outcome. All original console-script,
+network guard, duplicate-import, retry/correction, replay, human-output and
+idempotency assertions remain.
+
+A complete verbose local run placed the four cases on `gw3`, `gw2`, `gw1` and
+`gw0`, respectively, and passed 3,188 tests plus four subtests in 27.08 seconds. Its
+log SHA256 is
+`e6f7b8c37cbff2793b12208f096f8305bc4a2d42316ff16d205046b54bfd5bc1`.
+The exact combined coverage run passed 3,188 tests with 93 warnings in 32.34 seconds,
+retaining 6,246 of 6,586 statements (94.837534%). Its log SHA256 is
+`aa4058efaa1fb6638ec4e4497dd8be189dcb6a48a1caec292685a3b9b768f676`;
+coverage JSON SHA256 is
+`6e777f1615784efc347e6dd2ebfc9b6100f858ff1b5e39d595ec9ca80b84cbd4`.
+The isolated wheel proof also passed all five unittest methods against the built
+distribution. These local results establish collection, dispatch and preserved
+behavior only. Both exact-head signed Linux reports, all analyzers and current-head
+provider reviews remain blocking. Rollback restores the preceding worker/scheduler
+configuration and monolithic test while retaining every historical report.

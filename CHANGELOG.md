@@ -4,10 +4,10 @@
 ## Unreleased
 
 - Scope native pytest coverage to the installed `changecost` package and repository
-  `quality` tooling. Use eight pytest workers as a bounded native completion
-  candidate after the two-worker run failed to improve the blocking leg, while
-  retaining the complete test inventory, coverage threshold, analyzer set and
-  execution limits.
+  `quality` tooling. Run four pytest workers with one-test load dispatches and split
+  the installed CLI proof into isolated lifecycle, economic and Quote cases after
+  eight workers inflated its serial tail. Retain the complete assertions, coverage
+  threshold, analyzer set and execution limits.
 
 - Pin the official signed SpecFact review module0.51.2 and its immutable registry to reuse the supplier's bounded Pylint similarity cache; preserve full scope, checks, signatures and native30/300-second limits, with fresh current-head assurance still required.
 
