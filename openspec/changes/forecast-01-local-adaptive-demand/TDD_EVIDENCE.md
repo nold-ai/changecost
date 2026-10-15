@@ -485,8 +485,8 @@ processes and a peak of four. The failed leg had a median of three and a peak of
 five. Both records used input digest
 `68c556c240eb94b128dd31f1fd3d721711ffb658eb2e760e64d37a5802af9aed`.
 One coverage member completed in about 246 seconds and the other reached its
-unchanged 300-second limit. The four-worker setting therefore oversubscribed the
-recorded two-CPU reviewer.
+unchanged 300-second limit. The runnable-process excess motivated a two-worker
+candidate; it did not establish timeout causality.
 
 The repository contract test was changed first to require two workers. It failed
 only on the expected `-n 4` versus `-n 2` mismatch with log SHA256
@@ -511,3 +511,51 @@ sources and thresholds, analyzers, signatures, execution identity and deadlines
 remain unchanged. Fresh supported-Linux reports on both exact-head matrix legs are
 still blocking. Rollback restores four workers and the matching contract and docs;
 all historical reports remain retained.
+
+## PR #43 worker-candidate correction, 2026-10-15 Europe/Berlin
+
+The exact `4938623` Linux matrix disproved the preceding two-worker acceptance
+hypothesis. Python3.13 completed all ten analyzers, but its complete native review
+increased from 376.947 seconds with four workers to 450.372 seconds with two.
+Python3.11 remained incomplete at 485.800 seconds: targeted coverage reached the
+same signed 300-second member limit and Pylint separately reported incomplete
+execution. The complete passing reports collected the same 3,185 tests and covered
+the same 6,246 of 6,586 statements. Individual runs do not prove the worker count
+caused every timing difference, but two workers did not meet the required outcome.
+
+Three alternating four-worker coverage runs using `load` had a 33-second median
+and 33 to 34-second range. Three `worksteal` runs had a 34-second median and 31 to
+35-second range, so the scheduler comparison was inconclusive. Two complete runs
+per worker count finished in 33 to 34 seconds with four workers, 28 seconds with
+six, and 25 seconds with eight. Every run executed all 3,185 tests with unchanged
+coverage. A separate per-file census ranked `tests/test_review_session.py` highest,
+but it summed overlapping pytest phase elapsed durations and did not identify CPU
+work or a removable fixture cost. Its session-scoped committed and initialized
+seeds already preserve isolated test arrangements.
+
+Three independent reviewers rejected the two-worker rationale and found no measured
+basis for a scheduler or fixture change. Two selected eight workers as the strongest
+single-variable candidate; one preferred six as a conservative intermediate. The
+repository contract was changed first to require eight workers and failed only on
+the expected `-n 2` versus `-n 8` mismatch. Red log SHA256 is
+`117226aa855506b97b4870c6f989fe35c88b1f4333f2d83cbe73391574ec32b1`;
+focused green SHA256 is
+`98c0a39709e4b38f8123f83b5c05a726dac4052cf2e9f8c3577b5252a69e98cc`.
+The canonical eight-worker coverage run passed all 3,185 tests in 24.23 seconds,
+measured the same 21 product and 17 quality files with zero test files, and retained
+94.837534% aggregate line coverage. Its log SHA256 is
+`f7ae2c7048b894d4383891584df45efbcf046c8267108db008df3a5cda11e7c9`;
+coverage JSON SHA256 is
+`9be8ca68916cf8c201ee285dcc399c9b874878e37e45d8f746e28e2badcae15f`.
+The aggregate local gate passed lock, hygiene, lint, typing, documentation, index,
+metadata, workflow, all 3,185 tests in 19.59 seconds, build, dependency audit and
+15 strict OpenSpec items. Native review remained incomplete because the signed
+codebase module is unavailable on macOS. Log SHA256 is
+`ba359f45aafd80675af5dfdd43bd0ca5d4939398a603772458a05a0ce458a2d1`.
+
+Eight workers with the existing load scheduler are an unaccepted Linux candidate,
+not a demonstrated root cause. Test selection, isolated fixtures, coverage sources
+and thresholds, analyzers, signatures, execution identity and 30/300-second limits
+remain unchanged. Both exact-head signed Linux legs must complete before acceptance.
+Rollback restores four workers and matching contract/docs; every failed and passing
+report remains retained.

@@ -14,7 +14,7 @@ development dependencies; analyzer coverage and type-checking rules remain intac
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package.
 The test group locks pytest-xdist 3.8.0; repository pytest configuration runs the
-complete suite with two local workers using load distribution. Each worker retains
+complete suite with eight local workers using load distribution. Each worker retains
 its isolated fixtures. The signed native observer supports distributed collection
 and terminal reports, while the coverage adapter combines worker coverage and
 rejects worker errors or missing coverage. Selection, required analyzers, enforcement
@@ -707,9 +707,20 @@ The later signed `b6bda8f` process records captured two available CPUs on both
 matrix legs. During the high-process phase, four pytest workers and their children
 produced 12 to 16 live processes and a median of three runnable processes. One leg
 completed the coverage member and one reached its unchanged 300-second deadline.
-The repository now uses two workers to match that recorded CPU capacity. The
-change keeps the complete suite, load distribution, combined coverage, thresholds,
-analyzers and deadlines. Fresh signed reports on both matrix legs remain required.
+A two-worker candidate then left the failing leg near the same terminal duration,
+added an incomplete Pylint result there, and increased the passing leg's complete
+review from 376.947 to 450.372 seconds. Matching worker count to reported CPU count
+therefore did not repair the gate.
+
+Alternating complete local coverage runs found no scheduler advantage: three
+four-worker `load` runs had a 33-second median and 33 to 34-second range, while
+`worksteal` had a 34-second median and 31 to 35-second range. Two complete runs per
+worker count finished in 33 to 34 seconds with four workers, 28 seconds with six,
+and 25 seconds with eight. All runs executed 3,185 tests with unchanged coverage.
+The repository uses eight workers as the next single-variable Linux candidate and
+keeps load distribution, isolated fixtures, combined coverage, thresholds,
+analyzers and deadlines. These macOS timings do not predict Linux acceptance.
+Fresh complete signed reports on both matrix legs remain required.
 
 The existing host pytest run now reports its slowest 25 durations. Before the
 aggregate gate, the workflow logs only Python-version integers, logical CPU and
