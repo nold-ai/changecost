@@ -32,9 +32,10 @@ remain intact; additive demand contracts do not mint their authority.
 
 ## Impact
 
-Future authorized implementation affects models, SQLite persistence, portable
-records, quote/explain and a small deterministic estimator. This planning delivery
-changes no runtime files or database. Documentation: docs/forecasting.md and the
+Offline implementation was authorized on 2026-10-11 and is locally implemented
+on the feature branch, with acceptance pending. It extends models, portable records,
+quote/explain and deterministic learning/transfer while reusing SQLite layout 2.
+Native readers and measured pilot evaluation remain separate. Documentation: docs/forecasting.md and the
 CLI/contracts guides. See [design](design.md), [requirements](specs/adaptive-demand/spec.md)
 and [change order](../../CHANGE_ORDER.md).
 
@@ -69,6 +70,8 @@ export/backup and tested recovery. No release or version bump is planned.
 
 Planning approved 2026-10-07; native User Story under Quotes and developer workflow
 #8 / Epic #4. GitHub issue: [#35](https://github.com/nold-ai/changecost/issues/35).
-Implementation remains unstarted, unassigned and undated; preparation is being published in a planning-only PR at the user’s request.
+Preparation was published in merged PR #38. Offline implementation was authorized
+on 2026-10-11 and is local; verification and acceptance remain pending.
+The 2026-10-07 project assignment/date snapshot below is historical.
 
 Native type/parent/dependencies/private-project Todo read back on 2026-10-07.

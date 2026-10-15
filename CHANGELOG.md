@@ -3,6 +3,44 @@
 
 ## Unreleased
 
+- Bind every imported estimated demand price to the same declared price scenario
+  reference and reject absent or mismatched provenance atomically.
+
+- Scope native pytest coverage to the installed `changecost` package and repository
+  `quality` tooling. Run four pytest workers with xdist's two-test startup minimum
+  and one-test replenishment while work remains queued. Split the installed CLI
+  proof into isolated lifecycle, economic and Quote cases after eight workers
+  inflated its serial tail. Retain the complete assertions, coverage threshold,
+  analyzer set and execution limits.
+
+- Pin the official signed SpecFact review module0.51.2 and its immutable registry to reuse the supplier's bounded Pylint similarity cache; preserve full scope, checks, signatures and native30/300-second limits, with fresh current-head assurance still required.
+
+- Use corrected current temporal revisions and exclude actual transitive target support from new demand validation applicability through observed-summary/v3; preserve exact v1/v2 replay and legacy local receipt requests without portable schema changes.
+
+- Bound new demand decimal span and rational components to 4096 digits before exact arithmetic, including extreme zero exponents; reject unsupported artifacts atomically while preserving ordinary historical replay and legacy economic Amount admission.
+
+- Require a corrected complete-demand window to contain a known immutable Run start at both endpoints; continue imported validation lineage without inheriting producer authority or bypassing cutoff-unavailable heads.
+
+- Default new demand forecasts to observed-summary/v2 with target-aware repeat-task disclosure; preserve exact v1 historical forecast/receipt replay and retries, support both algorithm labels in portable records and backups, and keep numerical estimates and economic authority unchanged.
+
+- Require complete demand observations to cover a Run's immutable observed start after interval correction, and reuse completed receipt replay only within one authority- and visibility-bound local operation to avoid exponential repeated work.
+
+- Reconcile current demand CLI and source-feasibility summaries across the README, project brief, change order and OpenSpec context; separate financial and demand authority while retaining historical planning evidence.
+
+- Reject demand validation candidates and baselines captured at or after retrospectively registered truth work starts; keep original forecast snapshots and replay immutable.
+
+- Verify demand help options under both plain and ANSI-styled terminal output while preserving the complete flag assertions and runtime rendering.
+
+- Reject explicitly blank demand price identifiers before opening a transaction; preserve records and operation IDs instead of silently treating the supplied selector as omission.
+
+- Simplify offline demand request handling, historical truth checks, transfer mapping and validation metrics while preserving frozen replay and serialized records; retain failed Linux assurance and require fresh native verification.
+
+- Implement separate offline demand forecasts, minimized task/ecosystem artifacts,
+  full-Change synthetic learning, exact directional transfer scenarios, explicit
+  price/rehearsal inputs and scoped local validation receipt/replay controls.
+  Preserve economic Quotes and budget authority. Native readers, pilot validation
+  and private preview packaging remain separate; no version is published.
+
 - Implement risk-first contributor guidance across the four workflow stages: early
   critical-assumption proof, evidence-based triage, compact delta handoffs and
   delivery-overhead measurement, preserving existing gates and review budgets.

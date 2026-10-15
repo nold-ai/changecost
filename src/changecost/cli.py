@@ -196,16 +196,26 @@ def quote(
     repository_id: Annotated[str, typer.Option()],
     change_id: Annotated[str, typer.Option()],
     operation_id: Annotated[str, typer.Option()],
-    economic_kind: Annotated[str, typer.Option()],
-    unit: Annotated[str, typer.Option()],
-    basis: Annotated[str, typer.Option()],
+    economic_kind: Annotated[str | None, typer.Option()] = None,
+    unit: Annotated[str | None, typer.Option()] = None,
+    basis: Annotated[str | None, typer.Option()] = None,
     currency: Annotated[str | None, typer.Option()] = None,
     minimum: Annotated[int, typer.Option(min=1)] = 20,
+    demand: Annotated[bool, typer.Option()] = False,
+    assessment_id: Annotated[str | None, typer.Option()] = None,
+    ecosystem_id: Annotated[str | None, typer.Option()] = None,
+    price_id: Annotated[str | None, typer.Option()] = None,
 ) -> None:
-    """Compute an exact empirical Quote using complete offline peer Changes."""
+    """Compute an economic Quote or an explicit separate offline demand forecast."""
     from changecost.quotes import compute_quote
 
     def operation():
+        if demand:
+            return demand_request(context, context.params)
+        if any(v is not None for v in (assessment_id, ecosystem_id, price_id)):
+            raise ContractError("demand selectors require explicit demand mode")
+        if any(v is None for v in (economic_kind, unit, basis)):
+            raise ContractError("economic mode requires kind, unit and basis")
         scope = EconomicScope.model_validate(
             dict(
                 repository_id=repository_id,
@@ -217,6 +227,31 @@ def quote(
         return compute_quote(context.obj, change_id, scope, operation_id, minimum)
 
     execute(operation)
+
+
+def demand_request(context, options):
+    from changecost.demand import DemandRequest, compute_demand
+
+    economic = [options[name] for name in ("economic_kind", "unit", "basis", "currency")]
+    source = context.get_parameter_source("minimum")
+    if any(v is not None for v in economic) or options["minimum"] != 20 or source.name != "DEFAULT":
+        raise ContractError("demand cannot use economic selectors")
+    if options["assessment_id"] is None or options["ecosystem_id"] is None:
+        raise ContractError("demand requires assessment and ecosystem")
+    selectors = DemandRequest(
+        **{
+            name: options[name]
+            for name in (
+                "repository_id",
+                "change_id",
+                "operation_id",
+                "assessment_id",
+                "ecosystem_id",
+                "price_id",
+            )
+        }
+    )
+    return compute_demand(context.obj, selectors)
 
 
 @app.command()
@@ -363,6 +398,10 @@ def explain(
 
 
 def inspect_record(store: Store, ref: RecordRef) -> dict:
+    if ref.kind == "demand_forecast":
+        from changecost.demand import inspect_demand
+
+        return inspect_demand(store, ref)
     if ref.kind == "quote":
         from changecost.quotes import inspect_quote
 

@@ -84,8 +84,8 @@ jobs:
       - name: Install pinned review module
         env:
           UV_PYTHON: ${{ matrix.python }}
-          SPECFACT_REGISTRY_INDEX_URL: https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json
-        run: specfact module install nold-ai/specfact-code-review --version 0.50.1
+          SPECFACT_REGISTRY_INDEX_URL: https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/209b4ed835187ea857d1fa847abdd351f6f6232a/registry/index.json
+        run: specfact module install nold-ai/specfact-code-review --version 0.51.2
       - name: Allow namespaces for this job's capsule launcher paths
         id: capsule-userns
         env:

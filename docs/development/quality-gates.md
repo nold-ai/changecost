@@ -8,13 +8,15 @@ are bootstrap pins. The actionlint version check accepts the release/Homebrew
 `1.7.12` and Go-module `v1.7.12` spellings only. The lock resolves Python runtime, dev and build dependencies.
 The dev group includes the test tools and pins uv so isolated repository tests can
 invoke it. Host typing uses BasedPyright 1.40.1; its Node wheel remains constrained
-to 24.16.0. The separate test group lets SpecFact 0.50.1 retain its signed
+to 24.16.0. The separate test group lets SpecFact 0.51.2 retain its signed
 BasedPyright 1.39.10 analyzer without a conflicting project copy. These are
 development dependencies; analyzer coverage and type-checking rules remain intact. Pytest
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package.
 The test group locks pytest-xdist 3.8.0; repository pytest configuration runs the
-complete suite with four local workers using load distribution. Each worker retains
+complete suite with four local workers using load distribution and
+`--maxschedchunk=1`. Xdist keeps its two-test startup and empty-worker minimum, then
+uses one-test replenishment while a worker retains pending work. Each worker retains
 its isolated fixtures. The signed native observer supports distributed collection
 and terminal reports, while the coverage adapter combines worker coverage and
 rejects worker errors or missing coverage. Selection, required analyzers, enforcement
@@ -345,7 +347,7 @@ Full review enables `--bug-hunt`, including the required semgrep-bugs member.
 `pythonpath` supplies the repository import root. These declarations repair
 known setup defects but do not prove capsule execution on an unsupported host.
 
-SpecFact CLI 0.55.4 and review module 0.50.1 produce the native ignored
+SpecFact CLI 0.55.4 and review module 0.51.2 produce the native ignored
 `.specfact/code-review.json`. The runner binds its scope to a digest of the complete
 input set in a sidecar and checks actual required analyzer states and assurance.
 Behavior-affecting source, tests, dependencies, validator or CI edits require review;
@@ -354,7 +356,7 @@ the shared hygiene policy, also require review. Docs-only work states non-applic
 analyzers fail. The manual hook alone is not review completion.
 
 The default `dev` dependency group includes `test` and BasedPyright 1.40.1;
-locked local and CI typing use that current project tool. SpecFact module 0.50.1
+locked local and CI typing use that current project tool. SpecFact module 0.51.2
 auto-selects the explicit `test` group and syncs it with `--no-default-groups`,
 so its project runtime receives all existing test dependencies without installing
 a second BasedPyright. The required capsule analyzer remains its signed 1.39.10
@@ -380,7 +382,7 @@ turn an unavailable analyzer into a pass or disable the CI gate.
 
 ## Hosted capsule prerequisite
 
-The review-module installation step sets `SPECFACT_REGISTRY_INDEX_URL` to the
+The earlier0.50.1 installation step set `SPECFACT_REGISTRY_INDEX_URL` to the
 [official registry at da006b47](https://github.com/nold-ai/specfact-cli-modules/blob/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json)
 (checked 2026-10-06). The rolling index replaced its 0.50.1 entry with 0.51.0;
 the existing version argument then failed before analysis with “not found in
@@ -392,6 +394,22 @@ validation. No installation bypass or module modification is used. This repairs
 bootstrap availability; it does not explain or resolve the separate native
 coverage timeout. Rollback removes the registry pin, which leaves older-release
 installation dependent on the rolling index again.
+
+The current installation pins the [official0.51.2 registry at209b4ed8](https://github.com/nold-ai/specfact-cli-modules/blob/209b4ed835187ea857d1fa847abdd351f6f6232a/registry/index.json)
+(accessed2026-10-13, Europe/Berlin), keeping CLI0.55.4 and strict checksum,
+publisher/signature and compatibility checks. The published adapter adds an
+invocation-local bounded cache of immutable Pylint similarity windows and restores
+upstream state on every exit. Its supplier cold/warm/eviction/error controls passed16
+cases; the signed Pylint30-second and capsule300-second limits, all files/checkers,
+full test inventory and coverage policy remain unchanged. A frozen71518ca diagnostic
+observed the actual signed adapter in the running namespace and completed all10
+analyzers plus3184 tests at97.499715% line coverage. Initial candidate matrix
+coverage timeouts and prior native failures remain retained; one isolated success
+does not establish repeatability or replace both current primary matrix reports.
+The post-run composition is intentionally removed, so an empty later cache scan
+cannot attest which adapter ran. Missing execution/binding remains incomplete.
+No vendor edit, unsigned installation or deadline waiver is used. Rollback restores
+the previous immutable registry/module pins without altering product records.
 
 CI pins Ubuntu 24.04 and assigns a fresh job-local capsule cache under RUNNER_TEMP.
 Before review, it loads an AppArmor profile granting `userns` to that cache's
@@ -664,6 +682,14 @@ actual supported-Linux native completion remains required. Official
 accessed 2026-10-05 (Europe/Berlin); the installed 4.0.7 implementation and signed
 module 0.50.1 configuration projection were inspected separately.
 
+On 2026-10-12, PR #43 run 38297515631 passed Python3.13 native assurance but
+Python3.11 Pylint4.0.7 timed out at that full-source/tests deadline, leaving UNKNOWN
+assurance while the other nine analyzers passed. The signed module0.50.1 adapter
+and signature were independently inspected; no supported project deadline override
+or proven timeout remedy was identified. A selected-test diagnostic pass cannot
+replace full native evidence. Fresh corrected-head assurance must retain the complete
+scope, checker policy, versions and deadline; missing analysis remains blocking.
+
 The four-worker configuration followed repeated signed coverage timeouts on both
 Python matrix legs. A same-source host run passed all 2,657 tests in 34.97 seconds
 with four workers versus 63.09 seconds with two. The earlier improperly configured
@@ -678,6 +704,39 @@ Both fresh 95457ed Linux reports still returned coverage UNKNOWN at the signed
 passed 2,685 tests in 148.03 and 148.60 seconds. Four workers therefore remain an
 unaccepted native performance hypothesis. No partial target observations survive
 the timeout, so startup, tests, workers and coverage export cannot be distinguished.
+
+The later signed `b6bda8f` process records captured two available CPUs on both
+matrix legs. During the high-process phase, four pytest workers and their children
+produced 12 to 16 live processes and a median of three runnable processes. One leg
+completed the coverage member and one reached its unchanged 300-second deadline.
+A two-worker candidate then left the failing leg near the same terminal duration,
+added an incomplete Pylint result there, and increased the passing leg's complete
+review from 376.947 to 450.372 seconds. Matching worker count to reported CPU count
+therefore did not repair the gate.
+
+Alternating complete local coverage runs found no scheduler advantage: three
+four-worker `load` runs had a 33-second median and 33 to 34-second range, while
+`worksteal` had a 34-second median and 31 to 35-second range. Two complete runs per
+worker count finished in 33 to 34 seconds with four workers, 28 seconds with six,
+and 25 seconds with eight. All runs executed 3,185 tests with unchanged coverage.
+The next candidate used eight workers while keeping load distribution, isolated
+fixtures, combined coverage, thresholds, analyzers and deadlines. Exact Linux run
+38788058844 disproved that candidate: Python 3.11 passed all ten analyzers, but
+Python 3.13 coverage reached the unchanged 300-second deadline. Its ordinary suite
+also inflated the serial installed-CLI case to 78.62 seconds, versus 14.34 to 30.63
+seconds in the preceding four-worker matrix.
+
+The current correction restores four workers and sets `--maxschedchunk=1`. Xdist
+still seeds each worker with two tests and may send two when its queue is empty; the
+setting otherwise limits replenishment to one test. The
+installed CLI smoke, portable lifecycle, economic and Quote proofs use independent
+temporary state while retaining their console-script, network-isolation,
+idempotency, replay, human-output and recovery assertions. A complete local verbose
+run placed the four scenarios on four distinct workers and passed 3,188 tests plus
+four subtests in 27.08 seconds. The matching coverage run passed all 3,188 tests with
+the same 6,246 of 6,586 measured statements in 32.34 seconds. These macOS results prove
+dispatch and behavior locally, not Linux acceptance. Fresh complete signed reports
+on both matrix legs remain required.
 
 The existing host pytest run now reports its slowest 25 durations. Before the
 aggregate gate, the workflow logs only Python-version integers, logical CPU and

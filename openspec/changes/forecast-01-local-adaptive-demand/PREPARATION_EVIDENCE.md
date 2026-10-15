@@ -91,3 +91,14 @@ remain separate work. Both scoped stashes remain retained after restoration. Rol
 commit with a scoped follow-up revert and restore the
 saved affected issue bodies/relationships without deleting archives, original native
 evidence or historical observations. No package release or runtime migration occurred.
+
+## Authorized implementation reconciliation — 2026-10-11
+
+The maintainer requested offline #35 implementation from fresh main
+`5fe5e2e8f63dbf49eeeb77115ba19c67e063c21e`. PR #38's merged plan supersedes the
+retained stash; no reapplication was necessary. Local planning now closes #35 through
+offline contracts and synthetic checks; #17 owns measured native comparisons and
+protocol registration before evaluated outcomes. No native reader or collection was
+authorized by this reconciliation. Local runtime, actual evidence and outstanding
+acceptance gates are in [TDD evidence](TDD_EVIDENCE.md). Prior preparation receipts
+and limitations are preserved; this note does not claim issue closure or publication.

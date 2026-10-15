@@ -22,6 +22,8 @@ from changecost.models import (
     Change,
     ComputedSettlement,
     Cutoff,
+    DemandObservation,
+    DemandValidation,
     EconomicEvidence,
     Evidence,
     EvidenceBinding,
@@ -105,12 +107,24 @@ def subject(record: PortableRecord) -> Any:
             if isinstance(record, ComputedSettlement)
             else key(record.change)
         )
-    return None
+    from changecost.demand_graph import demand_subject
+
+    return demand_subject(record)
 
 
 def revision_errors(record: PortableRecord, records: dict) -> None:
     if (
-        not isinstance(record, (Outcome, Interval, Settlement, ComputedSettlement))
+        not isinstance(
+            record,
+            (
+                Outcome,
+                Interval,
+                Settlement,
+                ComputedSettlement,
+                DemandObservation,
+                DemandValidation,
+            ),
+        )
         or record.previous is None
     ):
         return
@@ -141,6 +155,15 @@ def dependencies(
         return source_refs(record, records, runs, bindings)
     if isinstance(record, ComputedSettlement):
         return computed_refs(record, records, runs, run_bindings)
+    from changecost.demand_graph import demand_refs
+
+    if record.kind.startswith("demand_") or record.kind in {
+        "task_assessment",
+        "ecosystem",
+        "matched_comparison",
+        "transfer_hypothesis",
+    }:
+        return demand_refs(record, records, runs, bindings, run_bindings)
     return core_dependencies(record, records, runs)
 
 
@@ -162,7 +185,17 @@ def core_dependencies(record: PortableRecord, records: dict, runs: dict) -> list
     if isinstance(record, (Quote, Settlement)):
         refs.extend(record.inputs)
     if (
-        isinstance(record, (Outcome, Interval, Settlement, ComputedSettlement))
+        isinstance(
+            record,
+            (
+                Outcome,
+                Interval,
+                Settlement,
+                ComputedSettlement,
+                DemandObservation,
+                DemandValidation,
+            ),
+        )
         and record.previous is not None
     ):
         refs.append(record.previous)
@@ -243,7 +276,17 @@ def validate_graph(records: dict) -> dict:
             raise ContractError("conflicting stable identity or binding")
         domains[domain] = ref_key
         validate_subject(record, records)
-        if isinstance(record, (Outcome, Interval, Settlement, ComputedSettlement)):
+        if isinstance(
+            record,
+            (
+                Outcome,
+                Interval,
+                Settlement,
+                ComputedSettlement,
+                DemandObservation,
+                DemandValidation,
+            ),
+        ):
             parent = key(record.previous) if record.previous else None
             chain_key = (record.kind, subject(record), parent)
             if chain_key in children:
@@ -318,6 +361,9 @@ def computation_refs(connection, records) -> set:
             )
             if request == expected:
                 result.add(("quote", record_id))
+    from changecost.demand import demand_computation_refs
+
+    result.update(demand_computation_refs(connection, records))
     return result
 
 

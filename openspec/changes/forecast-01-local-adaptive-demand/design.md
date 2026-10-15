@@ -3,7 +3,8 @@
 ## Context
 
 The Python/SQLite runtime, normalized imports, economic Quotes and advisory behavior
-are delivered. Native readers and demand learning are not. Trusted economic coverage
+are delivered. Offline demand learning is locally implemented; acceptance is pending.
+Native readers remain planned. Trusted economic coverage
 is restricted to synthetic billed USD. Existing Features/v1 cannot represent the
 new task/ecosystem dimensions. See [proposal](proposal.md) and
 [research](../../../docs/research/adaptive-demand-evidence.md).
@@ -88,8 +89,7 @@ available before the forecast cutoff. Never select pairs after seeing target err
 
 For positive source quantities use the median observed target/source ratio within
 the declared dimension/population scope; preserve exact arithmetic and defer display
-rounding. Source zero cannot supply a ratio: retain the zero pair diagnostically or
-use an explicitly declared same-unit difference policy. Do not mix policies or
+rounding. Source zero cannot supply a ratio: retain the zero pair diagnostically. The initial method is median-ratio only. Do not mix policies or
 compose bridge chains automatically. Store pairs, direction, method/version,
 residuals and counts. One comparison can label a hypothesis, not probability coverage.
 Mapped donor observations are provisional scenarios and never measured target rows.
@@ -160,4 +160,62 @@ Rollback code with a compatible backup, never delete evidence to force compatibi
 
 Derive failing tests from [requirements](specs/adaptive-demand/spec.md), record actual
 red/green evidence, then applicable quality/LINUX gates and independent review.
-No implementation, empirical accuracy or native approval is claimed by this plan.
+Local offline implementation is recorded in TDD_EVIDENCE.md. Empirical accuracy,
+native approval and final acceptance remain unclaimed.
+
+## Authorized implementation contract — 2026-10-11 (Europe/Berlin)
+
+The maintainer selected the offline #35 implementation. Supplied assessment and
+ecosystem records enter through existing `bind --import-artifact`; `quote --demand`
+references their record IDs. Money flags are required only in economic mode; mixed
+requests reject before persistence. Explicit request IDs retain atomic retry semantics.
+
+Add `demand/v1` versioned payloads within the unreleased `changecost/v1` envelope:
+assessment, ecosystem, measurement policy, per-Run demand observation, matched
+comparison, transfer hypothesis, validation policy/receipt and demand forecast.
+SQLite layout stays version 2; old records remain readable and backups preserve
+local receipts. Older executables must use compatible backups, not newer bundles.
+
+Only the closed `synthetic-demand/v1` measurement policy can establish offline
+full-Change demand truth. Every bound attempt needs terminal outcome, interval,
+explicit evidence binding and complete final coverage. Native policy strings do not
+approve readers or coverage. Corrections use predecessor chains; forks reject.
+
+Select complete six-dimension matches, then broad known-ecosystem history. Unknown
+material ecosystem fields never establish equivalence. Learning displays observed
+minimum/median/maximum and n, without calibrated percentiles. Exact rational
+arithmetic preserves nonterminating ratios; display rounding is separate.
+Eligible target history produces the principal learning result; a directional
+median-ratio transfer remains a separate candidate with residuals and pair counts.
+
+Validation requires an explicit numerical rubric registered before evaluated work
+and a locally computed measured receipt for its exact ecosystem/component/population.
+A synthetic verification API exercises registration, chronological measured receipt
+checks and later withdrawal without asserting native accuracy. #17 owns the actual
+pilot protocol/rubric and measured comparisons; missing/failed receipts leave
+forecasts unvalidated. Target Changes are excluded from receipt cases and bridges.
+
+Offline acceptance does not require #36 or #17 delivery. Native integration requires
+its independently approved reader/policy; #17 protocol preparation must precede
+evaluated outcomes. Actual live comparisons and publication remain later stages.
+
+## Corrected temporal evidence and selected validation support
+New observed-summary/v3 forecasts select current cutoff-visible Interval and
+DemandObservation heads for pre-work and truth chronology, retaining immutable Run
+points and local capture/registration bounds. Old v1/v2 estimate and applicability
+replay dispatch explicitly retains prior semantics. Internal local computation request
+generation demand-validation/v1 versus v2 distinguishes original receipt measurement
+from current live measurement without a new portable field or database schema. Exact
+legacy request retries are accepted before constructing a new receipt; malformed,
+unknown, imported or aliased provenance remains non-authoritative.
+
+Validation applicability excludes the target from actual selected candidate/baseline
+peers, transfer donors, eligible bridge pair owners and recursively selected receipts
+at each stored cutoff/algorithm. Generic input inventory and structural previous links
+are not training support. Shared eligibility logic derives selected pairs; zero,
+confounded, future, duplicate and otherwise rejected comparisons remain diagnostic.
+The traversal uses operation-local visited identities. Exact old forecast and receipt
+payload comparisons, import authority and backup markers remain intact. Reverting the
+default retains v3 decoder/replay; full old-code rollback requires a compatible backup.
+Package version 0.1.0.dev0 and database schema2 remain unchanged; internal generations
+are not published product versions.

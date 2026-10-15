@@ -220,3 +220,71 @@ selected records and preserving store bytes. The original cutoff-to-insertion
 anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
 the committed snapshot. Equality and later committed appends remain supported;
 portable artifact advice never consults the local store.
+
+## Additive demand records
+
+The portable union now also accepts the following strict offline records. Demand
+records carry internal `version: demand/v1` within the existing `changecost/v1`
+envelope; `demand_policy.version` identifies its explicit measurement policy.
+SQLite layout stays 2 and the package stays `0.1.0.dev0`.
+
+| kind | Main fields / authority |
+| --- | --- |
+| task_assessment | Change ref, six ordinal dimensions, scope_key, assessor, bounded evidence notes, optional supplied rehearsal budget/overhead |
+| demand_policy | Version, component category/unit/basis, accepted-and-abandoned population |
+| ecosystem | Provider, surface, model/version, runtime, reasoning, harness, review, measurement-policy ref; unknown material fields prevent equivalence |
+| demand_observation | RunRef, assessment/ecosystem refs, component, quantity or missing, start/end, final/complete, evidence refs, optional previous/reason |
+| matched_comparison | Distinct source/target Changes and ecosystems, scope key, confounding notes |
+| transfer_hypothesis | Directional ecosystems, dimensions, component, comparison refs; median-ratio method only |
+| demand_price | Effective date, bounded source, currency, explicit compatible component rates |
+| demand_forecast | Change/assessment/ecosystem refs, operation ID, observed-summary/v1, v2 or v3 algorithm, cutoff, result, inputs, exclusions, peers, initial flag, assumptions, optional estimated price |
+| demand_validation_policy | Explicit ecosystem/component/population, truth minimum, coverage/tolerance, underestimation/width/overhead limits and baseline requirement |
+| demand_validation | Policy, forecast/truth/baseline cases, measured metrics, pass flag, cutoff, inputs, operation ID and previous receipt |
+
+Amounts are finite nonnegative decimal strings. Ratios, residuals and calculated
+scenario prices use exact rational strings (for example `1/3`); no precision is
+invented by rounding. Strict booleans and aware timestamps retain existing parsing
+rules. Observation revisions must retain subject identity and cannot fork. Evidence
+must be explicitly bound to the same Run; assessments reference its bound Change.
+
+Local demand computations use typed, exact-request receipts in the existing
+transaction. An imported portable result does not acquire those receipts or local
+cutoff authority. A consistent SQLite backup preserves receipts and replay; portable
+export/import preserves records as producer claims. Existing economic Quotes,
+Features, settlement, layout migration and historical replay are unchanged. Older
+checkouts may reject these additive records; retain a compatible backup before
+opening a store with new records. Roll back code only with a corresponding compatible
+backup; never delete records to downgrade a shared store.
+
+Offline demand computation uses a `DemandRequest` selector object and one captured
+forecast input context shared with replay. These are internal Python inputs; portable
+record shapes and the documented CLI selectors remain the contracts above.
+
+New demand decimal primitives have a 4096-digit aligned integer/fractional span
+budget, including the coefficient and positive or negative exponent, even for zero.
+Each exact rational numerator and denominator has a 4096-digit component limit
+before Fraction conversion. Unsupported typed artifacts reject before persistence;
+previously admitted out-of-budget demand records reject decoding without being
+rewritten. Preserve original export/backup bytes for diagnosis. Supported ordinary
+records, v1/v2 replay and legacy economic Amount admission remain unchanged.
+
+A measured demand validation receipt must recheck each candidate and baseline's own
+cutoff against the complete truth snapshot's work bounds. A previously stored `initial`
+flag alone cannot prove chronological eligibility after a retrospective Run registration.
+Invalid chronology rejects before receipt persistence; original forecast replay keeps
+its own frozen snapshot.
+
+New demand forecasts default to observed-summary/v3. Current cutoff-visible Interval
+and DemandObservation revision heads determine temporal eligibility while immutable
+Run starts remain constraints. Saved v1/v2 forecasts retain exact old replay rules.
+Selected validation support includes evaluated truths, candidate/baseline selected
+peers, transfer donors and eligible bridge owners, plus recursively selected receipts;
+a v3 target cannot appear in that support. Generic inputs and structural previous
+receipts alone are reproducibility metadata.
+
+Private local computation requests support demand-validation/v1 (original measurement)
+and demand-validation/v2 (current temporal measurement). Their exact typed local
+operation/result/request binding selects receipt replay rules; portable records add no
+field, imported claims gain no authority, and retries preserve original requests.
+New receipts use v2 even for legacy candidate algorithms. Cache identity includes the
+receipt measurement generation, and all payload/metric comparisons remain exact.

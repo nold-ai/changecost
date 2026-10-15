@@ -13,9 +13,11 @@ context: |
   an archive-only limitation, not a future review waiver. Source-feasibility
   tooling merged in PR #33; reconciliation was accepted in PR #39 on 2026-10-08.
   Native CLI archival synchronized source feasibility; 23 profiles retain zero
-  approvals. Offline adaptive demand #35 is next, not yet implemented.
-  Normalized imports exist, but trusted coverage/replay supports synthetic billed
-  USD only. Source approval alone cannot enable provider numeric authority.
+  approvals. Offline adaptive demand #35 was authorized on 2026-10-11 and is locally
+  implemented; verification/acceptance remain pending.
+  Normalized imports exist, but trusted financial coverage/replay supports synthetic
+  billed USD only. Demand uses a separate closed synthetic token/time/effort policy
+  with local replay. Source approval alone cannot enable provider numeric authority.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
   cost estimates and settlement for AI-assisted software changes.
   Phase: unreleased 0.x alpha/preview feasibility study; private; Apache-2.0.
@@ -34,13 +36,17 @@ context: |
   PR #24 on 2026-09-29. Both are archived with synchronized main specs. Core-02
   contracts/lifecycle is archived; settlement reconciliation implementation was authorized on 2026-09-29.
   Selected defaults: Python 3.11+, Typer, Pydantic, SQLite, Decimal; uv/Hatchling,
-  pytest, Ruff, BasedPyright. Personal Cursor/Copilot IDE and CLI use is the pilot.
-  Plan quote, bind, settle, check, explain and changecost/v1 portable artifacts.
+  pytest, Ruff, BasedPyright. Personal Cursor/Copilot use was the original pilot plan.
+  The selected first-test path is offline demand plus a planned Codex reader, subject
+  to independent native accounting approval and later measured evaluation.
+  quote, bind, settle, check and explain have implemented offline contracts and
+  changecost/v1 portable artifacts; native collection remains separate.
   Proposed loop: assess/quote -> bind -> observe existing metadata -> reconcile -> evaluate/learn.
   Planning revision approved 2026-10-07: #9 closes through reviewed capability
   dispositions/gaps, not universal optional-export availability. Native support
   still needs independent semantics; demand eligibility and billed money are separate.
-  New Codex/Claude reader and forecast-01-local-adaptive-demand plans are not runtime.
+  New Codex/Claude readers remain plans. Offline adaptive demand is locally implemented
+  under the 2026-10-11 request, with final acceptance pending.
   Demand starts at zero knowledge, learns locally, tests matched ecosystem transfer
   hypotheses and requires scoped chronological validation before accuracy claims.
   Preserve delivered Quote/Features/advisory contracts and min-20 economic default.

@@ -6,6 +6,19 @@ host suite and fixed, bounded CPU/resource context before the gate. See
 [quality gates](development/quality-gates.md#privacy-safe-runtime-timeout-diagnostics)
 for scope and limitations. Host observations never replace signed native acceptance.
 
+Native pytest coverage explicitly measures the installed `changecost` package and
+repository `quality` tooling. The reviewer still collects and executes every test
+with four workers under load scheduling. `--maxschedchunk=1` keeps xdist's required
+two-test startup minimum, then limits replenishment to one test while a worker still
+has pending work; an empty worker can receive two. The installed CLI proof uses separate isolated cases so the
+scheduler can place its smoke, portable lifecycle, economic and Quote work on
+different workers without dropping assertions. Only complete signed Linux reports
+on both matrix legs can accept this correction. It applies the
+unchanged production-source coverage threshold and runs the full analyzer set under
+the existing limits. Test modules
+remain execution evidence rather than coverage targets; tracing their implementation
+previously added work without adding a production-source coverage obligation.
+
 The [manual example](../.github/workflows/advisory.yml) runs only with
 workflow_dispatch. It uses the existing pinned checkout/Python/uv setup and locked
 dependencies, permissions `contents: read` and no persisted checkout credentials.

@@ -1,9 +1,11 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**; lifecycle reconciled **2026-10-07**.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary reconciled **2026-10-12**.
 The Python foundation and supplemental bounded-review workflow are delivered and
-archived. Source-feasibility tooling is delivered; remaining capability-reconciliation/review
-tasks keep #9 active and In Progress under the 2026-10-07 closeout revision. Core-02 (#11) merged in PR #25 and is
+archived. Source-feasibility #9 is closed after capability reconciliation merged in
+PR #39 on 2026-10-08 and native CLI archival synchronized its evidence gates.
+All 23 profiles remain unapproved; native readers and accounting approval are separate.
+Core-02 (#11) merged in PR #25 and is
 archived with synchronized main specs. Settlement reconciliation merged in PR #28
 on 2026-10-02 and is accepted/archived with synchronized main specs. Provider
 implementation and live collection require a subsequent request.
@@ -344,3 +346,13 @@ Earlier active/pending statements above record dated history.
 The next product change is [offline adaptive demand #35](changes/forecast-01-local-adaptive-demand/proposal.md),
 starting with zero-knowledge contracts and synthetic verification. Provider readers,
 live collection and native calibration remain independently authorized work.
+
+## Focused Codex test release, 2026-10-11
+
+Offline #35 is authorized and locally implemented; acceptance remains pending.
+The conditional packaged private-alpha path is #35 → #36 → #17 → a separately
+tracked release-readiness change. #35 closes through offline contracts and synthetic
+checks; it does not depend on native comparison results. Prepare #17's protocol
+before collecting evaluated outcomes. Native #36 must independently satisfy its
+version-specific accounting gates. Copilot #13, Cursor #14 and Claude #37 can follow.
+This plan authorizes no publication or release version bump.

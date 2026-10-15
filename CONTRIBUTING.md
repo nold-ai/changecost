@@ -6,6 +6,12 @@ settlement implementation on 2026-09-29. Settlement merged in PR #28 on 2026-10-
 and is accepted/archived; see [accepted evidence](openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md).
 Other backlog work and live collection require a subsequent request.
 
+Offline adaptive demand #35 was authorized on 2026-10-11 and is locally
+implemented, with verification/acceptance pending. Run the demand boundary suite
+with `uv run --locked pytest tests/test_demand.py tests/test_demand_cli.py tests/test_demand_controls.py`.
+Keep synthetic measurement proof separate from native reader approval and #17
+pilot validation; retain Linux/SpecFact and provider-review obligations.
+
 ## Workflow
 
 1. Read [AGENTS.md](AGENTS.md) and the applicable [agent rules](docs/agent-rules/INDEX.md).
@@ -151,8 +157,8 @@ put its binary on PATH. Install separate review tooling with
 use the immutable official registry with the native installer:
 
 ```sh
-SPECFACT_REGISTRY_INDEX_URL=https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/da006b47af16a6f6ab68452eb01f0ba5edc8f451/registry/index.json \
-  specfact module install nold-ai/specfact-code-review --version 0.50.1
+SPECFACT_REGISTRY_INDEX_URL=https://raw.githubusercontent.com/nold-ai/specfact-cli-modules/209b4ed835187ea857d1fa847abdd351f6f6232a/registry/index.json \
+  specfact module install nold-ai/specfact-code-review --version 0.51.2
 ```
 
 The rolling registry lists the latest module version, so the version argument
