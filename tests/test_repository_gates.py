@@ -1023,3 +1023,17 @@ def test_quality_run_steps_bind_interpreter_after_inherited_environment(value):
         assert any("interpreter" in error for error in wiring_errors(config))
         env["UV_PYTHON"] = "${{ matrix.python }}"
         assert wiring_errors(config) == []
+
+
+def test_native_coverage_measures_product_and_quality_packages_only():
+    import tomllib
+
+    root = Path(__file__).resolve().parents[1]
+    config = tomllib.loads((root / "pyproject.toml").read_text())
+
+    assert config["tool"]["coverage"]["run"]["source_pkgs"] == ["changecost", "quality"]
+    assert set(config["tool"]["coverage"]) == {"run"}
+    assert config["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
+    assert config["tool"]["pytest"]["ini_options"]["addopts"] == (
+        "-ra -n 4 --dist load --durations=25"
+    )

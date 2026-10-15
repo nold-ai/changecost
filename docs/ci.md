@@ -6,6 +6,13 @@ host suite and fixed, bounded CPU/resource context before the gate. See
 [quality gates](development/quality-gates.md#privacy-safe-runtime-timeout-diagnostics)
 for scope and limitations. Host observations never replace signed native acceptance.
 
+Native pytest coverage explicitly measures the installed `changecost` package and
+repository `quality` tooling. The reviewer still collects and executes every test
+with the configured four workers, applies its unchanged production-source coverage
+threshold, and runs the full analyzer set under the existing limits. Test modules
+remain execution evidence rather than coverage targets; tracing their implementation
+previously added work without adding a production-source coverage obligation.
+
 The [manual example](../.github/workflows/advisory.yml) runs only with
 workflow_dispatch. It uses the existing pinned checkout/Python/uv setup and locked
 dependencies, permissions `contents: read` and no persisted checkout credentials.

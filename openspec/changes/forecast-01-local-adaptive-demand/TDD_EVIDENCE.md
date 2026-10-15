@@ -449,3 +449,31 @@ affected independent closure, and fresh full assurance on both primary matrix le
 plus both current-head code providers remain required after publication. Rollback
 restores the prior signed module/registry pins; retained exports and demand v3/private
 request-v2 replay requirements are unchanged. Package0.1.0.dev0/database2 remain.
+
+## PR #43 production coverage scope correction — 2026-10-15 Europe/Berlin
+
+The original current-head quality run38445397034 and its failed-job rerun reproduced
+the same bounded Linux failure: full pytest execution reached the signed
+`targeted-pytest-coverage` member's300-second limit. The passing peer report and the
+failed report used the same project runtime family and test inventory. The passing
+report measured21 installed `changecost` files plus46 snapshot files from `quality/`
+and `tests/`; reviewer evaluation already excludes collected test files from its
+production-source coverage obligation. The excess test-body tracing therefore added
+execution work without covering an accepted runtime source.
+
+A repository contract test preceded configuration. It failed with missing
+`tool.coverage` and SHA256
+`98de608e88241174ad96633e701ad1ed270fc8f0f830e86bf15ead8d5f961141`, then passed
+after `source_pkgs = ["changecost", "quality"]` with SHA256
+`4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342`.
+The exact coverage7.15.4/pytest-cov7.1.0 stack measured both source families in a
+focused control and no `tests/` files. Its full local macOS run kept the canonical
+four workers and complete inventory:3185 passed in32.48seconds, measuring21 product
+and17 quality files, zero test files and94.837534% aggregate line coverage. Report
+SHA256 is `521629a930fc14d9342b18a66c3088417f3a916efb01997f75fe84beb1145baf`.
+
+This changes neither test selection nor the analyzer, threshold, worker or deadline
+policy. Fresh supported-Linux matrix evidence remains blocking because local macOS
+timing does not prove the hosted capsule will finish. Rollback removes the explicit
+coverage source declaration and its contract test/docs while retaining all historical
+reports and the signed module pin.

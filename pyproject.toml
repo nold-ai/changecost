@@ -46,6 +46,10 @@ testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-ra -n 4 --dist load --durations=25"
 
+[tool.coverage.run]
+# Measure shipped and repository-owned runtime code without tracing test bodies.
+source_pkgs = ["changecost", "quality"]
+
 [tool.pylint.main]
 jobs = 2
 
