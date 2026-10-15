@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+- Require intrinsic rubric preregistration for new demand receipt v3 and forecast v4,
+  including selected nested receipt authority. Preserve exact earlier receipt and
+  forecast replay/retries, valid legacy support and atomic rejection without a
+  package or database version change (issue #44).
+
 - Bind every imported estimated demand price to the same declared price scenario
   reference and reject absent or mismatched provenance atomically.
 

@@ -246,7 +246,7 @@ def summaries(values):
 
 
 def temporal_rows(records, cls, algorithm):
-    if algorithm == "observed-summary/v3":
+    if algorithm in {"observed-summary/v3", "observed-summary/v4"}:
         return current_revisions(records, cls)
     return [r for r in records.values() if isinstance(r, cls)]
 

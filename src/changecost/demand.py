@@ -77,9 +77,9 @@ class ForecastInputs:
     price: PriceScenario | None = None
     broad: bool = False
     validation: DemandValidation | None = None
-    algorithm: Literal["observed-summary/v1", "observed-summary/v2", "observed-summary/v3"] = (
-        "observed-summary/v3"
-    )
+    algorithm: Literal[
+        "observed-summary/v1", "observed-summary/v2", "observed-summary/v3", "observed-summary/v4"
+    ] = "observed-summary/v4"
 
 
 @dataclass
@@ -110,7 +110,7 @@ def forecast_request(change, assessment, ecosystem, price=None, broad=False):
     )
 
 
-def validation_request(policy, cases, generation="demand-validation/v2"):
+def validation_request(policy, cases, generation="demand-validation/v3"):
     return json.dumps(
         [generation, policy.record_id, [c.model_dump() for c in cases]], sort_keys=True
     )
@@ -124,7 +124,7 @@ def validation_generation(request):
     return (
         generation
         if isinstance(generation, str)
-        and generation in {"demand-validation/v1", "demand-validation/v2"}
+        and generation in {"demand-validation/v1", "demand-validation/v2", "demand-validation/v3"}
         else None
     )
 
@@ -169,13 +169,13 @@ def captured(connection, store):
     return Cutoff(store_id=store_id, sequence=sequence, at=now), last_at
 
 
-def existing_result(connection, records, operation, request, kind, legacy_request=None):
+def existing_result(connection, records, operation, request, kind, legacy_requests=()):
     row = connection.execute(
         "SELECT request,record_id FROM computations WHERE operation_id=?", (operation,)
     ).fetchone()
     if row is None:
         return None
-    if row[0] not in (request, legacy_request) or (kind, row[1]) not in demand_computation_refs(
+    if row[0] not in (request, *legacy_requests) or (kind, row[1]) not in demand_computation_refs(
         connection, records
     ):
         raise ContractError("operation ID already used for a different request")
@@ -430,7 +430,45 @@ def validation_heads(records, policy):
     return [r for r in receipts if key(reference(r)) not in parents]
 
 
-def applicable_validation(context, records, change, ecosystem, algorithm="observed-summary/v3"):
+def policy_preregistered(policy, assessment, availability):
+    policy_arrival = availability[key(reference(policy))]
+    assessment_arrival = availability[key(reference(assessment))]
+    return policy_arrival < assessment_arrival and max(
+        policy.recorded_at, policy.effective_at
+    ) < min(assessment.recorded_at, assessment.effective_at, assessment_arrival[0])
+
+
+def selected_receipts(connection, records, case):
+    for ref in (case.forecast, case.baseline):
+        if ref is None:
+            continue
+        forecast = lookup(records, ref, "demand_forecast")
+        if forecast.result.validation is not None:
+            frozen = snapshot_records(connection, forecast.cutoff, records)
+            yield lookup(frozen, forecast.result.validation, "demand_validation"), frozen
+
+
+def receipt_preregistered(connection, records, receipt):
+    pending, visited = [(receipt, records)], set()
+    availability = local_availability(connection)
+    while pending:
+        current, visible = pending.pop()
+        identity = replay_identity(current, visible)
+        if identity in visited:
+            continue
+        visited.add(identity)
+        snapshot = snapshot_records(connection, current.cutoff, visible)
+        policy = lookup(snapshot, current.policy, "demand_validation_policy")
+        for case in current.cases:
+            forecast = lookup(snapshot, case.forecast, "demand_forecast")
+            assessment = lookup(snapshot, forecast.assessment, "task_assessment")
+            if not policy_preregistered(policy, assessment, availability):
+                return False
+            pending.extend(selected_receipts(connection, snapshot, case))
+    return True
+
+
+def applicable_validation(context, records, change, ecosystem, algorithm="observed-summary/v4"):
     connection = context.connection
     # An overlapping rubric without a passing receipt withdraws current validation.
     policy = latest_validation_policy(records, ecosystem, local_availability(connection))
@@ -444,10 +482,14 @@ def applicable_validation(context, records, change, ecosystem, algorithm="observ
         return None
     if any(case.truth == reference(change) for case in receipt.cases):
         return None
+    if algorithm == "observed-summary/v4" and not receipt_preregistered(
+        connection, records, receipt
+    ):
+        return None
     if receipt.passed and validation_reproduced(context, records, receipt):
-        if algorithm == "observed-summary/v3" and reference(change) in selected_validation_support(
-            context.connection, records, receipt
-        ):
+        if algorithm in {"observed-summary/v3", "observed-summary/v4"} and reference(
+            change
+        ) in selected_validation_support(context.connection, records, receipt):
             return None
         return receipt
     return None
@@ -469,7 +511,10 @@ def compute_validation(store, policy_id, cases, operation_id):
             operation_id,
             request,
             "demand_validation",
-            validation_request(policy, cases, "demand-validation/v1"),
+            tuple(
+                validation_request(policy, cases, generation)
+                for generation in ("demand-validation/v1", "demand-validation/v2")
+            ),
         )
         if existing is not None:
             return existing
@@ -497,16 +542,13 @@ def compute_validation(store, policy_id, cases, operation_id):
         return persist_result(store, connection, records, receipt, request, last_at)
 
 
-def receipt_measurement_algorithm(connection, receipt):
+def receipt_request_generation(connection, receipt):
     matches = [
         request
         for operation, request, ident in unique_computation_receipts(connection)
         if operation == receipt.operation_id and ident == receipt.record_id
     ]
-    generation = validation_generation(matches[0]) if len(matches) == 1 else None
-    if generation is None:
-        return None
-    return "observed-summary/v1" if generation == "demand-validation/v1" else "observed-summary/v3"
+    return validation_generation(matches[0]) if len(matches) == 1 else None
 
 
 def validation_reproduced(context, records, receipt):
@@ -518,10 +560,14 @@ def validation_reproduced(context, records, receipt):
         return False
     if key(reference(receipt)) not in demand_computation_refs(connection, records):
         return False
-    algorithm = receipt_measurement_algorithm(connection, receipt)
-    if algorithm is None:
+    generation = receipt_request_generation(connection, receipt)
+    if generation is None:
         return False
-    identity = (*replay_identity(receipt, snapshot), algorithm)
+    algorithm = (
+        "observed-summary/v1" if generation == "demand-validation/v1" else "observed-summary/v3"
+    )
+    strict_registration = generation == "demand-validation/v3"
+    identity = (*replay_identity(receipt, snapshot), algorithm, strict_registration)
     if identity in context.completed:
         return context.completed[identity]
     try:
@@ -531,6 +577,7 @@ def validation_reproduced(context, records, receipt):
             lookup(snapshot, receipt.policy, "demand_validation_policy"),
             receipt.cases,
             algorithm,
+            strict_registration=strict_registration,
         )
     except (ValueError, KeyError):
         return False
@@ -539,7 +586,7 @@ def validation_reproduced(context, records, receipt):
     return reproduced
 
 
-def measured_case(context, records, policy, case, availability, algorithm):
+def measured_case(context, records, policy, case, availability, algorithm, strict_registration):
     connection = context.connection
     forecast = lookup(records, case.forecast, "demand_forecast")
     truth = lookup(records, case.truth, "change")
@@ -561,6 +608,14 @@ def measured_case(context, records, policy, case, availability, algorithm):
         raise ContractError("incompatible validation ecosystem")
     assessment = lookup(records, forecast.assessment, "task_assessment")
     if availability[key(reference(policy))] >= availability[key(reference(assessment))]:
+        raise ContractError("rubric was not registered before evaluated task")
+    if strict_registration and (
+        not policy_preregistered(policy, assessment, availability)
+        or any(
+            not receipt_preregistered(connection, frozen, selected)
+            for selected, frozen in selected_receipts(connection, records, case)
+        )
+    ):
         raise ContractError("rubric was not registered before evaluated task")
     actual, _assessment, reason = aggregate(
         records, truth, eco, policy.component, availability, algorithm
@@ -602,9 +657,9 @@ def baseline_error(context, records, policy, case, forecast, actual, algorithm):
     return abs(actual - Fraction(baseline.result.median))
 
 
-def case_metrics(context, records, policy, case, availability, algorithm):
+def case_metrics(context, records, policy, case, availability, algorithm, strict_registration):
     forecast, actual, assessment = measured_case(
-        context, records, policy, case, availability, algorithm
+        context, records, policy, case, availability, algorithm, strict_registration
     )
     predicted = Fraction(forecast.result.median)
     if (
@@ -644,7 +699,9 @@ def validation_passes(metrics, policy):
     return bool(passed)
 
 
-def measure_validation(context, records, policy, cases, algorithm="observed-summary/v3"):
+def measure_validation(
+    context, records, policy, cases, algorithm="observed-summary/v3", *, strict_registration=True
+):
     connection = context.connection
     availability = local_availability(connection)
     seen, measured = set(), []
@@ -652,7 +709,11 @@ def measure_validation(context, records, policy, cases, algorithm="observed-summ
         if key(case.truth) in seen:
             raise ContractError("duplicate validation truth")
         seen.add(key(case.truth))
-        measured.append(case_metrics(context, records, policy, case, availability, algorithm))
+        measured.append(
+            case_metrics(
+                context, records, policy, case, availability, algorithm, strict_registration
+            )
+        )
     count = len(cases)
     baselines = [m["baseline"] for m in measured if m["baseline"] is not None]
     metrics = ValidationMetrics(

@@ -628,3 +628,65 @@ BasedPyright and strict OpenSpec validation also passed. Fresh exact-head Linux
 assurance and provider review remain required after publication. Rollback reverts
 this graph guard, its two controls, and the additive specification scenario; all
 portable records remain unchanged.
+
+
+## Issue 44 intrinsic rubric preregistration correction (2026-10-15, Europe/Berlin)
+
+The active specification, design and section 5 tasks were revised before regression
+tests and runtime changes on branch `codex/fix-demand-policy-preregistration-44`,
+based on main `ac2e8519`. Issue #44 demonstrated an imported future-declared rubric
+arriving before evaluation and becoming authoritative when the clock caught up.
+
+Red command: `.venv/bin/python -m pytest tests/test_demand_revision.py -k
+'intrinsic_rubric' -n 0`. Four separate future/equality recorded_at/effective_at
+cases failed with `Failed: DID NOT RAISE <class 'changecost.serialization.ContractError'>`;
+two strictly earlier controls passed. An initial test fixture imported seed history
+after its work and failed for unrelated forecast incompatibility; it was corrected
+to create local seed history before capturing this red evidence. No runtime edits
+preceded the corrected red execution.
+
+A shared predicate requires local rubric availability to precede assessment
+availability and both rubric timestamps to precede all intrinsic/local assessment
+times. New receipt request v3 enables strict registration separately from v3
+measurement semantics; forecast v4 inherits v3 temporal/support behavior and checks
+all selected receipt cases. An iterative traversal with payload/visible-snapshot
+visited identities checks nested candidate/baseline authority without recursively
+revisiting shared branches. Exact v1/v2 receipt requests and v1/v2/v3 forecast replay
+retain their original semantics. Valid legacy receipts remain eligible for v4.
+
+Green command: `.venv/bin/python -m pytest tests/test_demand_revision.py
+tests/test_demand.py tests/test_demand_controls.py tests/test_demand_cli.py -n 0`.
+All 145 tests passed. Added controls include both intrinsic assessment timestamps,
+valid earlier policy timestamps, same local capture time with earlier sequence,
+atomic records/computation preservation, both legacy receipt generations, historical
+forecast retries/replay, and nested invalid legacy authority rejection. Existing
+late-local-rubric and operation-conflict controls remain enabled. Legacy-generation
+test construction explicitly selects historical request, measurement and forecast
+applicability behavior; it does not claim to replace archived baseline databases.
+
+Ruff check, Ruff format check and BasedPyright passed for demand.py, demand_history.py,
+models.py, test_demand.py and test_demand_revision.py. Strict OpenSpec validation
+passed for this active change. Full repository gates, supported-Linux assurance and
+independent/provider review remain parent-owned pending obligations. This is offline
+synthetic evidence; native calibration, release and archival acceptance are unclaimed.
+No package version, database schema or portable receipt field changed. Rollback must
+retain v4 and receipt-v3 replay or use a compatible pre-change backup; do not rewrite
+saved records or delete historical computation markers.
+
+Actual ignored log timestamps (UTC) and SHA256 digests follow. Timestamps are file
+completion times, retained as chronological execution evidence.
+
+- `red.log` completed 2026-10-15T21:07:22.132275+00:00; SHA256 `5e3648e526265fab6567a87f3e564a9b6df8ece131fa123da59bdb48172c5074`.
+- `green.log` completed 2026-10-15T21:13:15.096858+00:00; SHA256 `37ba983745ebc29226e58c90c14c9d2c8fd9450c754fa17f3ecc87b16eca23ea`.
+- `lint.log` completed 2026-10-15T21:12:20.893130+00:00; SHA256 `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18`.
+- `format.log` completed 2026-10-15T21:13:15.128919+00:00; SHA256 `f114d83b30c5c657ee43a847a45bafccaea255d82673feb87c26d252c61e29c1`.
+- `types.log` completed 2026-10-15T21:12:21.791933+00:00; SHA256 `56882e01cb80173ef053c4096e4ee43e3123a15f5c0a06715f96988d48fbd91c`.
+- `openspec.log` completed 2026-10-15T21:12:22.006166+00:00; SHA256 `bed60daa235141d2ac2839556d4e1dc045bcb94c4f6302c0d61a8c613498f483`.
+
+The coordinator also replayed an actual pre-edit database captured from merged main.
+Its saved receipt-v2 and forecast-v3 payloads reproduce and retry exactly after the
+correction. A new receipt rejects the invalid policy atomically, and a new v4
+forecast remains learning. The original synthetic database remains unchanged at
+SHA256 `70b3a5d58a953c634f6b01111097dd48e6fa92832d9697c927ea5e67b56c3a74`.
+Eight retained documentation-source rationales were refreshed after the docs gate
+identified their stale source digests; retained document bytes and gates are unchanged.
