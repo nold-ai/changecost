@@ -8,8 +8,9 @@ for scope and limitations. Host observations never replace signed native accepta
 
 Native pytest coverage explicitly measures the installed `changecost` package and
 repository `quality` tooling. The reviewer still collects and executes every test
-with four workers under load scheduling and dispatches at most one pending test per
-scheduling step. The installed CLI proof uses separate isolated cases so the
+with four workers under load scheduling. `--maxschedchunk=1` keeps xdist's required
+two-test startup minimum, then limits replenishment to one test while a worker still
+has pending work; an empty worker can receive two. The installed CLI proof uses separate isolated cases so the
 scheduler can place its smoke, portable lifecycle, economic and Quote work on
 different workers without dropping assertions. Only complete signed Linux reports
 on both matrix legs can accept this correction. It applies the

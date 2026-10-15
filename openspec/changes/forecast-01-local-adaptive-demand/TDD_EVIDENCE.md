@@ -577,7 +577,9 @@ tests, xdist 3.8.0 load scheduling initially assigns 199 consecutive cases to ea
 four workers; the installed CLI case at collection index 684 and adjacent split
 cases would remain on one worker. The bounded correction therefore restores four
 workers, retains `load`, and adds `--maxschedchunk=1` so slow split cases are
-dispatched independently. One installed proof became four cases with fresh
+dispatched independently in the observed collection. Xdist still sends two tests
+per worker at startup and may send two to an empty worker; it replenishes a worker
+that retains pending work one test at a time. One installed proof became four cases with fresh
 temporary HOME/work/database state: read-only invocation, portable lifecycle,
 economic settlement/replay and Quote/budget presentation. The shared economic seed
 recreates the original Change, Run and failed outcome. All original console-script,

@@ -14,8 +14,9 @@ development dependencies; analyzer coverage and type-checking rules remain intac
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package.
 The test group locks pytest-xdist 3.8.0; repository pytest configuration runs the
-complete suite with four local workers using load distribution and one-test maximum
-scheduler chunks. Each worker retains
+complete suite with four local workers using load distribution and
+`--maxschedchunk=1`. Xdist keeps its two-test startup and empty-worker minimum, then
+uses one-test replenishment while a worker retains pending work. Each worker retains
 its isolated fixtures. The signed native observer supports distributed collection
 and terminal reports, while the coverage adapter combines worker coverage and
 rejects worker errors or missing coverage. Selection, required analyzers, enforcement
@@ -725,7 +726,9 @@ Python 3.13 coverage reached the unchanged 300-second deadline. Its ordinary sui
 also inflated the serial installed-CLI case to 78.62 seconds, versus 14.34 to 30.63
 seconds in the preceding four-worker matrix.
 
-The current correction restores four workers and sets `--maxschedchunk=1`. The
+The current correction restores four workers and sets `--maxschedchunk=1`. Xdist
+still seeds each worker with two tests and may send two when its queue is empty; the
+setting otherwise limits replenishment to one test. The
 installed CLI smoke, portable lifecycle, economic and Quote proofs use independent
 temporary state while retaining their console-script, network-isolation,
 idempotency, replay, human-output and recovery assertions. A complete local verbose
