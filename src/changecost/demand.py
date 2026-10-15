@@ -586,6 +586,21 @@ def validation_reproduced(context, records, receipt):
     return reproduced
 
 
+def require_case_preregistration(
+    connection, records, policy, case, assessment, availability, strict_registration
+):
+    if availability[key(reference(policy))] >= availability[key(reference(assessment))]:
+        raise ContractError("rubric was not registered before evaluated task")
+    if strict_registration and (
+        not policy_preregistered(policy, assessment, availability)
+        or any(
+            not receipt_preregistered(connection, frozen, selected)
+            for selected, frozen in selected_receipts(connection, records, case)
+        )
+    ):
+        raise ContractError("rubric was not registered before evaluated task")
+
+
 def measured_case(context, records, policy, case, availability, algorithm, strict_registration):
     connection = context.connection
     forecast = lookup(records, case.forecast, "demand_forecast")
@@ -607,16 +622,9 @@ def measured_case(context, records, policy, case, availability, algorithm, stric
     ) != ecosystem_identity(records, eco):
         raise ContractError("incompatible validation ecosystem")
     assessment = lookup(records, forecast.assessment, "task_assessment")
-    if availability[key(reference(policy))] >= availability[key(reference(assessment))]:
-        raise ContractError("rubric was not registered before evaluated task")
-    if strict_registration and (
-        not policy_preregistered(policy, assessment, availability)
-        or any(
-            not receipt_preregistered(connection, frozen, selected)
-            for selected, frozen in selected_receipts(connection, records, case)
-        )
-    ):
-        raise ContractError("rubric was not registered before evaluated task")
+    require_case_preregistration(
+        connection, records, policy, case, assessment, availability, strict_registration
+    )
     actual, _assessment, reason = aggregate(
         records, truth, eco, policy.component, availability, algorithm
     )

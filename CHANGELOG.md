@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Separate demand preregistration eligibility from case measurement, reducing
+  branching while preserving validation, legacy replay and failure diagnostics.
+
 - Require intrinsic rubric preregistration for new demand receipt v3 and forecast v4,
   including selected nested receipt authority. Preserve exact earlier receipt and
   forecast replay/retries, valid legacy support and atomic rejection without a

@@ -690,3 +690,43 @@ forecast remains learning. The original synthetic database remains unchanged at
 SHA256 `70b3a5d58a953c634f6b01111097dd48e6fa92832d9697c927ea5e67b56c3a74`.
 Eight retained documentation-source rationales were refreshed after the docs gate
 identified their stale source digests; retained document bytes and gates are unchanged.
+
+
+### Issue 44 first Linux failure and scoped correction
+
+[PR #45's first Linux run](https://github.com/nold-ai/changecost/actions/runs/38808778483)
+retains both failed matrix jobs. Both native reports identify a blocking Radon
+complexity of 17 in `measured_case`, increased from 13 on merged main. Python 3.13
+completed all other required analyzers, including coverage. Python 3.11 also
+reported `targeted-pytest-coverage` as `UNKNOWN` with
+`sandbox_launch_failed:timeout`; that result is not a coverage pass.
+
+The correction extracts the existing registration checks into
+`require_case_preregistration`. It preserves predicate order, short circuiting,
+error text, call position, legacy replay and current eligibility. Radon 6.0.1
+reports complexity 12 for `measured_case` and 6 for the extracted obligation.
+All 145 focused demand tests, Ruff lint/format, scoped BasedPyright and the actual
+pre-edit database replay/retry probe pass. Existing behavior tests cover the
+extraction; no new behavior, cache, dependency, execution limit or gate was added.
+
+Single local cProfile and coverage-profile runs found repeated snapshot
+reconstruction in the shared-validation scenario. Different instrumentation and
+host platforms prohibit a speed comparison or a whole-suite Linux timeout claim.
+No optimization was adopted. Fresh Linux assurance and provider review remain
+required for the corrected head. Earlier failures and review limitations remain
+part of the history.
+
+Correction evidence SHA256 digests follow:
+
+- `radon-after.json`: `a544d8d320a3b879c8b8d8753348ad0f56ff9bbb11159ad95f1b74989c4028a2`.
+- `focused-tests.log`: `dea72199c354d9809be0f6b5536c70e9cc5635ed28ca01d457d3bc59bfb6babc`.
+- `ruff.log`: `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18`.
+- `format.log`: `fd2299c9f1c6dc869070883e281051bfe93aacf66c1a3b0069f45b4aa410ca50`.
+- `types.log`: `56882e01cb80173ef053c4096e4ee43e3123a15f5c0a06715f96988d48fbd91c`.
+- `actual-legacy.log`: `b171b1fb551aa49b1ce0c88143601c740361e71b0ad53dd3dee3d64aa91578ac`.
+- `diagnosis.md`: `66c27ee1039bd47e1172f1433d3e3431292ab161b86281a5c85b3d091b98c45c`.
+
+The incremental staged check additionally required a maintenance changelog entry
+and source-bound rationales for unchanged contracts/forecasting guides. Those
+rationales preserve both guides byte-for-byte; the failed staged result remains
+retained. No check or historical evidence was removed.
