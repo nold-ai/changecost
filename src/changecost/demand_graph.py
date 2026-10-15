@@ -127,9 +127,13 @@ def forecast_refs(record, records):
     if record.result.validation is not None:
         demand_lookup(records, record.result.validation, "demand_validation")
         refs.append(record.result.validation)
-    if record.price_request is not None:
-        demand_lookup(records, record.price_request, "demand_price")
-        refs.append(record.price_request)
+    if (record.price is None) != (record.price_request is None):
+        raise ContractError("price source/request mismatch")
+    if record.price is not None:
+        if record.price.source != record.price_request:
+            raise ContractError("price source/request mismatch")
+        demand_lookup(records, record.price.source, "demand_price")
+        refs.append(record.price.source)
     return refs
 
 

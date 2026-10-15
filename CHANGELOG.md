@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Bind every imported estimated demand price to the same declared price scenario
+  reference and reject absent or mismatched provenance atomically.
+
 - Scope native pytest coverage to the installed `changecost` package and repository
   `quality` tooling. Run four pytest workers with xdist's two-test startup minimum
   and one-test replenishment while work remains queued. Split the installed CLI

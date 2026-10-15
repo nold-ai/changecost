@@ -600,3 +600,31 @@ distribution. These local results establish collection, dispatch and preserved
 behavior only. Both exact-head signed Linux reports, all analyzers and current-head
 provider reviews remain blocking. Rollback restores the preceding worker/scheduler
 configuration and monolithic test while retaining every historical report.
+
+## PR #43 estimated-price provenance correction, 2026-10-15 Europe/Berlin
+
+The exact-head Codex review identified that portable `DemandForecast` graph
+validation checked only `price_request`. An imported estimated price could therefore
+name another price scenario, or retain a price with no declared request, without
+that claimed source becoming a validated graph dependency.
+
+The specification and two adversarial import cases were added before the graph
+correction. With the guard removed, both cases failed for the expected reason:
+`ContractError` was not raised for the missing and mismatched request variants.
+The red log SHA256 is
+`ddecd616af361ee146251865dd3bbfe27d9edff25913eaa505209fbbbb6674e0`.
+Command: `pytest -q tests/test_demand_controls.py::test_imported_forecast_binds_estimated_price_to_declared_request`.
+
+The correction requires price and request presence to agree, requires the price
+source to equal the declared request, resolves that exact source as a `demand_price`
+record and adds it to the dependency graph. The focused demand, CLI and compatibility
+run passed 65 tests. The two corrected import cases passed with log SHA256
+`b55e4ead9357609b648f5af68386cc08ab2254c4bb4db78e61a6d89e782cffcf`.
+The complete local suite, with the installed console script on `PATH`, passed 3,190
+tests and four subtests in 30.56 seconds; its log SHA256 is
+`e1d5c868283310d2ae9ac0a2b524a6d9c502d5f53b7addd5593d7c251a0451a9`.
+Ruff, formatting,
+BasedPyright and strict OpenSpec validation also passed. Fresh exact-head Linux
+assurance and provider review remain required after publication. Rollback reverts
+this graph guard, its two controls, and the additive specification scenario; all
+portable records remain unchanged.

@@ -14,6 +14,7 @@ from changecost.models import (
     Assessment,
     DemandComponent,
     DemandObservation,
+    EstimatedPrice,
     MatchedComparison,
     PriceRate,
     PriceScenario,
@@ -249,6 +250,43 @@ def test_incompatible_price_and_zero_knowledge_price_are_atomic(world):
     with pytest.raises(ContractError):
         world.forecast(price_id=correct.record_id)
     assert world.store.export_bundle() == before
+
+
+@pytest.mark.parametrize("missing_request", [False, True], ids=["mismatch", "missing"])
+def test_imported_forecast_binds_estimated_price_to_declared_request(
+    world, tmp_path, missing_request
+):
+    world.peer("priced-peer", ["2"])
+    declared = world.add(
+        PriceScenario,
+        "declared-price",
+        effective_date=NOW,
+        source="declared",
+        currency="EUR",
+        rates=[PriceRate(component=COMP, rate="3")],
+    )
+    other = world.add(
+        PriceScenario,
+        "other-price",
+        effective_date=NOW,
+        source="other",
+        currency="EUR",
+        rates=[PriceRate(component=COMP, rate="4")],
+    )
+    forecast = world.forecast("priced", price_id=declared.record_id)
+    forged = forecast.model_copy(
+        update={
+            "record_id": f"forged-price-{'missing' if missing_request else 'mismatch'}",
+            "operation_id": f"forged-price-{'missing' if missing_request else 'mismatch'}",
+            "price": EstimatedPrice(source=reference(other), currency="EUR", amount="8"),
+            "price_request": None if missing_request else reference(declared),
+        }
+    )
+    bundle = world.store.export_bundle()
+    target = Store(tmp_path / "price-import-target", clock=lambda: world.time)
+    with pytest.raises(ContractError, match="price source/request mismatch"):
+        target.import_bundle(bundle.model_copy(update={"records": [*bundle.records, forged]}))
+    assert not target.path.exists()
 
 
 def test_supplied_rehearsal_is_not_an_observed_outcome(world):

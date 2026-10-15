@@ -220,6 +220,12 @@ Demand quantities, effort, credits, estimated money and billed charges SHALL rem
 - **WHEN** an estimated monetary scenario is rendered
 - **THEN** its assumptions, frozen rate provenance and estimated basis are visible and check does not treat it as a trusted economic Quote
 
+#### Scenario: Imported forecast price provenance is bound
+
+- **GIVEN** an imported demand forecast with an estimated price
+- **WHEN** its declared price request is absent or differs from the estimated price source
+- **THEN** the import rejects atomically before the forecast can enter demand history
+
 #### Scenario: Missing rate provenance
 
 - **GIVEN** supplied rates missing source, effective date or unit/basis
