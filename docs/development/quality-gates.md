@@ -14,7 +14,7 @@ development dependencies; analyzer coverage and type-checking rules remain intac
 explicitly imports repository helpers from the checkout root; they stay outside
 the distributed package.
 The test group locks pytest-xdist 3.8.0; repository pytest configuration runs the
-complete suite with four local workers using load distribution. Each worker retains
+complete suite with two local workers using load distribution. Each worker retains
 its isolated fixtures. The signed native observer supports distributed collection
 and terminal reports, while the coverage adapter combines worker coverage and
 rejects worker errors or missing coverage. Selection, required analyzers, enforcement
@@ -702,6 +702,14 @@ Both fresh 95457ed Linux reports still returned coverage UNKNOWN at the signed
 passed 2,685 tests in 148.03 and 148.60 seconds. Four workers therefore remain an
 unaccepted native performance hypothesis. No partial target observations survive
 the timeout, so startup, tests, workers and coverage export cannot be distinguished.
+
+The later signed `b6bda8f` process records captured two available CPUs on both
+matrix legs. During the high-process phase, four pytest workers and their children
+produced 12 to 16 live processes and a median of three runnable processes. One leg
+completed the coverage member and one reached its unchanged 300-second deadline.
+The repository now uses two workers to match that recorded CPU capacity. The
+change keeps the complete suite, load distribution, combined coverage, thresholds,
+analyzers and deadlines. Fresh signed reports on both matrix legs remain required.
 
 The existing host pytest run now reports its slowest 25 durations. Before the
 aggregate gate, the workflow logs only Python-version integers, logical CPU and

@@ -1035,5 +1035,5 @@ def test_native_coverage_measures_product_and_quality_packages_only():
     assert set(config["tool"]["coverage"]) == {"run"}
     assert config["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
     assert config["tool"]["pytest"]["ini_options"]["addopts"] == (
-        "-ra -n 4 --dist load --durations=25"
+        "-ra -n 2 --dist load --durations=25"
     )

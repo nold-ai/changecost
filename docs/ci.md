@@ -8,8 +8,9 @@ for scope and limitations. Host observations never replace signed native accepta
 
 Native pytest coverage explicitly measures the installed `changecost` package and
 repository `quality` tooling. The reviewer still collects and executes every test
-with the configured four workers, applies its unchanged production-source coverage
-threshold, and runs the full analyzer set under the existing limits. Test modules
+with two workers that match the bounded Linux reviewer's CPU count. It applies the
+unchanged production-source coverage threshold and runs the full analyzer set under
+the existing limits. Test modules
 remain execution evidence rather than coverage targets; tracing their implementation
 previously added work without adding a production-source coverage obligation.
 

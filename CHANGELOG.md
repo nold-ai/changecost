@@ -4,8 +4,9 @@
 ## Unreleased
 
 - Scope native pytest coverage to the installed `changecost` package and repository
-  `quality` tooling; retain the complete test inventory, four workers, coverage
-  threshold, analyzer set and execution limits while avoiding test-body tracing.
+  `quality` tooling. Match its two pytest workers to the bounded Linux reviewer's
+  two CPUs while retaining the complete test inventory, coverage threshold,
+  analyzer set and execution limits.
 
 - Pin the official signed SpecFact review module0.51.2 and its immutable registry to reuse the supplier's bounded Pylint similarity cache; preserve full scope, checks, signatures and native30/300-second limits, with fresh current-head assurance still required.
 

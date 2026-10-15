@@ -472,8 +472,42 @@ four workers and complete inventory:3185 passed in32.48seconds, measuring21 prod
 and17 quality files, zero test files and94.837534% aggregate line coverage. Report
 SHA256 is `521629a930fc14d9342b18a66c3088417f3a916efb01997f75fe84beb1145baf`.
 
-This changes neither test selection nor the analyzer, threshold, worker or deadline
-policy. Fresh supported-Linux matrix evidence remains blocking because local macOS
-timing does not prove the hosted capsule will finish. Rollback removes the explicit
-coverage source declaration and its contract test/docs while retaining all historical
-reports and the signed module pin.
+This first correction changed neither test selection nor the analyzer, threshold,
+worker or deadline policy. Fresh supported-Linux matrix evidence remained blocking
+because local macOS timing did not prove that the hosted capsule would finish.
+
+## PR #43 two-CPU worker correction, 2026-10-15 Europe/Berlin
+
+The signed `b6bda8f` matrix records reported two available CPUs on both legs. A
+rerunnable census over the native process records found 12 to 16 live processes
+during each high-process phase. The passing leg had a median of three runnable
+processes and a peak of four. The failed leg had a median of three and a peak of
+five. Both records used input digest
+`68c556c240eb94b128dd31f1fd3d721711ffb658eb2e760e64d37a5802af9aed`.
+One coverage member completed in about 246 seconds and the other reached its
+unchanged 300-second limit. The four-worker setting therefore oversubscribed the
+recorded two-CPU reviewer.
+
+The repository contract test was changed first to require two workers. It failed
+only on the expected `-n 4` versus `-n 2` mismatch with log SHA256
+`1e55e47e4ad95e58e0469da1d6678b2a67c47dbd8e60df56f75b47301cef8ada`.
+It passed after the configuration change with log SHA256
+`688435415686b91f3034ff8352c8583f9cfe74b651dec3adfba0532d844d495b`.
+Three independent reviewers challenged the plan. Two returned no findings. The
+third required both exact-head signed Linux legs to pass before acceptance.
+
+The corrected local coverage run placed the installed console script on `PATH` and
+passed all 3,185 tests in 55.41 seconds with two workers. It measured 21 product
+files and 17 quality files, no test files, and 94.837534% aggregate line coverage.
+The log SHA256 is
+`54bc2d7f56f0e2e23d1ce732d8878e4079a07b085a0180a90f28f9ed9194c1d4`.
+The coverage JSON SHA256 is
+`3c4eda311c78bb84a8e2d514b8ce5d3d5c5aca3c029826d04fc8806121fcad94`.
+An earlier invocation omitted `.venv/bin` from `PATH`; only the installed-console
+script contract failed, so that run is retained as invalid runner setup evidence.
+
+The correction changes only pytest worker concurrency. Test selection, coverage
+sources and thresholds, analyzers, signatures, execution identity and deadlines
+remain unchanged. Fresh supported-Linux reports on both exact-head matrix legs are
+still blocking. Rollback restores four workers and the matching contract and docs;
+all historical reports remain retained.
