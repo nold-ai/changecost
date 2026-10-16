@@ -248,7 +248,8 @@
         "pyproject.toml",
         "Makefile",
         ".github/workflows/*.yml",
-        ".pre-commit*.yaml"
+        ".pre-commit*.yaml",
+        "conftest.py"
       ],
       "kind": "manual"
     },

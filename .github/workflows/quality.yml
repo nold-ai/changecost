@@ -149,6 +149,7 @@ jobs:
             .specfact/review-binding.json
             .specfact/runtime-diagnostic.json
             .specfact/native-process-*.json
+            .specfact/pytest-stage-*.json
             .specfact/selected-review-session-diagnostic.json
           include-hidden-files: true
           if-no-files-found: warn

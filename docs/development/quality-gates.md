@@ -815,3 +815,41 @@ actual fixture helper. Selected default-contract review-session cases reuse thei
 existing guarded fixture. These arrangements do not change test selection, native
 launcher behavior, required analyzers or deadlines; local success cannot waive a
 failed native coverage run.
+
+### Last captured pytest phase
+
+The full native review also retains `.specfact/pytest-stage-*.json` through the
+existing artifact upload. Root `conftest.py` registers `quality.pytest_stage`.
+It writes only when the pinned producer sets `SPECFACT_TARGET_PYTEST=1` and its
+`/opt/specfact/tmp` scratch directory exists. Ordinary pytest writes nothing.
+Each process atomically replaces its own nonce-named ordinary file under
+`changecost-pytest-stage`. It records collection, setup, call, teardown and
+session-finish entry and return. An end record means the hook returned, including
+exceptional returns. Session finish does not prove coverage or report completion.
+
+`quality.pytest_stage_capture` gives the existing native child an owned `TMPDIR`
+and samples only direct `specfact-targeted-pytest-coverage-*` members at the fixed
+`temporary/changecost-pytest-stage` suffix. No-follow directory descriptors and
+regular-file checks reject links and special files. The collector retains the
+last valid state when a member disappears or a replacement is invalid. Its
+one-second polling can miss transitions or whole short-lived processes. The
+captured time changes only when a process sequence advances. Worker clocks have
+no shared ordering. A worker restart receives a distinct process nonce.
+
+Records contain a bounded relative test module, unparameterized function name
+and parameter hash. They contain no case payload, fixtures, traceback, arguments
+or environment values. The bounds are 1 KiB per state, 24,000 writes per process,
+16 retained process streams, two member directories, 1,800 scans and 64 KiB per
+sidecar. A final writer record marks write exhaustion. Scan and discovery bounds
+limit diagnostic work without changing the native timeout. The sidecar records
+successful read bytes, scan count and sampling work in seconds; these are not
+comparative performance evidence.
+
+Every sidecar is `incomplete` or `unavailable`. A captured stage identifies the
+last observed phase for that process, not its exact activity at timeout. Missing
+records cannot distinguish startup, a recorder failure or a missed sample.
+Diagnostic errors preserve the native child result and untouched report bytes.
+The collector stops and joins before return and attempts owned-root cleanup even
+if sidecar output fails. Source selection, test inventory, four-worker scheduling,
+versions, deadlines, binding and required assurance remain unchanged. Remove this
+diagnostic patch to roll back while retaining prior reports and sidecars.

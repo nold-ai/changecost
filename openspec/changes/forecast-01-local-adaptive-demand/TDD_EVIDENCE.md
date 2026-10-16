@@ -809,3 +809,87 @@ speedup or timeout resolution. The raw evidence is under the existing
 `resume-ci/fixture-experiment/` and new `resume-ci/batch5-profile/` directories.
 Fresh supported-Linux assurance remains required. Rollback restores only these
 three test arrangements and correlated prose; retained failures and counters remain.
+
+### Bounded pytest stage capture, 2026-10-16 (Europe/Berlin)
+
+The approved diagnostic patch retains ordinary scratch-file observations while the
+existing native review runs. Root conftest discovery registers private collection,
+setup, call, teardown and session-finish hooks under the existing pinned producer
+marker. One context scopes child `TMPDIR`, captures bounded latest states before
+member cleanup and writes only incomplete/unavailable diagnostics. Native arguments,
+selection, worker count, versions, limits, reports, binding and enforcement remain.
+No product contract or provider capability is added.
+
+At 23:10 CEST, the scaffold lifecycle test ran with
+`.venv/bin/python -m pytest -o addopts='' tests/test_pytest_stage_capture.py`.
+It failed its retained-status assertion after a real collector acknowledgement,
+member deletion and native-shaped exit 124. The post-return snapshot was unavailable.
+The original report bytes and exit value survived. This was a behavioral failure,
+not a missing import or collection failure. The implemented collector then passed
+that same lifecycle case by retaining its last valid call entry.
+
+At 23:19 CEST, `.venv/bin/python -m pytest -o addopts='' tests/test_pytest_stage.py
+ tests/test_pytest_stage_capture.py tests/test_quality_failures.py` passed all
+40 cases. Real children used installed pytest 9.1.1 and xdist 3.8.0. They preserved
+exit 0, 1 and 2 for success, setup/teardown failure and collection failure, retained
+call entry on external termination and recorded session-finish boundaries. A
+four-worker child inherited the marker across its controller and all four workers
+and called each of its two test functions once. Plain pytest wrote no records.
+Fixture children used owned temporary scratch, without creating `/opt` directories.
+
+Other cases prove isolated writer failures and fake clocks, worker restart identity,
+concurrent invocation separation, monotonically advancing sequences, unchanged
+capture time for repeated state, malformed/decreasing replacements retaining the
+last valid state, missed/torn records, link rejection at every traversed level,
+nonblocking FIFO rejection, startup/output failures, child exception preservation,
+collector shutdown and independent owned-root cleanup. The caller proof preserves
+native argv, nonzero exit handling, report bytes and parent environment while
+changing only the child's `TMPDIR`. Instance-local fault injection leaves the live
+pytest plugin and shared standard-library functions untouched.
+
+At 23:20 CEST, the synthetic bound probe performed 24,000 actual atomic writes and
+rejected the next write. It emitted 7,542,793 bytes with a largest state of 315 bytes.
+The measured local write loop took 4.372 seconds. An immediate-scan probe stopped
+at 1,800 scans, read 565,200 bytes, measured 0.143 seconds of sampling work and wrote
+a 677-byte incomplete sidecar with both limit markers. These are local synthetic
+bound measurements, not native overhead or speedup evidence. Separate tests cover
+the 16-stream and two-member bounds. Scoped Ruff lint/format and full BasedPyright
+passed. Cached Radon measured no new block above complexity 13.
+
+Logs and the rerunnable bound probe are retained under
+`.changecost/workflow/forecast-02-policy-preregistration/resume-ci/stage-diagnostics/implementation/`.
+Full repository gates, independent actual-delta closure and fresh supported-Linux
+native assurance remain required at this checkpoint. A sidecar cannot prove PASS
+or the exact phase at timeout. One-second polling may miss transitions; invalid or
+missing evidence remains incomplete/unavailable. Rollback removes this diagnostic
+patch while preserving every original report, prior artifact and review counter.
+
+The initial aggregate local run passed 3,228 tests, hygiene, lint, types, index,
+metadata, workflow, build proofs and all 15 OpenSpec validations. Audit was not
+applicable because its locked inputs were unchanged. The aggregate remained
+failed. Command-line Make variables leaked the outer comparison base into the
+small lock fixture; the same-source lock gate passed after clearing Make flags
+and passing its manifest directly. Four existing documentation rationale digests
+were stale, and local SpecFact provided no code-review report. Both failed logs
+remain retained. The four approved rationale entries now preserve all previous
+text and append the diagnostic-specific ownership explanation. No exception or
+assurance waiver was added; protected historical documentation remains unchanged.
+
+Final inspection demonstrated that an unencodable parameter label disabled its
+isolated writer. The added assertion failed before the correction. A local
+UnicodeEncodeError fallback now retains the phase with `test: null`. This case
+has its own isolated test to retain the native complexity bound. After the six
+reviewed comment deletions and this identity correction, the focused run passed
+41 cases and the complete configured four-worker suite passed all 3,229 tests in
+29.35 seconds. Scoped Ruff lint/format, full BasedPyright, generated index checks
+and documentation checks against both HEAD and the main comparison base passed.
+The maximum Radon complexity in the new code/tests remains 13. This rerun
+supersedes the earlier 3,228-case proof for the corrected implementation.
+
+An additional local active-plugin run before the identity correction passed all
+19 then-current diagnostic tests and retained an enabled live writer through
+sessionfinish-exit at sequence 119. Its preimport warning and actual result are
+preserved in `live-plugin-tests.log`; this is isolation evidence, not native
+assurance. Final independent closure, staged checks and the unchanged supported-
+Linux native matrix remain required. The investigative tracer is temporary;
+its later removal must preserve reports and be verified without the tracer.

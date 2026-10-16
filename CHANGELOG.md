@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Retain bounded, incomplete pytest phase diagnostics before native scratch cleanup,
+  preserving the existing full review command, limits, reports and enforcement.
+
 - Reuse pristine isolated review-session and behavioral-packet test arrangements,
   retaining real Git input checks, fresh packets/reports and all existing assertions.
   Keep packet binding assertions in a focused helper to satisfy native complexity checks.
