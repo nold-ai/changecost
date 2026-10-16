@@ -402,8 +402,10 @@ def test_final_batch_completion_and_pending_precedence(
         ("monitor", {"snapshot": None, "data": None, "errors": 1, "pending": []}),
     ],
 )
-def test_nested_corruption_fails_closed(tmp_path: Path, field: str, value: object) -> None:
-    state = review_session.initialize(tmp_path, "change", contract())
+def test_nested_corruption_fails_closed(
+    tmp_path: Path, field: str, value: object, prepared_session: dict[str, Any]
+) -> None:
+    state = prepared_session
     state[field] = value
     review_session.write_state(review_session.state_path(tmp_path, "change"), state)
     assert review_session.status(tmp_path, "change")["action"] == "incomplete"
@@ -981,9 +983,8 @@ def test_watcher_api_timeout_is_incomplete(
     ],
 )
 def test_invalid_events_do_not_mutate_state(
-    tmp_path: Path, kind: str, payload: dict[str, object]
+    tmp_path: Path, kind: str, payload: dict[str, object], prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     before = review_session.load(tmp_path, "change")
     with pytest.raises(ValueError):
         review_session.record(tmp_path, "change", {"id": "bad", "kind": kind, **payload})
@@ -1295,9 +1296,8 @@ def test_fractional_minutes_sum_canonically_across_restart_and_budget(
     ],
 )
 def test_every_derived_cache_reconciles_with_history(
-    tmp_path: Path, field: str, value: object
+    tmp_path: Path, field: str, value: object, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     for event in (
         {"id": "batch", "kind": "batch"},
         {"id": "scope", "kind": "scope_decision", "decision": "pending"},

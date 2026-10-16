@@ -786,3 +786,26 @@ and 5 for the helper afterwards. All 675 affected tests, scoped Ruff lint/format
 and BasedPyright passed. Logs are under the existing `resume-ci/publish-monitor/`
 directory. Fresh supported-Linux assurance remains required for the corrected head;
 the earlier native failure and review-session counters remain preserved.
+
+The next [native run 38961522710](https://github.com/nold-ai/changecost/actions/runs/38961522710)
+reviewed `65c0898336bb801e42fd8e6f27587dddc90d7d03`. Both host jobs passed Radon.
+The host job labeled 3.11.15 passed all ten native members with PASS assurance and
+PASS_WITH_ADVISORY. The host job labeled 3.13.14 passed nine members but retained
+UNKNOWN targeted coverage with `sandbox_launch_failed:timeout`. Its selected
+review-session diagnostic passed all ten members. This does not establish a
+host-version defect or resolve the full native coverage timeout.
+
+The following bounded correction reuses the existing guarded arrangement for 22
+default-contract cases in three families: nested malformed state, rejected events
+and derived-cache reconciliation. Independent review and AST comparison preserved
+all decorators, existing parameters and statements after initial arrangement.
+A paired local experiment passed 58 cases including the existing fixture controls
+and measured 266 versus 90 affected-case Git launches, including setup and calls.
+The tracked correction passed all 675 affected tests, scoped Ruff lint/format and
+BasedPyright. A new full coverage execution passed the same 3,209 tests and recorded
+7,515 Git launches, versus 7,691 in the retained earlier passing profile. All worker
+and controller exits were zero. These operation counts do not establish a native
+speedup or timeout resolution. The raw evidence is under the existing
+`resume-ci/fixture-experiment/` and new `resume-ci/batch5-profile/` directories.
+Fresh supported-Linux assurance remains required. Rollback restores only these
+three test arrangements and correlated prose; retained failures and counters remain.

@@ -6,6 +6,7 @@
 - Reuse pristine isolated review-session and behavioral-packet test arrangements,
   retaining real Git input checks, fresh packets/reports and all existing assertions.
   Keep packet binding assertions in a focused helper to satisfy native complexity checks.
+  Reuse the guarded arrangement in three more default-contract test families.
 
 - Separate demand preregistration eligibility from case measurement, reducing
   branching while preserving validation, legacy replay and failure diagnostics.
