@@ -775,3 +775,14 @@ fixture closure found no introduced defects. The complete local quality run pass
 its tests, build and other mechanical checks, apart from a documentation freshness
 failure corrected in the existing fixture guide. Native review produced no report
 because the local module is unavailable. Actual supported-Linux CI remains required.
+
+Native run [38958977738](https://github.com/nold-ai/changecost/actions/runs/38958977738)
+on `2f4b369f32f5913ac2afceb5194369b31e1c61ed` supplied the next failing check.
+The host job labeled 3.13.14 ran all ten required native members; targeted coverage
+passed, but Radon rejected the new packet isolation test at complexity 18. The
+correction extracts its four binding assertions unchanged and in the same order.
+Cached Radon 6.0.1 reproduced 18 before the correction and measured 14 for the test
+and 5 for the helper afterwards. All 675 affected tests, scoped Ruff lint/format
+and BasedPyright passed. Logs are under the existing `resume-ci/publish-monitor/`
+directory. Fresh supported-Linux assurance remains required for the corrected head;
+the earlier native failure and review-session counters remain preserved.

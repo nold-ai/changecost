@@ -128,16 +128,20 @@ def packet(tmp_path: Path, packet_seed: tuple[Path, dict[str, Any]]):
     return prepared_packet(tmp_path, packet_seed)
 
 
+def assert_packet_bindings_independent(data: dict[str, Any], other: dict[str, Any]) -> None:
+    assert data == other
+    assert data["binding"] is data["evidence"][0]["binding"]
+    assert other["binding"] is other["evidence"][0]["binding"]
+    assert data["binding"] is not other["binding"]
+
+
 def test_prepared_packets_are_independent(packet, packet_seed, tmp_path):
     root, data = packet
     source, canonical = packet_seed
     sibling = tmp_path.parent / (tmp_path.name + "-sibling")
     shutil.copytree(source, sibling, ignore=shutil.ignore_patterns(".changecost"))
     _, other = prepared_packet(sibling, packet_seed)
-    assert data == other
-    assert data["binding"] is data["evidence"][0]["binding"]
-    assert other["binding"] is other["evidence"][0]["binding"]
-    assert data["binding"] is not other["binding"]
+    assert_packet_bindings_independent(data, other)
     names = [
         ".git/index",
         "input.py",
