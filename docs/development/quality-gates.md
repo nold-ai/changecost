@@ -805,3 +805,13 @@ Its acquisition-count test fails before implementation; compatibility cases pres
 existing schema-8 fingerprints. Local timing probes establish reduced acquisition
 overhead only. Fresh full-suite native assurance on both Linux matrix legs remains
 required; no vendor module, test selection or time limit is altered.
+
+Behavioral packet tests reuse one pristine committed repository and canonical session
+per worker. Each test copies ordinary independent files, validates the seed history
+and compares its real Git capture before admitting the session. Packet construction,
+input fingerprints and report hashes remain fresh per test. Isolation and rejected
+working-file, staged-index, untracked-file and damaged-seed controls exercise the
+actual fixture helper. Selected default-contract review-session cases reuse their
+existing guarded fixture. These arrangements do not change test selection, native
+launcher behavior, required analyzers or deadlines; local success cannot waive a
+failed native coverage run.

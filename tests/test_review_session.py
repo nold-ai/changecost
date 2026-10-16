@@ -1601,9 +1601,8 @@ def test_nested_evidence_requires_complete_typed_fields(
     "state", ["BROKEN", "approved", "changes_requested", "", None, 1, True, []]
 )
 def test_unknown_review_states_cannot_erase_rejection(
-    tmp_path: Path, login: str, state: object
+    tmp_path: Path, login: str, state: object, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     complete_session(tmp_path)
     snapshot = complete_snapshot()
     snapshot["reviews"][0].extend(
@@ -2523,9 +2522,8 @@ def test_ordinary_events_and_monitor_updates_do_not_advance_epoch(tmp_path: Path
 @pytest.mark.parametrize("blank", [" ", "\t", "\n", "\u00a0", "\u2003"])
 @pytest.mark.parametrize("field", ["id", "approved_by", "family", "supersedes"])
 def test_event_semantic_strings_reject_whitespace_without_mutating_state(
-    tmp_path: Path, blank: str, field: str
+    tmp_path: Path, blank: str, field: str, prepared_session: dict[str, Any]
 ) -> None:
-    review_session.initialize(tmp_path, "change", contract())
     before = review_session.record(
         tmp_path, "change", {"id": "spent", "kind": "active_minutes", "minutes": 90}
     )

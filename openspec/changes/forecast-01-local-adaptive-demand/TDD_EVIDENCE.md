@@ -730,3 +730,48 @@ The incremental staged check additionally required a maintenance changelog entry
 and source-bound rationales for unchanged contracts/forecasting guides. Those
 rationales preserve both guides byte-for-byte; the failed staged result remains
 retained. No check or historical evidence was removed.
+
+
+### PR 45 isolated fixture correction, 2026-10-16 (Europe/Berlin)
+
+The retained [Linux run 38812229502](https://github.com/nold-ai/changecost/actions/runs/38812229502)
+passed Python 3.11 but failed Python 3.13 native `targeted-pytest-coverage` with
+`sandbox_launch_failed:timeout`. That is the failing performance check for this
+behavior-preserving fixture correction, not a fabricated red unit test. The local
+diagnostic counted 8,592 Git launches but had four CLI setup failures because its
+PATH omitted `.venv/bin`; it is not passing evidence or a timing benchmark.
+
+The correction reuses the existing guarded session arrangement for 36 default-contract
+cases and copies one pristine behavioral-packet repository/session per worker into
+independent test directories. Real canonical replay and Git capture guard admission;
+each test still generates its packet, input fingerprints, report and report hash.
+Six new controls prove file/index/session/report isolation, preserved internal binding
+aliases and rejection of changed working bytes, staged-only index bytes, unexpected
+untracked files, nonpristine seeds and corrupt seed history. AST comparison preserved
+all 196 existing review-session and 23 packet test functions and parameter cases,
+apart from the two authorized initialization substitutions.
+
+With `.venv/bin` on PATH, both affected files passed all 675 cases. Ruff lint/format
+and scoped BasedPyright passed. The initial missing helper return annotation was
+corrected; its nine type diagnostics remain in the ignored log. Full-suite launch
+count, unchanged supported-Linux assurance and independent closure remain pending.
+No runtime, supplier, timeout, test-selection or gate-policy change is included.
+Local results do not establish a native speedup. Rollback removes this fixture and
+documentation diff while retaining the failed-run history.
+
+Actual logs are retained under
+`.changecost/workflow/forecast-02-policy-preregistration/resume-ci/writer/`.
+
+- `affected-tests-final.log` SHA256 `104883837fb1deda69fabb401555cb6a2ccfa27d443f9692b4b304a6b3625601`.
+- `ruff.log` SHA256 `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18`.
+- `format.log` SHA256 `3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938`.
+- `types.log` SHA256 `56882e01cb80173ef053c4096e4ee43e3123a15f5c0a06715f96988d48fbd91c`.
+- `preservation.log` SHA256 `24aa6b7e1d7ea89629dbfb2babeb2aceb8f8e10702ce69ea6075e21e3849c707`.
+
+Subsequent full local coverage passed all 3,209 tests and recorded 7,691 Git launches,
+including the new controls. The earlier diagnostic recorded 8,592 launches with the
+PATH limitation above; this comparison does not establish native timing. Independent
+fixture closure found no introduced defects. The complete local quality run passed
+its tests, build and other mechanical checks, apart from a documentation freshness
+failure corrected in the existing fixture guide. Native review produced no report
+because the local module is unavailable. Actual supported-Linux CI remains required.
