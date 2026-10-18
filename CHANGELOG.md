@@ -3,8 +3,10 @@
 
 ## Unreleased
 
-- Retain bounded, incomplete pytest phase diagnostics before native scratch cleanup,
-  preserving the existing full review command, limits, reports and enforcement.
+- Exercise 72 structured-JSON summary rejection cases through the existing public
+  entrypoint helper, preserving their case IDs, controls and exact rejection checks.
+  Retire temporary pytest phase tracing after the native investigation, retaining
+  historical reports and all required checks, worker settings and deadlines.
 
 - Reuse pristine isolated review-session and behavioral-packet test arrangements,
   retaining real Git input checks, fresh packets/reports and all existing assertions.

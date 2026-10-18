@@ -816,40 +816,40 @@ existing guarded fixture. These arrangements do not change test selection, nativ
 launcher behavior, required analyzers or deadlines; local success cannot waive a
 failed native coverage run.
 
-### Last captured pytest phase
+### Retired pytest phase investigation
 
-The full native review also retains `.specfact/pytest-stage-*.json` through the
-existing artifact upload. Root `conftest.py` registers `quality.pytest_stage`.
-It writes only when the pinned producer sets `SPECFACT_TARGET_PYTEST=1` and its
-`/opt/specfact/tmp` scratch directory exists. Ordinary pytest writes nothing.
-Each process atomically replaces its own nonce-named ordinary file under
-`changecost-pytest-stage`. It records collection, setup, call, teardown and
-session-finish entry and return. An end record means the hook returned, including
-exceptional returns. Session finish does not prove coverage or report completion.
+Temporary pytest phase tracing was introduced in commit
+`afb089dad0ee649963af2d4a3987d0ecbc793001` and removed after native run
+`38971206613`. Its original reports and incomplete sidecars remain historical
+evidence. Current pytest and native review commands do not load the tracing
+plugin, collect scratch phase records, or upload new pytest-stage sidecars.
+Existing numerical process diagnostics and every other artifact path remain.
 
-`quality.pytest_stage_capture` gives the existing native child an owned `TMPDIR`
-and samples only direct `specfact-targeted-pytest-coverage-*` members at the fixed
-`temporary/changecost-pytest-stage` suffix. No-follow directory descriptors and
-regular-file checks reject links and special files. The collector retains the
-last valid state when a member disappears or a replacement is invalid. Its
-one-second polling can miss transitions or whole short-lived processes. The
-captured time changes only when a process sequence advances. Worker clocks have
-no shared ordering. A worker restart receives a distinct process nonce.
+The run completed targeted pytest on Python 3.11.15 at 292.484 seconds. The
+Python 3.13.14 member timed out with outcome UNKNOWN. Its last captured worker
+records named computation-scope calls at 293.184 to 294.314 seconds. Sampling
+identified recent work, not the exact timeout phase or its sole cause. Both
+reports also rejected a temporary tracer test with Pylint E1136. Removing the
+tracer does not turn those failed reports into passing assurance.
 
-Records contain a bounded relative test module, unparameterized function name
-and parameter hash. They contain no case payload, fixtures, traceback, arguments
-or environment values. The bounds are 1 KiB per state, 24,000 writes per process,
-16 retained process streams, two member directories, 1,800 scans and 64 KiB per
-sidecar. A final writer record marks write exhaustion. Scan and discovery bounds
-limit diagnostic work without changing the native timeout. The sidecar records
-successful read bytes, scan count and sampling work in seconds; these are not
-comparative performance evidence.
+The summary tests now reuse the unchanged public-entrypoint rejection helper
+for 72 structured-JSON cases across four families. All parameter IDs, payload
+mutations and 24 positive computation controls remain. The helper calls real
+`main`, parsing, validation and writing, checks exact exit/output and destination
+preservation or absence, and restores arguments and environment. It uses its
+existing ASCII prior-byte fixture instead of the callers' former ASCII text.
+Exact stderr equality also excludes the malformed-enum canary. The eight legacy
+numeric cases retain their original UTF-8 prior bytes and real child processes.
+The module retains 47 process launches, including 23 success and 24 rejection
+outcomes. Direct invocation shares imported modules and does not repeat child
+startup, stream encoding or the module guard for each mutation.
 
-Every sidecar is `incomplete` or `unavailable`. A captured stage identifies the
-last observed phase for that process, not its exact activity at timeout. Missing
-records cannot distinguish startup, a recorder failure or a missed sample.
-Diagnostic errors preserve the native child result and untouched report bytes.
-The collector stops and joins before return and attempts owned-root cleanup even
-if sidecar output fails. Source selection, test inventory, four-worker scheduling,
-versions, deadlines, binding and required assurance remain unchanged. Remove this
-diagnostic patch to roll back while retaining prior reports and sidecars.
+Five local serial pairs measured the selected families' median wall time at
+5.851153 seconds before and 0.229117 seconds after. Separate audit/profile runs
+observed 72 child starts before, zero after, and 72 real main/writer calls after,
+with 96 renders including the 24 positive controls. Seeded wrong exits, output
+and file mutations each failed all 72 cases, followed by a repaired passing run.
+These local synthetic measurements establish a repeated-startup contributor.
+They do not establish native four-worker savings or sufficient deadline margin.
+Fresh full supported-Linux matrix assurance remains required with unchanged
+selection, analyzers, pins, four workers and 300-second member deadline.

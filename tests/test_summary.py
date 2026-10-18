@@ -285,36 +285,13 @@ def test_legacy_numeric_cli_preserves_summary(tmp_path, kind, status, existing):
     + [(field, None) for field in ("status", "record_kind", "completeness")],
 )
 @pytest.mark.parametrize("existing", [False, True])
-def test_summary_malformed_enum_safe_cli(tmp_path, field, malformed, existing):
-    import os
-    import subprocess
-    import sys
-
+def test_summary_malformed_enum_safe_cli(tmp_path, field, malformed, existing, monkeypatch, capsys):
     value = result("valid")
     if field == "record_kind":
         value["record"]["kind"] = malformed
     else:
         value[field] = malformed
-    payload = tmp_path / "result.json"
-    payload.write_text(json.dumps(value))
-    destination = tmp_path / "summary"
-    original = b"Earlier advisory summary\n"
-    if existing:
-        destination.write_bytes(original)
-    rejected = subprocess.run(
-        [sys.executable, "-m", "changecost.summary", str(payload)],
-        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
-        capture_output=True,
-        text=True,
-    )
-    assert rejected.returncode == 2
-    assert rejected.stdout == ""
-    assert rejected.stderr == "cannot render or write advisory summary\n"
-    assert "private-canary" not in rejected.stderr
-    if existing:
-        assert destination.read_bytes() == original
-    else:
-        assert not destination.exists()
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize("existing", [False, True])
@@ -345,41 +322,16 @@ def test_summary_deep_json_safe_cli(tmp_path, existing):
 
 @pytest.mark.parametrize("field", ["provenance", "completeness"])
 @pytest.mark.parametrize("existing", [False, True])
-def test_summary_unsupported_authority_values(tmp_path, field, existing):
-    import os
-    import subprocess
-    import sys
-
+def test_summary_unsupported_authority_values(tmp_path, field, existing, monkeypatch, capsys):
     value = result("ok")
     value["provenance"] = "producer_assertion; provider_support_not_verified"
     value[field] = "unsupported-private-authority"
-    payload = tmp_path / "result.json"
-    payload.write_text(json.dumps(value))
-    destination = tmp_path / "summary"
-    original = b"Earlier advisory summary\n"
-    if existing:
-        destination.write_bytes(original)
-    checked = subprocess.run(
-        [sys.executable, "-m", "changecost.summary", str(payload)],
-        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
-        capture_output=True,
-        text=True,
-    )
-    assert checked.returncode == 2 and checked.stdout == ""
-    assert checked.stderr == "cannot render or write advisory summary\n"
-    if existing:
-        assert destination.read_bytes() == original
-    else:
-        assert not destination.exists()
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize("existing", [False, True])
 @pytest.mark.parametrize("claim", ["producer_complete", "local_missing_cutoff", "legacy_local"])
-def test_summary_impossible_authority_combinations(tmp_path, claim, existing):
-    import os
-    import subprocess
-    import sys
-
+def test_summary_impossible_authority_combinations(tmp_path, claim, existing, monkeypatch, capsys):
     value = result("ok")
     value["provenance"] = "producer_assertion; provider_support_not_verified"
     if claim == "producer_complete":
@@ -391,24 +343,7 @@ def test_summary_impossible_authority_combinations(tmp_path, claim, existing):
     if claim == "legacy_local":
         value["record"]["kind"] = "settlement"
         value["cutoff"] = verified_result("quote", "within_budget")["cutoff"]
-    payload = tmp_path / "result.json"
-    payload.write_text(json.dumps(value))
-    destination = tmp_path / "summary"
-    original = b"Earlier advisory summary\n"
-    if existing:
-        destination.write_bytes(original)
-    checked = subprocess.run(
-        [sys.executable, "-m", "changecost.summary", str(payload)],
-        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
-        capture_output=True,
-        text=True,
-    )
-    assert checked.returncode == 2 and checked.stdout == ""
-    assert checked.stderr == "cannot render or write advisory summary\n"
-    if existing:
-        assert destination.read_bytes() == original
-    else:
-        assert not destination.exists()
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize("complete", [False, True])
@@ -487,11 +422,9 @@ def assert_unpriced_summary_accepted(checked, destination, sample_count, previou
     "mutation", ["missing", "legacy", "economic", "cutoff", "quantile", "sample"]
 )
 @pytest.mark.parametrize("existing", [False, True])
-def test_summary_computation_scope_contract(tmp_path, kind, mutation, existing):
-    import os
-    import subprocess
-    import sys
-
+def test_summary_computation_scope_contract(
+    tmp_path, kind, mutation, existing, monkeypatch, capsys
+):
     from changecost.summary import render_summary
 
     value = verified_result(kind, "within_budget")
@@ -509,22 +442,7 @@ def test_summary_computation_scope_contract(tmp_path, kind, mutation, existing):
         value["quantile"] = None if kind == "quote" else "p90"
     else:
         value["sample_count"] = None if kind == "quote" else 0
-    payload = tmp_path / "result.json"
-    payload.write_text(json.dumps(value))
-    destination = tmp_path / "summary"
-    original = b"Earlier summary: unchanged\n"
-    if existing:
-        destination.write_bytes(original)
-    rejected = subprocess.run(
-        [sys.executable, "-m", "changecost.summary", str(payload)],
-        env=dict(os.environ, GITHUB_STEP_SUMMARY=str(destination)),
-        capture_output=True,
-        text=True,
-    )
-    assert rejected.returncode == 2
-    assert rejected.stdout == ""
-    assert rejected.stderr == "cannot render or write advisory summary\n"
-    assert destination.read_bytes() == original if existing else not destination.exists()
+    assert_rejected_summary(tmp_path, value, existing, monkeypatch, capsys)
 
 
 @pytest.mark.parametrize(

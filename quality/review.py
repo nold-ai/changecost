@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 from quality import external_tools
-from quality.pytest_stage_capture import capture_pytest_stage
 from quality.repository import digest
 from quality.runtime_diagnostics import observe_native
 
@@ -56,11 +55,8 @@ def run(root: Path, files: set[str]) -> list[str]:
     output = root / f".specfact/code-review-{uuid.uuid4().hex}.json"
     output.parent.mkdir(exist_ok=True)
     before = digest(root, files)
-    with (
-        capture_pytest_stage(
-            before, output.with_name(f"pytest-stage-{output.stem}.json")
-        ) as child_tmp,
-        observe_native(os.getpid(), before, output.with_name(f"native-process-{output.stem}.json")),
+    with observe_native(
+        os.getpid(), before, output.with_name(f"native-process-{output.stem}.json")
     ):
         result = subprocess.run(
             [
@@ -80,7 +76,6 @@ def run(root: Path, files: set[str]) -> list[str]:
             ],
             cwd=root,
             check=False,
-            env={**os.environ, "TMPDIR": str(child_tmp)} if child_tmp is not None else None,
         )
     if not output.exists():
         return ["SpecFact produced no review report"]

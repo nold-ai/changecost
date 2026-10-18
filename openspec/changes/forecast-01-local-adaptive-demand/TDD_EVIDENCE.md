@@ -893,3 +893,74 @@ preserved in `live-plugin-tests.log`; this is isolation evidence, not native
 assurance. Final independent closure, staged checks and the unchanged supported-
 Linux native matrix remain required. The investigative tracer is temporary;
 its later removal must preserve reports and be verified without the tracer.
+
+
+### Summary startup correction and tracer retirement, 2026-10-18 (Europe/Berlin)
+
+Native run 38971206613 at afb089d failed on both configured Python versions.
+Both reports rejected temporary tracer test line 79 with Pylint E1136. The
+3.11.15 targeted pytest member passed and its controller recorded session finish
+at 292.484 seconds. The 3.13.14 member timed out with outcome UNKNOWN. Its last
+four sampled worker calls named computation-scope cases at 293.184 to 294.314
+seconds. These incomplete observations identify recent work, not the exact
+execution phase at timeout or a sole cause. Original native reports, sidecars,
+source bindings and earlier evidence remain unchanged.
+
+The approved correction reuses unchanged `assert_rejected_summary` for exactly
+72 structured-JSON cases in malformed enums, unsupported authority, impossible
+authority combinations and computation scope. Decorators, case IDs, payload
+mutations, the 24 positive controls and every other function remain unchanged.
+The helper calls real main, parser, validation and writer. It asserts exit 2,
+empty stdout, exact sanitized stderr, scoped argument/environment restoration,
+and exact prior-byte preservation or destination absence. Exact stderr equality
+also excludes the malformed-enum canary without a redundant substring check.
+The helper's existing `b"Earlier summary\n"` replaces the selected callers'
+ASCII `b"Earlier advisory summary\n"` and `b"Earlier summary: unchanged\n"`.
+The eight legacy numeric process cases retain their original non-ASCII prior
+bytes. No helper API or product runtime changes. The retained process families
+still launch 47 children with 23 success and 24 rejection outcomes.
+
+Pre-implementation ignored selected72 proof passed the complete 503-case summary
+module and preserved all collected IDs. Five interleaved local serial pairs
+measured median 5.851153 seconds before and 0.229117 seconds after. Untimed audit
+and profile runs observed 72 child starts before and zero after, with 72 real
+main calls, 72 writer calls and 96 renders after. The extra 24 renders are positive
+controls. Wrong-exit, wrong-output and destination-mutation seeds each failed
+all 72 selected cases. A repaired copy passed all 72. Local Python was 3.13.14
+on shared macOS arm64. These observations prove a local startup contributor,
+not native deadline sufficiency, a sole timeout cause or matrix acceptance.
+
+The temporary root plugin, phase writer, scratch collector and their 20 tests
+are retired. `quality/review.py` is restored byte-for-byte to pre-tracer commit
+3aaf4066d86ed2ab2cab58a9a0fe24a90119a7a2. Only the pytest-stage upload glob and
+root-plugin documentation ownership entry are removed. Existing numerical
+diagnostics, every other artifact path, checks, pins, policies, deadlines and
+four-worker test selection remain. No historical TDD section is replaced.
+Current local gate results and frozen fingerprints are retained under ignored
+`resume-ci/summary72-implementation/`; independent actual-delta closure and
+fresh full supported-Linux assurance remain required before acceptance.
+
+The main risks are loss of repeated fresh-process isolation, accidental matrix
+loss and overstated native conclusions. Retained process tests, complete case-ID
+comparison and explicit native UNKNOWN status mitigate those risks. No paid
+service or provider collection is added. Rollback restores the focused test and
+tracer-retirement commit while preserving historical evidence and counters.
+
+
+Actual tracked correction passed all 503 summary cases in 4.89 seconds. Complete
+collection before and after retirement preserved all 3,209 pre-tracer case IDs
+in order, removing exactly the 20 dedicated diagnostic IDs. All other test and
+discovery files match pre-tracer 3aaf406. All nonselected summary function ASTs
+and selected decorators remain identical. The full local aggregate then passed
+3,209 tests in 24.41 seconds with the configured four workers. Lock and both tool
+controls, hygiene, typing, docs, generated index, metadata, workflow, package
+build proofs and all 15 strict OpenSpec items passed. Audit was not applicable
+because locked audit inputs were unchanged. The aggregate remained nonzero.
+The selected candidate needed a formatting-only wrap of its 101-character
+function signature, and local SpecFact produced no native review report.
+The original lint failure is retained. The signature was wrapped without an
+AST change and the affected mechanical checks were rerun before freezing.
+Radon 6.0.1 from the existing cached analyzer environment measured no inspected
+summary or restored-review block above complexity 13. No native analyzer pass
+or supported-Linux acceptance is inferred from these local checks. Package and
+database versions stay unchanged for this unreleased test/tooling correction.
