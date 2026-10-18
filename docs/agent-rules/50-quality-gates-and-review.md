@@ -158,3 +158,11 @@ intent once, then provide the actual delta, affected invariant/assumption mappin
 unresolved findings. Unknown dependencies, changed scope/entrypoints/trust boundaries
 require broader review; an old packet cannot waive current-head final gates or reset
 review budgets. Seeded faults are detector controls, not defects found in runtime.
+
+
+Temporary pytest phase tracing is retired after the native investigation. Retain
+its historical reports and incomplete sidecars without treating observations as
+passing assurance. The summary test correction keeps exact rejection oracles and
+retained process coverage. Full current-head supported-Linux matrix evidence
+remains required with unchanged analyzers, four workers and deadlines. See the
+[retired investigation](../development/quality-gates.md#retired-pytest-phase-investigation).

@@ -35,3 +35,9 @@ grouped-red historical-proof limitation. Checked implementation tasks have passi
 synthetic coverage with that explicit limitation; no retrospective per-scenario red
 execution is claimed. Final Linux assurance and delivery obligations remain unchecked.
 See TDD_EVIDENCE.md and the retained review session for actual evidence.
+
+## 5. Issue 44 preregistration correction
+
+- [x] 5.1 Specify intrinsic and local ordering, exact historical generations and selected nested authority; capture focused failing regressions before runtime edits.
+- [x] 5.2 Implement shared strict eligibility for new receipt v3 and forecast v4 while preserving historical replay and retries; verify atomic rejection and valid legacy support.
+- [x] 5.3 Update contracts, forecasting and chronological TDD evidence; run scoped tests, format/types and strict OpenSpec validation. Independent review and final repository/PR gates remain separate obligations.

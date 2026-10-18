@@ -282,7 +282,7 @@ Demand mode SHALL accept assessment/ecosystem references imported through the ex
 - **THEN** each prediction's own cutoff must strictly precede all truth work bounds, otherwise measurement rejects without persistence; historical prediction replay remains unchanged
 
 ### Requirement: Versioned current temporal evidence and selected validation support
-New forecasts SHALL use observed-summary/v3. At each cutoff, pre-work and validation truth guards SHALL inspect current Interval and DemandObservation revision heads, retain immutable Run.observed_start, and preserve registration/capture ordering. Superseded erroneous bounds SHALL NOT override the current correction. All existing observed-summary/v1 and v2 forecasts SHALL replay with their exact original temporal and validation applicability rules.
+The observed-summary/v3 generation SHALL use current temporal evidence; new forecasts SHALL use observed-summary/v4 as specified below. At each cutoff, pre-work and validation truth guards SHALL inspect current Interval and DemandObservation revision heads, retain immutable Run.observed_start, and preserve registration/capture ordering. Superseded erroneous bounds SHALL NOT override the current correction. All existing observed-summary/v1 and v2 forecasts SHALL replay with their exact original temporal and validation applicability rules.
 
 #### Scenario: Corrected historical temporal bound
 - **GIVEN** a missing immutable Run start and an erroneous early interval or observation corrected to valid current bounds
@@ -297,4 +297,36 @@ New forecasts SHALL use observed-summary/v3. At each cutoff, pre-work and valida
 #### Scenario: Explicit local receipt generation
 - **GIVEN** a locally computed historical receipt with exact demand-validation/v1 request provenance
 - **WHEN** it is replayed or retried with the same operation
-- **THEN** its original temporal measurement rules and exact payload remain authoritative locally. New receipts use internal demand-validation/v2 request provenance and current revision measurement rules, including when evaluating legacy forecasts; imported labels confer no local authority. No portable schema field is added.
+- **THEN** its original temporal measurement rules and exact payload remain authoritative locally. The demand-validation/v2 generation uses current revision measurement rules, including when evaluating legacy forecasts; imported labels confer no local authority. No portable schema field is added.
+
+### Requirement: Intrinsic rubric preregistration for issue 44
+New forecasts SHALL use observed-summary/v4 and new local validation requests SHALL
+use demand-validation/v3. These internal generations preserve current revision
+measurement and selected-support exclusion. A rubric SHALL have local availability
+strictly before the evaluated assessment's local availability tuple. Both rubric
+recorded_at and effective_at SHALL also strictly precede the assessment's local
+availability time and both assessment recorded_at and effective_at. Intrinsic
+timestamp equality SHALL reject even when local sequence order is earlier. The
+same predicate SHALL govern every case in any receipt supplying validation authority,
+including recursively selected candidate/baseline receipts at their frozen cutoffs.
+Generic input inventory and structural predecessors SHALL NOT supply authority.
+
+#### Scenario: Imported future rubric becomes visible after evaluation
+- **GIVEN** a rubric imported locally before assessment but intrinsically recorded or effective at or after that assessment
+- **WHEN** validation is requested after the rubric becomes cutoff-visible
+- **THEN** the request rejects atomically and cannot promote a new forecast.
+
+#### Scenario: Historical assessment imported after rubric
+- **GIVEN** a rubric whose declared timestamps precede local assessment import but do not precede both intrinsic assessment timestamps
+- **WHEN** validation is requested
+- **THEN** local arrival ordering cannot establish preregistration and the request rejects.
+
+#### Scenario: Valid legacy evidence and immutable replay
+- **GIVEN** a saved v1/v2 receipt or v1/v2/v3 forecast
+- **WHEN** it is replayed or its exact operation retried
+- **THEN** its original payload and original generation rules remain unchanged, while conflicting requests reject. New v4 forecasts may use valid legacy receipts only after every selected receipt satisfies strict preregistration; invalid legacy receipts remain replayable but cannot supply new authority.
+
+#### Scenario: Earlier declaration with equal local capture time
+- **GIVEN** both rubric timestamps precede all assessment time boundaries and the local rubric sequence precedes the assessment sequence at the same capture time
+- **WHEN** validation is requested
+- **THEN** preregistration succeeds without requiring a clock tick between local insertions.

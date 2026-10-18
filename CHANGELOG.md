@@ -3,6 +3,24 @@
 
 ## Unreleased
 
+- Exercise 72 structured-JSON summary rejection cases through the existing public
+  entrypoint helper, preserving their case IDs, controls and exact rejection checks.
+  Retire temporary pytest phase tracing after the native investigation, retaining
+  historical reports and all required checks, worker settings and deadlines.
+
+- Reuse pristine isolated review-session and behavioral-packet test arrangements,
+  retaining real Git input checks, fresh packets/reports and all existing assertions.
+  Keep packet binding assertions in a focused helper to satisfy native complexity checks.
+  Reuse the guarded arrangement in three more default-contract test families.
+
+- Separate demand preregistration eligibility from case measurement, reducing
+  branching while preserving validation, legacy replay and failure diagnostics.
+
+- Require intrinsic rubric preregistration for new demand receipt v3 and forecast v4,
+  including selected nested receipt authority. Preserve exact earlier receipt and
+  forecast replay/retries, valid legacy support and atomic rejection without a
+  package or database version change (issue #44).
+
 - Bind every imported estimated demand price to the same declared price scenario
   reference and reject absent or mismatched provenance atomically.
 

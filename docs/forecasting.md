@@ -144,18 +144,32 @@ No publication or source approval follows from these offline tests. See
 [implementation evidence](../openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md)
 for actual checks and outstanding Linux/review gates.
 
-New forecasts use `observed-summary/v3`: chronology uses the current Interval and
+New forecasts use `observed-summary/v4`: chronology uses the current Interval and
 DemandObservation revision heads visible at each cutoff, together with an immutable
 known Run start. A corrected erroneous bound does not permanently exclude otherwise
-eligible history. A v3 forecast cannot use a validation receipt supported by its own
+eligible history. A v3/v4 forecast cannot use a validation receipt supported by its own
 Change, including selected candidate/baseline peers, transfer donors, eligible bridge
 owners and recursively selected validation receipts. Broad frozen metadata and
 structural predecessors alone are not training support.
 
-Stored v1/v2 forecasts replay their exact original rules. The existing private local
+Stored v1/v2/v3 forecasts replay their exact original rules. The existing private local
 computation request distinguishes original `demand-validation/v1` receipt measurement
-from new `demand-validation/v2` measurement; new live receipts use current truth rules
-even with legacy candidates. Exact legacy retries preserve their request and payload.
+from `demand-validation/v2` current temporal measurement and new
+`demand-validation/v3` measurement with strict rubric preregistration. New live
+receipts use current truth rules even with legacy candidates. Exact legacy retries preserve their request and payload.
 These request markers are local provenance, not portable authority or schema fields.
-A rollback of the default must retain v3 decoding/replay for already saved or exported
-records, or restore a compatible pre-v3 backup when reverting the complete code.
+A rollback of the default must retain v4 decoding/replay for already saved or exported
+records, or restore a compatible pre-v4 backup when reverting the complete code.
+
+A rubric must be declared and effective strictly before the evaluated assessment's
+recorded, effective and local capture times, as well as arrive earlier in local
+sequence ordering. Equality of declared timestamps is insufficient evidence of
+preregistration. Importing a future rubric early and waiting until after evaluation
+cannot establish authority. Equal local capture times can qualify when sequence
+order and strictly earlier declared timestamps prove the required ordering.
+
+New receipts and v4 forecasts enforce the same check through selected nested
+validation receipts. A legacy receipt with valid timing remains usable; an invalid
+one retains historical replay but cannot promote a current forecast. Rejected new
+validation writes neither records nor computation markers. These are synthetic
+offline controls, not evidence of native predictive accuracy or pilot approval.

@@ -53,15 +53,20 @@ or mutations solely to the expected result/projection are not valid controls.
 
 ## Build and validate a packet
 
-The review-session test suite uses an opt-in pristine arrangement for 67 ordinary
-event-test functions (198 existing parameterized cases). Each worker creates the
+The review-session test suite uses an opt-in pristine arrangement for selected
+default-contract event, malformed-state and derived-cache cases. Each worker creates the
 seed with the real initializer. Before copying its receipt, the helper loads and
 replays the seed, requires an unchanged default contract and captures the destination's
 current Git inputs. Each test retains separate repository, index, genesis and receipt
-files; no runtime validation is mocked or cached. Initialization, race, corruption,
-replay, loss and scope controls continue to call the real initializer. Additional
+files; no runtime validation is mocked or cached. Tests that assert initializer
+behavior continue to call the real initializer. Additional
 controls check isolation and reject changed inputs, contracts or nonpristine seeds
 before copying. This test arrangement does not initialize or authorize live sessions.
+
+Packet tests also copy a pristine initialized seed into independent repositories.
+Each packet still captures current Git inputs and creates fresh evidence bindings,
+fingerprints and reports. Isolation and invalid-arrangement controls exercise the
+actual fixture helper.
 
 Initialize or recover the existing review session using the
 [shared workflow](../agent-rules/30-change-workflow.md#bounded-review-contract).

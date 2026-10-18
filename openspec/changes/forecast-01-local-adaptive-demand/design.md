@@ -200,7 +200,7 @@ its independently approved reader/policy; #17 protocol preparation must precede
 evaluated outcomes. Actual live comparisons and publication remain later stages.
 
 ## Corrected temporal evidence and selected validation support
-New observed-summary/v3 forecasts select current cutoff-visible Interval and
+The observed-summary/v3 generation introduced selection of current cutoff-visible Interval and
 DemandObservation heads for pre-work and truth chronology, retaining immutable Run
 points and local capture/registration bounds. Old v1/v2 estimate and applicability
 replay dispatch explicitly retains prior semantics. Internal local computation request
@@ -219,3 +219,22 @@ payload comparisons, import authority and backup markers remain intact. Revertin
 default retains v3 decoder/replay; full old-code rollback requires a compatible backup.
 Package version 0.1.0.dev0 and database schema2 remain unchanged; internal generations
 are not published product versions.
+
+## Issue 44 correction: intrinsic rubric preregistration
+
+The public import path can record a future-declared rubric locally before an older
+evaluation. Waiting until that rubric is visible previously allowed promotion.
+Use one pure registration predicate for both new receipt construction and current
+forecast applicability. Compare local tuples strictly, and require the maximum of
+the rubric's declared timestamps to precede the minimum of the assessment's local,
+recorded and effective times. Equality cannot prove intrinsic chronological order.
+
+New forecast generation v4 inherits v3 current temporal heads and support exclusion.
+New private validation request generation v3 retains v3 measurement semantics with
+an explicit strict-registration flag. Earlier request generations replay unchanged;
+exact retries are resolved before constructing new receipts. Check selected nested
+receipt authority at its own cutoff, including candidate and baseline selections;
+ignore metadata-only and structural previous references. Valid legacy receipts may
+still support current forecasts after this additional eligibility check. No portable
+receipt field, package version or SQLite schema change is needed. Full old-executable
+rollback requires a compatible backup; preserve decoders for new saved generations.

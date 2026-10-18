@@ -3,6 +3,9 @@
 import copy
 import importlib
 import importlib.util
+import shutil
+from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -14,8 +17,9 @@ def validator():
     return importlib.import_module("quality.behavioral_evidence").validate_packet
 
 
-@pytest.fixture
-def packet(tmp_path):
+@pytest.fixture(scope="session")
+def packet_seed(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, dict[str, Any]]:
+    tmp_path = tmp_path_factory.mktemp("packet-seed")
     repository.git(tmp_path, "init", "-q")
     (tmp_path / ".gitignore").write_text(".changecost/\n")
     (tmp_path / "input.py").write_text("original\n")
@@ -50,6 +54,26 @@ def packet(tmp_path):
             required_statuses=[],
         ),
     )
+    return tmp_path, review_session.load(tmp_path, "pilot")
+
+
+def prepared_packet(
+    tmp_path: Path, seed: tuple[Path, dict[str, Any]]
+) -> tuple[Path, dict[str, Any]]:
+    source, canonical = seed
+    state = review_session.load(source, "pilot")
+    assert state == canonical
+    assert state["revision"] == 0 and state["events"] == [] and state["phase"] == "active"
+    assert state["batches"] == 0 and state["active_minutes"] == 0
+    inputs = state["contract"]["intended_files"]
+    assert (
+        review_session.capture_inputs(tmp_path, state["reviewed_head"], inputs) == state["inputs"]
+    )
+    shutil.copytree(
+        review_session.state_path(source, "pilot").parent,
+        review_session.state_path(tmp_path, "pilot").parent,
+    )
+    assert review_session.load(tmp_path, "pilot") == canonical
     report = tmp_path / ".changecost/report.json"
     report.write_text('{"executed":true}\n')
     binding = review_session.packet(tmp_path, "pilot")["binding"]
@@ -94,6 +118,82 @@ def packet(tmp_path):
         ],
     )
     return tmp_path, data
+
+
+@pytest.fixture
+def packet(tmp_path: Path, packet_seed: tuple[Path, dict[str, Any]]):
+    shutil.copytree(
+        packet_seed[0], tmp_path, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".changecost")
+    )
+    return prepared_packet(tmp_path, packet_seed)
+
+
+def assert_packet_bindings_independent(data: dict[str, Any], other: dict[str, Any]) -> None:
+    assert data == other
+    assert data["binding"] is data["evidence"][0]["binding"]
+    assert other["binding"] is other["evidence"][0]["binding"]
+    assert data["binding"] is not other["binding"]
+
+
+def test_prepared_packets_are_independent(packet, packet_seed, tmp_path):
+    root, data = packet
+    source, canonical = packet_seed
+    sibling = tmp_path.parent / (tmp_path.name + "-sibling")
+    shutil.copytree(source, sibling, ignore=shutil.ignore_patterns(".changecost"))
+    _, other = prepared_packet(sibling, packet_seed)
+    assert_packet_bindings_independent(data, other)
+    names = [
+        ".git/index",
+        "input.py",
+        ".changecost/workflow/pilot/genesis.json",
+        ".changecost/workflow/pilot/review-session.json",
+    ]
+    before = {
+        (path, name): (path / name).read_bytes() for path in (source, sibling) for name in names
+    }
+    for name in names:
+        assert len({(path / name).stat().st_ino for path in (root, source, sibling)}) == 3
+    report = ".changecost/report.json"
+    assert (root / report).stat().st_ino != (sibling / report).stat().st_ino
+    original_report = (sibling / report).read_bytes()
+    (root / "input.py").write_text("changed\n")
+    repository.git(root, "add", "input.py")
+    review_session.state_path(root, "pilot").write_text("{}\n")
+    (root / report).write_text("changed report\n")
+    data["binding"]["head"] = "changed"
+    assert other["binding"]["head"] == canonical["reviewed_head"]
+    for (path, name), content in before.items():
+        assert (path / name).read_bytes() == content
+    assert (sibling / report).read_bytes() == original_report
+    assert not (source / report).exists()
+    assert review_session.load(source, "pilot") == canonical
+    assert review_session.load(sibling, "pilot") == canonical
+    assert validator()(sibling, other)["evidence_status"] == "current"
+
+
+@pytest.mark.parametrize("fault", ["content", "index", "untracked", "nonpristine", "corrupt"])
+def test_prepared_packet_rejects_changed_arrangement(tmp_path, packet_seed, fault):
+    source, canonical = packet_seed
+    if fault in {"nonpristine", "corrupt"}:
+        source = tmp_path.parent / (tmp_path.name + "-bad-seed")
+        shutil.copytree(packet_seed[0], source)
+        if fault == "nonpristine":
+            canonical = review_session.record(source, "pilot", dict(id="one", kind="batch"))
+        else:
+            review_session.state_path(source, "pilot").write_text("{}\n")
+    shutil.copytree(
+        source, tmp_path, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".changecost")
+    )
+    if fault in {"content", "index"}:
+        (tmp_path / "input.py").write_text("changed\n")
+        if fault == "index":
+            repository.git(tmp_path, "add", "input.py")
+            (tmp_path / "input.py").write_text("original\n")
+    elif fault == "untracked":
+        (tmp_path / "unexpected.py").write_text("unexpected\n")
+    with pytest.raises(ValueError if fault == "corrupt" else AssertionError):
+        prepared_packet(tmp_path, (source, canonical))
+    assert not review_session.state_path(tmp_path, "pilot").parent.exists()
 
 
 def test_current_packet_preserves_session_obligations(packet):

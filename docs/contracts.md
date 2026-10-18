@@ -237,7 +237,7 @@ SQLite layout stays 2 and the package stays `0.1.0.dev0`.
 | matched_comparison | Distinct source/target Changes and ecosystems, scope key, confounding notes |
 | transfer_hypothesis | Directional ecosystems, dimensions, component, comparison refs; median-ratio method only |
 | demand_price | Effective date, bounded source, currency, explicit compatible component rates |
-| demand_forecast | Change/assessment/ecosystem refs, operation ID, observed-summary/v1, v2 or v3 algorithm, cutoff, result, inputs, exclusions, peers, initial flag, assumptions, optional estimated price |
+| demand_forecast | Change/assessment/ecosystem refs, operation ID, observed-summary/v1, v2, v3 or v4 algorithm, cutoff, result, inputs, exclusions, peers, initial flag, assumptions, optional estimated price |
 | demand_validation_policy | Explicit ecosystem/component/population, truth minimum, coverage/tolerance, underestimation/width/overhead limits and baseline requirement |
 | demand_validation | Policy, forecast/truth/baseline cases, measured metrics, pass flag, cutoff, inputs, operation ID and previous receipt |
 
@@ -274,17 +274,29 @@ flag alone cannot prove chronological eligibility after a retrospective Run regi
 Invalid chronology rejects before receipt persistence; original forecast replay keeps
 its own frozen snapshot.
 
-New demand forecasts default to observed-summary/v3. Current cutoff-visible Interval
+New demand forecasts default to observed-summary/v4. Current cutoff-visible Interval
 and DemandObservation revision heads determine temporal eligibility while immutable
-Run starts remain constraints. Saved v1/v2 forecasts retain exact old replay rules.
+Run starts remain constraints. Saved v1/v2/v3 forecasts retain exact old replay rules.
 Selected validation support includes evaluated truths, candidate/baseline selected
 peers, transfer donors and eligible bridge owners, plus recursively selected receipts;
-a v3 target cannot appear in that support. Generic inputs and structural previous
+a v3/v4 target cannot appear in that support. Generic inputs and structural previous
 receipts alone are reproducibility metadata.
 
 Private local computation requests support demand-validation/v1 (original measurement)
-and demand-validation/v2 (current temporal measurement). Their exact typed local
+demand-validation/v2 (current temporal measurement), and demand-validation/v3
+(current measurement with strict rubric preregistration). Their exact typed local
 operation/result/request binding selects receipt replay rules; portable records add no
 field, imported claims gain no authority, and retries preserve original requests.
-New receipts use v2 even for legacy candidate algorithms. Cache identity includes the
-receipt measurement generation, and all payload/metric comparisons remain exact.
+New receipts use v3 even for legacy candidate algorithms. Cache identity includes the
+measurement algorithm and strict preregistration flag, and all payload/metric comparisons remain exact.
+
+Issue #44 requires both rubric recorded_at and effective_at to strictly precede
+all three evaluated assessment times: recorded_at, effective_at and local capture.
+The rubric local availability tuple must also precede the assessment tuple. Equal
+intrinsic timestamps reject; equal local capture times may pass with earlier local
+sequence and strictly earlier declared rubric timestamps. Waiting for a future rubric
+to become visible cannot repair a past evaluation. Rejection is transactional.
+Current v4 applicability applies this check to every case of each selected receipt,
+including nested candidate/baseline validation at its frozen cutoff. Valid legacy
+receipts remain usable; ineligible historical receipts remain exactly replayable.
+No package version, SQLite schema or portable receipt field changes.

@@ -190,6 +190,12 @@ locked build group into a temporary file. Do not maintain requirements-dev.txt
 or a second environment authority. See the [gate guide](docs/development/quality-gates.md)
 for ownership, rationale formats, generated artifacts and review evidence.
 
+The temporary pytest phase plugin and scratch collector are retired. Ordinary
+pytest and native review commands no longer produce pytest-stage sidecars.
+Retain earlier reports when investigating failures. Existing numerical process
+diagnostics, required analyzers, four workers and native deadlines remain.
+See the [retired investigation](docs/development/quality-gates.md#retired-pytest-phase-investigation).
+
 ## Contributions and data
 
 Contributions are provided under the repository's Apache-2.0 license.

@@ -805,3 +805,51 @@ Its acquisition-count test fails before implementation; compatibility cases pres
 existing schema-8 fingerprints. Local timing probes establish reduced acquisition
 overhead only. Fresh full-suite native assurance on both Linux matrix legs remains
 required; no vendor module, test selection or time limit is altered.
+
+Behavioral packet tests reuse one pristine committed repository and canonical session
+per worker. Each test copies ordinary independent files, validates the seed history
+and compares its real Git capture before admitting the session. Packet construction,
+input fingerprints and report hashes remain fresh per test. Isolation and rejected
+working-file, staged-index, untracked-file and damaged-seed controls exercise the
+actual fixture helper. Selected default-contract review-session cases reuse their
+existing guarded fixture. These arrangements do not change test selection, native
+launcher behavior, required analyzers or deadlines; local success cannot waive a
+failed native coverage run.
+
+### Retired pytest phase investigation
+
+Temporary pytest phase tracing was introduced in commit
+`afb089dad0ee649963af2d4a3987d0ecbc793001` and removed after native run
+`38971206613`. Its original reports and incomplete sidecars remain historical
+evidence. Current pytest and native review commands do not load the tracing
+plugin, collect scratch phase records, or upload new pytest-stage sidecars.
+Existing numerical process diagnostics and every other artifact path remain.
+
+The run completed targeted pytest on Python 3.11.15 at 292.484 seconds. The
+Python 3.13.14 member timed out with outcome UNKNOWN. Its last captured worker
+records named computation-scope calls at 293.184 to 294.314 seconds. Sampling
+identified recent work, not the exact timeout phase or its sole cause. Both
+reports also rejected a temporary tracer test with Pylint E1136. Removing the
+tracer does not turn those failed reports into passing assurance.
+
+The summary tests now reuse the unchanged public-entrypoint rejection helper
+for 72 structured-JSON cases across four families. All parameter IDs, payload
+mutations and 24 positive computation controls remain. The helper calls real
+`main`, parsing, validation and writing, checks exact exit/output and destination
+preservation or absence, and restores arguments and environment. It uses its
+existing ASCII prior-byte fixture instead of the callers' former ASCII text.
+Exact stderr equality also excludes the malformed-enum canary. The eight legacy
+numeric cases retain their original UTF-8 prior bytes and real child processes.
+The module retains 47 process launches, including 23 success and 24 rejection
+outcomes. Direct invocation shares imported modules and does not repeat child
+startup, stream encoding or the module guard for each mutation.
+
+Five local serial pairs measured the selected families' median wall time at
+5.851153 seconds before and 0.229117 seconds after. Separate audit/profile runs
+observed 72 child starts before, zero after, and 72 real main/writer calls after,
+with 96 renders including the 24 positive controls. Seeded wrong exits, output
+and file mutations each failed all 72 cases, followed by a repaired passing run.
+These local synthetic measurements establish a repeated-startup contributor.
+They do not establish native four-worker savings or sufficient deadline margin.
+Fresh full supported-Linux matrix assurance remains required with unchanged
+selection, analyzers, pins, four workers and 300-second member deadline.

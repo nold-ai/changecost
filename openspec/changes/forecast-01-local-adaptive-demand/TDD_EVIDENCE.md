@@ -628,3 +628,339 @@ BasedPyright and strict OpenSpec validation also passed. Fresh exact-head Linux
 assurance and provider review remain required after publication. Rollback reverts
 this graph guard, its two controls, and the additive specification scenario; all
 portable records remain unchanged.
+
+
+## Issue 44 intrinsic rubric preregistration correction (2026-10-15, Europe/Berlin)
+
+The active specification, design and section 5 tasks were revised before regression
+tests and runtime changes on branch `codex/fix-demand-policy-preregistration-44`,
+based on main `ac2e8519`. Issue #44 demonstrated an imported future-declared rubric
+arriving before evaluation and becoming authoritative when the clock caught up.
+
+Red command: `.venv/bin/python -m pytest tests/test_demand_revision.py -k
+'intrinsic_rubric' -n 0`. Four separate future/equality recorded_at/effective_at
+cases failed with `Failed: DID NOT RAISE <class 'changecost.serialization.ContractError'>`;
+two strictly earlier controls passed. An initial test fixture imported seed history
+after its work and failed for unrelated forecast incompatibility; it was corrected
+to create local seed history before capturing this red evidence. No runtime edits
+preceded the corrected red execution.
+
+A shared predicate requires local rubric availability to precede assessment
+availability and both rubric timestamps to precede all intrinsic/local assessment
+times. New receipt request v3 enables strict registration separately from v3
+measurement semantics; forecast v4 inherits v3 temporal/support behavior and checks
+all selected receipt cases. An iterative traversal with payload/visible-snapshot
+visited identities checks nested candidate/baseline authority without recursively
+revisiting shared branches. Exact v1/v2 receipt requests and v1/v2/v3 forecast replay
+retain their original semantics. Valid legacy receipts remain eligible for v4.
+
+Green command: `.venv/bin/python -m pytest tests/test_demand_revision.py
+tests/test_demand.py tests/test_demand_controls.py tests/test_demand_cli.py -n 0`.
+All 145 tests passed. Added controls include both intrinsic assessment timestamps,
+valid earlier policy timestamps, same local capture time with earlier sequence,
+atomic records/computation preservation, both legacy receipt generations, historical
+forecast retries/replay, and nested invalid legacy authority rejection. Existing
+late-local-rubric and operation-conflict controls remain enabled. Legacy-generation
+test construction explicitly selects historical request, measurement and forecast
+applicability behavior; it does not claim to replace archived baseline databases.
+
+Ruff check, Ruff format check and BasedPyright passed for demand.py, demand_history.py,
+models.py, test_demand.py and test_demand_revision.py. Strict OpenSpec validation
+passed for this active change. Full repository gates, supported-Linux assurance and
+independent/provider review remain parent-owned pending obligations. This is offline
+synthetic evidence; native calibration, release and archival acceptance are unclaimed.
+No package version, database schema or portable receipt field changed. Rollback must
+retain v4 and receipt-v3 replay or use a compatible pre-change backup; do not rewrite
+saved records or delete historical computation markers.
+
+Actual ignored log timestamps (UTC) and SHA256 digests follow. Timestamps are file
+completion times, retained as chronological execution evidence.
+
+- `red.log` completed 2026-10-15T21:07:22.132275+00:00; SHA256 `5e3648e526265fab6567a87f3e564a9b6df8ece131fa123da59bdb48172c5074`.
+- `green.log` completed 2026-10-15T21:13:15.096858+00:00; SHA256 `37ba983745ebc29226e58c90c14c9d2c8fd9450c754fa17f3ecc87b16eca23ea`.
+- `lint.log` completed 2026-10-15T21:12:20.893130+00:00; SHA256 `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18`.
+- `format.log` completed 2026-10-15T21:13:15.128919+00:00; SHA256 `f114d83b30c5c657ee43a847a45bafccaea255d82673feb87c26d252c61e29c1`.
+- `types.log` completed 2026-10-15T21:12:21.791933+00:00; SHA256 `56882e01cb80173ef053c4096e4ee43e3123a15f5c0a06715f96988d48fbd91c`.
+- `openspec.log` completed 2026-10-15T21:12:22.006166+00:00; SHA256 `bed60daa235141d2ac2839556d4e1dc045bcb94c4f6302c0d61a8c613498f483`.
+
+The coordinator also replayed an actual pre-edit database captured from merged main.
+Its saved receipt-v2 and forecast-v3 payloads reproduce and retry exactly after the
+correction. A new receipt rejects the invalid policy atomically, and a new v4
+forecast remains learning. The original synthetic database remains unchanged at
+SHA256 `70b3a5d58a953c634f6b01111097dd48e6fa92832d9697c927ea5e67b56c3a74`.
+Eight retained documentation-source rationales were refreshed after the docs gate
+identified their stale source digests; retained document bytes and gates are unchanged.
+
+
+### Issue 44 first Linux failure and scoped correction
+
+[PR #45's first Linux run](https://github.com/nold-ai/changecost/actions/runs/38808778483)
+retains both failed matrix jobs. Both native reports identify a blocking Radon
+complexity of 17 in `measured_case`, increased from 13 on merged main. Python 3.13
+completed all other required analyzers, including coverage. Python 3.11 also
+reported `targeted-pytest-coverage` as `UNKNOWN` with
+`sandbox_launch_failed:timeout`; that result is not a coverage pass.
+
+The correction extracts the existing registration checks into
+`require_case_preregistration`. It preserves predicate order, short circuiting,
+error text, call position, legacy replay and current eligibility. Radon 6.0.1
+reports complexity 12 for `measured_case` and 6 for the extracted obligation.
+All 145 focused demand tests, Ruff lint/format, scoped BasedPyright and the actual
+pre-edit database replay/retry probe pass. Existing behavior tests cover the
+extraction; no new behavior, cache, dependency, execution limit or gate was added.
+
+Single local cProfile and coverage-profile runs found repeated snapshot
+reconstruction in the shared-validation scenario. Different instrumentation and
+host platforms prohibit a speed comparison or a whole-suite Linux timeout claim.
+No optimization was adopted. Fresh Linux assurance and provider review remain
+required for the corrected head. Earlier failures and review limitations remain
+part of the history.
+
+Correction evidence SHA256 digests follow:
+
+- `radon-after.json`: `a544d8d320a3b879c8b8d8753348ad0f56ff9bbb11159ad95f1b74989c4028a2`.
+- `focused-tests.log`: `dea72199c354d9809be0f6b5536c70e9cc5635ed28ca01d457d3bc59bfb6babc`.
+- `ruff.log`: `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18`.
+- `format.log`: `fd2299c9f1c6dc869070883e281051bfe93aacf66c1a3b0069f45b4aa410ca50`.
+- `types.log`: `56882e01cb80173ef053c4096e4ee43e3123a15f5c0a06715f96988d48fbd91c`.
+- `actual-legacy.log`: `b171b1fb551aa49b1ce0c88143601c740361e71b0ad53dd3dee3d64aa91578ac`.
+- `diagnosis.md`: `66c27ee1039bd47e1172f1433d3e3431292ab161b86281a5c85b3d091b98c45c`.
+
+The incremental staged check additionally required a maintenance changelog entry
+and source-bound rationales for unchanged contracts/forecasting guides. Those
+rationales preserve both guides byte-for-byte; the failed staged result remains
+retained. No check or historical evidence was removed.
+
+
+### PR 45 isolated fixture correction, 2026-10-16 (Europe/Berlin)
+
+The retained [Linux run 38812229502](https://github.com/nold-ai/changecost/actions/runs/38812229502)
+passed Python 3.11 but failed Python 3.13 native `targeted-pytest-coverage` with
+`sandbox_launch_failed:timeout`. That is the failing performance check for this
+behavior-preserving fixture correction, not a fabricated red unit test. The local
+diagnostic counted 8,592 Git launches but had four CLI setup failures because its
+PATH omitted `.venv/bin`; it is not passing evidence or a timing benchmark.
+
+The correction reuses the existing guarded session arrangement for 36 default-contract
+cases and copies one pristine behavioral-packet repository/session per worker into
+independent test directories. Real canonical replay and Git capture guard admission;
+each test still generates its packet, input fingerprints, report and report hash.
+Six new controls prove file/index/session/report isolation, preserved internal binding
+aliases and rejection of changed working bytes, staged-only index bytes, unexpected
+untracked files, nonpristine seeds and corrupt seed history. AST comparison preserved
+all 196 existing review-session and 23 packet test functions and parameter cases,
+apart from the two authorized initialization substitutions.
+
+With `.venv/bin` on PATH, both affected files passed all 675 cases. Ruff lint/format
+and scoped BasedPyright passed. The initial missing helper return annotation was
+corrected; its nine type diagnostics remain in the ignored log. Full-suite launch
+count, unchanged supported-Linux assurance and independent closure remain pending.
+No runtime, supplier, timeout, test-selection or gate-policy change is included.
+Local results do not establish a native speedup. Rollback removes this fixture and
+documentation diff while retaining the failed-run history.
+
+Actual logs are retained under
+`.changecost/workflow/forecast-02-policy-preregistration/resume-ci/writer/`.
+
+- `affected-tests-final.log` SHA256 `104883837fb1deda69fabb401555cb6a2ccfa27d443f9692b4b304a6b3625601`.
+- `ruff.log` SHA256 `82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18`.
+- `format.log` SHA256 `3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938`.
+- `types.log` SHA256 `56882e01cb80173ef053c4096e4ee43e3123a15f5c0a06715f96988d48fbd91c`.
+- `preservation.log` SHA256 `24aa6b7e1d7ea89629dbfb2babeb2aceb8f8e10702ce69ea6075e21e3849c707`.
+
+Subsequent full local coverage passed all 3,209 tests and recorded 7,691 Git launches,
+including the new controls. The earlier diagnostic recorded 8,592 launches with the
+PATH limitation above; this comparison does not establish native timing. Independent
+fixture closure found no introduced defects. The complete local quality run passed
+its tests, build and other mechanical checks, apart from a documentation freshness
+failure corrected in the existing fixture guide. Native review produced no report
+because the local module is unavailable. Actual supported-Linux CI remains required.
+
+Native run [38958977738](https://github.com/nold-ai/changecost/actions/runs/38958977738)
+on `2f4b369f32f5913ac2afceb5194369b31e1c61ed` supplied the next failing check.
+The host job labeled 3.13.14 ran all ten required native members; targeted coverage
+passed, but Radon rejected the new packet isolation test at complexity 18. The
+correction extracts its four binding assertions unchanged and in the same order.
+Cached Radon 6.0.1 reproduced 18 before the correction and measured 14 for the test
+and 5 for the helper afterwards. All 675 affected tests, scoped Ruff lint/format
+and BasedPyright passed. Logs are under the existing `resume-ci/publish-monitor/`
+directory. Fresh supported-Linux assurance remains required for the corrected head;
+the earlier native failure and review-session counters remain preserved.
+
+The next [native run 38961522710](https://github.com/nold-ai/changecost/actions/runs/38961522710)
+reviewed `65c0898336bb801e42fd8e6f27587dddc90d7d03`. Both host jobs passed Radon.
+The host job labeled 3.11.15 passed all ten native members with PASS assurance and
+PASS_WITH_ADVISORY. The host job labeled 3.13.14 passed nine members but retained
+UNKNOWN targeted coverage with `sandbox_launch_failed:timeout`. Its selected
+review-session diagnostic passed all ten members. This does not establish a
+host-version defect or resolve the full native coverage timeout.
+
+The following bounded correction reuses the existing guarded arrangement for 22
+default-contract cases in three families: nested malformed state, rejected events
+and derived-cache reconciliation. Independent review and AST comparison preserved
+all decorators, existing parameters and statements after initial arrangement.
+A paired local experiment passed 58 cases including the existing fixture controls
+and measured 266 versus 90 affected-case Git launches, including setup and calls.
+The tracked correction passed all 675 affected tests, scoped Ruff lint/format and
+BasedPyright. A new full coverage execution passed the same 3,209 tests and recorded
+7,515 Git launches, versus 7,691 in the retained earlier passing profile. All worker
+and controller exits were zero. These operation counts do not establish a native
+speedup or timeout resolution. The raw evidence is under the existing
+`resume-ci/fixture-experiment/` and new `resume-ci/batch5-profile/` directories.
+Fresh supported-Linux assurance remains required. Rollback restores only these
+three test arrangements and correlated prose; retained failures and counters remain.
+
+### Bounded pytest stage capture, 2026-10-16 (Europe/Berlin)
+
+The approved diagnostic patch retains ordinary scratch-file observations while the
+existing native review runs. Root conftest discovery registers private collection,
+setup, call, teardown and session-finish hooks under the existing pinned producer
+marker. One context scopes child `TMPDIR`, captures bounded latest states before
+member cleanup and writes only incomplete/unavailable diagnostics. Native arguments,
+selection, worker count, versions, limits, reports, binding and enforcement remain.
+No product contract or provider capability is added.
+
+At 23:10 CEST, the scaffold lifecycle test ran with
+`.venv/bin/python -m pytest -o addopts='' tests/test_pytest_stage_capture.py`.
+It failed its retained-status assertion after a real collector acknowledgement,
+member deletion and native-shaped exit 124. The post-return snapshot was unavailable.
+The original report bytes and exit value survived. This was a behavioral failure,
+not a missing import or collection failure. The implemented collector then passed
+that same lifecycle case by retaining its last valid call entry.
+
+At 23:19 CEST, `.venv/bin/python -m pytest -o addopts='' tests/test_pytest_stage.py
+ tests/test_pytest_stage_capture.py tests/test_quality_failures.py` passed all
+40 cases. Real children used installed pytest 9.1.1 and xdist 3.8.0. They preserved
+exit 0, 1 and 2 for success, setup/teardown failure and collection failure, retained
+call entry on external termination and recorded session-finish boundaries. A
+four-worker child inherited the marker across its controller and all four workers
+and called each of its two test functions once. Plain pytest wrote no records.
+Fixture children used owned temporary scratch, without creating `/opt` directories.
+
+Other cases prove isolated writer failures and fake clocks, worker restart identity,
+concurrent invocation separation, monotonically advancing sequences, unchanged
+capture time for repeated state, malformed/decreasing replacements retaining the
+last valid state, missed/torn records, link rejection at every traversed level,
+nonblocking FIFO rejection, startup/output failures, child exception preservation,
+collector shutdown and independent owned-root cleanup. The caller proof preserves
+native argv, nonzero exit handling, report bytes and parent environment while
+changing only the child's `TMPDIR`. Instance-local fault injection leaves the live
+pytest plugin and shared standard-library functions untouched.
+
+At 23:20 CEST, the synthetic bound probe performed 24,000 actual atomic writes and
+rejected the next write. It emitted 7,542,793 bytes with a largest state of 315 bytes.
+The measured local write loop took 4.372 seconds. An immediate-scan probe stopped
+at 1,800 scans, read 565,200 bytes, measured 0.143 seconds of sampling work and wrote
+a 677-byte incomplete sidecar with both limit markers. These are local synthetic
+bound measurements, not native overhead or speedup evidence. Separate tests cover
+the 16-stream and two-member bounds. Scoped Ruff lint/format and full BasedPyright
+passed. Cached Radon measured no new block above complexity 13.
+
+Logs and the rerunnable bound probe are retained under
+`.changecost/workflow/forecast-02-policy-preregistration/resume-ci/stage-diagnostics/implementation/`.
+Full repository gates, independent actual-delta closure and fresh supported-Linux
+native assurance remain required at this checkpoint. A sidecar cannot prove PASS
+or the exact phase at timeout. One-second polling may miss transitions; invalid or
+missing evidence remains incomplete/unavailable. Rollback removes this diagnostic
+patch while preserving every original report, prior artifact and review counter.
+
+The initial aggregate local run passed 3,228 tests, hygiene, lint, types, index,
+metadata, workflow, build proofs and all 15 OpenSpec validations. Audit was not
+applicable because its locked inputs were unchanged. The aggregate remained
+failed. Command-line Make variables leaked the outer comparison base into the
+small lock fixture; the same-source lock gate passed after clearing Make flags
+and passing its manifest directly. Four existing documentation rationale digests
+were stale, and local SpecFact provided no code-review report. Both failed logs
+remain retained. The four approved rationale entries now preserve all previous
+text and append the diagnostic-specific ownership explanation. No exception or
+assurance waiver was added; protected historical documentation remains unchanged.
+
+Final inspection demonstrated that an unencodable parameter label disabled its
+isolated writer. The added assertion failed before the correction. A local
+UnicodeEncodeError fallback now retains the phase with `test: null`. This case
+has its own isolated test to retain the native complexity bound. After the six
+reviewed comment deletions and this identity correction, the focused run passed
+41 cases and the complete configured four-worker suite passed all 3,229 tests in
+29.35 seconds. Scoped Ruff lint/format, full BasedPyright, generated index checks
+and documentation checks against both HEAD and the main comparison base passed.
+The maximum Radon complexity in the new code/tests remains 13. This rerun
+supersedes the earlier 3,228-case proof for the corrected implementation.
+
+An additional local active-plugin run before the identity correction passed all
+19 then-current diagnostic tests and retained an enabled live writer through
+sessionfinish-exit at sequence 119. Its preimport warning and actual result are
+preserved in `live-plugin-tests.log`; this is isolation evidence, not native
+assurance. Final independent closure, staged checks and the unchanged supported-
+Linux native matrix remain required. The investigative tracer is temporary;
+its later removal must preserve reports and be verified without the tracer.
+
+
+### Summary startup correction and tracer retirement, 2026-10-18 (Europe/Berlin)
+
+Native run 38971206613 at afb089d failed on both configured Python versions.
+Both reports rejected temporary tracer test line 79 with Pylint E1136. The
+3.11.15 targeted pytest member passed and its controller recorded session finish
+at 292.484 seconds. The 3.13.14 member timed out with outcome UNKNOWN. Its last
+four sampled worker calls named computation-scope cases at 293.184 to 294.314
+seconds. These incomplete observations identify recent work, not the exact
+execution phase at timeout or a sole cause. Original native reports, sidecars,
+source bindings and earlier evidence remain unchanged.
+
+The approved correction reuses unchanged `assert_rejected_summary` for exactly
+72 structured-JSON cases in malformed enums, unsupported authority, impossible
+authority combinations and computation scope. Decorators, case IDs, payload
+mutations, the 24 positive controls and every other function remain unchanged.
+The helper calls real main, parser, validation and writer. It asserts exit 2,
+empty stdout, exact sanitized stderr, scoped argument/environment restoration,
+and exact prior-byte preservation or destination absence. Exact stderr equality
+also excludes the malformed-enum canary without a redundant substring check.
+The helper's existing `b"Earlier summary\n"` replaces the selected callers'
+ASCII `b"Earlier advisory summary\n"` and `b"Earlier summary: unchanged\n"`.
+The eight legacy numeric process cases retain their original non-ASCII prior
+bytes. No helper API or product runtime changes. The retained process families
+still launch 47 children with 23 success and 24 rejection outcomes.
+
+Pre-implementation ignored selected72 proof passed the complete 503-case summary
+module and preserved all collected IDs. Five interleaved local serial pairs
+measured median 5.851153 seconds before and 0.229117 seconds after. Untimed audit
+and profile runs observed 72 child starts before and zero after, with 72 real
+main calls, 72 writer calls and 96 renders after. The extra 24 renders are positive
+controls. Wrong-exit, wrong-output and destination-mutation seeds each failed
+all 72 selected cases. A repaired copy passed all 72. Local Python was 3.13.14
+on shared macOS arm64. These observations prove a local startup contributor,
+not native deadline sufficiency, a sole timeout cause or matrix acceptance.
+
+The temporary root plugin, phase writer, scratch collector and their 20 tests
+are retired. `quality/review.py` is restored byte-for-byte to pre-tracer commit
+3aaf4066d86ed2ab2cab58a9a0fe24a90119a7a2. Only the pytest-stage upload glob and
+root-plugin documentation ownership entry are removed. Existing numerical
+diagnostics, every other artifact path, checks, pins, policies, deadlines and
+four-worker test selection remain. No historical TDD section is replaced.
+Current local gate results and frozen fingerprints are retained under ignored
+`resume-ci/summary72-implementation/`; independent actual-delta closure and
+fresh full supported-Linux assurance remain required before acceptance.
+
+The main risks are loss of repeated fresh-process isolation, accidental matrix
+loss and overstated native conclusions. Retained process tests, complete case-ID
+comparison and explicit native UNKNOWN status mitigate those risks. No paid
+service or provider collection is added. Rollback restores the focused test and
+tracer-retirement commit while preserving historical evidence and counters.
+
+
+Actual tracked correction passed all 503 summary cases in 4.89 seconds. Complete
+collection before and after retirement preserved all 3,209 pre-tracer case IDs
+in order, removing exactly the 20 dedicated diagnostic IDs. All other test and
+discovery files match pre-tracer 3aaf406. All nonselected summary function ASTs
+and selected decorators remain identical. The full local aggregate then passed
+3,209 tests in 24.41 seconds with the configured four workers. Lock and both tool
+controls, hygiene, typing, docs, generated index, metadata, workflow, package
+build proofs and all 15 strict OpenSpec items passed. Audit was not applicable
+because locked audit inputs were unchanged. The aggregate remained nonzero.
+The selected candidate needed a formatting-only wrap of its 101-character
+function signature, and local SpecFact produced no native review report.
+The original lint failure is retained. The signature was wrapped without an
+AST change and the affected mechanical checks were rerun before freezing.
+Radon 6.0.1 from the existing cached analyzer environment measured no inspected
+summary or restored-review block above complexity 13. No native analyzer pass
+or supported-Linux acceptance is inferred from these local checks. Package and
+database versions stay unchanged for this unreleased test/tooling correction.

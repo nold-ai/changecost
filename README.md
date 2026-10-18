@@ -99,6 +99,11 @@ An unresolvable base or unavailable required analyzer fails the aggregate. On
 macOS the installed SpecFact 0.50.1 capsules report an unsupported controller;
 use a supported Linux x86-64 review environment before claiming the full gate passes.
 
+Temporary pytest phase tracing is retired after the native timeout investigation.
+Historical reports remain retained. Summary rejection tests now reuse the public
+entrypoint helper alongside retained process tests. Full Linux matrix assurance
+is still required. See the [investigation record](docs/development/quality-gates.md#retired-pytest-phase-investigation).
+
 The [generated CLI reference](docs/commands.md) and [agent index](llms.txt) describe
 implemented behavior. [OpenSpec artifacts](openspec/CHANGE_ORDER.md) are future
 contracts until their tasks and evidence establish delivery. See
