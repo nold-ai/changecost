@@ -1,10 +1,11 @@
 # Local adaptive demand forecasting — offline implementation
 
-Status: offline implementation authorized **2026-10-11 (Europe/Berlin)**, locally
-implemented on the feature branch; acceptance and native collection remain pending.
+Status: accepted on 2026-10-18 and CLI-archived **2026-10-23 (Europe/Berlin)** after PR #43
+and the issue-44 correction in PR #45. Native readers and measured calibration
+remain separate.
 The CLI provides separate demand forecasts alongside economic Quotes and advisory
 checks. This document describes the
-[adaptive-demand change](../openspec/changes/forecast-01-local-adaptive-demand/proposal.md).
+[adaptive-demand change](../openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md).
 
 Demand quantities, rates and decimal limits use a 4096-digit aligned integer and
 fractional representation budget, including coefficients and either exponent
@@ -141,8 +142,8 @@ as raw prompts or reasoning are rejected. Free-text evidence notes are bounded,
 not automatically redacted: supply only minimized non-sensitive descriptions.
 
 No publication or source approval follows from these offline tests. See
-[implementation evidence](../openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md)
-for actual checks and outstanding Linux/review gates.
+[implementation evidence](../openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/TDD_EVIDENCE.md)
+for accepted checks, preserved failures and remaining historical review limits.
 
 New forecasts use `observed-summary/v4`: chronology uses the current Interval and
 DemandObservation revision heads visible at each cutoff, together with an immutable

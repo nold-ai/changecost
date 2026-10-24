@@ -107,7 +107,87 @@ def registry():
 def test_matrix_drift_and_original_register_has_no_approvals():
     data = registry()
     assert research.validate_register(data) == []
-    assert all(not p["approvals"] for p in data["profiles"])
+    historical_hashes = {
+        "copilot-hosted": "6023c198c83e255c55a98712d357c9978a87e5063d0e24d1e760319fcbf44180",
+        "copilot-cli": "abcd4945121a12b1dd02c622ea03bff176955f3b621ea5cf7a9f165abaef0364",
+        "copilot-ide": "aff5df04a3e0d37b6ded31fd6eacfff01925ec887fecdc5c342a6b29701784f7",
+        "cursor-local": "5b2e9263b9eb2dc677529b1030683be7ee2809aff1a56228cef0ea81cf4c655d",
+        "cursor-personal-csv": "afc0017691d66b21b1184adb6f19d97e79033514d2de84df79bfbd4bfa9c1d67",
+        "codex-app-server": "ffda8d3ebdf76fb04abc50cfe3c29c6365f62698f7f9de374ee69719811a5248",
+        "codex-desktop": "98889ece4d50b656de0958ad6e1a0315641f65b8be4f272e7642d21a9feab77b",
+        "claude-2-1-275": "4ca23a027f36639d1cd4e8750ed7d1a49285048dbf7bee7eb70aea8496bbf8cc",
+        "claude-2-1-215": "5550865b536ab7b4338d0f60630b999329a0164c214d247f1b60b2908010e201",
+        "claude-2-1-257": "20b0668a52ad10e8ab0d90dba45e04157e7d5a9d974ed7407f3a2430293211f9",
+        "enterprise-copilot-projections": (
+            "926efcfbec9b2a3ecb10575b0e1aaa5c978256b060b48980aa4d30b2eaa105cb"
+        ),
+        "enterprise-cursor-projections": (
+            "4065aa2d7ec17d1a504c8cf235b8ba2895621c8eecc4c58bac8f3f469d1a3de0"
+        ),
+        "codex-ide": "6830ffcf14ed1c6a73600354d56563d1c2dd3a725ddb0116be0fb351cffb0c27",
+        "claude-ide": "ac9320d7ee47858dd2cb3da13504dc1f874a24463149540aa6d92afe80736d89",
+        "codex-desktop-0-159-discovery": (
+            "fe070af271281e3462a7bdbfad68ec76489c0cb4fac01a407e6a540aa4509a57"
+        ),
+        "claude-project-2-1-275-discovery": (
+            "b7646d8cebeecde115d372441ed22fd5ee8e52545a98e2d5606c5ef119f51909"
+        ),
+        "claude-desktop-2-1-221-discovery": (
+            "6a7a846904d5b71c800c07b6cd996415dfdd6f74edb9b08b94dbef02149bc65f"
+        ),
+        "claude-desktop-2-1-234-discovery": (
+            "0966b73d63e297ff9377a749db992c28a9e538fd41e69ff357ea9ea738d0b849"
+        ),
+        "claude-desktop-result-mixed-headers": (
+            "c8e479658daab7cdf3223d185e2e725c449bd316111b61f64e9b2c70415fc3f9"
+        ),
+        "claude-desktop-2-1-202-inventory": (
+            "c9b59c26807b371cc2510526b185d85fb937e7560cadd89eb713795e737c5dbf"
+        ),
+        "claude-desktop-2-1-205-inventory": (
+            "c4d508319e0aec010fcd1793429843ad323348eda19ab11e572315f856b5d9cd"
+        ),
+        "copilot-hosted-local-discovery": (
+            "04e4237a91813223d017609dd5d25fd3373c88df65c7f728b096d6e5a83cd1da"
+        ),
+        "cursor-local-discovery": (
+            "42c637e43803fa67e941c20ffd35dd03a6378282be322c2120318b8ceb55da23"
+        ),
+    }
+    historical = {p["id"]: p for p in data["profiles"] if p["id"] in historical_hashes}
+    assert set(historical) == set(historical_hashes)
+    for identity, profile in historical.items():
+        assert profile["approvals"] == []
+        assert (
+            hashlib.sha256(
+                json.dumps(profile, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+            ).hexdigest()
+            == historical_hashes[identity]
+        )
+
+
+def test_exact_finite_profile_and_proof_activation():
+    data = registry()
+    assert len(data["profiles"]) == 24
+    activated = [p for p in data["profiles"] if p["approvals"]]
+    assert len(activated) == 1
+    assert (
+        research.profile_digest(activated[0])
+        == "8be47bbc66c0b04d61bcc4e646271449b4eb653b460c24322cfd203bc5d2a991"
+    )
+    assert len(activated[0]["approvals"]) == 1
+    assert (
+        hashlib.sha256(
+            json.dumps(
+                activated[0]["approvals"][0], sort_keys=True, separators=(",", ":"), allow_nan=False
+            ).encode()
+        ).hexdigest()
+        == "081da0ec49ad6eb0b7bc17ff1757ce197f60a8f4dcc21ce49eddfcd2205d2e59"
+    )
+
+
+def test_matrix_drift_rejects_changed_capability():
+    data = registry()
     text = (ROOT / "docs/providers/source-feasibility.md").read_text()
     assert research.matrix_matches(text, data)
     changed = copy.deepcopy(data)

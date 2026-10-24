@@ -37,7 +37,7 @@ on the feature branch, with acceptance pending. It extends models, portable reco
 quote/explain and deterministic learning/transfer while reusing SQLite layout 2.
 Native readers and measured pilot evaluation remain separate. Documentation: docs/forecasting.md and the
 CLI/contracts guides. See [design](design.md), [requirements](specs/adaptive-demand/spec.md)
-and [change order](../../CHANGE_ORDER.md).
+and [change order](../../../CHANGE_ORDER.md).
 
 ## Non-goals
 
@@ -57,7 +57,7 @@ One unavailable provider does not block other approved lanes.
 Local-first and the four evidence states are maintainer-approved on 2026-10-07.
 Analogy, transfer and rehearsal improving unseen-task accuracy remain hypotheses.
 Policies must be registered before evaluating outcomes. See
-[research](../../../docs/research/adaptive-demand-evidence.md).
+[research](../../../../docs/research/adaptive-demand-evidence.md).
 
 ## Risks and rollback
 

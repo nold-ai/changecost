@@ -44,7 +44,7 @@ review, not runtime verification or forecast validation.
 Issue bodies, native story types, parents, blocked-by edges and project statuses
 were read back; new stories are Todo/unassigned. Epic #4 and features #5/#7/#8 retain
 history and receive prospective acceptance updates. The planning PR will publish these artifacts; implementation tasks remain open.
-See [architecture decisions and exact native requests](../../../docs/research/adaptive-demand-evidence.md).
+See [architecture decisions and exact native requests](../../../../docs/research/adaptive-demand-evidence.md).
 
 ## Verification and limitations
 

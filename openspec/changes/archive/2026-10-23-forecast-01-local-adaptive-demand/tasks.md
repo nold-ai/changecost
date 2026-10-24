@@ -27,8 +27,8 @@ evaluation and release publication remain separate. No native approval or accura
 ## 4. Verification and delivery
 
 - [x] 4.1 Update forecast/CLI/contracts docs, changelog and generated llms/ownership references alongside delivered behavior; keep planned commands labeled until implemented.
-- [ ] 4.2 Run actual red/green tests, selected/all strict OpenSpec, explicit-base/manifest make check and fresh supported-Linux/SpecFact assurance; retain unavailable checks honestly in TDD_EVIDENCE.md.
-- [ ] 4.3 Obtain fresh affected-obligation/provider review, synchronize native issue relationships, deliver a focused PR after separately requested verification/promotion and archive only accepted implementation.
+- [x] 4.2 Run actual red/green tests, selected/all strict OpenSpec, explicit-base/manifest make check and fresh supported-Linux/SpecFact assurance; retain unavailable checks honestly in TDD_EVIDENCE.md.
+- [x] 4.3 Obtain fresh affected-obligation/provider review, synchronize native issue relationships, deliver a focused PR after separately requested verification/promotion and archive only accepted implementation.
 
 Implementation note: on 2026-10-11 the maintainer accepted the documented
 grouped-red historical-proof limitation. Checked implementation tasks have passing
@@ -41,3 +41,22 @@ See TDD_EVIDENCE.md and the retained review session for actual evidence.
 - [x] 5.1 Specify intrinsic and local ordering, exact historical generations and selected nested authority; capture focused failing regressions before runtime edits.
 - [x] 5.2 Implement shared strict eligibility for new receipt v3 and forecast v4 while preserving historical replay and retries; verify atomic rejection and valid legacy support.
 - [x] 5.3 Update contracts, forecasting and chronological TDD evidence; run scoped tests, format/types and strict OpenSpec validation. Independent review and final repository/PR gates remain separate obligations.
+
+
+## Accepted delivery reconciliation, 2026-10-23 Europe/Berlin
+
+GitHub readback confirms PR #45 merged on 2026-10-18 at 23:47:47 Europe/Berlin
+into main `6b6fab30e8030e04fc1a2d803000c640c9f64479`. Its final live verification
+index binds reviewed head `053a10645ae0ac6064761942843a85c2f05d0bd7`, both supported
+Linux jobs, all ten native analyzers and completed Codex/CodeRabbit reviews.
+The merged tree equals that reviewed head. The accepted grouped-red limitation
+and historical review scope remain unchanged.
+
+The separate existing archive worktree records the real successful native CLI
+archive on 2026-10-18, followed by task 4.3 closure and exact spec readback.
+Tasks 4.2 and 4.3 reconcile those already completed delivery obligations.
+The earlier unchecked statements are historical. This checkout will run its own
+validated CLI archive; no archive directory or main spec is copied from that
+worktree. The prior archive-only local aggregate remains incomplete because
+SpecFact produced no native report. That limitation does not undo accepted
+implementation or certify this new lifecycle diff. No review counter is reset.

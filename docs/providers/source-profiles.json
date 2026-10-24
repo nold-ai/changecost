@@ -1092,6 +1092,247 @@
           "kind": "Rolling interface documentation; not approval of persisted local records"
         }
       ]
+    },
+    {
+      "id": "codex-desktop-0163-finite-diagnostics",
+      "provider": "Codex",
+      "surface": "Desktop coding-subagent serialized request observations; finite exact snapshot",
+      "version": "0.163.0-alpha.10.2",
+      "tier": "Historical authentication unknown; no monetary authority",
+      "acquisition": "Explicit existing whole JSONL snapshot,independently adjudicated; read-only bounded sourceSHA admission,no collection",
+      "evidence": [
+        {
+          "id": "codex-desktop-finite-native1",
+          "origin": "native",
+          "sha256": "550db3df1e6f13f55744965c24db1825f4abd59443d9bd88600350ee25ba1a1f",
+          "scope": "Exact875189byte/123record source;16selected directrequestrows,96serialized categoryfacts; partial coverage,unknown finality."
+        }
+      ],
+      "capabilities": {
+        "usage": "supported",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "token_usage_record.payload.usage": "Sixserializedsourcecategories only; exactintegercounts; backendpresenceunknown; no additiveoverlap or recomputedtotal",
+        "thread_id/response_id": "Originalnamespacedresponse identity; no sourceSHA/profile/ordinal in eventkey",
+        "turn_id/session_id/root_turn_id/header.parent_thread_id": "Partial reportedlineage,notfulltaskownership; session_id is logical,notprocessnonce"
+      },
+      "requirements": [
+        "Only exact admittedsourceSHA and selectedprojection may be supported; no version-wide/future-file inference.",
+        "Independentsemanticapproval,canonicalactivation and implementedruntimeeligibility are separate gates.",
+        "Historical broadprofiles and fullcoverage/finality requirements remain unchanged.",
+        "No native numericdemand/financialauthority orautomatic Run/Changebinding."
+      ],
+      "admission": {
+        "kind": "finite-snapshot-admission-v1",
+        "mapping_revision": "codex-request-observation-r1",
+        "source_sha256": "550db3df1e6f13f55744965c24db1825f4abd59443d9bd88600350ee25ba1a1f",
+        "format": "jsonl",
+        "accepted_records": [
+          18,
+          23,
+          29,
+          33,
+          40,
+          47,
+          52,
+          61,
+          68,
+          78,
+          85,
+          91,
+          101,
+          105,
+          112,
+          120
+        ],
+        "expected_request_count": 16,
+        "expected_fact_count": 96,
+        "whole_record_count": 123,
+        "projection_sha256": "f18ea851d02c0d1da36893aa9fe4eb8de7710bcafa0b3a774e8ba44c190a3e2c",
+        "projection_schema": {
+          "schema": "codex-native-projection-v1",
+          "canonical_json": "UTF-8 json.dumps(sort_keys=True,separators=(comma,colon),ensure_ascii=True,allow_nan=False); exact integers; unique facts sorted by fact_key",
+          "event_key_recipe": [
+            "codex-request-event-v1",
+            "Codex",
+            "desktop-coding",
+            "original_thread_id",
+            "original_response_id"
+          ],
+          "fact_key_recipe": [
+            "codex-request-fact-v1",
+            "event_key",
+            "request",
+            "source_category"
+          ],
+          "source_id_recipe": [
+            "codex-source-id-v1",
+            "kind(thread,turn,session)",
+            "raw_source_value"
+          ],
+          "fact_object_keys": [
+            "backend_presence",
+            "category",
+            "completeness",
+            "coverage",
+            "event_key",
+            "fact_key",
+            "finality",
+            "mapping_revision",
+            "model",
+            "model_version",
+            "producer",
+            "quantity",
+            "quantity_basis",
+            "request_interval",
+            "scope",
+            "source_lineage"
+          ],
+          "lineage_keys": [
+            "header_parent_thread",
+            "root_turn",
+            "session",
+            "thread",
+            "turn"
+          ],
+          "producer": {
+            "engine_version": "0.163.0-alpha.10.2",
+            "client_surface": "desktop-coding",
+            "client_build": null
+          },
+          "fixed_meaning": {
+            "mapping_revision": "codex-request-observation-r1",
+            "scope": "request",
+            "quantity_basis": "serialized_source",
+            "backend_presence": "unknown",
+            "request_interval": "unknown",
+            "model": null,
+            "model_version": null,
+            "coverage": "partial_observed_subset",
+            "completeness": "unknown",
+            "finality": "unknown"
+          },
+          "quantity": "exact nonnegative JSONinteger,notbool;4096digitbound; selectedrequiredcategoryabsence rejects",
+          "ignored_provenance": [
+            "source_sha256",
+            "profile_digest",
+            "approval_digest",
+            "source_ordinal",
+            "first_local_availability",
+            "admitted_snapshot_reference"
+          ]
+        },
+        "classification": {
+          "records": 123,
+          "outer_record_counts": {
+            "session_meta": 1,
+            "event_msg": 50,
+            "response_item": 52,
+            "world_state": 1,
+            "turn_context": 1,
+            "inter_agent_communication_metadata": 2,
+            "token_usage_record": 16
+          },
+          "event_payload_type_counts": {
+            "task_started": 1,
+            "thread_settings_applied": 1,
+            "item_completed": 31,
+            "token_count": 16,
+            "task_complete": 1
+          },
+          "accepted_records": [
+            18,
+            23,
+            29,
+            33,
+            40,
+            47,
+            52,
+            61,
+            68,
+            78,
+            85,
+            91,
+            101,
+            105,
+            112,
+            120
+          ],
+          "contributing_outer_kind": "token_usage_record",
+          "excluded_outer_kind_meanings": {
+            "session_meta": "source metadata; producer claim independently reviewed, never inferred by runtime",
+            "response_item": "private model/tool content; no quantities or corrections selected",
+            "world_state": "model-visible context comparison baseline/patch; not usage authority",
+            "turn_context": "configured context/model metadata; no served model join",
+            "inter_agent_communication_metadata": "causal trigger metadata; not usage or correction authority",
+            "event_msg": "task/item lifecycle and overlapping token_count snapshots; no additive authority"
+          },
+          "source_refs": {
+            "rollout_variants": "https://github.com/openai/codex/blob/4ebc485ca321243727539187169425fcf972f2c4/codex-rs/history/src/rollout_payload.rs#L33",
+            "world_state": "https://github.com/openai/codex/blob/4ebc485ca321243727539187169425fcf972f2c4/codex-rs/protocol/src/protocol.rs#L3393",
+            "request_record": "https://github.com/openai/codex/blob/4ebc485ca321243727539187169425fcf972f2c4/codex-rs/protocol/src/protocol.rs#L2386"
+          }
+        },
+        "producer_claim": {
+          "engine_version": "0.163.0-alpha.10.2",
+          "client_surface": "desktop-coding",
+          "client_build": null,
+          "trust": "ordinary-local-historical-process-thread-chain; no unobserved writer replacement",
+          "corroboration_artifact_sha256": "e5f9e016f97d443775584a6de223899d9f7ba33e9b55d2efa8eac686bc58389c",
+          "claim_scope": "selected16requestrows only; no generic build compatibility"
+        },
+        "limits": {
+          "bytes": 10485760,
+          "records": 10000,
+          "depth": 32,
+          "token_digits": 4096
+        },
+        "decisions": {
+          "authority": "Support covers only the finite admitted serialized request-observation subset: 16 requests and 96 category facts from the exact source SHA. Preserve six categories separately; no category sums, reconstructed total, backend presence certainty, complete account usage or other quantities.",
+          "interval": "Request interval, served model/version, finality and total completeness remain unknown. No turn-context model join or timestamp-derived interval. Reported lineage is partial metadata only.",
+          "replay": "Admit exact bytes before replay. Event key H([codex-request-event-v1,Codex,desktop-coding,original_thread,response]); fact key H([codex-request-fact-v1,event,request,category]). Canonical meaning includes quantity, basis, lineage, producer and fixed unknowns; excludes file/profile/approval/ordinal/availability. Equal facts reuse first Evidence/NativeUsage/provenance. Any conflict aborts the entire batch. Later admissions preserve event keys; incompatible mapping revisions require migration, never a new-key escape.",
+          "reset": "No turn/thread/legacy differencing, epochs or baseline inference. Those representations yield no facts. Whole-file SHA admission excludes unreviewed resumes and new bytes. Selected direct rows must be adjudicated as responses, not inherited adjustments. Runtime claims no general reset detector.",
+          "correction": "Corrections are unsupported. Review must establish that selected rows are independent response observations, not corrective replacements. Unadmitted bytes reject. Same-key changed meaning conflicts atomically. Distinct-ID corrections are excluded during independent admission; conflict logic alone cannot detect them. No invented revision, predecessor or reason.",
+          "exclusions": "All other SHA/surface/version/producer subsets, Work/native-2, appends, resumes, forks, unreviewed rows, mixed-producer histories and oversized parents are unadmitted. Byte-identical copies/renames share admission. No complete Run/Change/all-attempt/descendant/finality, billed-money, demand-learning or automatic-binding authority; retain current financial and synthetic guards."
+        }
+      },
+      "approvals": [
+        {
+          "capability": "usage",
+          "evidence_id": "codex-desktop-finite-native1",
+          "sha256": "550db3df1e6f13f55744965c24db1825f4abd59443d9bd88600350ee25ba1a1f",
+          "decisions": {
+            "authority": "Support covers only the finite admitted serialized request-observation subset: 16 requests and 96 category facts from the exact source SHA. Preserve six categories separately; no category sums, reconstructed total, backend presence certainty, complete account usage or other quantities.",
+            "interval": "Request interval, served model/version, finality and total completeness remain unknown. No turn-context model join or timestamp-derived interval. Reported lineage is partial metadata only.",
+            "replay": "Admit exact bytes before replay. Event key H([codex-request-event-v1,Codex,desktop-coding,original_thread,response]); fact key H([codex-request-fact-v1,event,request,category]). Canonical meaning includes quantity, basis, lineage, producer and fixed unknowns; excludes file/profile/approval/ordinal/availability. Equal facts reuse first Evidence/NativeUsage/provenance. Any conflict aborts the entire batch. Later admissions preserve event keys; incompatible mapping revisions require migration, never a new-key escape.",
+            "reset": "No turn/thread/legacy differencing, epochs or baseline inference. Those representations yield no facts. Whole-file SHA admission excludes unreviewed resumes and new bytes. Selected direct rows must be adjudicated as responses, not inherited adjustments. Runtime claims no general reset detector.",
+            "correction": "Corrections are unsupported. Review must establish that selected rows are independent response observations, not corrective replacements. Unadmitted bytes reject. Same-key changed meaning conflicts atomically. Distinct-ID corrections are excluded during independent admission; conflict logic alone cannot detect them. No invented revision, predecessor or reason.",
+            "exclusions": "All other SHA/surface/version/producer subsets, Work/native-2, appends, resumes, forks, unreviewed rows, mixed-producer histories and oversized parents are unadmitted. Byte-identical copies/renames share admission. No complete Run/Change/all-attempt/descendant/finality, billed-money, demand-learning or automatic-binding authority; retain current financial and synthetic guards."
+          },
+          "profile_digest": "8be47bbc66c0b04d61bcc4e646271449b4eb653b460c24322cfd203bc5d2a991",
+          "reviewer": "Independent gpt-6-astra agent /root/finite_mapping_independent_review, 2026-10-23 Europe/Berlin"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/openai/codex/blob/4ebc485ca321243727539187169425fcf972f2c4/codex-rs/history/src/rollout_payload.rs#L33",
+          "accessed": "2026-10-23",
+          "kind": "Exact tagged producer source; historicalbinary attestation notclaimed"
+        },
+        {
+          "url": "https://github.com/openai/codex/blob/4ebc485ca321243727539187169425fcf972f2c4/codex-rs/protocol/src/protocol.rs#L3393",
+          "accessed": "2026-10-23",
+          "kind": "Exact tagged producer source; historicalbinary attestation notclaimed"
+        },
+        {
+          "url": "https://github.com/openai/codex/blob/4ebc485ca321243727539187169425fcf972f2c4/codex-rs/protocol/src/protocol.rs#L2386",
+          "accessed": "2026-10-23",
+          "kind": "Exact tagged producer source; historicalbinary attestation notclaimed"
+        }
+      ]
     }
   ]
 }

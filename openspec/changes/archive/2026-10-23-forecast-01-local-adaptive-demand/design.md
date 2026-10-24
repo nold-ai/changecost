@@ -7,7 +7,7 @@ are delivered. Offline demand learning is locally implemented; acceptance is pen
 Native readers remain planned. Trusted economic coverage
 is restricted to synthetic billed USD. Existing Features/v1 cannot represent the
 new task/ecosystem dimensions. See [proposal](proposal.md) and
-[research](../../../docs/research/adaptive-demand-evidence.md).
+[research](../../../../docs/research/adaptive-demand-evidence.md).
 
 ## Goals / Non-Goals
 

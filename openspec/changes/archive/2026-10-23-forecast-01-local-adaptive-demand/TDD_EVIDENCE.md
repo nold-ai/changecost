@@ -964,3 +964,57 @@ Radon 6.0.1 from the existing cached analyzer environment measured no inspected
 summary or restored-review block above complexity 13. No native analyzer pass
 or supported-Linux acceptance is inferred from these local checks. Package and
 database versions stay unchanged for this unreleased test/tooling correction.
+
+
+## Accepted delivery readback, 2026-10-23 Europe/Berlin
+
+The maintainer requested archival of the last finalized change. Fresh GitHub
+readback confirms #35 closed/completed and [PR #45](https://github.com/nold-ai/changecost/pull/45)
+merged at 2026-10-18 23:47:47 Europe/Berlin into
+`6b6fab30e8030e04fc1a2d803000c640c9f64479`. Its final live verification index
+records accepted head `053a10645ae0ac6064761942843a85c2f05d0bd7`, both Linux host
+jobs in [run 39164141880](https://github.com/nold-ai/changecost/actions/runs/39164141880),
+all ten native analyzers with passing assurance and completed current-head
+Codex/CodeRabbit code reviews. Merged and reviewed trees are identical.
+These are accepted implementation results, not new checks of this lifecycle diff.
+
+An existing local archive from 2026-10-18 was independently inspected before
+this operation. Its native CLI result has exit 0, 12 added requirements and
+47 preserved scenarios. Its archive-only aggregate is explicitly incomplete
+because the local SpecFact module produced no native report. The accepted
+grouped-red historical proof limit, earlier failures, review scope and canonical
+receipt counters remain preserved. This checkout will perform its own real CLI
+archive and record its actual output. Original source files and the earlier
+unpublished archive worktree remain untouched.
+
+## Actual CLI archive readback, 2026-10-23 Europe/Berlin
+
+OpenSpec CLI 1.13.2, schema spec-driven, ran
+`openspec archive forecast-01-local-adaptive-demand --yes` in this checkout and
+exited 0. All 18 tasks were reconciled from accepted delivery and the prior
+completed archive checkpoint before invocation. The CLI created
+`2026-10-23-forecast-01-local-adaptive-demand` and synchronized 12 added
+requirements into the adaptive-demand main spec. It retained the change metadata.
+A nonblocking proposal-size warning remained.
+
+Readback confirms the active change is absent. The archived delta has its original
+SHA-256 `f9e7cac1af7dffb86c15cdc9c64a34932658f52333bb462f20e5405f7b29b03b`.
+All 12 requirement and 47 scenario bodies match the CLI main spec after blank-line
+normalization; there are no delta-operation headers in the main requirements.
+The CLI-generated Purpose placeholder caused the first strict validation to fail.
+Only its descriptive metadata was repaired; all 15 strict items then passed.
+Archive-relative links, ownership and generated index entries were reconciled.
+No requirement merge or manual directory move substituted for the real CLI run.
+
+The first current lifecycle aggregate passed 3,209 tests, lock and external tool
+controls, hygiene, lint/format, typing, workflow, build proofs and all strict items.
+It failed the unchanged generated command document's source freshness rationale
+and produced no SpecFact report because the local review module was missing.
+The rationale now binds the unchanged command tree to the changed index metadata,
+and the scoped documentation check passes. Final combined archive/reader-planning
+checks and independent review belong to the current ignored preparation receipt;
+this recorded implementation and initial lifecycle proof do not certify later
+edits. Missing local/supported-Linux assurance is incomplete, not a pass or waiver.
+The separate earlier unpublished archive and canonical review histories remain
+untouched. Rollback is a scoped lifecycle revert preserving evidence and source
+originals. No runtime, collection, source approval or release is added.

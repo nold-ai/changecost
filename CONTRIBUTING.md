@@ -6,8 +6,8 @@ settlement implementation on 2026-09-29. Settlement merged in PR #28 on 2026-10-
 and is accepted/archived; see [accepted evidence](openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md).
 Other backlog work and live collection require a subsequent request.
 
-Offline adaptive demand #35 was authorized on 2026-10-11 and is locally
-implemented, with verification/acceptance pending. Run the demand boundary suite
+Offline adaptive demand #35 is accepted and archived after PR #43 and the issue-44
+correction in PR #45. Its accepted historical proof limits remain in the archive. Run the demand boundary suite
 with `uv run --locked pytest tests/test_demand.py tests/test_demand_cli.py tests/test_demand_controls.py`.
 Keep synthetic measurement proof separate from native reader approval and #17
 pilot validation; retain Linux/SpecFact and provider-review obligations.

@@ -41,7 +41,7 @@ new telemetry, provider API, paid model request, prompt retention or inferred su
 [Source feasibility #9](../archive/2026-10-08-pilot-01-source-feasibility/proposal.md) and delivered
 [reconciliation #12](../archive/2026-10-02-settlement-01-reconciliation/proposal.md).
 Demand use additionally requires its own policy under
-[adaptive demand](../forecast-01-local-adaptive-demand/proposal.md); that feature
+[adaptive demand](../archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md); that feature
 does not depend on this reader for its offline/synthetic implementation.
 Reader delivery/archive depends on #9/#12 and its approved source policy, not #35.
 Adaptive-demand integration is conditional on #35 delivery and a separately

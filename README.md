@@ -44,10 +44,11 @@ CSV fields share the existing input byte bound. The hosted research bundle also
 requires a computed conflict-free checkpoint outcome; this does not approve native
 accounting authority or finality.
 
-The feature branch implements [offline adaptive demand](docs/forecasting.md) under
-#35 authorization on 2026-10-11. `quote --demand` references supplied task and
-ecosystem artifacts; learning remains synthetic-only until reader approval.
-Acceptance is pending; this does not publish a release or establish native accuracy.
+[Offline adaptive demand](docs/forecasting.md) is accepted and archived after
+PR #43 and the issue-44 correction in PR #45. `quote --demand` references supplied
+task and ecosystem artifacts; learning remains synthetic-only until reader approval.
+Acceptance covers offline contracts and synthetic checks. It does not publish a
+release or establish native accuracy.
 
 ## Direction
 
@@ -198,8 +199,10 @@ Provider collection and calibration remain separate gates.
 
 Source feasibility includes [offline development evidence checks](docs/providers/source-feasibility.md#executable-closeout-checks-2026-10-03).
 Issue #9 is closed after accepted capability reconciliation in PR #39 and native
-CLI archival. All 23 profiles still have zero native approvals; reader approval
-and implementation remain separate gates.
+CLI archival. The register now contains 24 profiles: the 23 historical profiles
+retain zero approvals, and one exact finite Codex diagnostic mapping has native
+usage approval. Runtime reader implementation remains blocked; activation grants
+no demand, financial or complete-accounting authority.
 CLI controls exercise safe private-manifest reports, changed-hash rejection and
 matrix drift/repair; structural success does not approve native provider profiles.
 Checkpoint controls distinguish cumulative progress/replay from conflicts within
@@ -230,12 +233,12 @@ Registered citations require a parsed HTTPS destination hostname; this structura
 
 Default research checking binds the exact canonical fixture bytes to all twelve registered synthetic references before parsing. In-memory semantic checks and matrix-only rendering make no fixture-byte provenance claim.
 
-## Local adaptive demand — offline implementation, 2026-10-11
+## Accepted offline adaptive demand, 2026-10-18
 
-[Adaptive forecasting](docs/forecasting.md) is locally implemented under #35:
+[Adaptive forecasting](docs/forecasting.md) is accepted under #35:
 `quote --demand` starts with honest zero knowledge, learns from eligible full-Change
 synthetic outcomes and exposes explicit directional transfer hypotheses. It adds
-to the delivered economic/advisory CLI; final acceptance remains pending.
+to the delivered economic/advisory CLI.
 Missing measurements remain unknown. Codex/Claude readers, approved native demand
 accounting and measured pilot evaluation remain separate planned changes.
 Missing optional exports/admin access did not block accepted capability closeout;

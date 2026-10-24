@@ -1,7 +1,7 @@
 # Adaptive demand: evidence, decisions and remaining native proof
 
 Planning decision: **2026-10-07 (Europe/Berlin)**. This research supports the
-[forecast plan](../../openspec/changes/forecast-01-local-adaptive-demand/proposal.md),
+[forecast plan](../../openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md),
 not a claim of delivered prediction accuracy. See [product behavior](../forecasting.md).
 
 ## Research cross-check
