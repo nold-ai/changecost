@@ -167,3 +167,13 @@ current code-review scope and all earlier failed/incomplete results. The dated
 to the proposed private test alpha: Codex reader #36, registered evaluation #17
 and a separately tracked release-readiness change. No native lane or accuracy
 claim is approved by this archival.
+
+## Authorized finite reader implementation, 2026-10-24
+
+The maintainer requested runtime implementation of Codex reader #36 for the exact
+independently approved finite diagnostic snapshot. It is implemented locally with
+portable NativeUsage and an explicit native-only settle mode, pending final native
+Linux and provider assurance. The 24-profile canonical register and its one usage
+approval are unchanged. Broader readers, live collection, native learning, billing,
+calibration and release publication remain separate. Earlier pending statements
+record their dated stages. Package 0.1.0.dev0 remains unreleased.

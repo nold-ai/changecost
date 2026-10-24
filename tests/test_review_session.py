@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import shutil
@@ -4586,3 +4587,557 @@ def test_pending_gates_do_not_repeat_unchanged_report_handoff(
     review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
     assert review_session.review_handoff(tmp_path, "change") is None
     assert review_session.status(tmp_path, "change")["action"] == "wait"
+
+
+@pytest.fixture
+def retirement_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
+    review_session.initialize(tmp_path, "change", contract())
+    complete_session(tmp_path)
+    review_session.record(tmp_path, "change", {"id": "work", "kind": "batch"})
+    review_session.record(
+        tmp_path, "change", {"id": "spent", "kind": "active_minutes", "minutes": 1.25}
+    )
+    review_session.record(tmp_path, "change", {"id": "tokens", "kind": "usage", "output": 42})
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(tmp_path),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "--allow-empty",
+            "-qm",
+            "merged stage",
+        ],
+        check=True,
+    )
+    tip = subprocess.check_output(
+        ["git", "-C", str(tmp_path), "rev-parse", "HEAD"], text=True
+    ).strip()
+    target = {
+        "repository": "nold-ai/changecost",
+        "pull_request": 24,
+        "head": TEST_HEAD,
+        "merge_commit": tip,
+    }
+    approval = {
+        "id": "runtime-scope",
+        "kind": "scope_decision",
+        "decision": "approved",
+        "approved_by": "maintainer",
+        "intended_files": fixture_manifest(tmp_path),
+        "retire_pr": target,
+        "comparison_base": tip,
+        "pr_base": {"ref": "main", "sha": tip},
+    }
+    review_session.record(tmp_path, "change", approval)
+    event = {
+        "id": "retire-stage",
+        "kind": "advance_head",
+        "head": tip,
+        "comparison_base": tip,
+        "pr_base": {"ref": "main", "sha": tip},
+        "scope_decision_id": approval["id"],
+        "retire_pr": target,
+    }
+    pull = {
+        "number": 24,
+        "state": "closed",
+        "merged": True,
+        "merged_at": "2000-01-01T00:00:00Z",
+        "merge_commit_sha": tip,
+        "head": {"sha": TEST_HEAD},
+        "base": {"ref": "main", "sha": TEST_HEAD, "repo": {"full_name": "nold-ai/changecost"}},
+        "requested_reviewers": [],
+    }
+    snapshot = complete_snapshot()
+    snapshot["checks"][0]["check_runs"][0]["started_at"] = "2000-01-01T00:00:00Z"
+    snapshot["reviews"][0][0]["submitted_at"] = "2000-01-01T00:00:00Z"
+    collect = review_session.gh_snapshot
+    monkeypatch.setattr(review_session, "gh_json", lambda *args, **kwargs: copy.deepcopy(pull))
+    monkeypatch.setattr(review_session, "gh_snapshot", lambda *args: copy.deepcopy(snapshot))
+    return {
+        "event": event,
+        "pull": pull,
+        "snapshot": snapshot,
+        "approval": approval,
+        "collect": collect,
+    }
+
+
+def test_merged_pr_retirement_preserves_history_and_releases_new_source(
+    tmp_path: Path, retirement_case: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    before = review_session.load(tmp_path, "change")
+    marker = review_session.state_path(tmp_path, "change").with_name("genesis.json")
+    genesis_bytes = marker.read_bytes()
+    event = retirement_case["event"]
+    state = review_session.record(tmp_path, "change", event, expected_revision=before["revision"])
+    assert state["pull_request"] is None
+    for key in (
+        "contract",
+        "genesis",
+        "budget",
+        "batches",
+        "active_minutes",
+        "usage",
+        "findings",
+        "investigations",
+        "scope_decisions",
+        "timing_measurements",
+        "evidence",
+    ):
+        assert state[key] == before[key]
+    assert state["events"][:-1] == before["events"]
+    assert state["provenance"][:-1] == before["provenance"]
+    assert marker.read_bytes() == genesis_bytes
+    assert state["monitor"] == review_session.empty_monitor()
+    assert state["phase"] == "active"
+    assert state["context_since"] == state["provenance"][-1]["recorded_at"]
+    assert review_session.binding_epoch(state) == "input-generation:1"
+    assert review_session.current_evidence(state) == []
+
+    def unavailable(*args: Any, **kwargs: Any) -> Any:
+        raise AssertionError("offline replay and exact retry must not reacquire facts")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(review_session.repository, "git", unavailable)
+        patch.setattr(review_session, "capture_inputs", unavailable)
+        patch.setattr(review_session, "gh_json", unavailable)
+        patch.setattr(review_session, "gh_snapshot", unavailable)
+        assert review_session.load(tmp_path, "change") == state
+        assert (
+            review_session.record(tmp_path, "change", event, expected_revision=before["revision"])
+            == state
+        )
+    stale = dict(before["evidence"][0], id="stale-pass")
+    with pytest.raises(ValueError, match="binding"):
+        review_session.record(tmp_path, "change", stale)
+    old_bytes = review_session.state_path(tmp_path, "change").read_bytes()
+    with pytest.raises(ValueError, match="retired"):
+        review_session.record_monitor_snapshot(tmp_path, "change", retirement_case["snapshot"])
+    with pytest.raises(ValueError, match="retired"):
+        review_session.select_target(tmp_path, "change", "nold-ai/changecost", 24)
+    assert review_session.state_path(tmp_path, "change").read_bytes() == old_bytes
+    review_session.select_target(tmp_path, "change", "nold-ai/changecost", 25)
+    bound = review_session.load(tmp_path, "change")
+    assert bound["pull_request"] == 25
+    assert bound["events"][-1]["id"] == "bind-pr:1"
+    review_session.select_target(tmp_path, "change", "nold-ai/changecost", 25)
+    assert review_session.load(tmp_path, "change") == bound
+
+
+@pytest.mark.parametrize(
+    "container,path,value",
+    [
+        ("pull", ("state",), "open"),
+        ("pull", ("merged",), False),
+        ("pull", ("merged",), "<remove>"),
+        ("pull", ("merged",), 1),
+        ("pull", ("merged_at",), "2099-01-01T00:00:00Z"),
+        ("pull", ("merged_at",), "yesterday"),
+        ("pull", ("merge_commit_sha",), None),
+        ("pull", ("number",), 25),
+        ("pull", ("base", "repo", "full_name"), "other/repository"),
+        ("pull", ("head", "sha"), "a" * 40),
+        ("pull", ("merge_commit_sha",), "a" * 40),
+        ("pull", ("base", "ref"), "release"),
+        ("snapshot", ("head",), "a" * 40),
+        ("snapshot", ("repository",), "other/repository"),
+        ("snapshot", ("comments",), "<remove>"),
+        ("snapshot", ("reviews", 0, 0, "state"), "CHANGES_REQUESTED"),
+        (
+            "snapshot",
+            ("threads",),
+            [{"id": "thread", "isResolved": False, "isOutdated": True, "comments": []}],
+        ),
+        ("snapshot", ("requested_reviewers",), [{"login": "reviewer-a"}]),
+        ("snapshot", ("checks", 0, "check_runs", 0, "conclusion"), "failure"),
+        ("snapshot", ("checks", 0, "check_runs", 0, "conclusion"), "neutral"),
+        ("snapshot", ("checks", 0, "check_runs", 0, "status"), "in_progress"),
+        ("snapshot", ("checks",), []),
+        ("event", ("scope_decision_id",), "<remove>"),
+        ("event", ("scope_decision_id",), "unknown"),
+        ("event", ("pr_base", "ref"), "release"),
+        ("event", ("comparison_base",), "a" * 40),
+        ("event", ("retire_pr", "pull_request"), True),
+        ("event", ("retire_pr", "pull_request"), 0),
+        ("event", ("retire_pr", "pull_request"), -1),
+        ("event", ("retire_pr", "pull_request"), 1.5),
+        ("event", ("retire_pr", "head"), "short"),
+        ("event", ("retire_pr", "repository"), "other/repository"),
+        ("event", ("retire_pr", "allow_unmerged"), True),
+    ],
+)
+def test_pr_retirement_rejects_invalid_source_atomically(
+    tmp_path: Path,
+    retirement_case: dict[str, Any],
+    container: str,
+    path: tuple[Any, ...],
+    value: Any,
+) -> None:
+    target = retirement_case[container]
+    for key in path[:-1]:
+        target = target[key]
+    if value == "<remove>":
+        target.pop(path[-1])
+    else:
+        target[path[-1]] = value
+    receipt = review_session.state_path(tmp_path, "change")
+    before = receipt.read_bytes()
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", retirement_case["event"])
+    assert receipt.read_bytes() == before
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("decision", "pending"),
+        ("decision", "rejected"),
+        ("decision", "deferred"),
+        ("approved_by", "\u2003"),
+        ("approved_by", None),
+        ("retire_pr", {}),
+        ("pr_base", {"ref": "release", "sha": "a" * 40}),
+        ("comparison_base", "a" * 40),
+        ("intended_files", {}),
+    ],
+)
+def test_pr_retirement_requires_exact_scope_approval(
+    tmp_path: Path, retirement_case: dict[str, Any], field: str, value: Any
+) -> None:
+    approval = copy.deepcopy(retirement_case["approval"])
+    approval.update(id="other-approval")
+    approval[field] = value
+    if field == "intended_files":
+        with pytest.raises(ValueError):
+            review_session.record(tmp_path, "change", approval)
+        return
+    review_session.record(tmp_path, "change", approval)
+    event = dict(retirement_case["event"], scope_decision_id=approval["id"])
+    receipt = review_session.state_path(tmp_path, "change")
+    before = receipt.read_bytes()
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", event)
+    assert receipt.read_bytes() == before
+
+
+@pytest.mark.parametrize("problem", ["api-failure", "source-drift", "input-drift", "finding"])
+def test_pr_retirement_rejects_interrupted_capture(
+    tmp_path: Path, retirement_case: dict[str, Any], monkeypatch: pytest.MonkeyPatch, problem: str
+) -> None:
+    if problem == "finding":
+        review_session.record(
+            tmp_path, "change", {"id": "open-finding", "kind": "finding", "family": "source"}
+        )
+    elif problem == "api-failure":
+
+        def failed(*args: Any, **kwargs: Any) -> Any:
+            raise RuntimeError("API unavailable")
+
+        monkeypatch.setattr(review_session, "gh_json", failed)
+    elif problem == "source-drift":
+        reads = 0
+
+        def changed(*args: Any, **kwargs: Any) -> Any:
+            nonlocal reads
+            reads += 1
+            result = copy.deepcopy(retirement_case["pull"])
+            if reads > 1:
+                result["merged"] = False
+            return result
+
+        monkeypatch.setattr(review_session, "gh_json", changed)
+    else:
+        original = review_session.capture_inputs
+        captures = 0
+
+        def changing(*args: Any, **kwargs: Any) -> Any:
+            nonlocal captures
+            captures += 1
+            result = original(*args, **kwargs)
+            if captures > 1:
+                result["digest"] = "a" * 64
+            return result
+
+        monkeypatch.setattr(review_session, "capture_inputs", changing)
+    receipt = review_session.state_path(tmp_path, "change")
+    before = receipt.read_bytes()
+    with pytest.raises((ValueError, RuntimeError)):
+        review_session.record(tmp_path, "change", retirement_case["event"])
+    assert receipt.read_bytes() == before
+
+
+@pytest.mark.parametrize("missing", [False, True])
+def test_pr_retirement_requires_actual_merge_ancestry(
+    tmp_path: Path, retirement_case: dict[str, Any], missing: bool
+) -> None:
+    merge = (
+        "a" * 40
+        if missing
+        else subprocess.check_output(
+            [
+                "git",
+                "-C",
+                str(tmp_path),
+                "-c",
+                "user.name=Test",
+                "-c",
+                "user.email=test@example.com",
+                "commit-tree",
+                f"{TEST_HEAD}^{{tree}}",
+                "-m",
+                "unrelated",
+            ],
+            text=True,
+        ).strip()
+    )
+    approval = copy.deepcopy(retirement_case["approval"])
+    approval["id"] = "different-merge"
+    approval["retire_pr"]["merge_commit"] = merge
+    review_session.record(tmp_path, "change", approval)
+    event = copy.deepcopy(retirement_case["event"])
+    event.update(scope_decision_id=approval["id"], retire_pr=approval["retire_pr"])
+    retirement_case["pull"]["merge_commit_sha"] = merge
+    receipt = review_session.state_path(tmp_path, "change")
+    before = receipt.read_bytes()
+    with pytest.raises(ValueError):
+        review_session.record(tmp_path, "change", event)
+    assert receipt.read_bytes() == before
+
+
+@pytest.mark.parametrize("field", ["source", "snapshot", "ancestry", "retired_pr"])
+def test_pr_retirement_replay_rejects_missing_proof(
+    tmp_path: Path, retirement_case: dict[str, Any], field: str
+) -> None:
+    state = review_session.record(tmp_path, "change", retirement_case["event"])
+    provenance = copy.deepcopy(state["provenance"])
+    if field == "retired_pr":
+        provenance[-1].pop(field)
+    else:
+        provenance[-1]["retired_pr"].pop(field)
+    with pytest.raises(ValueError):
+        review_session.replay(state["genesis"], state["events"], provenance, None, 0)
+
+
+@pytest.mark.parametrize("later", ["COMMENTED", "PENDING", "DISMISSED"])
+def test_pr_retirement_cannot_launder_effective_rejection(
+    tmp_path: Path, retirement_case: dict[str, Any], later: str
+) -> None:
+    review = retirement_case["snapshot"]["reviews"][0][0]
+    review["state"] = "CHANGES_REQUESTED"
+    retirement_case["snapshot"]["reviews"][0].append(dict(review, id=116, state=later))
+    with pytest.raises(ValueError, match="requested changes"):
+        review_session.record(tmp_path, "change", retirement_case["event"])
+
+
+@pytest.mark.parametrize("drift", [False, True])
+def test_pr_retirement_collects_two_complete_passes_under_one_deadline(
+    tmp_path: Path,
+    retirement_case: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    drift: bool,
+) -> None:
+    calls: list[str] = []
+    deadlines: list[float | None] = []
+    snapshot = retirement_case["snapshot"]
+
+    def api(endpoint: str, *, paginate: bool = False) -> Any:
+        calls.append(endpoint)
+        deadlines.append(review_session.REQUEST_DEADLINE.get())
+        if not paginate:
+            return copy.deepcopy(retirement_case["pull"])
+        key = next(
+            key
+            for suffix, key in {
+                "/check-runs": "checks",
+                "/status?": "statuses",
+                "/reviews?": "reviews",
+                "/comments?": "comments",
+            }.items()
+            if suffix in endpoint
+        )
+        result = copy.deepcopy(snapshot[key])
+        if drift and key == "reviews" and sum("/reviews?" in call for call in calls) > 1:
+            result[0][0]["body"] = "new report"
+        return result
+
+    monkeypatch.setattr(review_session, "gh_snapshot", retirement_case["collect"])
+    monkeypatch.setattr(review_session, "gh_json", api)
+    monkeypatch.setattr(review_session, "gh_review_threads", lambda *args: [])
+    receipt = review_session.state_path(tmp_path, "change")
+    before = receipt.read_bytes()
+    if drift:
+        with pytest.raises(ValueError, match="changed between collection passes"):
+            review_session.record(tmp_path, "change", retirement_case["event"])
+        assert receipt.read_bytes() == before
+    else:
+        state = review_session.record(tmp_path, "change", retirement_case["event"])
+        assert state["provenance"][-1]["retired_pr"]["snapshot"]["reviews"] == snapshot["reviews"]
+        assert calls.count("repos/nold-ai/changecost/pulls/24") == 6
+    assert sum("/reviews?" in call for call in calls) == 2
+    assert len(set(deadlines)) == 1
+    assert deadlines[0] is not None
+    assert review_session.REQUEST_DEADLINE.get() is None
+
+
+def test_pr_retirement_accepts_squashed_source_head_without_ancestry(
+    tmp_path: Path, retirement_case: dict[str, Any]
+) -> None:
+    source_head = subprocess.check_output(
+        [
+            "git",
+            "-C",
+            str(tmp_path),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit-tree",
+            f"{TEST_HEAD}^{{tree}}",
+            "-m",
+            "squashed source",
+        ],
+        text=True,
+    ).strip()
+    approval = copy.deepcopy(retirement_case["approval"])
+    approval["id"] = "squash-approval"
+    approval["retire_pr"]["head"] = source_head
+    review_session.record(tmp_path, "change", approval)
+    event = dict(
+        retirement_case["event"], scope_decision_id=approval["id"], retire_pr=approval["retire_pr"]
+    )
+    retirement_case["pull"]["head"]["sha"] = source_head
+    retirement_case["snapshot"]["head"] = source_head
+    retirement_case["snapshot"]["reviews"][0][0]["commit_id"] = source_head
+    assert (
+        subprocess.run(
+            ["git", "-C", str(tmp_path), "merge-base", "--is-ancestor", source_head, event["head"]],
+            check=False,
+        ).returncode
+        == 1
+    )
+    assert review_session.record(tmp_path, "change", event)["pull_request"] is None
+
+
+def test_pr_retirement_keeps_family_escalation_and_budget_history(
+    tmp_path: Path, retirement_case: dict[str, Any]
+) -> None:
+    for identity in ("first", "escape", "later-escape"):
+        review_session.record(
+            tmp_path, "change", {"id": identity, "kind": "finding", "family": "same"}
+        )
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": identity + "-fixed",
+                "kind": "disposition",
+                "finding_id": identity,
+                "disposition": "fixed",
+            },
+        )
+        if identity == "escape":
+            review_session.record(
+                tmp_path,
+                "change",
+                {"id": "investigated", "kind": "investigation", "family": "same"},
+            )
+    review_session.record(
+        tmp_path,
+        "change",
+        {
+            "id": "allowance",
+            "kind": "extension",
+            "approved_by": "maintainer",
+            "batches": 3,
+            "minutes": 90,
+        },
+    )
+    before = review_session.load(tmp_path, "change")
+    escalation = review_session.family_decision(before)
+    assert escalation is not None and escalation[0] == "replan"
+    state = review_session.record(tmp_path, "change", retirement_case["event"])
+    assert review_session.family_decision(state) == review_session.family_decision(before)
+    for key in ("findings", "investigations", "budget", "batches", "active_minutes", "usage"):
+        assert state[key] == before[key]
+
+
+def test_pr_retirement_requires_fresh_complete_new_source_evidence(
+    tmp_path: Path, retirement_case: dict[str, Any]
+) -> None:
+    event = retirement_case["event"]
+    review_session.record(tmp_path, "change", event)
+    snapshot = copy.deepcopy(retirement_case["snapshot"])
+    snapshot.update(
+        pull_request=25,
+        head=event["head"],
+        pr_base=event["pr_base"],
+        _input_epoch="input-generation:1",
+    )
+    snapshot["reviews"][0][0]["commit_id"] = event["head"]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.load(tmp_path, "change")["monitor"]["pending"]
+    snapshot["reviews"][0][0]["submitted_at"] = "2099-01-01T00:00:00Z"
+    snapshot["checks"][0]["check_runs"][0]["started_at"] = "2099-01-01T00:00:00Z"
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    state = review_session.load(tmp_path, "change")
+    for category in ("gate", "reviewer"):
+        review_session.record(
+            tmp_path,
+            "change",
+            {
+                "id": "fresh-" + category,
+                "kind": "evidence",
+                "evidence_type": category,
+                "head": event["head"],
+                "result": "pass",
+                "binding": review_session.evidence_binding(state),
+                "reviewed_reports": review_session.report_receipts(snapshot),
+            },
+        )
+    review_session.record(
+        tmp_path, "change", {"id": "fresh-done", "kind": "phase", "phase": "complete"}
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "incomplete"
+    review_session.record(
+        tmp_path, "change", {"id": "fresh-time", "kind": "active_minutes", "minutes": 0}
+    )
+    assert review_session.status(tmp_path, "change")["action"] == "complete"
+    snapshot["comments"] = [[{"id": 999, "body": "new report"}]]
+    review_session.record_monitor_snapshot(tmp_path, "change", snapshot)
+    assert review_session.status(tmp_path, "change")["action"] != "complete"
+
+
+def test_pr_retirement_rejects_input_changes_during_remote_capture(
+    tmp_path: Path, retirement_case: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def changing_remote(*args: Any) -> Any:
+        (tmp_path / "input.txt").write_text("changed while fetching old source\n")
+        return copy.deepcopy(retirement_case["snapshot"])
+
+    monkeypatch.setattr(review_session, "gh_snapshot", changing_remote)
+    receipt = review_session.state_path(tmp_path, "change")
+    before = receipt.read_bytes()
+    with pytest.raises(review_session.ConflictError, match="inputs changed"):
+        review_session.record(tmp_path, "change", retirement_case["event"])
+    assert receipt.read_bytes() == before
+
+
+def test_pr_retirement_approval_preserves_exact_integer_identity(
+    tmp_path: Path, retirement_case: dict[str, Any]
+) -> None:
+    approval = copy.deepcopy(retirement_case["approval"])
+    approval.update(id="fractional-identity-approval")
+    approval["retire_pr"]["pull_request"] = 24.0
+    review_session.record(tmp_path, "change", approval)
+    event = dict(retirement_case["event"], scope_decision_id=approval["id"])
+    receipt = review_session.state_path(tmp_path, "change")
+    before = receipt.read_bytes()
+    with pytest.raises(ValueError, match="exact retirement"):
+        review_session.record(tmp_path, "change", event)
+    assert receipt.read_bytes() == before

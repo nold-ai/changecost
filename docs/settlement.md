@@ -3,7 +3,7 @@
 This checkout implements normalized import and economic computation for the unreleased
 `0.1.0.dev0` feasibility study. Verification and accepted limitations are recorded in
 [the change evidence](../openspec/changes/archive/2026-10-02-settlement-01-reconciliation/TDD_EVIDENCE.md).
-No provider parser, collector or budget enforcement is included. The separate
+The separately authorized finite Codex diagnostic reader is available below. Collection and budget enforcement remain unavailable. The separate
 [empirical Quote operation](quotes.md) computes offline synthetic estimates.
 
 ## Import, bind, compute and explain
@@ -190,3 +190,33 @@ selected records and preserving store bytes. The original cutoff-to-insertion
 anchor remains separate: its valid N→N+1 relation cannot authorize a result beyond
 the committed snapshot. Equality and later committed appends remain supported;
 portable artifact advice never consults the local store.
+
+## Import the approved finite Codex diagnostics
+
+```sh
+changecost settle --repository-id repo --import-codex selected.jsonl \
+  --source-profile codex-desktop-0163-finite-diagnostics \
+  --source-sha256 550db3df1e6f13f55744965c24db1825f4abd59443d9bd88600350ee25ba1a1f
+```
+
+Only the independently approved exact snapshot is eligible. This command imports
+16 response Evidence events and 96 separate category facts. Other files, appends,
+formatting changes, Work exports and unreviewed resumes reject. A byte-identical
+regular copy replays the same events. The receipt returns local Evidence selectors,
+counts and diagnostic codes without source paths or private identities. Use the
+existing exact `bind --evidence-id` operation later; import never infers a Run.
+
+The native mode requires all four selectors shown above and excludes normalized
+import, computation, Change, Run and lifecycle selectors. Mode validation precedes
+source acquisition and persistence. Sources are read-only regular files with no
+symlink in any traversed component. One descriptor supplies bounded hashed and
+parsed bytes. Limits are 10 MiB, 10,000 records, depth 32 and 4096 token digits.
+Duplicate keys, nonfinite numbers and malformed records reject atomically. Pre/post
+file metadata detects ordinary changes; it cannot prove absence of an adversarial
+concurrent rewrite. Select a stable snapshot. No source is collected or modified.
+
+These are partial serialized diagnostics. Served model, request time, backend
+presence, completeness and finality remain unknown, including serialized zeros.
+Legacy snapshots and request categories are never added together. Manual binding
+creates no EconomicEvidence, SourceCoverage, demand observation or policy. Numeric
+financial and demand eligibility retain their existing synthetic-only guards.

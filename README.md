@@ -15,7 +15,7 @@ Offline [empirical Quotes](docs/quotes.md) merged in [PR #32](https://github.com
 from complete synthetic history. Native CLI archival on 2026-10-04 synchronized the
 [accepted specification](openspec/specs/empirical-quotes/spec.md);
 [archived verification](openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/TDD_EVIDENCE.md)
-retains accepted limits. Native provider imports and calibration remain pending.
+retains accepted limits. The exact finite Codex diagnostic import is implemented locally; broader provider imports and calibration remain pending.
 The current branch adds [read-only advisory check](docs/cli.md#presentation-errors-and-advisory-budgets), opt-in human output and an [optional synthetic CI summary](docs/ci.md). Verified local historical values can be compared to exact budgets; imported and incomplete claims remain unknown. All valid advice exits zero; technical failures exit 2.
 Live collection requires a separate request. This repository remains private.
 
@@ -36,7 +36,7 @@ compares supplied projections with official contracts and records their limits.
 Its [v2 review](docs/providers/enterprise-v2-schema-review.md) adds reported VS Code
 message counters and checks synthetic examples without claiming native compatibility.
 Work OTel is reported disabled; custom session-log hook output is the next evidence source.
-No provider import profile or runtime adapter is approved yet. The token research
+One exact finite Codex diagnostic profile is approved and its local reader is implemented; broader source support remains unapproved. The token research
 case requires one record. Supported or partial source claims retain field meanings;
 partial or unverified claims retain unresolved evidence requirements. Inspection
 keeps malformed nested cases and unrepresentable UTC endpoints controlled, and
@@ -201,7 +201,7 @@ Source feasibility includes [offline development evidence checks](docs/providers
 Issue #9 is closed after accepted capability reconciliation in PR #39 and native
 CLI archival. The register now contains 24 profiles: the 23 historical profiles
 retain zero approvals, and one exact finite Codex diagnostic mapping has native
-usage approval. Runtime reader implementation remains blocked; activation grants
+usage approval. The finite reader is implemented locally under the separate 2026-10-24 authorization; activation alone grants
 no demand, financial or complete-accounting authority.
 CLI controls exercise safe private-manifest reports, changed-hash rejection and
 matrix drift/repair; structural success does not approve native provider profiles.
@@ -239,7 +239,7 @@ Default research checking binds the exact canonical fixture bytes to all twelve 
 `quote --demand` starts with honest zero knowledge, learns from eligible full-Change
 synthetic outcomes and exposes explicit directional transfer hypotheses. It adds
 to the delivered economic/advisory CLI.
-Missing measurements remain unknown. Codex/Claude readers, approved native demand
+Missing measurements remain unknown. Broader Codex and Claude readers, approved native demand
 accounting and measured pilot evaluation remain separate planned changes.
 Missing optional exports/admin access did not block accepted capability closeout;
 it did not approve native lanes or establish forecasting accuracy.

@@ -35,7 +35,7 @@ Documentation alone cannot establish observed support. Unverified is not unavail
 and neither means zero usage or zero cost. A missing field in one profile does not
 prove the provider never exposes it. Partial local evidence alone does not approve
 an import mapping. On 2026-10-23 one independently reviewed finite Codex diagnostic
-usage mapping was canonically activated. There is **no implemented native reader**;
+usage mapping was canonically activated. The exact finite diagnostic reader was separately authorized on 2026-10-24 and is implemented locally;
 all broader and economic authority gates remain separate.
 
 ## Profile register and derived matrix
@@ -565,3 +565,17 @@ inspection; canonical activation does not change that report's meaning. The
 and [activation evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
 record the separate decisions. No runtime reader, packaged admission, collection,
 native demand projection or financial authority is enabled.
+
+## Finite reader implementation, 2026-10-24
+
+The maintainer separately authorized the exact finite Codex runtime reader. The
+canonical register still has 24 profiles and one usage approval; all 23 historical
+objects and the approved profile/proof remain unchanged. `make generate` derives
+the packaged admission from that authority, and the normal index/build/test path
+rejects stale derivatives. Runtime imports no contributor quality tooling. An
+installed package needs an update to learn about later revocation. Only the frozen
+source SHA, selected ordinals and canonical projection are supported.
+
+[The reader evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+records local implementation checks and outstanding assurance. Broader source
+compatibility, demand and financial authority remain separate gates.

@@ -235,7 +235,9 @@
         "src/**/*.py",
         "quality/index.py",
         "quality/index.json",
-        ".agents/skills/*/SKILL.md"
+        ".agents/skills/*/SKILL.md",
+        "docs/providers/source-profiles.json",
+        "quality/source_admission.py"
       ],
       "kind": "generated"
     },
@@ -350,7 +352,9 @@
         "src/**/*.py",
         "quality/index.py",
         "quality/index.json",
-        ".agents/skills/*/SKILL.md"
+        ".agents/skills/*/SKILL.md",
+        "docs/providers/source-profiles.json",
+        "quality/source_admission.py"
       ],
       "kind": "generated"
     },
@@ -1235,6 +1239,14 @@
         "quality/source_feasibility.py",
         "tests/test_source_admission.py",
         "tests/test_source_feasibility.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-03-codex-local-import/specs/bounded-review-session/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-03-codex-local-import/specs/bounded-review-session/spec.md"
       ],
       "kind": "manual"
     }

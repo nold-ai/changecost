@@ -291,3 +291,9 @@ with networking blocked; it does not approve any provider integration.
 
 Contributor review can use the [behavioral evidence pilot](docs/development/behavioral-evidence.md) for bounded
 lifecycle controls and content-bound delta review. Final required gates remain mandatory.
+
+Finite Codex reader contributors run `make generate` after canonical admission
+changes. The checked package derivative is generated from the sole source register,
+not hand-maintained. Synthetic reader controls substitute only the private test
+loader; they never broaden production approval. Keep the original 23 profiles,
+approved semantic payload and historical proof bytes intact.

@@ -14,6 +14,38 @@ from quality.source_inspection import EvidenceError
 ROOT = Path(__file__).parents[1]
 
 
+def test_packaged_admission_is_generated_from_canonical_only(tmp_path):
+    from quality.index import check_outputs, render
+
+    outputs = render(ROOT)
+    assert "src/changecost/codex_admission.json" in outputs
+    envelope = json.loads(outputs["src/changecost/codex_admission.json"])
+    p = register()["profiles"][-1]
+    assert envelope["admission"] == p["admission"]
+    assert envelope["profile_digest"] == research.profile_digest(p)
+    assert (
+        envelope["approval_digest"]
+        == __import__("hashlib")
+        .sha256(
+            json.dumps(
+                p["approvals"][0],
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=True,
+                allow_nan=False,
+            ).encode()
+        )
+        .hexdigest()
+    )
+    target = tmp_path / "src/changecost"
+    target.mkdir(parents=True)
+    (target / "codex_admission.json").write_text("{}")
+    assert check_outputs(
+        tmp_path,
+        {"src/changecost/codex_admission.json": outputs["src/changecost/codex_admission.json"]},
+    )
+
+
 def register():
     return json.loads((ROOT / "docs/providers/source-profiles.json").read_text())
 

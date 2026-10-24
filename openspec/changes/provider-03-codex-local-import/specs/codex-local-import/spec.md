@@ -12,6 +12,12 @@ The Codex reader SHALL accept only explicitly selected existing local coding-ses
 - **WHEN** import is requested
 - **THEN** it rejects before persistence with a safe unsupported-profile code
 
+#### Scenario: Native CLI diagnostic boundary
+
+- **GIVEN** an unsupported native profile or a malformed source record
+- **WHEN** import rejects through the native CLI mode
+- **THEN** its error-v1 response retains a closed diagnostic code and optional bounded zero-based ordinal without source values, paths, identities or parser exception text; other modes retain their existing errors
+
 #### Scenario: Ordinary desktop chat
 
 - **GIVEN** a general chat export rather than an approved coding-session profile
@@ -160,6 +166,6 @@ Contributor tooling SHALL validate finite Codex admission payloads and their nat
 
 #### Scenario: Activation does not enable import
 
-- **GIVEN** the finite profile is canonically activated
-- **WHEN** product runtime capabilities are inspected
-- **THEN** no native reader, import command, packaged runtime admission or native demand/financial authority has been implemented or enabled by this contributor-only change
+- **GIVEN** the finite profile was canonically activated in the contributor-only stage on 2026-10-23, without separately authorized runtime implementation
+- **WHEN** the authority conferred by that activation alone is inspected
+- **THEN** that activation grants no implemented native reader, import command, packaged runtime admission or native demand/financial authority; the separately authorized finite reader stage must still satisfy its own runtime requirements

@@ -300,3 +300,28 @@ Current v4 applicability applies this check to every case of each selected recei
 including nested candidate/baseline validation at its frozen cutoff. Valid legacy
 receipts remain usable; ineligible historical receipts remain exactly replayable.
 No package version, SQLite schema or portable receipt field changes.
+
+## Diagnostic native usage
+
+The additive `native_usage` kind links one Evidence event to one source category.
+Its fields retain `repository_id`, `mapping_revision`, producer engine and coding
+surface, `first_acquisition_digest`, first profile and approval digests, opaque
+`event_identity`, category, accounting scope, exact integer quantity or null,
+interval, reported ownership, finality and completeness. Six source token categories
+remain separate, including total. Missing differs from zero; no category sum is
+inferred. Quantities reject booleans, fractions, negative values and more than
+4096 decimal digits. Portable provenance is still a producer claim.
+
+Unknown, partially bounded and bounded intervals validate their matching bounds.
+Unknown, root and child ownership retain only opaque reported lineage. A child
+requires its reported parent. Native corrections pair `previous` with `reason`,
+retain the event, repository, scope and category, and reject forks, cycles and
+producer changes. The initial finite reader supports no source corrections.
+
+Native event identity is independent of source filename, ordinal, repository and
+admission digests. Repository changes conflict, including manual binding to a Run
+in another repository. Equal replay preserves first Evidence, profile, acquisition,
+admission and availability. Native records confer no demand or financial authority.
+Current code reads old bundles. Older binaries can reject this additive kind.
+Before rollback, retain a SQLite backup and portable export; preserve native history
+and recover the backup into a separate path with a compatible current checkout.

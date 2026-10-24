@@ -407,3 +407,13 @@ new profile. [The activation evidence](changes/provider-03-codex-local-import/TD
 records contributor checks and independent verification. Reader implementation
 stays blocked and unstarted, as do runtime eligibility and native demand/financial
 authority. No collection, publication or release is authorized.
+
+## Authorized finite Codex runtime, 2026-10-24 Europe/Berlin
+
+The maintainer requested implementation of #36 for the exact approved finite
+snapshot. The local reader adds diagnostic portability and native-only import,
+pending verification and independent/provider/Linux assurance. Issue #36 remains
+open; the planning PR did not complete runtime delivery. Closed prerequisites
+#9/#12 and parent #7 remain unchanged. The canonical register remains 24 profiles
+with one finite usage approval. No broader reader, native demand, billing, live
+collection, calibration, release or publication follows.

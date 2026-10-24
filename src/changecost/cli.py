@@ -14,6 +14,7 @@ import typer
 from typer._click.globals import get_current_context
 
 from changecost import operations
+from changecost.codex_local import NativeImportError
 from changecost.models import (
     ComputedSettlement,
     EconomicScope,
@@ -70,6 +71,12 @@ def execute(operation) -> None:
             result = result.model_dump(mode="json", by_alias=True)
         format = get_current_context().meta.get("format", "json")
         typer.echo(human(result) if format == "human" else json.dumps(result, ensure_ascii=True))
+    except NativeImportError as exc:
+        diagnostic = exc.diagnostic.model_dump(exclude_none=True)
+        value = dict(schema="changecost/error-v1", message="native import rejected", **diagnostic)
+        format = get_current_context().meta.get("format", "json")
+        typer.echo(human(value) if format == "human" else json.dumps(value), err=True)
+        raise typer.Exit(2) from exc
     except ContractError as exc:
         error_output(get_current_context().meta.get("format", "json"))
         raise typer.Exit(2) from exc
@@ -270,6 +277,9 @@ def settle(
     correct_interval: bool = False,
     reason: str | None = None,
     import_evidence: Path | None = None,
+    import_codex: Path | None = None,
+    source_profile: str | None = None,
+    source_sha256: str | None = None,
     compute: bool = False,
     operation_id: str | None = None,
     economic_kind: str | None = None,
@@ -279,7 +289,7 @@ def settle(
     source_start: str | None = None,
     source_end: str | None = None,
 ) -> None:
-    """Import normalized economics, compute a revision, or declare lifecycle facts."""
+    """Import finite Codex diagnostics, normalized economics, or declare/compute facts."""
     economic_options = dict(
         economic_kind=economic_kind,
         unit=unit,
@@ -293,6 +303,28 @@ def settle(
     def perform():
         economic = import_evidence is not None or compute
         fields = operation_id is not None or any(v is not None for v in economic_options.values())
+        native = import_codex is not None or source_profile is not None or source_sha256 is not None
+        if native:
+            if (
+                economic
+                or fields
+                or change_id is not None
+                or any(v is not None for v in lifecycle)
+                or correct_outcome
+                or correct_interval
+            ):
+                raise ContractError("settle modes are mutually exclusive")
+            from changecost.codex_local import CodexSelection, import_codex_file
+
+            selection = CodexSelection.model_validate(
+                dict(
+                    repository_id=repository_id,
+                    path=import_codex,
+                    profile_id=source_profile,
+                    expected_sha256=source_sha256,
+                )
+            )
+            return import_codex_file(context.obj, selection)
         if economic:
             if any(v is not None for v in lifecycle) or correct_outcome or correct_interval:
                 raise ContractError("settle modes are mutually exclusive")

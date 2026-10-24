@@ -74,6 +74,7 @@ Implemented command surface:
 - `changecost settle --currency`
 - `changecost settle --economic-kind`
 - `changecost settle --help`
+- `changecost settle --import-codex`
 - `changecost settle --import-evidence`
 - `changecost settle --operation-id`
 - `changecost settle --outcome`
@@ -83,6 +84,8 @@ Implemented command surface:
 - `changecost settle --run-id`
 - `changecost settle --run-outcome`
 - `changecost settle --source-end`
+- `changecost settle --source-profile`
+- `changecost settle --source-sha256`
 - `changecost settle --source-start`
 - `changecost settle --surface`
 - `changecost settle --unit`
@@ -93,4 +96,4 @@ Help and version succeed offline. Bare or unknown commands exit nonzero.
 No database, configuration or evidence files are created by these invocations.
 
 `bind` registers/maps/imports; `settle` declares lifecycle, imports normalized evidence or computes;
-`explain` inspects/exports and reports repository remainder. `quote` computes offline empirical estimates. `check` compares explicit historical records to compatible budgets, with valid unknown advice. Provider adapters remain planned.
+`explain` inspects/exports and reports repository remainder. `quote` computes offline empirical estimates. `check` compares explicit historical records to compatible budgets, with valid unknown advice. `settle --import-codex` imports only the exact approved finite diagnostic snapshot without demand or financial authority.

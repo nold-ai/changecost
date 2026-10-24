@@ -92,7 +92,8 @@ native code completion under the shared policy.
 Comments, pending submissions and dismissal of another review cannot clear that
 objection. Only a later approval or a fresh snapshot showing the original rejecting
 review dismissed can clear it.
-Use exact provider logins, including `[bot]`, and bind the repository/PR once. Schema-8
+Use exact provider logins, including `[bot]`, and bind the repository/PR once per active stage. Only the explicitly approved
+merged-stage retirement in the shared workflow releases a historical binding. Schema-8
 replay reconciles all cached fields; missing or incompatible history requires
 recovery, never reinitialization. Final published inputs must be clean. Exclude
 non-findings from family escalation while retaining genuine fixed recurrences.
@@ -175,3 +176,19 @@ checks its closed shapes, exact integer membership/cardinalities, classification
 and projection policy and fixed limits. Exact activation regressions retain the
 approved profile/proof and original historical objects. Structural validation and
 inspection do not authenticate semantic review or implement a native reader.
+
+The finite reader package derivative is generated from the canonical register by
+`make generate` and checked by the normal index gate. Runtime imports no quality
+module. Authored positive fixtures are test substitutions, not native approvals.
+Current-version portability and backup checks do not establish old-binary support
+for the additive NativeUsage kind or waive fresh supported-Linux review.
+
+## Merged-stage source recovery
+
+The [shared workflow](30-change-workflow.md#retire-a-merged-earlier-stage-pr-without-resetting-its-session)
+defines the sole exception to fixed PR binding. An explicit approved refresh may
+retire a verified closed/merged earlier-stage source after actual source/report and
+local ancestry checks. It preserves every budget and historical obligation while
+requiring a new input epoch, positive freshness floor and normal runtime PR binding.
+Retired sources cannot return through delayed observations. Recovery is no passing
+gate, provider approval, new allowance or waiver of supported-Linux assurance.

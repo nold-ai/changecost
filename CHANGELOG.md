@@ -3,6 +3,15 @@
 
 ## Unreleased
 
+- Add explicitly approved retirement of a merged review-stage PR, preserving ledger
+  history and budgets while requiring fresh runtime evidence and rejecting delayed
+  rebinding to the retired source.
+
+- Add explicit finite Codex diagnostic import with strict read-only admission,
+  atomic semantic replay, portable NativeUsage and exact manual repository binding.
+  Native demand, billing and complete-task authority remain unavailable.
+
+
 - Activate the independently approved finite Codex diagnostic usage profile in the
   contributor register, preserving the 23 historical profiles and their zero
   approvals. Validate finite admission structure and exact proof bindings; keep

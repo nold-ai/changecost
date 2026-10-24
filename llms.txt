@@ -1,6 +1,6 @@
 # ChangeCost
 
-> Private, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. Provider operations remain planned.
+> Private, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. One finite Codex diagnostic snapshot is supported; broader provider operations remain planned.
 
 ## Project and evidence
 
@@ -47,7 +47,7 @@
 - [Adaptive demand — offline implementation](docs/forecasting.md): Offline local demand policy, observed learning, transfer and separate native validation gates.
 - [Adaptive-demand evidence and decisions](docs/research/adaptive-demand-evidence.md): Primary research limits, bounded local discovery, architecture decisions and exact remaining native proof.
 - [Adaptive-demand proposal](openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md): Accepted offline demand contracts and explicit CLI mode, archived after PR #45 with financial authority preserved.
-- [Codex local-reader proposal](openspec/changes/provider-03-codex-local-import/proposal.md): Prepared offline reader and portable diagnostic native usage; exact native approval and later demand projection remain separate.
+- [Codex local-reader proposal](openspec/changes/provider-03-codex-local-import/proposal.md): Finite diagnostic reader and portable native facts implemented locally; broader native demand and publication remain separate.
 - [Claude local-reader proposal](openspec/changes/provider-04-claude-local-import/proposal.md): Planned explicit offline coding-session metadata, revised usage and estimated-money boundaries.
 - [Adaptive-demand preparation evidence](openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md): Planning recovery, independent review, backlog reconciliation and local assurance limits.
 - [Risk-first execution guidance and pending trial](openspec/changes/dev-workflow-03-risk-first-execution/proposal.md): Implemented contributor guidance for critical-assumption proof, evidence-based triage and existing review handoffs; publication acceptance and a separately authorized trial remain pending.
@@ -55,8 +55,8 @@
 - [Accepted adaptive-demand specification](openspec/specs/adaptive-demand/spec.md): CLI-synchronized offline demand contracts, chronological local learning and scoped transfer; native approval and calibration remain separate.
 - [Codex reader preparation evidence](openspec/changes/provider-03-codex-local-import/PREPARATION_EVIDENCE.md): Current code/protocol inspection, architecture alternatives and unresolved source-accounting and native-assurance gates.
 - [Codex native accounting evidence](openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md): Native observations, historical denied candidates and exact finite semantic approval; canonical activation remains separate from reader implementation.
-- [Codex finite producer binding](openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md): Retained approved contract for exact snapshot admission and partial serialized diagnostics; canonical mapping activated, runtime reader blocked.
-- [Codex finite mapping activation evidence](openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md): Contributor-only canonical approval, admission controls and historical baseline evidence; runtime reader remains blocked.
+- [Codex finite producer binding](openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md): Retained approved exact snapshot policy; finite runtime implemented locally, broader admission and authority remain separate.
+- [Codex finite mapping activation evidence](openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md): Historical activation plus separately authorized finite runtime TDD, source replay and explicit remaining assurance.
 
 ## Local skills
 

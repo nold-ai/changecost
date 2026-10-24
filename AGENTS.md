@@ -64,7 +64,7 @@ was accepted in PR #39 on 2026-10-08. Native CLI archival synchronized its
 evidence gates; the original 23 profiles retain zero approvals. On 2026-10-23
 the maintainer authorized canonical activation of one independently approved finite
 Codex diagnostic mapping and contributor admission controls. The register now has
-24 profiles and one usage approval. Reader implementation remains blocked. Offline adaptive demand
+24 profiles and one usage approval. The exact finite reader runtime was authorized on 2026-10-24 and is implemented locally pending full assurance. Broader native readers remain separate. Offline adaptive demand
 #35 merged in PR #43; the issue-44 correction merged in PR #45. The maintainer
 accepted it on 2026-10-18 and requested native CLI archival. The archive retains
 the accepted grouped-red proof limitation and historical review scope.

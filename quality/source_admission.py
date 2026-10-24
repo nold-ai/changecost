@@ -3,6 +3,8 @@
 Structural validity does not authenticate approval or the projection commitment.
 """
 
+import hashlib
+import json
 import re
 from urllib.parse import urlsplit
 
@@ -98,6 +100,28 @@ ADMISSION_KEYS = {
     "limits",
     "decisions",
 }
+
+
+def packaged_admission(register):
+    """Derive the shipped finite mapping from the sole canonical approval authority."""
+    from quality.source_feasibility import profile_digest, validate_register
+
+    if validate_register(register):
+        raise ValueError("invalid canonical source register")
+    profiles = [p for p in register["profiles"] if "admission" in p]
+    if len(profiles) != 1:
+        raise ValueError("expected one finite mapping")
+    profile = profiles[0]
+    proof = next(p for p in profile["approvals"] if p["capability"] == "usage")
+    encoded = json.dumps(
+        proof, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False
+    )
+    return {
+        "profile_id": profile["id"],
+        "profile_digest": profile_digest(profile),
+        "approval_digest": hashlib.sha256(encoded.encode()).hexdigest(),
+        "admission": profile["admission"],
+    }
 
 
 def _shape(value, keys):

@@ -28,6 +28,7 @@ from changecost.models import (
     Evidence,
     EvidenceBinding,
     Interval,
+    NativeUsage,
     Observation,
     Outcome,
     PortableRecord,
@@ -97,6 +98,10 @@ def lookup(records: dict, ref: RecordRef, kind: str | None = None) -> PortableRe
 
 
 def subject(record: PortableRecord) -> Any:
+    if isinstance(record, NativeUsage):
+        from changecost.native_graph import native_subject
+
+        return native_subject(record)
     if isinstance(record, Outcome):
         return key(record.subject)
     if isinstance(record, Interval):
@@ -123,6 +128,7 @@ def revision_errors(record: PortableRecord, records: dict) -> None:
                 ComputedSettlement,
                 DemandObservation,
                 DemandValidation,
+                NativeUsage,
             ),
         )
         or record.previous is None
@@ -147,6 +153,10 @@ def revision_errors(record: PortableRecord, records: dict) -> None:
 def dependencies(
     record: PortableRecord, records: dict, runs: dict, bindings: dict, run_bindings: dict
 ) -> list[RecordRef]:
+    if isinstance(record, NativeUsage):
+        from changecost.native_graph import native_refs
+
+        return native_refs(record, records, bindings)
     from changecost.economic_graph import computed_refs, economic_refs, source_refs
 
     if isinstance(record, EconomicEvidence):
@@ -266,6 +276,9 @@ def graph_indexes(records: dict) -> tuple[dict, dict, dict]:
 
 
 def validate_graph(records: dict) -> dict:
+    from changecost.native_graph import validate_native
+
+    validate_native(records)
     runs, bindings, run_bindings = graph_indexes(records)
     domains: dict[str, tuple] = {}
     children: set[tuple] = set()
@@ -285,6 +298,7 @@ def validate_graph(records: dict) -> dict:
                 ComputedSettlement,
                 DemandObservation,
                 DemandValidation,
+                NativeUsage,
             ),
         ):
             parent = key(record.previous) if record.previous else None

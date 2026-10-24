@@ -45,3 +45,9 @@ Native import SHALL append Evidence and NativeUsage together through the existin
 - **GIVEN** an existing response event and equal canonical facts replayed through a later approved admission
 - **WHEN** profile, proof or acquisition digests differ
 - **THEN** existing references, first source/admission digests and availability remain immutable; producer or lineage changes under the same key reject atomically
+
+#### Scenario: Native repository and event consistency
+
+- **GIVEN** native facts share an original event across source categories or a later exact manual Evidence binding
+- **WHEN** a portable fact changes that event's producer or reported lineage, or binds its repository to a Run in another repository
+- **THEN** the entire transaction rejects without minting a profile-dependent duplicate event or changing original availability

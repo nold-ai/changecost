@@ -6,6 +6,17 @@ from pathlib import Path
 import pytest
 
 
+def copy_generator_register(root):
+    import shutil
+
+    destination = root / "docs/providers"
+    destination.mkdir(parents=True)
+    shutil.copyfile(
+        Path(__file__).parents[1] / "docs/providers/source-profiles.json",
+        destination / "source-profiles.json",
+    )
+
+
 @pytest.fixture
 def gates():
     assert importlib.util.find_spec("quality.docs") is not None, "documentation gate is missing"
@@ -150,6 +161,7 @@ def test_generator_detects_changed_skill_and_duplicates(tmp_path):
     shutil.copytree(root / ".agents", tmp_path / ".agents")
     (tmp_path / "quality").mkdir()
     (tmp_path / "quality/index.json").write_text("[]\n")
+    copy_generator_register(tmp_path)
     first = render(tmp_path)
     skill = next((tmp_path / ".agents/skills").glob("*/SKILL.md"))
     skill.write_text(
@@ -367,6 +379,7 @@ def test_generator_tracks_command_tree_and_options(monkeypatch, tmp_path):
 
     (tmp_path / "quality").mkdir()
     (tmp_path / "quality/index.json").write_text("[]\n")
+    copy_generator_register(tmp_path)
     app = typer.Typer()
 
     @app.callback()

@@ -143,7 +143,7 @@ the required GitHub reviewer logins, nonempty `required_checks` names and explic
 declared review policy; do not infer protected-branch settings from them. Missing
 declared checks or statuses leave the session pending even when API pages are empty.
 Name the exact repository and REST reviewer logins, including `[bot]`. The first
-PR selection becomes immutable. Schema-8 canonical replay reconciles all derived
+PR selection remains fixed except for explicitly approved merged-stage retirement. Schema-8 canonical replay reconciles all derived
 fields with original events and separately captured time/input facts. Minute budgets,
 active time and measured usage use finite canonical sums of their original components;
 overflow rejects the update without changing the receipt. Batch counts remain integers,
@@ -869,3 +869,30 @@ reader. The existing inspection CLI still reports semantic approval false. The
 [Codex activation evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
 records actual negative/repair tests, checks and independent verification. Missing
 SpecFact/native/Linux/provider assurance remains incomplete; no gate is waived.
+
+## Finite runtime admission generation
+
+`make generate` also writes `src/changecost/codex_admission.json` from the validated
+canonical source register and its exact native usage proof. The ordinary index
+gate compares the whole generated derivative and fails drift. The package build
+ships this JSON as a runtime resource, with no quality dependency. Synthetic
+positive reader fixtures replace only the private loader in tests. Production
+accepts only the frozen source digest, ordinals and canonical projection.
+
+## Recover a merged-stage review source
+
+An explicitly approved `advance_head.retire_pr` transition can retire a merged
+earlier-stage PR without replacing the review session. Follow the exact payload
+and approval procedure in the [shared workflow](../agent-rules/30-change-workflow.md#retire-a-merged-earlier-stage-pr-without-resetting-its-session).
+Recording captures the actual closed/merged source, stable complete report facts
+and locally checked merge ancestry. Invalid source proof, unresolved objections
+or findings, and failed/pending/missing gates reject atomically. Historical positive
+freshness cannot certify the new stage and is not required to retire the old one.
+
+The refresh retains every original event, finding, family, counter and measurement,
+clears active monitoring, advances the epoch/freshness floor and permits a different
+PR to bind normally. Recorded retirement history rejects explicit and automatic
+rebinding of the old source. Pure replay needs no Git or network; old schema-8
+histories still load, while older helpers reject the additional provenance. Preserve
+receipts and backups if rolling back code. Recovery never substitutes for final
+current-input checks, provider reviews, timing or supported-Linux execution.
