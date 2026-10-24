@@ -1,9 +1,12 @@
 import hashlib
 import json
 import os
+import subprocess
+import sys
 from datetime import UTC, datetime
 
 import pytest
+from rich.text import Text
 from typer.testing import CliRunner
 
 from changecost.cli import app
@@ -25,6 +28,17 @@ def selected(tmp_path, monkeypatch):
         expected_sha256=hashlib.sha256(raw).hexdigest(),
     )
     return codex_local, selection, raw, envelope
+
+
+def assert_private_native_projection(store):
+    text = store.export_bundle().model_dump_json()
+    assert "PRIVATE" not in text
+    facts = [r for r in store.records() if r.kind == "native_usage"]
+    assert len(facts) == 12 and all(
+        r.model is None and r.interval.state == "unknown" for r in facts
+    )
+    assert all(r.finality == r.scope_completeness == r.backend_presence == "unknown" for r in facts)
+    assert all(r.ownership.state == "child" for r in facts)
 
 
 def test_finite_replay_and_private_projection(selected, tmp_path):
@@ -54,14 +68,7 @@ def test_finite_replay_and_private_projection(selected, tmp_path):
     later = selection.model_copy(update={"expected_sha256": hashlib.sha256(formatted).hexdigest()})
     assert reader.import_codex_file(store, later).inserted_fact_count == 0
     assert store.export_bundle() == before
-    text = store.export_bundle().model_dump_json()
-    assert "PRIVATE" not in text
-    facts = [r for r in store.records() if r.kind == "native_usage"]
-    assert len(facts) == 12 and all(
-        r.model is None and r.interval.state == "unknown" for r in facts
-    )
-    assert all(r.finality == r.scope_completeness == r.backend_presence == "unknown" for r in facts)
-    assert all(r.ownership.state == "child" for r in facts)
+    assert_private_native_projection(store)
     assert selection.path.read_bytes() == formatted
     envelope["profile_digest"] = "f" * 64
     envelope["approval_digest"] = "e" * 64
@@ -299,11 +306,29 @@ def test_cli_native_mode_rejects_before_store(tmp_path):
     assert not db.exists()
 
 
-def test_cli_exposes_explicit_native_selection():
-    result = CliRunner().invoke(app, ["settle", "--help"])
-    assert "--import-codex" in result.output
-    assert "--source-profile" in result.output
-    assert "--source-sha256" in result.output
+@pytest.mark.parametrize("colored", [False, True], ids=["plain", "colored"])
+def test_cli_exposes_explicit_native_selection(colored):
+    env = os.environ.copy()
+    env.update(TERM="xterm-256color", GITHUB_ACTIONS="true")
+    env.pop("NO_COLOR", None)
+    env.pop("_TYPER_FORCE_DISABLE_TERMINAL", None)
+    env["FORCE_COLOR"] = "1"
+    if not colored:
+        env["NO_COLOR"] = "1"
+        env["_TYPER_FORCE_DISABLE_TERMINAL"] = "1"
+    result = subprocess.run(
+        [sys.executable, "-m", "changecost", "settle", "--help"],
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+    )
+    assert result.returncode == 0, result.stderr
+    assert ("\x1b[" in result.stdout) is colored
+    visible = Text.from_ansi(result.stdout).plain
+    assert "--import-codex" in visible
+    assert "--source-profile" in visible
+    assert "--source-sha256" in visible
 
 
 def test_native_cli_preserves_safe_unsupported_code(tmp_path):

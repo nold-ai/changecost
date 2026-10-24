@@ -396,3 +396,87 @@ private CI bootstrap is final acceptance. Recovery preserves historical allowanc
 and obligations. Roll back source before recording by scoped revert; after recording,
 preserve receipt and backup and require compatible recovery rather than deleting
 history or claiming old-helper support.
+
+## Native complexity and visible-help correction, 2026-10-25 Europe/Berlin
+
+The first runtime Linux matrix, run `40135593556` at commit
+`5a0f4f41c2595ee2b6ce41d131cdf41a4e97962f`, failed both supported host legs.
+Both signed native reports ran all ten required members. Nine passed; Radon 6.0.1
+reported five blocking complexities of 20, 16, 22, 19 and 18 in the settle
+dispatcher, request projection, file projection, replay/privacy test and retirement
+history test. Each native target passed 3,412 unique tests and four subtests with
+94.955% statement coverage, but each host suite passed 3,411 tests and failed the
+raw help-option assertion. These are failed attempts, not current acceptance.
+Original ZIPs, reports, metadata and logs remain unchanged under the ignored
+`verification-20261024/ci-run-40135593556/` directory.
+
+The independent family investigation covered all 94 changed/new functions across
+14 Python files. It found no sixth function above the unchanged complexity limit.
+The existing `admission-structure-complexity` family retains its earlier fixed
+finding and this new escape. The separate `cli-visible-help-oracle` finding belongs
+to the same collected correction batch. Investigation and correction do not reset
+history, counters, budgets or required reviewer/native obligations.
+
+The correction separates exact payload validation from fact construction, and
+whole-file classification/header selection from deduplication and projection
+commitment. Validation order, strict integer and lineage checks, stable identities,
+complete finite binding and the single store transaction remain unchanged.
+The native CLI helper owns conflict validation, typed selection and import. Its
+caller passes boolean mode conflicts separately from optional selector values,
+preserving `is not None` checks for empty selectors and rejection before selection
+validation or acquisition. A first nested-helper sketch passed Radon but made the
+enclosing settle function fail Ruff at 11 against its limit of 10. The final
+module-level native helper follows the existing economic-request boundary and
+passes both checks without a threshold change.
+
+The original connected replay/privacy and retirement/rebinding scenarios remain.
+Two named assertion helpers retain their cohesive privacy and history invariants.
+AST comparison against the original commit confirms identical multisets of all
+45 non-help assertions in the reader test module and all 416 assertions in the
+review-session test module. The help test retains all three required visible
+options and now uses actual subprocesses for plain and forced-color rendering.
+It checks successful exit and the expected presence or absence of ANSI sequences
+before normalizing the visible text with Rich's existing ANSI parser.
+
+Before normalization, the original test reproduced the actual ANSI substring
+failure under `TERM=xterm-256color GITHUB_ACTIONS=true FORCE_COLOR=1`, with
+`NO_COLOR` and `_TYPER_FORCE_DISABLE_TERMINAL` unset. The new two-mode test also
+failed before repair with one plain pass and one colored failure. Its mismatch was
+`AssertionError: assert '--import-codex' in` the ANSI-styled help output.
+After normalization, both cases passed under the same forced-color environment.
+No product color setting, dependency, test selection or CI configuration changed.
+
+Local Python 3.13.14 validation ran with the existing environment and console-script
+PATH. The final reader, native-model, review-session, general CLI and settlement
+CLI modules passed 743 tests and four subtests in 20.96 seconds. Ruff lint and
+format checks passed for all four changed Python files. Targeted BasedPyright
+reported zero errors, warnings and notes. Radon 6.0.1 now reports 13 for the settle
+dispatcher, 4 for its native helper, 14/3 for payload validation/projection, 13/10
+for selection/file projection, 7/13 for privacy helper/scenario and 12/7 for
+retirement helper/scenario. The new help test has complexity 7. All remain below
+the unchanged native limit of 15.
+
+The complete final changed/new function inventory contains 99 functions across
+the same 14 Python files, including nested functions and five new helpers. All
+have Radon complexity at most 15. Documentation and metadata checks passed against
+both the current HEAD baseline and aggregate base `4fcc9432ef46252470dfa9390bdb4ff31247dd43`.
+The generated-index check passed without rewriting output. These working-tree
+checks cover incremental freshness but do not replace the parent's actual staged
+snapshot checks.
+
+Commands, red/green outputs, assertion mapping, full Radon output and exact
+old/new documentation rationale bindings are retained in the ignored
+`verification-20261024/native-fix/` directory. Unchanged mapped documents receive
+only specific content-bound rationale updates; archived evidence remains intact.
+The changelog records this refactor and test-oracle correction without claiming
+a new capability or approval.
+
+These local results do not certify a new Linux matrix or final acceptance.
+Independent affected-scope closure, the exact local private-source/package proof,
+full aggregate and staged checks, fresh supported-Linux Python/native reports and
+current provider review remain required. Tasks 3.3, 3.4 and 4.3 remain incomplete.
+The main regression risks are changed diagnostic precedence, lost assertions and
+weakened atomic history transitions. Preserved statement order, assertion mapping
+and the existing negative/repaired tests address those risks locally; current
+native and independent evidence remain pending. Rollback is a scoped follow-up
+revert that retains the failed attempts, ledger history and original source proof.

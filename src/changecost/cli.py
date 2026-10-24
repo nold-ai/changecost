@@ -305,26 +305,17 @@ def settle(
         fields = operation_id is not None or any(v is not None for v in economic_options.values())
         native = import_codex is not None or source_profile is not None or source_sha256 is not None
         if native:
-            if (
-                economic
-                or fields
-                or change_id is not None
-                or any(v is not None for v in lifecycle)
-                or correct_outcome
-                or correct_interval
-            ):
-                raise ContractError("settle modes are mutually exclusive")
-            from changecost.codex_local import CodexSelection, import_codex_file
-
-            selection = CodexSelection.model_validate(
+            return native_request(
+                context.obj,
                 dict(
                     repository_id=repository_id,
                     path=import_codex,
                     profile_id=source_profile,
                     expected_sha256=source_sha256,
-                )
+                ),
+                (economic, fields, correct_outcome, correct_interval),
+                (change_id, *lifecycle),
             )
-            return import_codex_file(context.obj, selection)
         if economic:
             if any(v is not None for v in lifecycle) or correct_outcome or correct_interval:
                 raise ContractError("settle modes are mutually exclusive")
@@ -369,6 +360,14 @@ def settle(
         }
 
     execute(perform)
+
+
+def native_request(store, selection, conflicting_modes, conflicting_selectors):
+    if any(conflicting_modes) or any(value is not None for value in conflicting_selectors):
+        raise ContractError("settle modes are mutually exclusive")
+    from changecost.codex_local import CodexSelection, import_codex_file
+
+    return import_codex_file(store, CodexSelection.model_validate(selection))
 
 
 @app.command()

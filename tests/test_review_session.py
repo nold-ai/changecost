@@ -4668,14 +4668,9 @@ def retirement_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str
     }
 
 
-def test_merged_pr_retirement_preserves_history_and_releases_new_source(
-    tmp_path: Path, retirement_case: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+def assert_retirement_preserves_history(
+    before: dict[str, Any], state: dict[str, Any], marker: Path, genesis_bytes: bytes
 ) -> None:
-    before = review_session.load(tmp_path, "change")
-    marker = review_session.state_path(tmp_path, "change").with_name("genesis.json")
-    genesis_bytes = marker.read_bytes()
-    event = retirement_case["event"]
-    state = review_session.record(tmp_path, "change", event, expected_revision=before["revision"])
     assert state["pull_request"] is None
     for key in (
         "contract",
@@ -4699,6 +4694,17 @@ def test_merged_pr_retirement_preserves_history_and_releases_new_source(
     assert state["context_since"] == state["provenance"][-1]["recorded_at"]
     assert review_session.binding_epoch(state) == "input-generation:1"
     assert review_session.current_evidence(state) == []
+
+
+def test_merged_pr_retirement_preserves_history_and_releases_new_source(
+    tmp_path: Path, retirement_case: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    before = review_session.load(tmp_path, "change")
+    marker = review_session.state_path(tmp_path, "change").with_name("genesis.json")
+    genesis_bytes = marker.read_bytes()
+    event = retirement_case["event"]
+    state = review_session.record(tmp_path, "change", event, expected_revision=before["revision"])
+    assert_retirement_preserves_history(before, state, marker, genesis_bytes)
 
     def unavailable(*args: Any, **kwargs: Any) -> Any:
         raise AssertionError("offline replay and exact retry must not reacquire facts")

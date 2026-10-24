@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+- Separate finite Codex payload validation, classified request selection and CLI
+  admission from projection without changing import behavior. Preserve replay and
+  retirement assertions in named invariant helpers, and check visible CLI options
+  under both plain and ANSI-colored help rendering.
+
 - Add explicitly approved retirement of a merged review-stage PR, preserving ledger
   history and budgets while requiring fresh runtime evidence and rejecting delayed
   rebinding to the retired source.

@@ -242,7 +242,7 @@ def _canonical_fact(record: NativeUsage):
     )
 
 
-def _project_row(payload, header, envelope, repository_id):
+def _validate_request_payload(payload, header):
     required = {"thread_id", "turn_id", "session_id", "root_turn_id", "response_id"}
     if set(payload) != required | {"usage", "turn_token_usage", "thread_token_usage"}:
         raise NativeImportError("unsupported_source_shape")
@@ -259,6 +259,11 @@ def _project_row(payload, header, envelope, repository_id):
     parent = header.get("parent_thread_id")
     if parent is not None and (not isinstance(parent, str) or not parent.strip()):
         raise NativeImportError("invalid_source_lineage")
+    return parent
+
+
+def _project_row(payload, header, envelope, repository_id):
+    parent = _validate_request_payload(payload, header)
     event = _digest(
         [
             "codex-request-event-v1",
@@ -305,8 +310,7 @@ def _project_row(payload, header, envelope, repository_id):
     ]
 
 
-def _project(rows, envelope, repository_id):
-    admission = envelope["admission"]
+def _select_requests(rows, admission):
     classification = admission["classification"]
     outer = Counter(row.get("type") for row in rows)
     events = Counter(row["payload"].get("type") for row in rows if row.get("type") == "event_msg")
@@ -321,9 +325,15 @@ def _project(rows, envelope, repository_id):
     headers = [row["payload"] for row in rows if row.get("type") == "session_meta"]
     if len(headers) != 1:
         raise NativeImportError("unsupported_source_header")
+    return selected, headers[0]
+
+
+def _project(rows, envelope, repository_id):
+    admission = envelope["admission"]
+    selected, header = _select_requests(rows, admission)
     facts = {}
     for ordinal in selected:
-        for fact in _project_row(rows[ordinal]["payload"], headers[0], envelope, repository_id):
+        for fact in _project_row(rows[ordinal]["payload"], header, envelope, repository_id):
             if fact.record_id in facts and _canonical_fact(
                 facts[fact.record_id]
             ) != _canonical_fact(fact):
