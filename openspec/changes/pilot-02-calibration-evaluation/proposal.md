@@ -36,7 +36,7 @@ No fabricated live measurements, collection during planning, product launch clai
 
 ## Dependencies
 
-- [forecast-01-local-adaptive-demand](../forecast-01-local-adaptive-demand/proposal.md)
+- [forecast-01-local-adaptive-demand](../archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md)
 - Delivered core-02 #11 and reconciliation #12.
 - Approved readers #13/#14 and Codex/Claude are prerequisites only for their respective native evaluation lanes, not universal gates.
 - [quote-01-empirical-estimation](../archive/2026-10-04-quote-01-empirical-estimation/proposal.md)

@@ -1,6 +1,6 @@
 # Project brief
 
-Status: **pilot planning / To-Validate**, updated 2026-10-08 (Europe/Berlin).
+Status: **pilot planning / To-Validate**, updated 2026-10-18 (Europe/Berlin).
 All approved pilot changes belong to the first **unreleased 0.x alpha/preview
 feasibility study**. No product version has been published. The current package is
 `0.1.0.dev0`; internal artifact labels do not imply a product 1.0 release or stable
@@ -100,9 +100,13 @@ gates. Provider approval and calibration remain separate.
 
 Source feasibility #9 is accepted after PR #39 merged on 2026-10-08. Its
 offline checker, register and research controls are delivered; native CLI archival
-synchronized the evidence gates. All 23 profiles still have zero native approvals.
-Offline adaptive demand #35 is authorized and locally implemented as of 2026-10-11,
-with verification/acceptance pending. Normalized input can persist provider-shaped evidence;
+synchronized the evidence gates. The 23 historical profiles retain zero native
+approvals. On 2026-10-23 the maintainer authorized canonical activation of one
+independently approved finite Codex diagnostic usage mapping, bringing the register
+to 24 profiles and one approval. Reader implementation remains blocked; this
+contributor-only activation grants no demand, billing or complete-task authority.
+Offline adaptive demand #35 is accepted on 2026-10-18 and CLI-archived on 2026-10-23 after
+PR #43 and the issue-44 correction in PR #45. Normalized input can persist provider-shaped evidence;
 Trusted financial completeness and replay remain limited to synthetic billed-USD
 fixtures. Demand has a separate closed synthetic token, wall-time and effort policy
 with local replay.
@@ -112,7 +116,7 @@ policies before provider results can grant trusted numeric advice. See the
 
 ## Adaptive-demand direction — approved planning, 2026-10-07
 
-The [forecast plan](../openspec/changes/forecast-01-local-adaptive-demand/proposal.md)
+The [forecast plan](../openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md)
 adds zero knowledge -> learning -> scoped transfer hypothesis -> validated forecast.
 No applicable ecosystem history means qualitative dimensions and unknowns, not
 invented token totals or charges. Learn from actual complete bound outcomes,
@@ -124,8 +128,8 @@ evaluation, not sample count or an LLM guess. Quick learning is a goal to measur
 #9 now uses reviewed capability-based closeout; missing optional exports or
 Enterprise/admin data are lane-specific gaps. Native semantic approval, demand
 measurement eligibility and complete billed-money authority remain separate.
-Codex/Claude readers remain planned. Demand quote mode is locally implemented under
-the 2026-10-11 authorization; native reader and final acceptance gates remain separate.
+Codex/Claude readers remain planned. Demand quote mode is accepted after PR #45;
+native reader approval and measured calibration remain separate gates.
 Current economic Quote/check behavior and minimum remain unchanged.
 
 Optional bounded rehearsal supplies an assessment signal and separately measured
@@ -151,3 +155,15 @@ path remains #35, Codex reader #36, registered evaluation #17, then a separately
 tracked private `0.1.0a1` release-readiness change. Copilot, Cursor and Claude readers
 can follow. Four changes include #35; after its acceptance three remain on that
 conditional path. Native accounting may invalidate the proposed Codex lane.
+
+
+## Accepted offline demand, 2026-10-18
+
+The maintainer accepted merged PR #45 and requested strict CLI archival of #35.
+The CLI synchronized 12 requirements and 47 scenarios into the adaptive-demand
+main spec. The archive preserves the accepted grouped-red proof limitation,
+current code-review scope and all earlier failed/incomplete results. The dated
+2026-10-11 pending statement above is historical. Three conditional changes remain
+to the proposed private test alpha: Codex reader #36, registered evaluation #17
+and a separately tracked release-readiness change. No native lane or accuracy
+claim is approved by this archival.

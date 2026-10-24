@@ -61,14 +61,19 @@ quota-blocked; that review task remains unchecked in the archive. This exception
 does not waive future reviews. Provider/live collection and calibration remain
 separate gates. Source feasibility #9 tooling merged in PR #33 and capability reconciliation
 was accepted in PR #39 on 2026-10-08. Native CLI archival synchronized its
-evidence gates; all 23 profiles retain zero approvals. Offline adaptive demand
-#35 was authorized on 2026-10-11 and is locally implemented; verification and
-acceptance remain pending.
+evidence gates; the original 23 profiles retain zero approvals. On 2026-10-23
+the maintainer authorized canonical activation of one independently approved finite
+Codex diagnostic mapping and contributor admission controls. The register now has
+24 profiles and one usage approval. Reader implementation remains blocked. Offline adaptive demand
+#35 merged in PR #43; the issue-44 correction merged in PR #45. The maintainer
+accepted it on 2026-10-18 and requested native CLI archival. The archive retains
+the accepted grouped-red proof limitation and historical review scope.
 
 On 2026-10-07 the maintainer approved planning revisions for capability-based
 source closeout and local adaptive demand, including separate Codex/Claude reader
 plans. This authorizes planning/docs/backlog synchronization, not runtime readers,
 automatic collection or LLM invocation. Preserve delivered economic Quote/advisory
-contracts. Offline demand records and explicit quote mode were authorized and
-locally implemented on 2026-10-11; acceptance remains pending. See
+contracts. Offline demand records and explicit quote mode are accepted and archived, with
+12 requirements and 47 scenarios synchronized by the OpenSpec CLI. Native
+readers, calibration and release publication remain separate. See
 [forecasting](docs/forecasting.md) and [change order](openspec/CHANGE_ORDER.md).

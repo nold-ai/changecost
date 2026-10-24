@@ -210,14 +210,14 @@
     "description": "Primary research limits, bounded local discovery, architecture decisions and exact remaining native proof."
   },
   {
-    "path": "openspec/changes/forecast-01-local-adaptive-demand/proposal.md",
+    "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md",
     "title": "Adaptive-demand proposal",
-    "description": "Locally implemented offline demand contracts and explicit CLI mode; acceptance pending and financial authority preserved."
+    "description": "Accepted offline demand contracts and explicit CLI mode, archived after PR #45 with financial authority preserved."
   },
   {
     "path": "openspec/changes/provider-03-codex-local-import/proposal.md",
     "title": "Codex local-reader proposal",
-    "description": "Planned explicit offline coding-session metadata and separately approved accounting."
+    "description": "Prepared offline reader and portable diagnostic native usage; exact native approval and later demand projection remain separate."
   },
   {
     "path": "openspec/changes/provider-04-claude-local-import/proposal.md",
@@ -225,7 +225,7 @@
     "description": "Planned explicit offline coding-session metadata, revised usage and estimated-money boundaries."
   },
   {
-    "path": "openspec/changes/forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md",
+    "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md",
     "title": "Adaptive-demand preparation evidence",
     "description": "Planning recovery, independent review, backlog reconciliation and local assurance limits."
   },
@@ -236,7 +236,32 @@
   },
   {
     "title": "Adaptive demand implementation evidence",
-    "path": "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
-    "description": "Actual synthetic TDD, correction history and outstanding acceptance gates."
+    "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
+    "description": "Actual synthetic TDD, accepted Linux/provider evidence, CLI archival and preserved historical proof/review limits."
+  },
+  {
+    "path": "openspec/specs/adaptive-demand/spec.md",
+    "title": "Accepted adaptive-demand specification",
+    "description": "CLI-synchronized offline demand contracts, chronological local learning and scoped transfer; native approval and calibration remain separate."
+  },
+  {
+    "path": "openspec/changes/provider-03-codex-local-import/PREPARATION_EVIDENCE.md",
+    "title": "Codex reader preparation evidence",
+    "description": "Current code/protocol inspection, architecture alternatives and unresolved source-accounting and native-assurance gates."
+  },
+  {
+    "title": "Codex native accounting evidence",
+    "path": "openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md",
+    "description": "Native observations, historical denied candidates and exact finite semantic approval; canonical activation remains separate from reader implementation."
+  },
+  {
+    "title": "Codex finite producer binding",
+    "path": "openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
+    "description": "Retained approved contract for exact snapshot admission and partial serialized diagnostics; canonical mapping activated, runtime reader blocked."
+  },
+  {
+    "title": "Codex finite mapping activation evidence",
+    "path": "openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md",
+    "description": "Contributor-only canonical approval, admission controls and historical baseline evidence; runtime reader remains blocked."
   }
 ]

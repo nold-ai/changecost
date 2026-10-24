@@ -4,7 +4,9 @@ Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary rec
 The Python foundation and supplemental bounded-review workflow are delivered and
 archived. Source-feasibility #9 is closed after capability reconciliation merged in
 PR #39 on 2026-10-08 and native CLI archival synchronized its evidence gates.
-All 23 profiles remain unapproved; native readers and accounting approval are separate.
+The 23 historical profiles remain unapproved. One additional finite Codex diagnostic
+usage mapping was independently approved and canonically activated on 2026-10-23;
+native reader implementation and broader accounting authority remain separate.
 Core-02 (#11) merged in PR #25 and is
 archived with synchronized main specs. Settlement reconciliation merged in PR #28
 on 2026-10-02 and is accepted/archived with synchronized main specs. Provider
@@ -69,7 +71,7 @@ authorized trial remain pending.
 | [provider-02-cursor-import](changes/provider-02-cursor-import/proposal.md) | [#14](https://github.com/nold-ai/changecost/issues/14) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9) `pilot-01-source-feasibility`, [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [quote-01-empirical-estimation](changes/archive/2026-10-04-quote-01-empirical-estimation/proposal.md) | [#15](https://github.com/nold-ai/changecost/issues/15) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [workflow-01-advisory-ci](changes/archive/2026-10-06-workflow-01-advisory-ci/proposal.md) | [#16](https://github.com/nold-ai/changecost/issues/16) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#15](https://github.com/nold-ai/changecost/issues/15) `quote-01-empirical-estimation` |
-| [forecast-01-local-adaptive-demand](changes/forecast-01-local-adaptive-demand/proposal.md) | [#35](https://github.com/nold-ai/changecost/issues/35) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16); native lanes require applicable approved readers/policies |
+| [forecast-01-local-adaptive-demand](changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md) | [#35](https://github.com/nold-ai/changecost/issues/35) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16); native lanes require applicable approved readers/policies |
 | [provider-03-codex-local-import](changes/provider-03-codex-local-import/proposal.md) | [#36](https://github.com/nold-ai/changecost/issues/36) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
 | [provider-04-claude-local-import](changes/provider-04-claude-local-import/proposal.md) | [#37](https://github.com/nold-ai/changecost/issues/37) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
 | [pilot-02-calibration-evaluation](changes/pilot-02-calibration-evaluation/proposal.md) | [#17](https://github.com/nold-ai/changecost/issues/17) | [#5](https://github.com/nold-ai/changecost/issues/5) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16), [#35](https://github.com/nold-ai/changecost/issues/35); native adapters are lane-specific |
@@ -343,7 +345,7 @@ remain per-capability gates for #13/#14/#36/#37; prerequisite edges #9/#12 are r
 Closing feasibility does not approve imports, learning eligibility or billed money.
 Earlier active/pending statements above record dated history.
 
-The next product change is [offline adaptive demand #35](changes/forecast-01-local-adaptive-demand/proposal.md),
+The next product change is [offline adaptive demand #35](changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md),
 starting with zero-knowledge contracts and synthetic verification. Provider readers,
 live collection and native calibration remain independently authorized work.
 
@@ -356,3 +358,52 @@ checks; it does not depend on native comparison results. Prepare #17's protocol
 before collecting evaluated outcomes. Native #36 must independently satisfy its
 version-specific accounting gates. Copilot #13, Cursor #14 and Claude #37 can follow.
 This plan authorizes no publication or release version bump.
+
+
+## Accepted adaptive demand, 2026-10-18 (Europe/Berlin)
+
+PR #43 delivered #35; the preregistration correction in PR #45 merged at
+`6b6fab30e8030e04fc1a2d803000c640c9f64479`, identical in tree to reviewed
+`053a10645ae0ac6064761942843a85c2f05d0bd7`. Both full Linux host jobs and all ten
+native analyzers passed. Current-head Codex and CodeRabbit code reviews completed.
+The maintainer accepted the merge and requested strict native CLI archival.
+The CLI archived the change and synchronized 12 requirements/47 scenarios into
+[adaptive demand](specs/adaptive-demand/spec.md). The archive retains accepted
+grouped-red limits and historical security/review scope; no older receipt is reset.
+#35 is CLOSED/Done, remains a User Story under #8, and retains closed prerequisites
+#11/#12/#15/#16. Earlier pending statements above are dated history.
+
+The next product change on the focused path is Codex reader #36, subject to its
+own version-specific accounting approval, followed by registered evaluation #17
+and separate private-alpha release readiness. These three remain conditional.
+All 23 native profiles retain zero approvals; no collection, calibration or release
+is authorized by this archive.
+
+## Selected Codex reader preparation, 2026-10-23 Europe/Berlin
+
+The maintainer selected [Codex reader #36](changes/provider-03-codex-local-import/proposal.md)
+for preparation and architect review in planning mode. Fresh main is
+`6b6fab30e8030e04fc1a2d803000c640c9f64479`. Native readback confirms User Story,
+parent #7, closed blocked-by #9/#12 and private project #3 Todo. These relationships
+remain unchanged. #35 is accepted after PRs #43/#45 and is CLI-archived in this
+checkout on 2026-10-23, with its accepted proof/review limits retained.
+
+The reader plan adds a portable diagnostic NativeUsage record because current
+Evidence/economic records cannot preserve required native quantity provenance.
+Native demand projection remains deferred and separately authorized. #36 delivery
+requires its approved exact source policy. At initial preparation the 23 profiles
+retained zero approvals; the later activation stage is recorded below. #17 protocol
+preparation must precede evaluated native outcomes.
+This plan is local/unpublished and does not start implementation or collection.
+
+## Canonical finite Codex activation, 2026-10-23 Europe/Berlin
+
+The maintainer explicitly authorized the exact independently approved finite
+Codex diagnostic profile/proof in the canonical register, admission checks and
+historical-baseline maintenance. The register has **24 profiles, one finite usage
+approval**; the original 23 profiles are unchanged and retain zero approvals.
+This supersedes earlier zero-total-approval inventory statements only for this
+new profile. [The activation evidence](changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+records contributor checks and independent verification. Reader implementation
+stays blocked and unstarted, as do runtime eligibility and native demand/financial
+authority. No collection, publication or release is authorized.

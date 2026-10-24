@@ -179,3 +179,74 @@ before 2.1.214. Its input category excludes cache reads/writes; total input unde
 GenAI conventions includes those categories. This documentation cannot approve
 local transcript precedence or equate the monitoring defect with every repeated
 message. No universally additive token or estimated-USD rule is approved.
+
+## Codex reader preparation refresh, 2026-10-23 Europe/Berlin
+
+The selected [Codex reader plan](../../openspec/changes/provider-03-codex-local-import/proposal.md)
+remains unimplemented. Installed `codex-cli 0.139.0` again generated its app-server
+JSON Schema without opening session data or invoking a model. Required thread/turn
+IDs, last/total breakdowns and input/cached-input/output/reasoning/total fields
+match the earlier installed interface description. This establishes protocol shape
+only, not stored-file accounting or compatibility with a Desktop producer.
+
+The [official App Server reference](https://learn.chatgpt.com/docs/app-server),
+accessed 2026-10-23, documents usage notifications and persisted JSONL history.
+Those descriptions do not approve the reader's accounting/identity/finality policy.
+Remote thread APIs and acquisition are outside the selected existing-file scope.
+At initial preparation the source register contained 23 profiles and zero approvals. Earlier dated
+native observations remain historical; the initial preparation inspected no real
+native file. The subsequent authorized investigation below supersedes that state.
+See [preparation evidence](../../openspec/changes/provider-03-codex-local-import/PREPARATION_EVIDENCE.md)
+for the storage mismatch, proposed portable NativeUsage record and implementation
+gates. Import, demand eligibility and billed-money authority remain independent.
+
+## Restored reader and native accounting investigation, 2026-10-23
+
+The maintainer requested restoration of the scoped preparation and work through
+native accounting approval blockers before implementation. Four existing snapshots
+were inspected read-only, with 85 request usage records. Their headers declare
+0.163.0-alpha.10.2 under separate Desktop and Work originators. Work is not thereby
+classified as a coding-session source. At that stage the 23 canonical profiles had
+zero approvals. The newer observations did not replace historical profile bindings.
+
+The [native accounting matrix](../../openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md)
+records exact snapshot hashes, pinned primary sources accessed 2026-10-23 and
+remaining gates. Creation headers survive resumed appends. Request, turn and thread
+quantities overlap. Legacy snapshots can contain estimates or inherited counters,
+optional backend details can default to zero, and usage records are best effort.
+No full-task, successful-finality or billed-money authority follows from these rows.
+
+The initial independent semantic review approved no capability. It requested a reliable
+record-to-producing-build/client binding, followed by native replay/reset/correction
+and category reconciliation with an explicitly accepted partial lineage/finality
+scope. No runtime implementation, model request or collection was started.
+
+Further existing-data inspection found historical engine handshakes and selected
+thread/turn joins, plus native turn resets, compaction-associated snapshot changes
+and repeated legacy counters. The current bundled engine differs from the historical
+reported build. Logical session identity survives resume and is not process identity.
+See the [follow-up evidence](../../openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md#existing-provenance-and-native-edge-case-follow-up)
+for exact observed counts, research-only oversized parent files and remaining producer,
+replay/correction and approval limits. Profile approvals were empty at that stage.
+
+### Planned finite Codex diagnostics
+
+The 2026-10-23 [producer-binding plan](../../openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md)
+proposes independently adjudicated immutable snapshots instead of inferring writer
+identity from retained headers across resume. Its proposed diagnostic mapping
+preserves serialized request categories with unknown backend presence, served
+model/time, completeness and finality. Byte-identical copies share admission;
+appended, reformatted or other changed files require fresh independent admission.
+That planning stage activated no profile and retained zero approvals across the 23
+profiles. Subsequent canonical activation is recorded below; reader and
+demand/financial authority remain separate gates.
+
+### Canonical activation — 2026-10-23
+
+The maintainer subsequently authorized canonical adoption of the exact finite
+diagnostic profile/proof. The register now has 24 profiles and one usage approval;
+the original 23 remain unchanged and unapproved. Earlier zero-total-approval
+statements describe the investigation before this activation. Contributor admission
+checks and [activation evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+keep that scope explicit. Reader implementation remains blocked; no broader source
+compatibility, complete-task accounting, demand learning or billing follows.

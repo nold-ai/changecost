@@ -853,3 +853,19 @@ These local synthetic measurements establish a repeated-startup contributor.
 They do not establish native four-worker savings or sufficient deadline margin.
 Fresh full supported-Linux matrix assurance remains required with unchanged
 selection, analyzers, pins, four workers and 300-second member deadline.
+
+## Finite source admission validation
+
+The canonical source checker validates supported Codex usage through a recognized
+finite admission payload, with closed structures, fixed mapping policy and limits,
+strict integer record membership/cardinality, consistent classification/projection
+and matching producer/native-evidence/profile/six-decision proof. Rehashed malformed
+payloads must still reject. Exact activation regressions pin the approved P/R and
+retain the 23 historical profiles unchanged and unapproved.
+
+This is contributor-only validation. It does not open source snapshots, reproduce
+projection quantities, authenticate independent reviewers or implement a runtime
+reader. The existing inspection CLI still reports semantic approval false. The
+[Codex activation evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+records actual negative/repair tests, checks and independent verification. Missing
+SpecFact/native/Linux/provider assurance remains incomplete; no gate is waived.

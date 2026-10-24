@@ -1023,34 +1023,34 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/forecast-01-local-adaptive-demand/design.md",
+      "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/design.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/forecast-01-local-adaptive-demand/design.md"
+        "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/forecast-01-local-adaptive-demand/proposal.md",
+      "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/forecast-01-local-adaptive-demand/proposal.md"
+        "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/forecast-01-local-adaptive-demand/specs/adaptive-demand/spec.md",
+      "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/specs/adaptive-demand/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/forecast-01-local-adaptive-demand/specs/adaptive-demand/spec.md"
+        "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/specs/adaptive-demand/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/forecast-01-local-adaptive-demand/tasks.md",
+      "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/tasks.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/forecast-01-local-adaptive-demand/tasks.md"
+        "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/tasks.md"
       ],
       "kind": "manual"
     },
@@ -1119,10 +1119,10 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md"
       ],
       "kind": "manual"
     },
@@ -1175,11 +1175,66 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
       "owner": "adaptive-demand",
       "sources": [
-        "openspec/changes/forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
+        "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/TDD_EVIDENCE.md",
         "tests/test_cli.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/adaptive-demand/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/specs/adaptive-demand/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-03-codex-local-import/PREPARATION_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-03-codex-local-import/PREPARATION_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-03-codex-local-import/specs/change-run-contracts/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-03-codex-local-import/specs/change-run-contracts/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
+        "openspec/changes/provider-03-codex-local-import/PROPOSED_PROFILE.json"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md",
+        "openspec/changes/provider-03-codex-local-import/specs/codex-local-import/spec.md",
+        "docs/providers/source-profiles.json",
+        "quality/source_admission.py",
+        "quality/source_feasibility.py",
+        "tests/test_source_admission.py",
+        "tests/test_source_feasibility.py"
       ],
       "kind": "manual"
     }

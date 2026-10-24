@@ -11,6 +11,7 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from quality.source_admission import admission_valid
 from quality.source_cases import STRATEGIES, evaluate_case
 from quality.source_inspection import (
     EvidenceError,
@@ -242,7 +243,10 @@ def validate_register(data) -> list[str]:
         for ordinal, profile in enumerate(data["profiles"]):
             evidence, valid = _evidence_valid(profile["evidence"])
             if not (
-                _profile_valid(profile, seen) and valid and _approvals_valid(profile, evidence)
+                _profile_valid(profile, seen)
+                and valid
+                and _approvals_valid(profile, evidence)
+                and admission_valid(profile, evidence)
             ):
                 errors.append(f"profile:{ordinal}:invalid-binding")
     except (KeyError, TypeError, ValueError, AttributeError):

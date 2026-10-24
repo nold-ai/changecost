@@ -1,6 +1,6 @@
 # Personal-account source feasibility
 
-Assessment: **2026-10-07 (Europe/Berlin), To-Validate**.
+Assessment: **2026-10-23 (Europe/Berlin), To-Validate**.
 This is the research deliverable for
 [pilot-01-source-feasibility](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/proposal.md).
 No Copilot OTel or Cursor CSV export has been inspected. Authorized local Codex/Claude
@@ -33,8 +33,10 @@ For each capability, use these dispositions:
 
 Documentation alone cannot establish observed support. Unverified is not unavailable,
 and neither means zero usage or zero cost. A missing field in one profile does not
-prove the provider never exposes it. Partial local evidence does not approve an
-import mapping; there are **no approved adapter profiles**.
+prove the provider never exposes it. Partial local evidence alone does not approve
+an import mapping. On 2026-10-23 one independently reviewed finite Codex diagnostic
+usage mapping was canonically activated. There is **no implemented native reader**;
+all broader and economic authority gates remain separate.
 
 ## Profile register and derived matrix
 
@@ -74,6 +76,7 @@ versions were inspected separately; see [their metric assessment](codex-claude-m
 | claude-desktop-2-1-205-inventory / 2.1.205 / Current Desktop Pro reported; historical authentication unverified | unverified | unverified | unverified | unverified |
 | copilot-hosted-local-discovery / VS Code 1.139.1; Chat 0.67.0; recorded copilotVersion 0.0.0; event schema 1 / Current Personal Free (maintainer-confirmed) | partial | partial | unverified | unverified |
 | cursor-local-discovery / 3.22.7; internal _v 18 / Current Free (maintainer-confirmed); historical Basic label preserved separately | unverified | partial | unverified | unverified |
+| codex-desktop-0163-finite-diagnostics / 0.163.0-alpha.10.2 / Historical authentication unknown; no monetary authority | supported | partial | unverified | unverified |
 <!-- source-profile-matrix:end -->
 
 ### Cursor evidence correction
@@ -497,7 +500,7 @@ No collector/settings change, new model call or paid infrastructure is required.
 
 ## Reconciled regular-local inventory — 2026-10-07
 
-The register now has **23 profiles, zero approvals**: the 14 historical objects
+At the 2026-10-07 closeout the register had **23 profiles, zero approvals**: the 14 historical objects
 are unchanged and nine profiles record separate newer/local observations.
 The [current evidence decisions](../../openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/RESEARCH_EVIDENCE.md#native-reconciliation--2026-10-07-europeberlin)
 identify exact proof requests and the private inspection boundary.
@@ -529,8 +532,36 @@ Codex code review and CodeRabbit full review completed; earlier incomplete or
 failed checkpoints remain dated history. This completes capability-based inventory
 closeout without requiring every export or any supported profile.
 
-All 23 profiles have zero approvals. Requests for native ownership, overlap,
+At the 2026-10-08 archive all 23 profiles had zero approvals. Requests for native ownership, overlap,
 corrections, cache/reset and terminal coverage remain in the linked archived
 research; missing Cursor consumption remains unknown. Reader accounting approval,
 demand-learning eligibility and billed-money authority remain separate gates.
 Offline adaptive demand #35 is next; no reader or collection is added by archival.
+
+## Finite Codex diagnostic activation — 2026-10-23
+
+The canonical register now contains 24 profiles and one usage proof for
+`codex-desktop-0163-finite-diagnostics`. The 23 historical profile objects remain
+unchanged with zero approvals. Earlier inventory counts above describe their
+dated closeout, not the current total. The exact approved profile digest is
+`8be47bbc66c0b04d61bcc4e646271449b4eb653b460c24322cfd203bc5d2a991`.
+
+Supported usage here means only the admitted immutable snapshot and its 16 direct
+request observations, retaining 96 separate source-category facts. Model/time,
+backend field presence, completeness and finality remain unknown; attribution is
+partial, billed money and finality unverified. Appends/resumes/formatting changes
+need fresh independent admission. Copies of identical bytes retain event identity.
+
+Contributor checks validate the recognized admission shape, fixed mapping/limits,
+integer membership/cardinalities, complete classification totals, frozen projection
+schema and matching producer/native evidence/proof/decisions. Rebinding a profile
+digest does not waive those checks. A valid-looking alternative commitment cannot
+be semantically disproved by structural validation; exact activation regressions
+pin the reviewed P/R, and changed admissions need independent review.
+
+The development CLI still reports `semantic_approval: false` for structural
+inspection; canonical activation does not change that report's meaning. The
+[bound semantic disposition](../../openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md#independent-finite-mapping-approval)
+and [activation evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+record the separate decisions. No runtime reader, packaged admission, collection,
+native demand projection or financial authority is enabled.

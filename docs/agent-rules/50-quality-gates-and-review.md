@@ -166,3 +166,12 @@ passing assurance. The summary test correction keeps exact rejection oracles and
 retained process coverage. Full current-head supported-Linux matrix evidence
 remains required with unchanged analyzers, four workers and deadlines. See the
 [retired investigation](../development/quality-gates.md#retired-pytest-phase-investigation).
+
+## Finite source admission contributor checks
+
+Canonical supported Codex usage requires the recognized finite admission payload
+and matching native evidence/profile/six-decision proof. Contributor validation
+checks its closed shapes, exact integer membership/cardinalities, classification
+and projection policy and fixed limits. Exact activation regressions retain the
+approved profile/proof and original historical objects. Structural validation and
+inspection do not authenticate semantic review or implement a native reader.

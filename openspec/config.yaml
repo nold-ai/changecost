@@ -12,9 +12,13 @@ context: |
   main specs; the final full Codex code review was quota-blocked and accepted as
   an archive-only limitation, not a future review waiver. Source-feasibility
   tooling merged in PR #33; reconciliation was accepted in PR #39 on 2026-10-08.
-  Native CLI archival synchronized source feasibility; 23 profiles retain zero
-  approvals. Offline adaptive demand #35 was authorized on 2026-10-11 and is locally
-  implemented; verification/acceptance remain pending.
+  Native CLI archival synchronized source feasibility; the 23 historical profiles
+  retain zero approvals. On 2026-10-23 the maintainer authorized canonical activation
+  of one approved finite Codex diagnostic usage mapping and contributor admission
+  controls. The register now has 24 profiles and one usage approval. Reader runtime
+  implementation remains blocked; source activation grants no demand/billing authority. Offline adaptive demand #35 merged in PR #43, with the issue-44
+  correction in PR #45, and was accepted on 2026-10-18 and CLI-archived here on 2026-10-23. Its 12
+  requirements/47 scenarios and accepted historical proof limits are retained.
   Normalized imports exist, but trusted financial coverage/replay supports synthetic
   billed USD only. Demand uses a separate closed synthetic token/time/effort policy
   with local replay. Source approval alone cannot enable provider numeric authority.
@@ -45,8 +49,8 @@ context: |
   Planning revision approved 2026-10-07: #9 closes through reviewed capability
   dispositions/gaps, not universal optional-export availability. Native support
   still needs independent semantics; demand eligibility and billed money are separate.
-  New Codex/Claude readers remain plans. Offline adaptive demand is locally implemented
-  under the 2026-10-11 request, with final acceptance pending.
+  New Codex/Claude readers remain plans. Offline adaptive demand is accepted and
+  archived after PR #45; native approval and calibration remain separate.
   Demand starts at zero knowledge, learns locally, tests matched ecosystem transfer
   hypotheses and requires scoped chronological validation before accuracy claims.
   Preserve delivered Quote/Features/advisory contracts and min-20 economic default.

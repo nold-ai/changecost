@@ -3,6 +3,19 @@
 
 ## Unreleased
 
+- Activate the independently approved finite Codex diagnostic usage profile in the
+  contributor register, preserving the 23 historical profiles and their zero
+  approvals. Validate finite admission structure and exact proof bindings; keep
+  reader implementation and native demand/financial authority blocked.
+
+- Reconcile the planned Codex local reader against current storage and authority
+  boundaries. Specify a portable diagnostic NativeUsage record, safe semantic
+  replay and explicit deferred native-demand integration without implementing a reader.
+
+- Archive accepted offline adaptive demand #35 after PR #45 through the OpenSpec
+  CLI, synchronize 12 requirements/47 scenarios, and retain historical proof and
+  review limits with all original checks and records.
+
 - Exercise 72 structured-JSON summary rejection cases through the existing public
   entrypoint helper, preserving their case IDs, controls and exact rejection checks.
   Retire temporary pytest phase tracing after the native investigation, retaining
