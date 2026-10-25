@@ -1,5 +1,7 @@
 # Quality gates and review
 
+Generated documentation freshness uses the existing index renderer and byte comparison, including from the docs gate. Content-bound prose rationales apply to manual documents. Do not refresh generated-reference exceptions for internal skill prose changes.
+
 ## Foundation gates
 
 The foundation now provides shared validators; see the executable contract and

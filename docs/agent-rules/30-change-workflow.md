@@ -23,6 +23,41 @@ change carries across stages; a generic request to select a change does not pick
 one by recency. Ask only for the material choices requested by the workflow or
 needed to resolve real ambiguity. Do not repeat already answered choices.
 
+## Product outcome and check ownership
+
+Start a product change with one runnable outcome in its existing proposal or task.
+Name the input, the ChangeCost calculation or operation, and the result a user can
+observe. Implement and exercise that path before extending process tooling.
+A diagnostic reader delivers diagnostic import, not forecasting or cost advice.
+If the selected scope cannot deliver the requested result, expose that mismatch
+before implementation. Do not substitute more evidence artifacts for the result.
+
+Each stage owns one part of delivery:
+
+| Stage | Owns | Reuses |
+| --- | --- | --- |
+| Prepare | Product outcome, scope and necessary decisions | Existing specs, source facts and approved decisions |
+| Implement | Runtime logic, focused red/green tests and a runnable user path | Prepared scope and existing tooling |
+| Verify | Missing or invalidated aggregate gates and independent closure | Applicable exact-content tests, reviews and native reports |
+| Promote | PR publication, required provider reviews and actual PR checks | Verified source and still-applicable gate results |
+
+A stage transition alone does not invalidate evidence. Check content, comparison
+base, input/configuration identity and affected assumptions. Preserve applicable
+results and rerun what changed or remains missing. Required PR-event checks still
+run when repository policy requires them. Never relabel stale or failed evidence.
+Use the existing gate dispatcher for applicability rather than adding a check.
+
+A product request does not authorize changing review tools, receipt schemas,
+watchers or gate policy to make the workflow complete. Use existing recovery
+operations and preserve incompatible history. Name a tooling blocker separately
+and continue unaffected product logic. A tooling repair needs an explicit,
+separately scoped task. A demonstrated defect blocking the product still needs
+repair and verification. Do not hide it or weaken a required gate.
+
+Use the existing specs, test output and one handoff for progress. Additional
+reports, review lanes, packet formats and checkers need a concrete missing
+obligation. Reaching a new stage or receiving a style suggestion is not one.
+
 ## Refresh main without losing work
 
 1. Read root/branch/status (including staged and untracked files), remotes,

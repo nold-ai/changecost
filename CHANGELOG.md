@@ -3,6 +3,13 @@
 
 ## Unreleased
 
+- Give implementation a runnable product outcome and focused checks. Assign
+  aggregate assurance to verification, reuse applicable evidence across stages,
+  and keep workflow-tool repair separate from product delivery.
+- Delegate generated-reference freshness to the actual index renderer. Preserve
+  rejection of stale output while removing source-hash exception churn when
+  internal skill instructions leave the generated reference unchanged.
+
 - Separate finite Codex payload validation, classified request selection and CLI
   admission from projection without changing import behavior. Preserve replay and
   retirement assertions in named invariant helpers, and check visible CLI options

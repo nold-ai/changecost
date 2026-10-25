@@ -16,6 +16,10 @@ one upfront obligation review, affected-scope closure, Codex by default and addi
 CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
 add a generic full local/CLI review or a receipt-only commit by default.
 
+Apply the [product outcome and check ownership](../../../docs/agent-rules/30-change-workflow.md#product-outcome-and-check-ownership)
+contract. Preparation must name the runnable product outcome and expose any gap between
+the requested result and the selected scope before more planning work.
+
 ## Bounded review-session contract
 
 For a change expected to reach implementation, prepare a compact review contract

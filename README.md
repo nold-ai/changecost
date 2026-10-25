@@ -1,5 +1,7 @@
 # ChangeCost
 
+Generated references are checked against their actual generator output. Changes to internal skill prose do not require reference rewrites when the rendered output is unchanged.
+
 **Cost estimates and settlement for AI-assisted software changes.**
 
 ChangeCost is an early NOLD AI project exploring how to quote the cost of an

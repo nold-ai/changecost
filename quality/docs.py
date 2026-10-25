@@ -79,13 +79,29 @@ def _entry_errors(
     sources -= {e for e in files if e in {"llms.txt", "docs/commands.md"}}
     prose = re.sub(r"\d{4}-\d{2}-\d{2}", "<date>", (root / name).read_text()).strip()
     old_prose = re.sub(r"\d{4}-\d{2}-\d{2}", "<date>", before.get(name, b"").decode()).strip()
-    if sources & changed(root, files, before) and prose == old_prose:
+    if (
+        entry.get("kind") == "manual"
+        and sources & changed(root, files, before)
+        and prose == old_prose
+    ):
         record = exceptions.get(name, {})
         if not record.get("reason", "").strip() or record.get("digest") != digest(root, sources):
             errors.append(
                 f"stale documentation: {name}; update it or review a content-bound rationale"
             )
     return errors
+
+
+def generated_errors(root: Path, entries: list[dict[str, Any]]) -> list[str]:
+    names = {entry["path"] for entry in entries if entry.get("kind") == "generated"}
+    if not names:
+        return []
+    from quality.index import check_outputs, render
+
+    outputs = render(root)
+    return [
+        f"missing generator: {name}" for name in sorted(names - outputs.keys())
+    ] + check_outputs(root, outputs)
 
 
 def validate(
@@ -99,6 +115,7 @@ def validate(
     immutable = mapping.get("immutable", {})
     names = [entry["path"] for entry in entries]
     errors = [f"duplicate ownership: {n}" for n in set(names) if names.count(n) != 1]
+    errors.extend(generated_errors(root, entries))
     for name in sorted({n for n in files if maintained(n)} - set(names) - immutable.keys()):
         errors.append(f"unowned documentation: {name}")
     for name, record in immutable.items():

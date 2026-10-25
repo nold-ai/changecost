@@ -31,6 +31,11 @@ Use conventional commit subjects such as `docs: ...`, `chore: ...`, or `fix: ...
 
 ## Agent workflow
 
+Each stage follows [product outcome and check ownership](docs/agent-rules/30-change-workflow.md#product-outcome-and-check-ownership).
+Implementation delivers and exercises runtime behavior. Verification owns missing
+aggregate assurance, and promotion owns required PR reviews. Reuse results whose
+inputs and assumptions still match. Keep workflow-tool repairs separately scoped.
+
 Use these shared skills in agent chat; they are not terminal commands. Each stage
 can run in a new session. Name the OpenSpec change after selection so later stages
 resume the same work. Installing these skills does not authorize implementation.

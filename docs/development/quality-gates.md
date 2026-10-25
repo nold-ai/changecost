@@ -1,5 +1,7 @@
 # Repository quality gates
 
+Generated references have one freshness authority, `quality.index.render` and `check_outputs`. The docs gate delegates to that authority. It rejects stale output and unregistered generators while allowing source edits that leave the rendered reference unchanged. Generated references do not use content-bound prose exceptions.
+
 The foundation implements shared local, staged and CI validators in `quality/`.
 They are development tooling and are excluded from distributions. `make check`
 returns nonzero if any required child fails or cannot run. Python 3.11.15 and

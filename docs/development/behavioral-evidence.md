@@ -1,5 +1,7 @@
 # Behavioral evidence before review
 
+The [product outcome and check ownership](../agent-rules/30-change-workflow.md#product-outcome-and-check-ownership) contract keeps this packet within the existing implementation and review path. Reuse applicable results across stages. A packet or receipt repair does not replace the runnable product outcome or implicitly authorize a tooling change.
+
 This contributor pilot supplies a small JSON evidence packet and independent bounded
 Change/Run scenario tests. It supplements the existing schema-8 review session; it
 cannot approve a PR, clear findings, reset budgets or prove all runtime behavior.
