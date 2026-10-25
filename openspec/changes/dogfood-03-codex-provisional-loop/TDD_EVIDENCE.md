@@ -212,3 +212,40 @@ a particular failing or slow test. Native assurance remains incomplete until a f
 full report on the corrected head passes. A required rerun after these legitimate
 corrections is not claimed as a proven timeout remedy. Prior failure history and
 all independent reviews remain preserved. No merge is authorized.
+
+## Authorized native diagnosis and demo coverage correction
+
+The maintainer authorized tooling repair and updating existing PR #47 on
+2026-10-25, while preserving checks and provisional authority boundaries. Both full
+checks in run `40240438030` at `76a0f35c4dccfcf59ddabbda0bbd50aecf229595`
+completed before the optional post-failure diagnostic was stopped. Nine required
+analyzers passed, including Pylint; complete coverage execution collected 3,525
+tests and exited zero. Unknown required evidence was false. The sole blocker was
+`TEST_COVERAGE_LOW`: `session_demo.py` had 0% coverage against the unchanged 80%
+per-file requirement. The original timeouts did not reproduce; no causal timeout
+fix is claimed. A changed composite capsule digest reflects project/runtime binding,
+not a changed immutable worker or package set. Both admitted targets used Python
+3.13.11, pytest 9.1.1, pytest-cov 7.1.0 and coverage 7.15.4.
+
+The temporary external stack probe and its explicit-loader discovery correction
+are preserved in earlier commits and ignored evidence. The probe is now removed;
+no profiling dependency remains in CI. All original commands, analyzers, selection,
+worker settings, thresholds and deadlines remain unchanged.
+
+Before the test correction, the existing blackbox passed while its demo wrapper
+measured 0%, and the focused 80% coverage check exited one. The corrected existing
+test calls the real main function in the measured process. It retains every original
+assertion, eight real CLI commands and the subprocess module retry that rejects an
+existing directory without changing its database. There is no duplicate walkthrough.
+The affected 83 tests passed; the wrapper measured 49/54 statements, 90.74%, with
+the actual native package versions in a temporary host overlay. Existing generic
+error handling and the module launcher remain outside parent-process coverage.
+Measured Radon complexity is 9 with three fixture parameters. Ruff lint/format and
+whitespace checks passed. This focused host result does not replace full Linux
+assurance; fresh unprofiled current-head CI remains pending at this commit.
+
+An abandoned additive test initially used the wrong signed-error oracle. Correcting
+that expectation was not product regression evidence; the additive test was removed.
+Actual red/green logs, source hashes, official reports, profile receipts and prior
+review history are retained in the existing ignored workflow record. The runtime
+and approved mapping are unchanged. No merge is authorized.

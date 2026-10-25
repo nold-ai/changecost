@@ -120,124 +120,11 @@ jobs:
           from quality.runtime_diagnostics import host_context
           print(json.dumps(host_context(), sort_keys=True))
           PY
-      - name: Start temporary native stack diagnostic
-        continue-on-error: true
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-        run: |
-          uv tool install py-spy==0.4.1
-          cat > "$RUNNER_TEMP/native-stack-probe.py" <<'PY'
-          import json
-          import os
-          from pathlib import Path
-          import re
-          import subprocess
-          import sys
-          import time
-
-          root = Path.cwd().resolve()
-          sys.path.insert(0, str(root))
-          from quality.runtime_diagnostics import directory, process_tree, read_process
-
-          spy = str(Path(sys.argv[1]).resolve())
-          stop = Path(os.environ["RUNNER_TEMP"]) / "native-stack-probe.stop"
-          output = root / ".specfact/native-stack-profile.json"
-          output.parent.mkdir(exist_ok=True)
-          started = time.monotonic()
-          report = {"schema": "changecost/native-stack-profile-v1", "samples": []}
-          marker = ["code", "review", "run", "--scope", "full", "--include-tests",
-                    "--bug-hunt", "--enforcement", "full", "--json", "--out"]
-          identity = None
-          next_sample = 0.0
-          roles = ("pylint", "coverage", "pytest", "crosshair", "mypy", "bandit", "ruff")
-          while time.monotonic() - started < 900 and not stop.exists():
-              if identity is None:
-                  for folder in list(Path("/proc").iterdir())[:512]:
-                      if not folder.name.isdigit():
-                          continue
-                      try:
-                          with (folder / "cmdline").open("rb") as source:
-                              args = source.read(16385).decode().rstrip("\0").split("\0")
-                          if len(args) > 16 or args[-12:-1] != marker:
-                              continue
-                          if not any(Path(a).name == "specfact" for a in args[:-12]):
-                              continue
-                          if Path(os.readlink(folder / "cwd")).resolve() != root:
-                              continue
-                          if not re.fullmatch(re.escape(str(root)) + r"/\.specfact/code-review-[0-9a-f]{32}\.json", args[-1]):
-                              continue
-                          with directory(Path("/proc")) as proc:
-                              row = read_process(proc, folder.name)
-                          identity = (row["pid"], row["start_ticks"])
-                          report["root_pid"], report["root_start_ticks"] = identity
-                          break
-                      except (OSError, ValueError, UnicodeError):
-                          continue
-              elapsed = time.monotonic() - started
-              if identity is not None and elapsed >= next_sample:
-                  tree = process_tree(*identity)
-                  if not tree["root_valid"]:
-                      break
-                  sample = {"elapsed_seconds": round(elapsed, 3), "processes": []}
-                  rows = sorted(tree["processes"], key=lambda row: (row["state"] != "R", -row["cpu_ticks"]))
-                  for row in rows:
-                      if len(sample["processes"]) >= 8:
-                          break
-                      folder = Path("/proc") / str(row["pid"])
-                      try:
-                          with (folder / "cmdline").open("rb") as source:
-                              args = source.read(16384).decode(errors="replace").split("\0")
-                          if not any(Path(arg).name.startswith("python") for arg in args[:4]):
-                              continue
-                          role = next((r for r in roles if any(a == r or Path(a).name == r for a in args)), "python")
-                          with directory(Path("/proc")) as proc:
-                              if read_process(proc, str(row["pid"]))["start_ticks"] != row["start_ticks"]:
-                                  continue
-                          entry = {"pid": row["pid"], "start_ticks": row["start_ticks"], "role": role, "frames": []}
-                          sample["processes"].append(entry)
-                          # Timeout runs under sudo so it can terminate its privileged child.
-                          result = subprocess.run(
-                              ["sudo", "-n", "/usr/bin/timeout", "--signal=KILL", "2s",
-                               spy, "dump", "--json", "--nonblocking", "--pid", str(row["pid"])],
-                              stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3, check=False,
-                          )
-                          if result.returncode or len(result.stdout) > 1048576:
-                              continue
-                          traces = json.loads(result.stdout)
-                          for trace in traces[:4]:
-                              for frame in trace.get("frames", [])[:32]:
-                                  name, filename, line = frame.get("name"), frame.get("filename"), frame.get("line")
-                                  if not isinstance(name, str) or not isinstance(filename, str) or type(line) is not int:
-                                      continue
-                                  entry["frames"].append({"function": name[:120], "file": "/".join(Path(filename).parts[-4:])[:240], "line": line})
-                      except (OSError, ValueError, TypeError, AttributeError, subprocess.TimeoutExpired):
-                          continue
-                  report["samples"].append(sample)
-                  raw = json.dumps(report).encode()
-                  if len(raw) > 1048576:
-                      report["samples"].pop()
-                      break
-                  output.write_bytes(raw)
-                  if len(report["samples"]) >= 24:
-                      break
-                  next_sample = elapsed + 20
-              time.sleep(2)
-          if not output.exists():
-              output.write_text(json.dumps(report))
-          PY
-          rm -f "$RUNNER_TEMP/native-stack-probe.stop"
-          nohup /usr/bin/timeout --signal=TERM 900s .venv/bin/python "$RUNNER_TEMP/native-stack-probe.py" "$(command -v py-spy)" </dev/null >/dev/null 2>&1 &
       - name: Check repository
         id: repository-check
         env:
           UV_PYTHON: ${{ matrix.python }}
         run: /usr/bin/env -u MAKEFLAGS -u GNUMAKEFLAGS -u MFLAGS /usr/bin/make check
-      - name: Stop temporary native stack diagnostic
-        if: always()
-        continue-on-error: true
-        env:
-          UV_PYTHON: ${{ matrix.python }}
-        run: touch "$RUNNER_TEMP/native-stack-probe.stop"
       - name: Diagnose selected review-session tests after failure
         if: failure() && steps.repository-check.outcome == 'failure'
         env:
@@ -262,7 +149,6 @@ jobs:
             .specfact/review-binding.json
             .specfact/runtime-diagnostic.json
             .specfact/native-process-*.json
-            .specfact/native-stack-profile.json
             .specfact/selected-review-session-diagnostic.json
           include-hidden-files: true
           if-no-files-found: warn

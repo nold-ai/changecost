@@ -301,16 +301,21 @@ def test_human_output_escapes_labels_and_shows_measurement(tmp_path):
     assert "Manual measured total 200 tokens" in j.invoke("show", "unsafe\x1b[31m", human=True)
 
 
-def test_demo_runs_real_cli_in_exclusive_directory(tmp_path):
+def test_demo_runs_real_cli_in_exclusive_directory(tmp_path, monkeypatch, capsys):
+    from changecost.session_demo import main
+
     directory = tmp_path / "demo"
-    command = [sys.executable, "-m", "changecost.session_demo", str(directory)]
-    result = subprocess.run(command, capture_output=True, text=True, check=True)
-    assert "300.000000 tokens" in result.stdout
+    monkeypatch.setattr(sys, "argv", ["session-demo", str(directory)])
+    main()
+    result = capsys.readouterr()
+    assert "Manual, provisional, uncalibrated." in result.out
+    assert "300.000000 tokens" in result.out
     transcript = json.loads((directory / "transcript.json").read_text())
     assert [row["absolute_error"] for row in transcript["observed"]] == ["100", "0", "800"]
     assert transcript["fourth_forecast"]["amount"] == "200"
     assert len(transcript["steps"]) == 8
     before = (directory / "sessions.sqlite3").read_bytes()
+    command = [sys.executable, "-m", "changecost.session_demo", str(directory)]
     repeated = subprocess.run(command, capture_output=True, text=True)
     assert repeated.returncode == 2
     assert (directory / "sessions.sqlite3").read_bytes() == before

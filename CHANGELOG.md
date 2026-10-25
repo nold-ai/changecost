@@ -3,9 +3,9 @@
 
 ## Unreleased
 
-- Add temporary bounded native CI stack snapshots to diagnose analyzer timeouts.
-  Preserve every required check, full review scope, enforcement and deadlines;
-  diagnostic output cannot certify missing native evidence.
+- Measure the real session demo in the pytest process while retaining its eight
+  actual CLI commands and process entrypoint retry check. Close the native wrapper
+  coverage gap without changing required analyzers, selection or deadlines.
 
 - Add explicit provisional Codex session start/capture/history. Stream the selected
   local file under separate 128 MiB and 100,000-row bounds, use only its latest

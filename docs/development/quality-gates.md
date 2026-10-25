@@ -899,16 +899,10 @@ histories still load, while older helpers reject the additional provenance. Pres
 receipts and backups if rolling back code. Recovery never substitutes for final
 current-input checks, provider reviews, timing or supported-Linux execution.
 
-## Temporary native timeout diagnosis
+## Demo coverage boundary
 
-The explicitly authorized timeout investigation adds a bounded external stack probe
-to Linux CI. It observes the unchanged full native review using pinned py-spy
-0.4.1 in a separate tool environment. Nonblocking JSON snapshots retain only
-process identity, fixed role labels and function/file/line frames. Discovery handles
-both direct Python and explicit ELF-loader Python launches. Raw command
-arguments, environment, local variables and thread names are excluded. Each dump
-has a two-second deadline; the monitor stops after 24 snapshots or 900 seconds and
-caps its artifact at 1 MiB. Probe failure never changes the required check result.
-The private CI artifact is diagnostic evidence, not a passing analyzer result.
-All required analyzers, full selection, enforcement and native deadlines remain
-unchanged. Remove the temporary probe after identifying the execution cause.
+The session walkthrough test calls the real demo entry point in the measured pytest
+process. Its eight commands still execute through real CLI subprocesses. A separate
+module invocation checks repeated-directory failure and preserves existing data.
+A subprocess-only wrapper test cannot establish parent-process coverage of that
+wrapper. Native file coverage keeps the same scope and 80% requirement.
