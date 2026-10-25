@@ -201,7 +201,7 @@
   },
   {
     "path": "docs/forecasting.md",
-    "title": "Adaptive demand \u2014 offline implementation",
+    "title": "Adaptive demand — offline implementation",
     "description": "Offline local demand policy, observed learning, transfer and separate native validation gates."
   },
   {
@@ -263,5 +263,30 @@
     "title": "Codex finite mapping activation evidence",
     "path": "openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md",
     "description": "Historical activation plus separately authorized finite runtime TDD, source replay and explicit remaining assurance."
+  },
+  {
+    "title": "Local provisional sessions",
+    "path": "docs/sessions.md",
+    "description": "Manual totals and separate source-reported Codex lifetime counters, frozen forecasts, revisions, disclosed errors and unknown coverage."
+  },
+  {
+    "title": "Local session implementation evidence",
+    "path": "openspec/changes/dogfood-01-local-sessions/TDD_EVIDENCE.md",
+    "description": "Actual CLI red/green evidence and deterministic walkthrough; full assurance and acceptance remain pending."
+  },
+  {
+    "title": "Finite Codex session observations",
+    "path": "openspec/changes/dogfood-02-codex-observations/proposal.md",
+    "description": "Explicit exact-source partial diagnostics beside frozen manual estimates; no native totals or learning."
+  },
+  {
+    "title": "Native session observation evidence",
+    "path": "openspec/changes/dogfood-02-codex-observations/TDD_EVIDENCE.md",
+    "description": "Scoped red/green, migration, exclusion and actual-source proofs with local independent closure; full assurance and provider/PR acceptance remain separate."
+  },
+  {
+    "title": "Provisional Codex session implementation",
+    "path": "openspec/changes/dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md",
+    "description": "Focused CLI, revisions, counter, migration, privacy, manual isolation and actual-source proof with local independent closure; full assurance and provider/PR acceptance remain separate."
   }
 ]

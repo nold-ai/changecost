@@ -14,7 +14,8 @@ import typer
 from typer._click.globals import get_current_context
 
 from changecost import operations
-from changecost.codex_local import NativeImportError
+from changecost.codex_local import NativeImportError, select_codex_file
+from changecost.codex_session_counter import CounterError
 from changecost.models import (
     ComputedSettlement,
     EconomicScope,
@@ -25,6 +26,7 @@ from changecost.models import (
 )
 from changecost.presentation import SafeGroup, error_output, human
 from changecost.serialization import ContractError, dumps_bundle, loads_bundle
+from changecost.sessions import CaptureOperation, Measurement, SessionError, Sessions
 from changecost.store import Store, key, lookup, reference, subject
 
 app = typer.Typer(
@@ -71,6 +73,16 @@ def execute(operation) -> None:
             result = result.model_dump(mode="json", by_alias=True)
         format = get_current_context().meta.get("format", "json")
         typer.echo(human(result) if format == "human" else json.dumps(result, ensure_ascii=True))
+    except SessionError as exc:
+        value = dict(schema="changecost/error-v1", code=exc.code, message=exc.message)
+        format = get_current_context().meta.get("format", "json")
+        typer.echo(human(value) if format == "human" else json.dumps(value), err=True)
+        raise typer.Exit(2) from exc
+    except CounterError as exc:
+        value = exc.report()
+        format = get_current_context().meta.get("format", "json")
+        typer.echo(human(value) if format == "human" else json.dumps(value), err=True)
+        raise typer.Exit(2) from exc
     except NativeImportError as exc:
         diagnostic = exc.diagnostic.model_dump(exclude_none=True)
         value = dict(schema="changecost/error-v1", message="native import rejected", **diagnostic)
@@ -83,6 +95,121 @@ def execute(operation) -> None:
     except (ValueError, OSError, sqlite3.Error) as exc:
         error_output(get_current_context().meta.get("format", "json"))
         raise typer.Exit(2) from exc
+
+
+session_app = typer.Typer(help="Local provisional manual or Codex session estimates and totals.")
+app.add_typer(session_app, name="session")
+
+
+@session_app.callback()
+def session_root(
+    context: typer.Context,
+    session_db: Annotated[
+        Path, typer.Option("--session-db", help="Separate local session SQLite file.")
+    ] = Path(".changecost/sessions.sqlite3"),
+) -> None:
+    context.obj = Sessions(session_db)
+
+
+@session_app.command("start")
+def session_start(
+    context: typer.Context,
+    session_id: str,
+    task_kind: Annotated[str, typer.Option(help="Exact task-kind cohort label.")],
+    cohort_context: Annotated[
+        str, typer.Option("--context", help="Exact ecosystem/context label.")
+    ],
+    guess: Annotated[int | None, typer.Option(help="Cold-start guess in target tokens.")] = None,
+    source: Annotated[str, typer.Option(help="manual or codex provisional target.")] = "manual",
+) -> None:
+    """Freeze a before-work estimate from previously measured matching sessions."""
+    execute(lambda: context.obj.start(session_id, task_kind, cohort_context, guess, source=source))
+
+
+@session_app.command("finish")
+def session_finish(
+    context: typer.Context,
+    session_id: str,
+    tokens: Annotated[int, typer.Option(help="Measured nonnegative total tokens.")],
+    outcome: Annotated[str, typer.Option(help="completed, failed, or abandoned.")],
+    coverage: Annotated[
+        str, typer.Option(help="declared_session_total or partial.")
+    ] = "declared_session_total",
+) -> None:
+    """Record the first manual measurement and compare it with the frozen estimate."""
+    execute(lambda: context.obj.measure(session_id, Measurement(tokens, outcome, coverage)))
+
+
+@session_app.command("correct")
+def session_correct(
+    context: typer.Context,
+    session_id: str,
+    tokens: Annotated[int, typer.Option(help="Corrected nonnegative total tokens.")],
+    outcome: Annotated[str, typer.Option(help="completed, failed, or abandoned.")],
+    revision: Annotated[int, typer.Option(help="Expected prior measurement revision.")],
+    reason: Annotated[str, typer.Option(help="Nonblank reason retained with the correction.")],
+    coverage: Annotated[
+        str, typer.Option(help="declared_session_total or partial.")
+    ] = "declared_session_total",
+) -> None:
+    """Append a correction while preserving all previous measurements and forecasts."""
+    execute(
+        lambda: context.obj.measure(
+            session_id, Measurement(tokens, outcome, coverage, revision, reason)
+        )
+    )
+
+
+@session_app.command("observe-codex")
+def session_observe_codex(
+    context: typer.Context,
+    session_id: str,
+    file: Annotated[
+        Path, typer.Option("--file", help="Explicit selected exact Codex source file.")
+    ],
+    repository_id: Annotated[str, typer.Option(help="Explicit repository association.")],
+) -> None:
+    """Attach approved finite partial diagnostics, without a session total or learning."""
+    execute(lambda: context.obj.observe_codex(session_id, select_codex_file(repository_id, file)))
+
+
+@session_app.command("capture-codex")
+def session_capture_codex(
+    context: typer.Context,
+    session_id: str,
+    file: Annotated[Path, typer.Option("--file", help="Explicit selected local Codex file.")],
+    repository_id: Annotated[str, typer.Option(help="Explicit repository association.")],
+    outcome: Annotated[str, typer.Option(help="completed, failed, or abandoned.")],
+    revision: Annotated[
+        int | None, typer.Option(help="Expected predecessor for changed capture.")
+    ] = None,
+    reason: Annotated[str | None, typer.Option(help="Nonblank reason for changed capture.")] = None,
+) -> None:
+    """Capture a provisional lifetime counter and explicit outcome in one operation."""
+    execute(
+        lambda: context.obj.capture_codex(
+            session_id, file, repository_id, CaptureOperation(outcome, revision, reason)
+        )
+    )
+
+
+@session_app.command("show")
+def session_show(context: typer.Context, session_id: str) -> None:
+    """Inspect one frozen estimate, measurements, revisions and current error."""
+    execute(lambda: context.obj.report(session_id))
+
+
+@session_app.command("history")
+def session_history(
+    context: typer.Context,
+    task_kind: Annotated[str | None, typer.Option(help="Filter exact task kind.")] = None,
+    cohort_context: Annotated[
+        str | None, typer.Option("--context", help="Filter exact context.")
+    ] = None,
+    source: Annotated[str, typer.Option(help="manual or codex separate history.")] = "manual",
+) -> None:
+    """Show chronological sessions, cumulative errors and explicit exclusions."""
+    execute(lambda: context.obj.report(task_kind=task_kind, context=cohort_context, source=source))
 
 
 def run_selector(repository_id, provider, surface, run_id) -> RunRef:

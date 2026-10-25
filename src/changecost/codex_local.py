@@ -6,6 +6,7 @@ import math
 import os
 import stat
 from collections import Counter
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from importlib.resources import files
 from pathlib import Path
@@ -80,6 +81,56 @@ class NativeImportResult(Model):
     inserted_fact_count: int
     status: str = "partial_diagnostics"
     diagnostics: list[str] = ["unknown_coverage", "unknown_finality", "no_numeric_authority"]
+
+
+@dataclass(frozen=True)
+class CodexReadResult:
+    """Validated exact-source facts with a storage-independent diagnostic view."""
+
+    _facts: tuple[NativeUsage, ...]
+    _envelope: dict
+    repository_id: str
+
+    def diagnostics(self) -> dict:
+        admission = self._envelope["admission"]
+        return dict(
+            schema="changecost/codex-diagnostics-v1",
+            repository_id=self.repository_id,
+            manual=False,
+            provisional=True,
+            calibrated=False,
+            unit="source_category_tokens",
+            status="partial_diagnostics",
+            source_sha256=admission["source_sha256"],
+            profile_id=self._envelope["profile_id"],
+            profile_digest=self._envelope["profile_digest"],
+            approval_digest=self._envelope["approval_digest"],
+            projection_sha256=admission["projection_sha256"],
+            mapping_revision=admission["mapping_revision"],
+            request_count=admission["expected_request_count"],
+            fact_count=len(self._facts),
+            facts=[_canonical_fact(fact) for fact in self._facts],
+            session_total=None,
+            total_error=None,
+            learning_eligible=False,
+            excluded_reason="native_partial_diagnostics",
+            association="explicit_user_session_link_only",
+            diagnostics=["unknown_coverage", "unknown_finality", "no_numeric_authority"],
+        )
+
+
+def select_codex_file(repository_id: str, path: Path) -> CodexSelection:
+    """Select the packaged finite profile, without granting approval to new bytes."""
+    try:
+        envelope = _packaged_admission()
+        return CodexSelection(
+            repository_id=repository_id,
+            path=path,
+            profile_id=envelope["profile_id"],
+            expected_sha256=envelope["admission"]["source_sha256"],
+        )
+    except (ValidationError, KeyError, TypeError, OSError):
+        raise NativeImportError("invalid_native_selection") from None
 
 
 def _digest(value) -> str:
@@ -399,8 +450,8 @@ def _persist(records, store_id, now, facts, envelope):
     )
 
 
-def import_codex_file(store: Store, selection: CodexSelection) -> NativeImportResult:
-    """Import the packaged exact snapshot or reject before any source-derived write."""
+def read_codex_file(selection: CodexSelection) -> CodexReadResult:
+    """Acquire, parse and validate the packaged exact snapshot without persistence."""
     try:
         selection = CodexSelection.model_validate(selection.model_dump())
         envelope = _packaged_admission()
@@ -414,4 +465,12 @@ def import_codex_file(store: Store, selection: CodexSelection) -> NativeImportRe
         facts = _project(rows, envelope, selection.repository_id)
     except (ValidationError, KeyError, TypeError, OSError):
         raise NativeImportError("invalid_native_selection") from None
-    return store.apply(lambda records, sid, now: _persist(records, sid, now, facts, envelope))
+    return CodexReadResult(tuple(facts), envelope, selection.repository_id)
+
+
+def import_codex_file(store: Store, selection: CodexSelection) -> NativeImportResult:
+    """Import validated facts with the existing identities and first provenance."""
+    result = read_codex_file(selection)
+    return store.apply(
+        lambda records, sid, now: _persist(records, sid, now, result._facts, result._envelope)
+    )

@@ -52,6 +52,53 @@ task and ecosystem artifacts; learning remains synthetic-only until reader appro
 Acceptance covers offline contracts and synthetic checks. It does not publish a
 release or establish native accuracy.
 
+## Try local session learning
+
+The current branch provides separate manual and Codex provisional session loops.
+For Codex, use a fresh thread per attempt when possible. Before work, freeze an
+estimate with an explicit task kind and context:
+
+```sh
+uv run --locked changecost --format human session start work-01 --source codex --task-kind bug-fix --context changecost/python --guess 12000
+```
+
+After work, explicitly select the local Codex file and outcome without typing tokens:
+
+```sh
+uv run --locked changecost --format human session capture-codex work-01 --file /selected/codex-session.jsonl --repository-id my-repository --outcome completed
+uv run --locked changecost --format human session history --source codex --task-kind bug-fix --context changecost/python
+```
+
+The report compares the frozen estimate to the latest source-reported lifetime
+counter. A long-running thread includes work before start. Coverage, completeness,
+finality and subagent inclusion remain unknown, and producer claims are unverified.
+The next comparable Codex attempt learns from one latest capture per provider
+session. Append refresh uses explicit `--revision` and `--reason`. Old forecasts
+stay frozen. Inconsistent cohorts can worsen estimates. No collection runs automatically.
+
+Manual is still the default. Omit `--source codex`, then record an independently
+measured total with `session finish ID --tokens INTEGER --outcome completed`.
+Manual and Codex histories, errors and learning never pool. The existing
+`session observe-codex ID --file PATH --repository-id REPO` still attaches only the
+exact approved finite diagnostic snapshot. Its partial category facts remain
+excluded from totals and learning. The provisional counter mapping grants no
+canonical, full-Change, billing or calibration authority.
+
+Back up the separate session database before its first Codex-target start, which
+upgrades it to v3. Read-only old-store reports do not migrate. See the
+[sessions guide](docs/sessions.md) for producer limits, revisions and rollback.
+
+Run the isolated example in a directory that does not exist:
+
+```sh
+uv run --locked python -m changecost.session_demo .changecost/session-demo-01
+```
+
+It shows absolute errors of 100, 0, then 800 tokens. Learning can worsen an
+estimate. The separate demo never seeds your real `.changecost/sessions.sqlite3`.
+See [record and compare your sessions](docs/sessions.md) for finish, correction,
+history, storage selection and limitations. Full assurance and acceptance remain pending.
+
 ## Direction
 
 The proposed feedback loop is **quote → bind → meter → settle → calibrate**.

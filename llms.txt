@@ -57,6 +57,11 @@
 - [Codex native accounting evidence](openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md): Native observations, historical denied candidates and exact finite semantic approval; canonical activation remains separate from reader implementation.
 - [Codex finite producer binding](openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md): Retained approved exact snapshot policy; finite runtime implemented locally, broader admission and authority remain separate.
 - [Codex finite mapping activation evidence](openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md): Historical activation plus separately authorized finite runtime TDD, source replay and explicit remaining assurance.
+- [Local provisional sessions](docs/sessions.md): Manual totals and separate source-reported Codex lifetime counters, frozen forecasts, revisions, disclosed errors and unknown coverage.
+- [Local session implementation evidence](openspec/changes/dogfood-01-local-sessions/TDD_EVIDENCE.md): Actual CLI red/green evidence and deterministic walkthrough; full assurance and acceptance remain pending.
+- [Finite Codex session observations](openspec/changes/dogfood-02-codex-observations/proposal.md): Explicit exact-source partial diagnostics beside frozen manual estimates; no native totals or learning.
+- [Native session observation evidence](openspec/changes/dogfood-02-codex-observations/TDD_EVIDENCE.md): Scoped red/green, migration, exclusion and actual-source proofs with local independent closure; full assurance and provider/PR acceptance remain separate.
+- [Provisional Codex session implementation](openspec/changes/dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md): Focused CLI, revisions, counter, migration, privacy, manual isolation and actual-source proof with local independent closure; full assurance and provider/PR acceptance remain separate.
 
 ## Local skills
 

@@ -88,6 +88,7 @@ def test_generated_references_follow_rendered_output(gates, tmp_path, reference)
     (tmp_path / skill).write_text(header + "Run aggregate checks at implementation end.\n")
     (tmp_path / "quality").mkdir()
     (tmp_path / "quality/index.json").write_text("[]\n")
+    copy_generator_register(tmp_path)
     outputs = index.render(tmp_path)
     for name, content in outputs.items():
         (tmp_path / name).parent.mkdir(parents=True, exist_ok=True)
