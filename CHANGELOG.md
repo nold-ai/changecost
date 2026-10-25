@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Add temporary bounded native CI stack snapshots to diagnose analyzer timeouts.
+  Preserve every required check, full review scope, enforcement and deadlines;
+  diagnostic output cannot certify missing native evidence.
+
 - Add explicit provisional Codex session start/capture/history. Stream the selected
   local file under separate 128 MiB and 100,000-row bounds, use only its latest
   cumulative lifetime token counter, and disclose unknown coverage, completeness,
