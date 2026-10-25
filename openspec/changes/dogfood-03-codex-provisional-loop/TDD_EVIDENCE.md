@@ -175,3 +175,40 @@ pending fresh Linux/Python 3.11.15 and 3.13.14 CI at upload. This Mac cannot run
 required capsule, so no repeated unsupported native attempt or local aggregate
 pass is claimed. Subsequent exact-commit CI/native results belong to the existing
 ledger and verification handoff; provider/PR acceptance remains a later stage.
+
+## First supported Linux attempt and test correction
+
+Run `40233108333` on committed head
+`451c8aeeef40c9cae8cbdc41a8176c60ae7cc7a9` failed native assurance on both
+Python versions. Each ordinary Linux suite passed 3,525 tests and all 18 strict
+OpenSpec items passed. The complete native reports and source bindings are retained
+in the existing ignored verification directory, including all advisory dispositions.
+Seven required analyzers passed. Radon reported six blocking test-structure findings;
+Pylint timed out after 30 seconds and targeted coverage remained UNKNOWN after its
+300-second timeout. The later selected historical-test diagnostic passed all ten
+analyzers, but does not replace the failed full-scope result.
+
+Correction batch 3 changes only the two test modules. Four coherent assertion
+helpers retain each end-to-end scenario; three exceptional repository operations
+now spell their CLI arguments directly; rejected source preparation is separate
+from its transaction/privacy oracle with flat mutually exclusive mutations.
+All 238 assertions, test names, decorators and 18 rejection cases are preserved.
+Before and after affected runs each passed 83 tests. The retained equivalence proof
+compares 108 capture argument combinations and byte-identical rejected source inputs.
+Its first execution needed the repository on the script import path; this local
+proof harness correction changed no product code.
+
+Actual Radon 6.0.1 removes all four blocking complexity findings. The unchanged
+installed KISS metric removes both parameter-count and nesting errors. These local
+metrics do not claim a supported native pass. Formatting, lint, targeted types and
+whitespace checks passed. Capture's seven explicit parameters and assertion-heavy
+scenarios retain disclosed nonblocking warnings rather than new configuration
+objects or additional wrappers. Production behavior, analyzer configuration,
+source/approval limits, test selection and native deadlines are unchanged.
+
+The timeout investigation found no demonstrated current recovery under unchanged
+limits. Existing reports do not retain the inner coverage output needed to identify
+a particular failing or slow test. Native assurance remains incomplete until a fresh
+full report on the corrected head passes. A required rerun after these legitimate
+corrections is not claimed as a proven timeout remedy. Prior failure history and
+all independent reviews remain preserved. No merge is authorized.

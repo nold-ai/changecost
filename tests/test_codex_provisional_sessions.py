@@ -84,7 +84,6 @@ def capture(
     revision=None,
     reason=None,
     outcome="completed",
-    repository="repo",
     ok=True,
 ):
     args = [
@@ -93,7 +92,7 @@ def capture(
         "--file",
         path,
         "--repository-id",
-        repository,
+        "repo",
         "--outcome",
         outcome,
     ]
@@ -102,6 +101,17 @@ def capture(
     if reason is not None:
         args += ["--reason", reason]
     return j.invoke(*args, ok=ok)
+
+
+def assert_provisional_authority(result):
+    assert result["measurement"] is None
+    assert result["core_numeric_authority"] is result["billing_authority"] is False
+    snapshot = result["capture"]["snapshot"]
+    assert all(
+        snapshot[key] == "unknown"
+        for key in ("coverage", "completeness", "finality", "subagent_inclusion")
+    )
+    assert snapshot["producer_verified"] is False
 
 
 def test_actual_cli_capture_then_next_forecast_keeps_provisional_authority(tmp_path):
@@ -115,14 +125,7 @@ def test_actual_cli_capture_then_next_forecast_keeps_provisional_authority(tmp_p
     assert result["error"]["signed_tokens"] == "-100"
     assert result["error"]["absolute_percentage_error"]["rounded_decimal"] == "50.000000"
     assert result["capture"]["snapshot"]["counter_snapshot_count"] == 3
-    assert result["measurement"] is None
-    assert result["core_numeric_authority"] is result["billing_authority"] is False
-    snapshot = result["capture"]["snapshot"]
-    assert all(
-        snapshot[key] == "unknown"
-        for key in ("coverage", "completeness", "finality", "subagent_inclusion")
-    )
-    assert snapshot["producer_verified"] is False
+    assert_provisional_authority(result)
     second = start(j, "b")
     assert second["forecast"]["amount"] == "200"
     assert second["forecast"]["sample_count"] == 1
@@ -233,9 +236,36 @@ def test_identity_is_global_and_repository_cannot_split_training(tmp_path):
     start(j, "b")
     capture(j, path)
     before = j.db.read_bytes()
-    assert capture(j, path, "b", repository="different", ok=False)["code"] == "session_conflict"
     assert (
-        capture(j, path, repository="different", revision=1, reason="relabel", ok=False)["code"]
+        j.invoke(
+            "capture-codex",
+            "b",
+            "--file",
+            path,
+            "--repository-id",
+            "different",
+            "--outcome",
+            "completed",
+            ok=False,
+        )["code"]
+        == "session_conflict"
+    )
+    assert (
+        j.invoke(
+            "capture-codex",
+            "a",
+            "--file",
+            path,
+            "--repository-id",
+            "different",
+            "--outcome",
+            "completed",
+            "--revision",
+            "1",
+            "--reason",
+            "relabel",
+            ok=False,
+        )["code"]
         == "session_conflict"
     )
     assert j.db.read_bytes() == before
@@ -400,6 +430,47 @@ def test_byte_identical_explicit_outcome_correction_and_no_new_counter_append(tm
     assert start(j, "b")["forecast"]["sample_count"] == 1
 
 
+def rejected_source_bytes(path, mutation):
+    rows = [json.loads(line) for line in path.read_bytes().splitlines()]
+    if mutation in {"boolean", "negative", "overflow"}:
+        rows[-1]["payload"]["info"]["total_token_usage"]["total_tokens"] = {
+            "boolean": True,
+            "negative": -1,
+            "overflow": 2**63,
+        }[mutation]
+    if mutation == "decrease":
+        rows.append(counter_row(1))
+    if mutation == "missing-id":
+        rows[0]["payload"].pop("id")
+    if mutation == "duplicate-header":
+        rows.append(rows[0])
+    if mutation in {"version", "originator", "source"}:
+        rows[0]["payload"][
+            {"version": "cli_version", "originator": "originator", "source": "source"}[mutation]
+        ] = "PRIVATE-unsupported"
+    if mutation == "invalid-info":
+        rows[-1]["payload"]["info"] = []
+    if mutation == "missing-counter":
+        rows = rows[:1]
+    if mutation == "categories":
+        rows[-1]["payload"]["info"]["total_token_usage"]["extra"] = 1
+    raw = b"".join(json.dumps(row).encode() + b"\n" for row in rows)
+    extras = {
+        "duplicate-member": b'{"type":"event_msg","payload":{"PRIVATE":1,"PRIVATE":2}}\n',
+        "nonfinite": b'{"type":"event_msg","payload":{"PRIVATE":NaN}}\n',
+        "float-overflow": b'{"type":"event_msg","payload":{"PRIVATE":1e9999}}\n',
+        "huge-number": b'{"type":"event_msg","payload":{"PRIVATE":' + b"1" * 4097 + b"}}\n",
+        "depth": b'{"type":"event_msg","payload":{"PRIVATE":'
+        + b"[" * 33
+        + b"0"
+        + b"]" * 33
+        + b"}}\n",
+        "invalid-json": b"PRIVATE invalid record\n",
+    }
+    raw += extras.get(mutation, b"")
+    return raw
+
+
 @pytest.mark.parametrize(
     "mutation,code",
     [
@@ -426,43 +497,7 @@ def test_byte_identical_explicit_outcome_correction_and_no_new_counter_append(tm
 def test_source_rejections_are_safe_and_leave_all_bytes_unchanged(tmp_path, mutation, code):
     j = Journey(tmp_path)
     path = source(tmp_path)
-    rows = [json.loads(line) for line in path.read_bytes().splitlines()]
-    if mutation in {"boolean", "negative", "overflow"}:
-        rows[-1]["payload"]["info"]["total_token_usage"]["total_tokens"] = {
-            "boolean": True,
-            "negative": -1,
-            "overflow": 2**63,
-        }[mutation]
-    elif mutation == "decrease":
-        rows.append(counter_row(1))
-    elif mutation == "missing-id":
-        rows[0]["payload"].pop("id")
-    elif mutation == "duplicate-header":
-        rows.append(rows[0])
-    elif mutation in {"version", "originator", "source"}:
-        rows[0]["payload"][
-            {"version": "cli_version", "originator": "originator", "source": "source"}[mutation]
-        ] = "PRIVATE-unsupported"
-    elif mutation == "invalid-info":
-        rows[-1]["payload"]["info"] = []
-    elif mutation == "missing-counter":
-        rows = rows[:1]
-    elif mutation == "categories":
-        rows[-1]["payload"]["info"]["total_token_usage"]["extra"] = 1
-    raw = b"".join(json.dumps(row).encode() + b"\n" for row in rows)
-    extras = {
-        "duplicate-member": b'{"type":"event_msg","payload":{"PRIVATE":1,"PRIVATE":2}}\n',
-        "nonfinite": b'{"type":"event_msg","payload":{"PRIVATE":NaN}}\n',
-        "float-overflow": b'{"type":"event_msg","payload":{"PRIVATE":1e9999}}\n',
-        "huge-number": b'{"type":"event_msg","payload":{"PRIVATE":' + b"1" * 4097 + b"}}\n",
-        "depth": b'{"type":"event_msg","payload":{"PRIVATE":'
-        + b"[" * 33
-        + b"0"
-        + b"]" * 33
-        + b"}}\n",
-        "invalid-json": b"PRIVATE invalid record\n",
-    }
-    raw += extras.get(mutation, b"")
+    raw = rejected_source_bytes(path, mutation)
     path.write_bytes(raw)
     start(j, "a")
     before = j.db.read_bytes()
@@ -773,7 +808,20 @@ def test_invalid_source_options_help_and_foreign_database_do_not_mutate(tmp_path
     assert (
         capture(j, tmp_path / "unread", reason="unexpected", ok=False)["code"] == "invalid_request"
     )
-    assert capture(j, tmp_path / "unread", repository="", ok=False)["code"] == "invalid_request"
+    assert (
+        j.invoke(
+            "capture-codex",
+            "a",
+            "--file",
+            tmp_path / "unread",
+            "--repository-id",
+            "",
+            "--outcome",
+            "completed",
+            ok=False,
+        )["code"]
+        == "invalid_request"
+    )
     assert j.db.read_bytes() == before
     with sqlite3.connect(j.db) as connection:
         connection.execute("PRAGMA user_version=99")

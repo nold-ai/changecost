@@ -62,6 +62,35 @@ class Journey:
         )
 
 
+def assert_manual_history_evaluation(history):
+    assert history["evaluation"]["included_count"] == 3
+    assert history["evaluation"]["mean_absolute_error"]["numerator"] == "900"
+    assert history["evaluation"]["mean_absolute_error"]["denominator"] == 3
+    assert history["evaluation"]["mean_absolute_error"]["rounded_decimal"] == "300.000000"
+    assert history["evaluation"]["excluded"] == {"pending": 1}
+    assert history["manual"] is True and history["calibrated"] is False
+    assert history["unit"] == "total_tokens"
+
+
+def assert_corrected_measurement(measured):
+    assert [m["tokens"] for m in measured["measurements"]] == [200, 300]
+    assert measured["measurement"]["tokens"] == 300
+    assert measured["error"]["signed_tokens"] == "-200"
+    assert measured["error"]["absolute_percentage_error"]["rounded_decimal"] == "66.666667"
+
+
+def assert_partial_history_evaluation(history):
+    assert len(history["sessions"]) == 6
+    assert history["evaluation"]["included_count"] == 2
+    assert history["evaluation"]["excluded"] == {
+        "unknown_forecast": 1,
+        "partial_measurement": 1,
+        "pending": 2,
+    }
+    assert history["evaluation"]["mean_absolute_error"]["numerator"] == "125"
+    assert history["evaluation"]["mean_absolute_error"]["denominator"] == 2
+
+
 def test_actual_cli_improves_then_worsens_and_keeps_old_forecasts(tmp_path):
     j = Journey(tmp_path)
     forecasts = []
@@ -78,13 +107,7 @@ def test_actual_cli_improves_then_worsens_and_keeps_old_forecasts(tmp_path):
     assert fourth["forecast"]["sample_count"] == 3
     assert fourth["forecast"]["summary"] == {"minimum": "200", "median": "200", "maximum": "1000"}
     history = j.invoke("history")
-    assert history["evaluation"]["included_count"] == 3
-    assert history["evaluation"]["mean_absolute_error"]["numerator"] == "900"
-    assert history["evaluation"]["mean_absolute_error"]["denominator"] == 3
-    assert history["evaluation"]["mean_absolute_error"]["rounded_decimal"] == "300.000000"
-    assert history["evaluation"]["excluded"] == {"pending": 1}
-    assert history["manual"] is True and history["calibrated"] is False
-    assert history["unit"] == "total_tokens"
+    assert_manual_history_evaluation(history)
     assert j.invoke("show", "one")["forecast"]["amount"] == "100"
 
 
@@ -114,10 +137,7 @@ def test_revisions_preserve_snapshots_and_retry_identity(tmp_path):
     assert j.start("c")["forecast"]["inputs"][0]["revision"] == 2
     assert j.invoke("show", "b")["forecast"] == before["forecast"]
     measured = j.invoke("show", "a")
-    assert [m["tokens"] for m in measured["measurements"]] == [200, 300]
-    assert measured["measurement"]["tokens"] == 300
-    assert measured["error"]["signed_tokens"] == "-200"
-    assert measured["error"]["absolute_percentage_error"]["rounded_decimal"] == "66.666667"
+    assert_corrected_measurement(measured)
     assert j.start("c")["forecast"]["amount"] == "300"
 
 
@@ -144,15 +164,7 @@ def test_partials_unknown_pending_zero_and_cohort_filters(tmp_path):
     assert j.start("other-context", context="python/api")["forecast"]["source"] == "unknown"
     assert j.start("other-kind", kind="bug-fix")["forecast"]["source"] == "unknown"
     history = j.invoke("history", "--task-kind", "feature", "--context", "python/cli")
-    assert len(history["sessions"]) == 6
-    assert history["evaluation"]["included_count"] == 2
-    assert history["evaluation"]["excluded"] == {
-        "unknown_forecast": 1,
-        "partial_measurement": 1,
-        "pending": 2,
-    }
-    assert history["evaluation"]["mean_absolute_error"]["numerator"] == "125"
-    assert history["evaluation"]["mean_absolute_error"]["denominator"] == 2
+    assert_partial_history_evaluation(history)
 
 
 def test_partial_correction_changes_future_eligibility_only(tmp_path):
