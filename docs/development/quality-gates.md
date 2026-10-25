@@ -904,7 +904,8 @@ current-input checks, provider reviews, timing or supported-Linux execution.
 The explicitly authorized timeout investigation adds a bounded external stack probe
 to Linux CI. It observes the unchanged full native review using pinned py-spy
 0.4.1 in a separate tool environment. Nonblocking JSON snapshots retain only
-process identity, fixed role labels and function/file/line frames. Raw command
+process identity, fixed role labels and function/file/line frames. Discovery handles
+both direct Python and explicit ELF-loader Python launches. Raw command
 arguments, environment, local variables and thread names are excluded. Each dump
 has a two-second deadline; the monitor stops after 24 snapshots or 900 seconds and
 caps its artifact at 1 MiB. Probe failure never changes the required check result.

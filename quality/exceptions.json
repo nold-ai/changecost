@@ -49,7 +49,7 @@
   },
   "openspec/changes/archive/2026-10-06-workflow-01-advisory-ci/TDD_EVIDENCE.md": {
     "reason": "Preserve the accepted archived advisory CI evidence. The separately authorized temporary 2026-10-25 external stack probe adds diagnostic observations only; it does not change historical advisory behavior, prior results, required gate commands or native deadlines. Current setup is documented in docs/development/quality-gates.md.",
-    "digest": "27dae0f362469f6b88f18783723d7c3e32a075e891edd958d4f89fcc4571ff07"
+    "digest": "baa4c797b19edadf2f6709a9f34f9f60c41fa83b45af99915846df14bbf6c53c"
   },
   "openspec/changes/archive/2026-10-08-pilot-01-source-feasibility/TDD_EVIDENCE.md": {
     "reason": "Preserve accepted historical evidence byte-for-byte. The separately authorized 2026-10-24 finite Codex diagnostic reader adds portable source facts and its own current TDD; it changes no accepted historical result, count, exception or assurance claim. This content-bound rationale grants no missing Linux, analyzer, review or publication waiver.",
