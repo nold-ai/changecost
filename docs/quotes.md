@@ -91,7 +91,7 @@ when those are required by the audit output. No cohort count cap is added.
 No package version or SQLite layout migration is introduced. Back up before changing
 checkouts; rollback uses a follow-up code revert and separate compatible backup restore,
 retaining original records. Advisory checks and optional CI summaries are implemented
-locally, pending current-head verification/acceptance. Provider adapters and calibration
+locally, pending current-head verification/acceptance. Trusted economic provider adapters and calibration
 remain pending.
 
 ## Budget advice

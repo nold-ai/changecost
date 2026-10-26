@@ -74,6 +74,7 @@ Kind = Literal[
     "demand_forecast",
     "demand_validation_policy",
     "demand_validation",
+    "native_usage",
 ]
 
 
@@ -218,6 +219,106 @@ class Evidence(Record):
                 raise ValueError("file identity requires digest and ordinal only")
         elif self.source_key is None or self.file_digest is not None or self.ordinal is not None:
             raise ValueError("namespaced identity requires source key only")
+        return self
+
+
+Digest = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
+NativeTokenCategory = Literal[
+    "input_tokens",
+    "cached_input_tokens",
+    "cache_write_input_tokens",
+    "output_tokens",
+    "reasoning_output_tokens",
+    "total_tokens",
+]
+
+
+def native_quantity(value: object) -> int | None:
+    if value is None:
+        return None
+    if type(value) is not int or value < 0 or value.bit_length() > 13607:
+        raise ValueError("invalid native integer quantity")
+    if len(str(value)) > 4096:
+        raise ValueError("native quantity digit limit exceeded")
+    return value
+
+
+class FirstNativeAdmission(Model):
+    profile_digest: Digest
+    approval_digest: Digest
+
+
+class NativeProducer(Model):
+    engine_version: Identifier
+    client_surface: Identifier
+    client_build: Identifier | None = None
+
+
+class NativeInterval(Model):
+    state: Literal["unknown", "partial", "bounded"]
+    start: Timestamp | None = None
+    end: Timestamp | None = None
+
+    @model_validator(mode="after")
+    def consistent(self) -> Self:
+        count = sum(bound is not None for bound in (self.start, self.end))
+        if count != {"unknown": 0, "partial": 1, "bounded": 2}[self.state]:
+            raise ValueError("native interval state conflicts with bounds")
+        if self.start is not None and self.end is not None and self.start > self.end:
+            raise ValueError("native interval bounds reversed")
+        return self
+
+
+class NativeOwnership(Model):
+    state: Literal["unknown", "root", "child"]
+    thread: Digest | None = None
+    turn: Digest | None = None
+    session: Digest | None = None
+    root_turn: Digest | None = None
+    header_parent_thread: Digest | None = None
+
+    @model_validator(mode="after")
+    def consistent(self) -> Self:
+        if self.state == "child" and (self.thread is None or self.header_parent_thread is None):
+            raise ValueError("native child requires reported thread and parent")
+        if self.state == "root" and (self.thread is None or self.header_parent_thread is not None):
+            raise ValueError("invalid native root ownership")
+        return self
+
+
+class NativeUsage(Record):
+    kind: Literal["native_usage"] = "native_usage"
+    repository_id: Identifier
+    evidence: RecordRef
+    mapping_revision: Identifier
+    producer: NativeProducer
+    first_acquisition_digest: Digest
+    first_admission: FirstNativeAdmission
+    event_identity: Digest
+    source_category: NativeTokenCategory
+    accounting_scope: Literal["request", "turn", "thread"]
+    quantity: Annotated[int | None, BeforeValidator(native_quantity)]
+    quantity_basis: Literal["serialized_source"] = "serialized_source"
+    backend_presence: Literal["unknown"] = "unknown"
+    model: Identifier | None = None
+    model_version: Identifier | None = None
+    interval: NativeInterval
+    ownership: NativeOwnership
+    coverage: Literal["partial_observed_subset"] = "partial_observed_subset"
+    finality: Literal["unknown", "partial", "final"] = "unknown"
+    scope_completeness: Literal["unknown", "partial", "complete"] = "unknown"
+    previous: RecordRef | None = None
+    reason: Identifier | None = None
+
+    @model_validator(mode="after")
+    def correction(self) -> Self:
+        if (self.previous is None) != (self.reason is None):
+            raise ValueError("native correction requires predecessor and reason")
+        if any(
+            bound is not None and bound > self.recorded_at
+            for bound in (self.interval.start, self.interval.end)
+        ):
+            raise ValueError("native interval postdates declaration")
         return self
 
 
@@ -804,6 +905,7 @@ PortableRecord = Annotated[
     Change
     | Run
     | Evidence
+    | NativeUsage
     | RunBinding
     | EvidenceBinding
     | Outcome

@@ -17,6 +17,11 @@ one upfront obligation review, affected-scope closure, Codex by default and addi
 CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
 add a generic full local/CLI review or a receipt-only commit by default.
 
+Before editing, apply the [product outcome and check ownership](../../../docs/agent-rules/30-change-workflow.md#product-outcome-and-check-ownership)
+contract. State the input, implemented calculation or operation, and observable
+user result in the existing task. Keep workflow-tool repair separate. This stage
+owns executable behavior and focused tests; verification owns aggregate assurance.
+
 ## Establish fresh, matching inputs
 
 1. Confirm the change from the request or preparation receipt. If ambiguous,
@@ -112,9 +117,13 @@ current files; add product commands only once implemented and verified. Use an
 existing generation/check command when available. Apply actual version policy;
 planning/scaffold changes do not invent a release or version bump.
 
-Run selected strict OpenSpec validation and applicable `make check` gates. Inspect
-the final diff for unnecessary branches, duplicate logic, speculative abstractions
-and unrelated work before handing it to verification. Record the selected change,
+Run selected strict OpenSpec validation and the focused checks for the implemented
+slice. Exercise the actual CLI or API path and retain its input and observed result.
+Do not run the aggregate `make check` or full native review merely to end this
+stage; hand applicable results to verification, which owns missing or invalidated
+aggregate obligations. An explicitly requested gate or a demonstrated defect may
+require an earlier run. Inspect the final diff for unnecessary branches, duplicate
+logic, speculative abstractions and unrelated work before handing it to verification. Record the selected change,
 fresh base, feature branch, prepared-artifact disposition, changed paths, actual
 test/review evidence and unresolved limitations in a compact local receipt if the
 next stage is in another session. Keep the existing specs/tasks as the work plan.

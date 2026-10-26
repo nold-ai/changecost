@@ -20,6 +20,10 @@ one upfront obligation review, affected-scope closure, Codex by default and addi
 CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
 add a generic full local/CLI review or a receipt-only commit by default.
 
+Apply the [product outcome and check ownership](../../../docs/agent-rules/30-change-workflow.md#product-outcome-and-check-ownership)
+contract. Promotion consumes applicable verification results and owns publication and
+required PR reviews. A new stage alone does not require another aggregate run.
+
 ## Establish the target
 
 Delegate this target/PR work to the designated PR worker as well. The parent

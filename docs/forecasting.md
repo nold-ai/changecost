@@ -174,3 +174,12 @@ validation receipts. A legacy receipt with valid timing remains usable; an inval
 one retains historical replay but cannot promote a current forecast. Rejected new
 validation writes neither records nor computation markers. These are synthetic
 offline controls, not evidence of native predictive accuracy or pilot approval.
+
+## Finite Codex diagnostics, 2026-10-24
+
+The separately authorized exact Codex snapshot reader stores diagnostic NativeUsage
+and unbound Evidence. It creates no assessment, ecosystem, demand observation or
+measurement policy. Even after exact manual binding, the existing synthetic-only
+learning and financial guards remain unchanged. Broader readers, native demand
+projection, calibration and evaluated outcomes need their own authorization and
+evidence. See [finite import](settlement.md#import-the-approved-finite-codex-diagnostics).

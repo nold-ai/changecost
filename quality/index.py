@@ -11,6 +11,7 @@ import typer.main
 import yaml
 
 from changecost.cli import app
+from quality.source_admission import packaged_admission
 
 
 def render(root: Path) -> dict[str, str]:
@@ -20,7 +21,8 @@ def render(root: Path) -> dict[str, str]:
         "# ChangeCost",
         "",
         "> Private, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. "
-        "Provider operations remain planned.",
+        "One finite Codex diagnostic snapshot is supported; "
+        "broader provider operations remain planned.",
         "",
         "## Project and evidence",
         "",
@@ -61,7 +63,8 @@ def render(root: Path) -> dict[str, str]:
         "`explain` inspects/exports and reports repository remainder. "
         "`quote` computes offline empirical estimates. "
         "`check` compares explicit historical records to compatible budgets, "
-        "with valid unknown advice. Provider adapters remain planned.",
+        "with valid unknown advice. `settle --import-codex` imports only the exact approved "
+        "finite diagnostic snapshot without demand or financial authority.",
         "",
     ]
     lines += [
@@ -71,7 +74,17 @@ def render(root: Path) -> dict[str, str]:
         "- [CLI reference](docs/commands.md): generated from the installed command definition.",
         "",
     ]
-    return {"llms.txt": "\n".join(lines), "docs/commands.md": "\n".join(reference)}
+    admission = packaged_admission(
+        json.loads((root / "docs/providers/source-profiles.json").read_text())
+    )
+    return {
+        "llms.txt": "\n".join(lines),
+        "docs/commands.md": "\n".join(reference),
+        "src/changecost/codex_admission.json": json.dumps(
+            admission, indent=2, ensure_ascii=True, allow_nan=False
+        )
+        + "\n",
+    }
 
 
 def check_outputs(root: Path, outputs: dict[str, str]) -> list[str]:

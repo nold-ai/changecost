@@ -6,6 +6,17 @@ from pathlib import Path
 import pytest
 
 
+def copy_generator_register(root):
+    import shutil
+
+    destination = root / "docs/providers"
+    destination.mkdir(parents=True)
+    shutil.copyfile(
+        Path(__file__).parents[1] / "docs/providers/source-profiles.json",
+        destination / "source-profiles.json",
+    )
+
+
 @pytest.fixture
 def gates():
     assert importlib.util.find_spec("quality.docs") is not None, "documentation gate is missing"
@@ -64,6 +75,44 @@ def test_source_drift_requires_content_bound_rationale(gates, sample):
     assert docs.validate(root, files, mapping, before, exceptions) == []
     (root / "source.py").write_text("value = 2\n")
     assert "stale" in " ".join(docs.validate(root, files, mapping, before, exceptions))
+
+
+@pytest.mark.parametrize("reference", ["llms.txt", "docs/commands.md"])
+def test_generated_references_follow_rendered_output(gates, tmp_path, reference):
+    from quality import index
+
+    docs, _, _ = gates
+    skill = ".agents/skills/example/SKILL.md"
+    (tmp_path / skill).parent.mkdir(parents=True)
+    header = "---\nname: example\ndescription: Example workflow\n---\n"
+    (tmp_path / skill).write_text(header + "Run aggregate checks at implementation end.\n")
+    (tmp_path / "quality").mkdir()
+    (tmp_path / "quality/index.json").write_text("[]\n")
+    copy_generator_register(tmp_path)
+    outputs = index.render(tmp_path)
+    for name, content in outputs.items():
+        (tmp_path / name).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / name).write_text(content)
+    files = {skill, "quality/index.json", *outputs}
+    before = {name: (tmp_path / name).read_bytes() for name in files}
+    mapping = {
+        "documents": [
+            {"path": name, "owner": "workflow", "sources": [skill], "kind": "generated"}
+            for name in outputs
+        ]
+        + [{"path": skill, "owner": "workflow", "sources": [skill], "kind": "manual"}]
+    }
+    (tmp_path / skill).write_text(header + "Verification owns missing aggregate checks.\n")
+    expected = index.render(tmp_path)
+    assert expected == outputs
+    assert docs.validate(tmp_path, files, mapping, before, {}) == []
+    assert index.check_outputs(tmp_path, expected) == []
+    (tmp_path / reference).write_text("Stale generated reference\n")
+    assert any(reference in error for error in index.check_outputs(tmp_path, expected))
+    assert any(reference in error for error in docs.validate(tmp_path, files, mapping, before, {}))
+    (tmp_path / reference).write_text(expected[reference])
+    assert index.check_outputs(tmp_path, expected) == []
+    assert docs.validate(tmp_path, files, mapping, before, {}) == []
 
 
 def test_immutable_exception_checks_bytes(gates, sample):
@@ -150,6 +199,7 @@ def test_generator_detects_changed_skill_and_duplicates(tmp_path):
     shutil.copytree(root / ".agents", tmp_path / ".agents")
     (tmp_path / "quality").mkdir()
     (tmp_path / "quality/index.json").write_text("[]\n")
+    copy_generator_register(tmp_path)
     first = render(tmp_path)
     skill = next((tmp_path / ".agents/skills").glob("*/SKILL.md"))
     skill.write_text(
@@ -367,6 +417,7 @@ def test_generator_tracks_command_tree_and_options(monkeypatch, tmp_path):
 
     (tmp_path / "quality").mkdir()
     (tmp_path / "quality/index.json").write_text("[]\n")
+    copy_generator_register(tmp_path)
     app = typer.Typer()
 
     @app.callback()

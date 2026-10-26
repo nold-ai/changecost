@@ -3,6 +3,57 @@
 
 ## Unreleased
 
+- Measure the real session demo in the pytest process while retaining its eight
+  actual CLI commands and process entrypoint retry check. Close the native wrapper
+  coverage gap without changing required analyzers, selection or deadlines.
+
+- Add explicit provisional Codex session start/capture/history. Stream the selected
+  local file under separate 128 MiB and 100,000-row bounds, use only its latest
+  cumulative lifetime token counter, and disclose unknown coverage, completeness,
+  finality, subagent inclusion and unverified producer claims. Immutable capture
+  revisions, global source identity binding and atomic v3 migration keep one latest
+  sample per attempt and preserve frozen forecasts. Manual and exact finite
+  diagnostic contracts stay separate. Concise human output shows totals/errors and
+  learning versus evaluated counts; full safe JSON remains available. No billing,
+  calibration, canonical approval, release or merge authority is added. Back up the
+  session store before v3; full Linux/provider assurance remains pending.
+
+- Attach the one approved finite Codex diagnostic snapshot explicitly to local
+  sessions without copying token totals. Reuse canonical reader admission and safe
+  fact projection; preserve independent manual measurements, errors and frozen
+  forecasts. Native partial facts never become totals, learning or core bindings.
+  Exact retries reuse snapshots/events, with atomic v1-to-v2 migration and tested
+  rollback. Restoring an old binary requires a pre-upgrade database backup.
+  Broader core admission and full Linux/provider assurance remain separate.
+
+- Add a local manual-session loop with frozen before-work token estimates,
+  explicit measured outcomes, append-only corrections and disclosed errors.
+  Matching exact cohorts learn from previous declared totals, including failed
+  and abandoned attempts. Partial totals stay outside learning and evaluation.
+  An isolated actual-CLI walkthrough shows improvement followed by worsening.
+  Measurements remain provisional and uncalibrated; full assurance is pending.
+
+- Give implementation a runnable product outcome and focused checks. Assign
+  aggregate assurance to verification, reuse applicable evidence across stages,
+  and keep workflow-tool repair separate from product delivery.
+- Delegate generated-reference freshness to the actual index renderer. Preserve
+  rejection of stale output while removing source-hash exception churn when
+  internal skill instructions leave the generated reference unchanged.
+
+- Separate finite Codex payload validation, classified request selection and CLI
+  admission from projection without changing import behavior. Preserve replay and
+  retirement assertions in named invariant helpers, and check visible CLI options
+  under both plain and ANSI-colored help rendering.
+
+- Add explicitly approved retirement of a merged review-stage PR, preserving ledger
+  history and budgets while requiring fresh runtime evidence and rejecting delayed
+  rebinding to the retired source.
+
+- Add explicit finite Codex diagnostic import with strict read-only admission,
+  atomic semantic replay, portable NativeUsage and exact manual repository binding.
+  Native demand, billing and complete-task authority remain unavailable.
+
+
 - Activate the independently approved finite Codex diagnostic usage profile in the
   contributor register, preserving the 23 historical profiles and their zero
   approvals. Validate finite admission structure and exact proof bindings; keep

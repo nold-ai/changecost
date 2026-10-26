@@ -250,3 +250,13 @@ statements describe the investigation before this activation. Contributor admiss
 checks and [activation evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
 keep that scope explicit. Reader implementation remains blocked; no broader source
 compatibility, complete-task accounting, demand learning or billing follows.
+
+## Finite runtime implementation, 2026-10-24
+
+The exact approved Desktop snapshot now has a separately authorized local reader.
+Its finite mapping retains 16 response events and 96 serialized category facts.
+The [command boundary](../settlement.md#import-the-approved-finite-codex-diagnostics)
+rejects every other digest before persistence. Unknown served model, time, backend
+presence and finality remain explicit. Partial reported parent lineage does not
+prove full descendant or task coverage. Historical observations above retain their
+original scopes. Claude and broader Codex compatibility remain unimplemented.

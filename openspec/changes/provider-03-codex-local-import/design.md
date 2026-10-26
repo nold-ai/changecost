@@ -262,3 +262,64 @@ registered; the original 23 profiles remain unchanged with zero approvals.
 and fresh independent verification. Earlier activation-pending statements record
 the preceding planning stage. Reader/runtime implementation remains blocked and
 unstarted; all ten reader implementation tasks remain unchecked.
+
+## Runtime authorization and reconciliation, 2026-10-24 Europe/Berlin
+
+The maintainer now explicitly authorizes the exact finite reader implementation.
+Earlier planning-only and blocked statements above preserve historical scope.
+The selected single NativeUsage kind, one public reader operation and one
+Store.apply transaction are retained. Repository is carried on NativeUsage and
+checked against exact manual bindings. One canonical fact representation owns
+both projection hashing and semantic replay comparison. The package derivative
+is generated and checked against the unchanged canonical register. No source
+collection, new admission, demand/billing authority or publication is added.
+
+The blocking public Store probe demonstrated fresh/existing atomic graph rejection
+and immutable no-op availability. Private reproduction of retained authorized
+bytes matched the approved 16-request/96-fact projection and exact profile/proof.
+Runtime positive replay of those exact bytes produced no second insertion.
+See TDD_EVIDENCE.md for actual commands and remaining assurance.
+
+
+## Merged-stage ledger recovery, 2026-10-24 Europe/Berlin
+
+The same review session remains bound to the now-merged canonical-activation PR.
+A runtime PR needs a new active source while all earlier findings, measurements and
+allowance stay in the original session. The maintainer explicitly authorized this
+recovery and private supported-Linux CI bootstrap. The independent upfront contract
+review selected an optional `advance_head.retire_pr` object over a separate retirement
+event. A separate event would duplicate input-generation, evidence and scope-refresh
+ownership or leave an intermediate unbound state. The existing refresh remains atomic.
+
+The payload names exact repository, PR number, historical head and merge commit. Its
+explicitly selected prior scope decision approves that same payload, a complete intended
+manifest, comparison base and `pr_base`, with a nonblank approver. Both adopted bases
+name the same main tip. Normal `record` captures actual lifecycle and complete two-pass
+provider facts under one 60-second deadline, then proves the merge commit is an ancestor
+of adopted main and current HEAD. Squash-merged source heads need no ancestry relation.
+The old PR's base SHA may precede its merge commit; its repository and main ref must match.
+
+Retained `retired_pr` provenance contains the exact lifecycle facts, fetched report
+snapshot and checked ancestry endpoints. Pure replay validates those facts and the
+selected approval without filesystem or network acquisition. Old schema-8 histories
+remain unchanged; older code rejects the new provenance rather than silently treating
+retirement as an ordinary refresh. No new authoritative registry or schema migration
+is introduced. Recorded retirement events fence subsequent explicit and automatic binds
+to that source, including delayed snapshots arriving while the session is unbound.
+
+Open/unmerged/mismatched sources, future or malformed merge timestamps, incomplete
+reports, failed/pending/missing gates, effective provider objections, unresolved threads,
+required reviewer requests and local unresolved findings reject atomically. Existing
+family escalation remains effective after recovery. Historical positive freshness is
+not required because retirement grants no completion. Refresh clears the active monitor
+and local proof epoch, advances `context_since`, and retains every historical event,
+finding, investigation, extension, usage and timing component. A new PR binds normally
+and must supply fresh current-input local, timing, provider and report-coverage evidence.
+
+The trusted boundary remains the contributor's local Git checkout and normal GitHub
+API access. Sequential API reads cannot detect a change that reverts between observations
+or happens after the final read. This is not authentication of a human approval or
+hostile-history forgery defense. Roll back source before recording retirement with a
+focused revert. After recording, preserve receipt and backup; older readers must fail
+closed instead of resetting or deleting the history. Actual canonical recovery, private
+publication and full supported-Linux acceptance remain verification work.

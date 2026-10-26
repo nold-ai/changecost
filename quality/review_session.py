@@ -163,6 +163,8 @@ def validate_provenance(event: dict[str, Any], provenance: Any) -> None:
             expected.add("adoption")
             if provenance.get("adoption") != adoption_binding(event):
                 raise ValueError("base adoption provenance mismatch")
+        if "retire_pr" in event:
+            expected.add("retired_pr")
     if event["kind"] == "evidence" and "provider_completions" in event:
         expected.add("provider_sources")
         if not isinstance(provenance.get("provider_sources"), list):
@@ -606,6 +608,8 @@ def capture_event_facts(
     scope = refresh_scope_contract(state, event)
     declared = scope["intended_files"]
     provenance["inputs"] = capture_inputs(root, event["head"], declared)
+    if "retire_pr" in event:
+        provenance["retired_pr"] = capture_retirement(root, state, event, provenance["recorded_at"])
     scope["intended_files"] = {
         name: file_fingerprint(root, name) for name in scope["intended_files"]
     }
@@ -661,12 +665,18 @@ def apply_event(state: dict[str, Any], event: dict[str, Any], provenance: dict[s
         add_active_minutes(state, event, provenance)
         return
     if event["kind"] == "advance_head":
+        if "retire_pr" in event:
+            validate_retirement(
+                state, event, provenance.get("retired_pr"), provenance["recorded_at"]
+            )
         apply_reviewed_scope(state, event, provenance["scope"])
         advance_head(state, event)
         state["inputs"] = copy.deepcopy(provenance["inputs"])
         if "adoption" in provenance:
             state.update(copy.deepcopy(provenance["adoption"]))
             state["context_since"] = provenance["recorded_at"]
+        if "retire_pr" in event:
+            state["pull_request"] = None
         return
     if event["kind"] == "evidence":
         add_evidence(state, event)
@@ -935,9 +945,154 @@ def bind_pr(state: dict[str, Any], event: dict[str, Any]) -> None:
     number = integer(event.get("pull_request"), "pull request")
     if number == 0 or event.get("repository") != state["contract"]["repository"]:
         raise ValueError("selected pull-request source mismatches contract")
+    if any(
+        item["kind"] == "advance_head" and item.get("retire_pr", {}).get("pull_request") == number
+        for item in state["events"]
+    ):
+        raise ValueError("pull request is retired; cannot bind historical source")
     if state["pull_request"] is not None and state["pull_request"] != number:
         raise ValueError("pull request already bound; cannot switch source")
     state["pull_request"] = number
+
+
+def retirement_target(state: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
+    target = event.get("retire_pr")
+    if not isinstance(target, dict) or target.keys() != {
+        "repository",
+        "pull_request",
+        "head",
+        "merge_commit",
+    }:
+        raise ValueError("retirement requires exact source expectations")
+    number = integer(target["pull_request"], "retired pull request")
+    if number == 0 or number != state["pull_request"]:
+        raise ValueError("retirement source is not the bound pull request")
+    if target["repository"] != state["contract"]["repository"]:
+        raise ValueError("retirement source repository mismatches contract")
+    validate_commit_id(target["head"], "retired head")
+    validate_commit_id(target["merge_commit"], "retired merge commit")
+    if not validate_adoption(event) or event["pr_base"] != {
+        "ref": "main",
+        "sha": event["comparison_base"],
+    }:
+        raise ValueError("retirement requires the same adopted main comparison and target")
+    approval = next(
+        (item for item in state["scope_decisions"] if item["id"] == event.get("scope_decision_id")),
+        None,
+    )
+    if approval is None or approval["decision"] != "approved":
+        raise ValueError("retirement requires an explicitly selected approved scope decision")
+    validate_event_text(approval.get("approved_by"), "retirement approved_by")
+    validate_manifest(approval.get("intended_files"))
+    if any(
+        json.dumps(approval.get(key), sort_keys=True) != json.dumps(event.get(key), sort_keys=True)
+        for key in ("retire_pr", "comparison_base", "pr_base")
+    ):
+        raise ValueError("scope approval does not authorize the exact retirement and destination")
+    if unresolved_findings(state):
+        raise ValueError("unresolved local findings prevent retirement")
+    return target
+
+
+def closed_pull_source(pull: Any) -> dict[str, Any]:
+    try:
+        source = {
+            "repository": pull["base"]["repo"]["full_name"],
+            "pull_request": pull["number"],
+            "head": pull["head"]["sha"],
+            "merge_commit": pull["merge_commit_sha"],
+            "pr_base": pull_base(pull),
+            "state": pull["state"],
+            "merged": pull["merged"],
+            "merged_at": pull["merged_at"],
+        }
+    except (KeyError, TypeError) as error:
+        raise ValueError("missing retirement source lifecycle facts") from error
+    return source
+
+
+def capture_retirement(
+    root: Path, state: dict[str, Any], event: dict[str, Any], recorded_at: str
+) -> dict[str, Any]:
+    target = retirement_target(state, event)
+    endpoint = f"repos/{target['repository']}/pulls/{target['pull_request']}"
+    deadline = min(REQUEST_DEADLINE.get() or math.inf, time.monotonic() + 60)
+    token = REQUEST_DEADLINE.set(deadline)
+    try:
+        source = closed_pull_source(gh_json(endpoint))
+        snapshot = gh_snapshot(target["repository"], target["pull_request"])
+        if closed_pull_source(gh_json(endpoint)) != source:
+            raise ValueError("retirement source changed during collection")
+        request_timeout()
+    finally:
+        REQUEST_DEADLINE.reset(token)
+    ancestry = {
+        "merge_commit": target["merge_commit"],
+        "comparison_base": event["comparison_base"],
+        "head": event["head"],
+    }
+    facts = {"source": source, "snapshot": snapshot, "ancestry": ancestry}
+    validate_retirement(state, event, facts, recorded_at)
+    for commit in ancestry.values():
+        verified_commit(root, commit)
+    for descendant in (event["comparison_base"], event["head"]):
+        try:
+            repository.git(root, "merge-base", "--is-ancestor", target["merge_commit"], descendant)
+        except ValueError as error:
+            raise ValueError("retired merge commit is not an ancestor of adopted inputs") from error
+    return facts
+
+
+def validate_retirement(
+    state: dict[str, Any], event: dict[str, Any], facts: Any, recorded_at: str
+) -> None:
+    target = retirement_target(state, event)
+    if not isinstance(facts, dict) or facts.keys() != {"source", "snapshot", "ancestry"}:
+        raise ValueError("missing or malformed retirement provenance")
+    source = facts["source"]
+    if not isinstance(source, dict) or source.keys() != {
+        *target,
+        "pr_base",
+        "state",
+        "merged",
+        "merged_at",
+    }:
+        raise ValueError("malformed retired source facts")
+    if any(source[key] != value for key, value in target.items()):
+        raise ValueError("retirement source does not match expected identity")
+    integer(source["pull_request"], "retired source pull request")
+    validate_pr_base(source["pr_base"])
+    if (
+        source["pr_base"]["ref"] != "main"
+        or source["state"] != "closed"
+        or source["merged"] is not True
+    ):
+        raise ValueError("retirement requires a closed merged source targeting main")
+    validate_timestamp(source["merged_at"])
+    if datetime.fromisoformat(source["merged_at"]) > datetime.fromisoformat(recorded_at):
+        raise ValueError("retirement merge timestamp is in the future")
+    if facts["ancestry"] != {
+        "merge_commit": target["merge_commit"],
+        "comparison_base": event["comparison_base"],
+        "head": event["head"],
+    }:
+        raise ValueError("retirement ancestry endpoints mismatch adopted inputs")
+    validate_retirement_reports(state, source, facts["snapshot"])
+
+
+def validate_retirement_reports(
+    state: dict[str, Any], source: dict[str, Any], snapshot: Any
+) -> None:
+    if not isinstance(snapshot, dict):
+        raise ValueError("retirement requires complete source reports")
+    policy = {**state["contract"], **source, "required_reviewers": []}
+    errors = monitor_errors(snapshot, policy)
+    if errors:
+        raise ValueError("retirement source is blocked: " + "; ".join(errors))
+    pending = monitor_pending(snapshot, policy)
+    requested = set(requested_user_names(snapshot)) & set(state["contract"]["required_reviewers"])
+    if pending or requested:
+        raise ValueError("retirement source has pending gates, threads or reviewer requests")
 
 
 def require_field(event: dict[str, Any], field: str, name: str) -> None:

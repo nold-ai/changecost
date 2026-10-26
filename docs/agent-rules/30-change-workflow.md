@@ -23,6 +23,41 @@ change carries across stages; a generic request to select a change does not pick
 one by recency. Ask only for the material choices requested by the workflow or
 needed to resolve real ambiguity. Do not repeat already answered choices.
 
+## Product outcome and check ownership
+
+Start a product change with one runnable outcome in its existing proposal or task.
+Name the input, the ChangeCost calculation or operation, and the result a user can
+observe. Implement and exercise that path before extending process tooling.
+A diagnostic reader delivers diagnostic import, not forecasting or cost advice.
+If the selected scope cannot deliver the requested result, expose that mismatch
+before implementation. Do not substitute more evidence artifacts for the result.
+
+Each stage owns one part of delivery:
+
+| Stage | Owns | Reuses |
+| --- | --- | --- |
+| Prepare | Product outcome, scope and necessary decisions | Existing specs, source facts and approved decisions |
+| Implement | Runtime logic, focused red/green tests and a runnable user path | Prepared scope and existing tooling |
+| Verify | Missing or invalidated aggregate gates and independent closure | Applicable exact-content tests, reviews and native reports |
+| Promote | PR publication, required provider reviews and actual PR checks | Verified source and still-applicable gate results |
+
+A stage transition alone does not invalidate evidence. Check content, comparison
+base, input/configuration identity and affected assumptions. Preserve applicable
+results and rerun what changed or remains missing. Required PR-event checks still
+run when repository policy requires them. Never relabel stale or failed evidence.
+Use the existing gate dispatcher for applicability rather than adding a check.
+
+A product request does not authorize changing review tools, receipt schemas,
+watchers or gate policy to make the workflow complete. Use existing recovery
+operations and preserve incompatible history. Name a tooling blocker separately
+and continue unaffected product logic. A tooling repair needs an explicit,
+separately scoped task. A demonstrated defect blocking the product still needs
+repair and verification. Do not hide it or weaken a required gate.
+
+Use the existing specs, test output and one handoff for progress. Additional
+reports, review lanes, packet formats and checkers need a concrete missing
+obligation. Reaching a new stage or receiving a style suggestion is not one.
+
 ## Refresh main without losing work
 
 1. Read root/branch/status (including staged and untracked files), remotes,
@@ -275,7 +310,8 @@ separately from the immutable original contract. Fresh review evidence is still
 required after every refresh; incompatible receipts require recovery without reset.
 
 The first `watch <change-id> --repo <owner/repo> --pr <number>` binds the PR.
-That source remains fixed across input refreshes. `advance_head` captures a new
+That source remains fixed across ordinary input refreshes. The explicitly approved
+merged-stage retirement below is the sole supported exception. `advance_head` captures a new
 input epoch and invalidates prior completion evidence while retaining counters.
 Epoch strings derive from refresh generations independently of caller event IDs.
 Automatic binding chooses a deterministic unused ID under the session lock;
@@ -459,3 +495,47 @@ intent once, then provide the actual delta, affected invariant/assumption mappin
 unresolved findings. Unknown dependencies, changed scope/entrypoints/trust boundaries
 require broader review; an old packet cannot waive current-head final gates or reset
 review budgets. Seeded faults are detector controls, not defects found in runtime.
+
+### Retire a merged earlier-stage PR without resetting its session
+
+For a separately authorized next stage, preserve the existing receipt and genesis,
+then record an approved `scope_decision` with a nonblank `approved_by`, complete
+`intended_files`, and these exact retirement and destination fields:
+
+```json
+{
+  "retire_pr": {
+    "repository": "owner/repository",
+    "pull_request": 46,
+    "head": "<full historical PR head>",
+    "merge_commit": "<full verified merge commit>"
+  },
+  "comparison_base": "<adopted main tip>",
+  "pr_base": {"ref": "main", "sha": "<adopted main tip>"}
+}
+```
+
+Use those identical fields in an `advance_head` event with actual current `head`
+and the explicit `scope_decision_id`. Submit through normal `record --json`; do
+not edit cached state or initialize another session. At recording, the helper
+fetches closed/merged lifecycle and complete stable provider facts under one
+60-second deadline. It verifies the expected source and actual merge ancestry
+into adopted main and current HEAD. The old PR's base SHA may precede the merge;
+a squash source head need not be an ancestor. Failed/pending/missing gates,
+effective objections, unresolved threads, required reviewer requests, local
+unresolved findings or missing/mismatched proof reject without a receipt write.
+
+Successful retirement clears the active PR and monitor, recaptures the approved
+inputs and advances the existing input generation and positive freshness floor.
+It preserves original contracts, events, provenance, family history, measurements,
+usage and allowances. Historical positives grant no new acceptance. The next PR
+binds through normal watch/selection and needs fresh local, remote and timing proof.
+Explicit binds and delayed observations cannot rebind a retired source. Exact
+retries do not recapture or append; replay validates retained facts offline.
+
+This trusts the existing contributor/Git/GitHub boundary, not hostile-history
+integrity. Sequential API reads have the same unobserved-change limits as normal
+monitoring. Earlier fixed-binding history remains valid; older helper versions
+reject retirement provenance and require recovery rather than resetting history.
+Preserve the receipt backup across rollback, and never use code rollback to erase
+an already recorded retirement or allowance consumption.

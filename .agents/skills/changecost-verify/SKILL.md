@@ -20,6 +20,10 @@ one upfront obligation review, affected-scope closure, Codex by default and addi
 CodeRabbit for listed risks. Preserve mechanical gates and exact-head evidence; do not
 add a generic full local/CLI review or a receipt-only commit by default.
 
+Use the [product outcome and check ownership](../../../docs/agent-rules/30-change-workflow.md#product-outcome-and-check-ownership)
+contract. Verification completes assurance for implemented behavior. It does not
+turn a product task into a review-tool repair or add a second implementation phase.
+
 ## Freeze the intended result
 
 - Confirm the selected change, owned paths/hunks, feature branch, upstream, and
@@ -78,8 +82,14 @@ and the reviewed fingerprint. Store large logs locally in `.changecost/` or
 must not delegate further or perform Git mutations. If delegation is unavailable,
 report that limitation; a coordinator's own review is not independent review.
 
-1. **Quality gates.** Run `make check` and applicable checks from repository
-   configuration and CI. `pre-commit run --all-files` only covers tracked files:
+1. **Quality gates.** Inspect existing exact-content results first. Run `make check`
+   and applicable checks from repository configuration and CI for obligations
+   that are missing or invalidated. Reuse a complete applicable aggregate result
+   rather than repeat it because implementation handed off to verification.
+   Content, base, configuration or affected-assumption changes invalidate the
+   affected result. Unsupported local native execution needs the supported Linux
+   route, not repeated local attempts or new observation tooling. Required
+   current-head and PR-event checks remain mandatory. `pre-commit run --all-files` only covers tracked files:
    include every intended addition explicitly with `pre-commit run --files <paths>`
    in an isolated verification snapshot, or use a snapshot whose index includes
    all intended additions. Review any auto-fixes through the single-writer/freeze

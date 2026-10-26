@@ -31,6 +31,11 @@ Use conventional commit subjects such as `docs: ...`, `chore: ...`, or `fix: ...
 
 ## Agent workflow
 
+Each stage follows [product outcome and check ownership](docs/agent-rules/30-change-workflow.md#product-outcome-and-check-ownership).
+Implementation delivers and exercises runtime behavior. Verification owns missing
+aggregate assurance, and promotion owns required PR reviews. Reuse results whose
+inputs and assumptions still match. Keep workflow-tool repairs separately scoped.
+
 Use these shared skills in agent chat; they are not terminal commands. Each stage
 can run in a new session. Name the OpenSpec change after selection so later stages
 resume the same work. Installing these skills does not authorize implementation.
@@ -291,3 +296,9 @@ with networking blocked; it does not approve any provider integration.
 
 Contributor review can use the [behavioral evidence pilot](docs/development/behavioral-evidence.md) for bounded
 lifecycle controls and content-bound delta review. Final required gates remain mandatory.
+
+Finite Codex reader contributors run `make generate` after canonical admission
+changes. The checked package derivative is generated from the sole source register,
+not hand-maintained. Synthetic reader controls substitute only the private test
+loader; they never broaden production approval. Keep the original 23 profiles,
+approved semantic payload and historical proof bytes intact.

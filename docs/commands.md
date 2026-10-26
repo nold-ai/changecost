@@ -65,6 +65,51 @@ Implemented command surface:
 - `changecost quote --price-id`
 - `changecost quote --repository-id`
 - `changecost quote --unit`
+- `changecost session`
+- `changecost session --help`
+- `changecost session --session-db`
+- `changecost session capture-codex`
+- `changecost session capture-codex --file`
+- `changecost session capture-codex --help`
+- `changecost session capture-codex --outcome`
+- `changecost session capture-codex --reason`
+- `changecost session capture-codex --repository-id`
+- `changecost session capture-codex --revision`
+- `changecost session capture-codex session_id`
+- `changecost session correct`
+- `changecost session correct --coverage`
+- `changecost session correct --help`
+- `changecost session correct --outcome`
+- `changecost session correct --reason`
+- `changecost session correct --revision`
+- `changecost session correct --tokens`
+- `changecost session correct session_id`
+- `changecost session finish`
+- `changecost session finish --coverage`
+- `changecost session finish --help`
+- `changecost session finish --outcome`
+- `changecost session finish --tokens`
+- `changecost session finish session_id`
+- `changecost session history`
+- `changecost session history --context`
+- `changecost session history --help`
+- `changecost session history --source`
+- `changecost session history --task-kind`
+- `changecost session observe-codex`
+- `changecost session observe-codex --file`
+- `changecost session observe-codex --help`
+- `changecost session observe-codex --repository-id`
+- `changecost session observe-codex session_id`
+- `changecost session show`
+- `changecost session show --help`
+- `changecost session show session_id`
+- `changecost session start`
+- `changecost session start --context`
+- `changecost session start --guess`
+- `changecost session start --help`
+- `changecost session start --source`
+- `changecost session start --task-kind`
+- `changecost session start session_id`
 - `changecost settle`
 - `changecost settle --basis`
 - `changecost settle --change-id`
@@ -74,6 +119,7 @@ Implemented command surface:
 - `changecost settle --currency`
 - `changecost settle --economic-kind`
 - `changecost settle --help`
+- `changecost settle --import-codex`
 - `changecost settle --import-evidence`
 - `changecost settle --operation-id`
 - `changecost settle --outcome`
@@ -83,6 +129,8 @@ Implemented command surface:
 - `changecost settle --run-id`
 - `changecost settle --run-outcome`
 - `changecost settle --source-end`
+- `changecost settle --source-profile`
+- `changecost settle --source-sha256`
 - `changecost settle --source-start`
 - `changecost settle --surface`
 - `changecost settle --unit`
@@ -93,4 +141,4 @@ Help and version succeed offline. Bare or unknown commands exit nonzero.
 No database, configuration or evidence files are created by these invocations.
 
 `bind` registers/maps/imports; `settle` declares lifecycle, imports normalized evidence or computes;
-`explain` inspects/exports and reports repository remainder. `quote` computes offline empirical estimates. `check` compares explicit historical records to compatible budgets, with valid unknown advice. Provider adapters remain planned.
+`explain` inspects/exports and reports repository remainder. `quote` computes offline empirical estimates. `check` compares explicit historical records to compatible budgets, with valid unknown advice. `settle --import-codex` imports only the exact approved finite diagnostic snapshot without demand or financial authority.

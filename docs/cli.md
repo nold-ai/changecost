@@ -47,7 +47,7 @@ on a handled failure. Hard process termination may leave an unreferenced tempora
 file, but never a partial final artifact. Keep exports private.
 
 Portable import/export modes cannot be combined with selectors or other operation modes.
-Native provider imports and live collection remain unavailable. Read-only `check` is described below.
+An explicit finite Codex diagnostic import is available as described below. Broader native imports and live collection remain unavailable. Read-only `check` is described below.
 `quote` computes synthetic offline empirical amounts. Computed record inspection includes local receipt status, input replay
 eligibility and `snapshot_only` completeness. Repository remainder reports are read-only.
 A busy store reports a retryable error; wait for the other writer and repeat the
@@ -204,3 +204,12 @@ With no eligible history, quantities remain absent. `explain` distinguishes a
 reproduced local computation from an imported producer claim. Keep operation IDs
 unique across economic and demand modes; retry identical requests without changing
 the captured result. Human output supports the same minimized record presentation.
+
+## Explicit finite Codex selection
+
+`settle --import-codex PATH --source-profile PROFILE --source-sha256 SHA` requires
+`--repository-id` and the exact approved finite snapshot. The [settlement guide](settlement.md#import-the-approved-finite-codex-diagnostics)
+lists the supported profile and boundaries. No scan, watch, account setting or
+provider request runs. A later manual Evidence binding is separate from import.
+Invalid mode combinations exit 2 before acquisition or database publication.
+A successful receipt names local Evidence selectors and diagnostic counts only.

@@ -50,6 +50,39 @@ authorized trial remain pending.
 - Every dependency below is also a native GitHub blocked-by relationship. Arrows
   run from prerequisite to dependent; feature grouping adds no implementation gate.
 
+## Local provisional session dogfood
+
+On 2026-10-25 Europe/Berlin the maintainer authorized
+[dogfood-01-local-sessions](changes/dogfood-01-local-sessions/proposal.md) to deliver
+a runnable manual before-session estimate, after-session actual/error and later
+cohort learning. Its local independent closure and runnable CLI proof are complete.
+Full supported Linux assurance and acceptance remain separate. No GitHub issue or
+PR is created by this verification stage.
+The separate SQLite store has no automatic collection, full-Change demand or billing
+authority. Source approvals and the separate finite-reader work stay unchanged.
+
+The same day's subsequent explicit authorization adds
+[dogfood-02-codex-observations](changes/dogfood-02-codex-observations/proposal.md).
+It connects only the exact approved finite source as partial diagnostics beside an
+unchanged manual estimate. No typed total is required for observation. Arbitrary
+new/appended sessions, native totals, learning and automatic core bindings remain
+outside the approval. The shared canonical reader and additive transactional session
+migration have passed actual-source proof and local independent closure. Full
+supported Linux assurance and provider/PR acceptance remain separate. Prior
+manual-session and reader evidence remains preserved; no merge is authorized.
+No release, merge or deployment is authorized here.
+
+On the same date, the maintainer explicitly authorized
+[dogfood-03-codex-provisional-loop](changes/dogfood-03-codex-provisional-loop/proposal.md)
+for new selected local Codex sessions, source-reported lifetime counters, provisional
+target error and separate cohort learning. It is implemented locally with additive
+v3 captures, focused checks, actual-source CLI proof and local independent closure.
+The maintainer subsequently authorized verification, private branch upload and fresh
+Linux/Python CI. Full supported assurance and provider/PR acceptance remain separate.
+Coverage, completeness, finality and subagent inclusion stay unknown.
+Manual history and the one finite approval are preserved. No merge, release,
+core numeric, billing or calibration authority is granted.
+
 ## Feature groups
 
 | Feature | Native Feature issue | Parent |
@@ -407,3 +440,13 @@ new profile. [The activation evidence](changes/provider-03-codex-local-import/TD
 records contributor checks and independent verification. Reader implementation
 stays blocked and unstarted, as do runtime eligibility and native demand/financial
 authority. No collection, publication or release is authorized.
+
+## Authorized finite Codex runtime, 2026-10-24 Europe/Berlin
+
+The maintainer requested implementation of #36 for the exact approved finite
+snapshot. The local reader adds diagnostic portability and native-only import,
+pending verification and independent/provider/Linux assurance. Issue #36 remains
+open; the planning PR did not complete runtime delivery. Closed prerequisites
+#9/#12 and parent #7 remain unchanged. The canonical register remains 24 profiles
+with one finite usage approval. No broader reader, native demand, billing, live
+collection, calibration, release or publication follows.

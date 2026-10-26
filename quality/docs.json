@@ -235,7 +235,9 @@
         "src/**/*.py",
         "quality/index.py",
         "quality/index.json",
-        ".agents/skills/*/SKILL.md"
+        ".agents/skills/*/SKILL.md",
+        "docs/providers/source-profiles.json",
+        "quality/source_admission.py"
       ],
       "kind": "generated"
     },
@@ -350,7 +352,9 @@
         "src/**/*.py",
         "quality/index.py",
         "quality/index.json",
-        ".agents/skills/*/SKILL.md"
+        ".agents/skills/*/SKILL.md",
+        "docs/providers/source-profiles.json",
+        "quality/source_admission.py"
       ],
       "kind": "generated"
     },
@@ -1235,6 +1239,164 @@
         "quality/source_feasibility.py",
         "tests/test_source_admission.py",
         "tests/test_source_feasibility.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-03-codex-local-import/specs/bounded-review-session/spec.md",
+      "owner": "specifications",
+      "sources": [
+        "openspec/changes/provider-03-codex-local-import/specs/bounded-review-session/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/sessions.md",
+      "owner": "local-sessions",
+      "sources": [
+        "src/changecost/sessions.py",
+        "src/changecost/session_demo.py",
+        "src/changecost/cli.py",
+        "tests/test_sessions_cli.py",
+        "src/changecost/codex_local.py",
+        "src/changecost/codex_session_counter.py",
+        "src/changecost/presentation.py",
+        "tests/test_codex_provisional_sessions.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-01-local-sessions/proposal.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-01-local-sessions/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-01-local-sessions/design.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-01-local-sessions/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-01-local-sessions/tasks.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-01-local-sessions/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-01-local-sessions/specs/local-sessions/spec.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-01-local-sessions/specs/local-sessions/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-01-local-sessions/TDD_EVIDENCE.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-01-local-sessions/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-02-codex-observations/design.md",
+      "owner": "local-sessions",
+      "sources": [
+        "src/changecost/sessions.py",
+        "src/changecost/codex_local.py",
+        "src/changecost/cli.py",
+        "tests/test_codex_session_observations.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-02-codex-observations/proposal.md",
+      "owner": "local-sessions",
+      "sources": [
+        "src/changecost/sessions.py",
+        "src/changecost/codex_local.py",
+        "src/changecost/cli.py",
+        "tests/test_codex_session_observations.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-02-codex-observations/specs/local-sessions/spec.md",
+      "owner": "local-sessions",
+      "sources": [
+        "src/changecost/sessions.py",
+        "src/changecost/codex_local.py",
+        "src/changecost/cli.py",
+        "tests/test_codex_session_observations.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-02-codex-observations/tasks.md",
+      "owner": "local-sessions",
+      "sources": [
+        "src/changecost/sessions.py",
+        "src/changecost/codex_local.py",
+        "src/changecost/cli.py",
+        "tests/test_codex_session_observations.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-02-codex-observations/TDD_EVIDENCE.md",
+      "owner": "local-sessions",
+      "sources": [
+        "src/changecost/sessions.py",
+        "src/changecost/codex_local.py",
+        "src/changecost/cli.py",
+        "tests/test_codex_session_observations.py"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-03-codex-provisional-loop/proposal.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-03-codex-provisional-loop/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-03-codex-provisional-loop/design.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-03-codex-provisional-loop/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-03-codex-provisional-loop/tasks.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-03-codex-provisional-loop/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/dogfood-03-codex-provisional-loop/specs/codex-provisional-sessions/spec.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/changes/dogfood-03-codex-provisional-loop/specs/codex-provisional-sessions/spec.md"
       ],
       "kind": "manual"
     }

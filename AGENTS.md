@@ -43,6 +43,18 @@ SpecFact is development tooling, not a runtime framework.
 - Record actual checks, uncertainty, and rollback in the handoff. Do not claim
   research citations or compatibility that have not been verified.
 
+## Repeated delivery mistakes
+
+Use [product outcome and check ownership](docs/agent-rules/30-change-workflow.md#product-outcome-and-check-ownership)
+when a product task starts. These are workflow ownership and judgment rules, not
+new runtime gates. No automated check can establish whether a feature is useful.
+
+| Rule | Enforcement and limit |
+| --- | --- |
+| Deliver a runnable user outcome before process expansion | The implement skill requires an actual CLI or API result. A person or reviewing agent must assess usefulness. |
+| Run aggregate assurance under one stage owner | The implement skill hands focused results to verify; verify reuses applicable evidence. Existing CI still enforces required checks. |
+| Keep review-tool repair separate from product scope | The shared workflow requires a separately scoped tooling task. Scope review enforces this judgment; no new checker is added. |
+
 Core-02 offline contracts/lifecycle implementation was explicitly authorized on
 2026-09-29, merged in PR #25, and archived through the OpenSpec CLI with synchronized
 main specs. Settlement reconciliation merged in PR #28 on 2026-10-02 and is
@@ -64,7 +76,7 @@ was accepted in PR #39 on 2026-10-08. Native CLI archival synchronized its
 evidence gates; the original 23 profiles retain zero approvals. On 2026-10-23
 the maintainer authorized canonical activation of one independently approved finite
 Codex diagnostic mapping and contributor admission controls. The register now has
-24 profiles and one usage approval. Reader implementation remains blocked. Offline adaptive demand
+24 profiles and one usage approval. The exact finite reader runtime was authorized on 2026-10-24 and is implemented locally pending full assurance. Broader native readers remain separate. Offline adaptive demand
 #35 merged in PR #43; the issue-44 correction merged in PR #45. The maintainer
 accepted it on 2026-10-18 and requested native CLI archival. The archive retains
 the accepted grouped-red proof limitation and historical review scope.

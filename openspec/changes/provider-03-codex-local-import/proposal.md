@@ -21,6 +21,8 @@ and accounting rather than assumptions from file presence.
 
 ### Modified Capabilities
 
+- `bounded-review-session`: Explicitly approved retirement of a merged earlier-stage PR, preserving the same review history and allowance for runtime verification.
+
 - `change-run-contracts`: Add one portable diagnostic native-usage record beside
   Evidence, preserving quantity and provenance without economic or demand authority.
 
@@ -116,3 +118,32 @@ registered; the original 23 profiles remain unchanged with zero approvals.
 and fresh independent verification. Earlier activation-pending statements record
 the preceding planning stage. Reader/runtime implementation remains blocked and
 unstarted; all ten reader implementation tasks remain unchecked.
+
+## Runtime authorization and reconciliation, 2026-10-24 Europe/Berlin
+
+The maintainer now explicitly authorizes the exact finite reader implementation.
+Earlier planning-only and blocked statements above preserve historical scope.
+The selected single NativeUsage kind, one public reader operation and one
+Store.apply transaction are retained. Repository is carried on NativeUsage and
+checked against exact manual bindings. One canonical fact representation owns
+both projection hashing and semantic replay comparison. The package derivative
+is generated and checked against the unchanged canonical register. No source
+collection, new admission, demand/billing authority or publication is added.
+
+The blocking public Store probe demonstrated fresh/existing atomic graph rejection
+and immutable no-op availability. Private reproduction of retained authorized
+bytes matched the approved 16-request/96-fact projection and exact profile/proof.
+Runtime positive replay of those exact bytes produced no second insertion.
+See TDD_EVIDENCE.md for actual commands and remaining assurance.
+
+
+## Verification recovery authorization, 2026-10-24 Europe/Berlin
+
+The maintainer requested verification through green results, preservation and supported
+recovery of the existing review ledger, and a private branch push for fresh supported
+Linux CI. Earlier no-publication statements describe the implementation stage. This
+request permits the private CI bootstrap and subsequent corrections, not merge, release,
+new admissions or collection. The historical source PR can be retired only after its
+actual closed/merged identity, complete provider facts and adopted-main ancestry are
+verified through the supported append-only transition. Every runtime gate remains open
+until current evidence satisfies it. Neither recovery nor a private push is acceptance.
