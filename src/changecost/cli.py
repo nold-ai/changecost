@@ -108,7 +108,7 @@ def evaluate_synthetic_command(
     """Report an isolated synthetic evaluation without using the runtime store."""
     from changecost.evaluation import evaluate_synthetic
 
-    result = None
+    result: dict[str, Any] = {}
 
     def operation():
         nonlocal result
@@ -116,7 +116,7 @@ def evaluate_synthetic_command(
         return result
 
     execute(operation)
-    if result is not None and result["core"]["economic"]["status"] == "comparison_error":
+    if result and result["core"]["economic"]["status"] == "comparison_error":
         raise typer.Exit(2)
 
 

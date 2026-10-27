@@ -93,6 +93,37 @@ def validate_component_identifiers(value):
             pending.extend(item)
 
 
+def validate_evaluation_record(record):
+    validate_component_identifiers(record.model_dump())
+    identifiers = [
+        record.record_id,
+        getattr(record, "change_id", "safe"),
+        getattr(record, "scope_key", "safe"),
+    ]
+    if record.kind == "run":
+        identifiers.extend([record.ref.run_id, record.ref.repository_id])
+    if record.kind == "native_usage" or not all(safe_id(v) for v in identifiers):
+        raise ContractError("unsupported evaluation record")
+    provider = getattr(record, "provider", None)
+    source = getattr(record, "source", None)
+    run = getattr(record, "ref", None) if record.kind == "run" else None
+    providers = [provider, getattr(source, "provider", None), getattr(run, "provider", None)]
+    if any(p is not None and p != "synthetic" for p in providers):
+        raise ContractError("only declared synthetic providers supported")
+
+
+def validate_evaluation_scope(protocol):
+    economic_ids = [
+        value
+        for value in protocol.economic_scope.economic.model_dump().values()
+        if value is not None
+    ]
+    if not all(
+        safe_id(v) for v in [protocol.version, protocol.economic_scope.repository_id, *economic_ids]
+    ):
+        raise ContractError("unsafe experiment identifier")
+
+
 def validate_experiment(history, protocol):
     records = {key(reference(r)): r for r in history.bundle.records}
     scheduled = [key(ref) for delivery in history.deliveries for ref in delivery.records]
@@ -105,31 +136,8 @@ def validate_experiment(history, protocol):
     if [d.at for d in history.deliveries] != sorted(d.at for d in history.deliveries):
         raise ContractError("deliveries must be chronological")
     for record in records.values():
-        validate_component_identifiers(record.model_dump())
-        identifiers = [
-            record.record_id,
-            getattr(record, "change_id", "safe"),
-            getattr(record, "scope_key", "safe"),
-        ]
-        if record.kind == "run":
-            identifiers.extend([record.ref.run_id, record.ref.repository_id])
-        if record.kind == "native_usage" or not all(safe_id(v) for v in identifiers):
-            raise ContractError("unsupported evaluation record")
-        provider = getattr(record, "provider", None)
-        source = getattr(record, "source", None)
-        run = getattr(record, "ref", None) if record.kind == "run" else None
-        providers = [provider, getattr(source, "provider", None), getattr(run, "provider", None)]
-        if any(p is not None and p != "synthetic" for p in providers):
-            raise ContractError("only declared synthetic providers supported")
-    economic_ids = [
-        value
-        for value in protocol.economic_scope.economic.model_dump().values()
-        if value is not None
-    ]
-    if not all(
-        safe_id(v) for v in [protocol.version, protocol.economic_scope.repository_id, *economic_ids]
-    ):
-        raise ContractError("unsafe experiment identifier")
+        validate_evaluation_record(record)
+    validate_evaluation_scope(protocol)
     arrivals = {key(ref): d.at for d in history.deliveries for ref in d.records}
     for case in protocol.cases:
         validate_case(case, protocol, records, arrivals)
@@ -545,15 +553,19 @@ def attribution(records, scope):
     )
 
 
-def abandoned_share(records, scope):
+def terminal_truths(records, scope):
     outcomes = {key(r.subject): r for r in current_revisions(records, Outcome)}
-    truths = [
+    return [
         economic_truth(records, r, scope)
         for r in records.values()
         if isinstance(r, Change)
         and r.repository_id == scope.repository_id
         and key(reference(r)) in outcomes
     ]
+
+
+def abandoned_share(records, scope):
+    truths = terminal_truths(records, scope)
     complete = [t for t in truths if isinstance(t, ScoredTruth)]
     unknown = len(truths) - len(complete)
     total = sum((t.amount for t in complete), Fraction(0))
@@ -600,15 +612,18 @@ def run_history(history, protocol, path):
             store.import_bundle(
                 Bundle(source=history.bundle.source, records=selected, observations=observations)
             )
-        elif kind == "forecast":
+            continue
+        if kind == "forecast":
             experiment.forecast(value)
-        elif kind == "update":
+            continue
+        if kind == "update":
             experiment.forecast(value, update=True)
-        elif kind == "truth":
+            continue
+        if kind == "truth":
             experiment.score(value)
-        else:
-            with closing(store.connect(readonly=True)) as connection:
-                observed = snapshot_records(connection, store.snapshot())
+            continue
+        with closing(store.connect(readonly=True)) as connection:
+            observed = snapshot_records(connection, store.snapshot())
     core = dict(
         schema="changecost/evaluation-report-v1",
         provenance="synthetic_fixture_only",

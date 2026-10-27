@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Simplify offline evaluator validation and replay control flow while preserving
+  synthetic report values, chronological admission and comparison-error exits.
+  Resolve native complexity and CLI result-type findings without changing gates.
+
 - Add isolated `evaluate-synthetic` CLI/API reporting with versioned synthetic timelines,
   independent truth cutoffs, exact economic baseline comparison, adaptive/scenario
   metrics, attribution and abandoned-spend denominators. Optional timing remains

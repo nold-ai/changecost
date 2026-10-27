@@ -214,24 +214,19 @@ def test_attribution_keeps_six_two_two_raw_denominator(tmp_path):
 
     history, protocol = economic_fixture(tmp_path, count=0)
     store = Store(tmp_path / "db", clock=lambda: NOW + timedelta(seconds=3))
-    import_events(store, *(event(f"extra-{i}", None if i == 8 else "1") for i in range(9)))
+    evidence = import_events(
+        store, *(event(f"extra-{i}", None if i == 8 else "1") for i in range(9))
+    )
     history = portable_timeline(store)
     run = next(r for r in history["bundle"]["records"] if r["kind"] == "run")
     # Binding provenance is a portable producer assertion, not provider verification.
-    from changecost.models import EvidenceBinding
+    from changecost.models import EvidenceBinding, RecordRef
     from changecost.operations import common
 
-    evidence = [
-        r
-        for r in store.records()
-        if r.kind == "evidence"
-        and r.record_id
-        != next(r for r in store.records() if r.kind == "evidence_binding").evidence.record_id
-    ]
     for i, item in enumerate(evidence[:7]):
         binding = EvidenceBinding(
             **common("fixture", NOW + timedelta(seconds=3), f"attribution-{i}"),
-            evidence=reference(item),
+            evidence=RecordRef(kind="evidence", record_id=item),
             run=run["ref"],
             method="verified_provider" if i < 6 else "manual",
         )
