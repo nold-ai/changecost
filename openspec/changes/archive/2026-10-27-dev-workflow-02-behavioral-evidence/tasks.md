@@ -58,3 +58,28 @@
 - [x] 7.1 Consolidate one shared O7-O8 workflow policy with skill references, one Codex default and risk-triggered CodeRabbit, automatic initial and incremental review disabled after the empirical two-switch adjustment, canonical PR receipt and immutable milestones; validate config/docs/index/ownership and preserve all mechanical gates.
 - [ ] 7.2 Freeze the integrated candidate, run scoped then complete/staged and supported-Linux gates, obtain required current-head Codex and CodeRabbit, and verify only affected obligations/dependencies after corrections within 13 batches / 105.67495325 minutes cumulative ceilings; record actual outcomes without preclaiming remote completion.
 - [ ] 7.3 Record the post-replan preparation/publication/final measurement boundaries separately from the original pilot, publish/read back the canonical live receipt, and evaluate task 5.3 against real ledger completion on the exact verified head; keep any unfulfilled obligation explicitly open without another tracked receipt-only update.
+
+
+## Archival reconciliation, 2026-10-27 Europe/Berlin
+
+The maintainer requested native CLI archival of already implemented and accepted
+changes. The [canonical final acceptance receipt in merged PR #27](https://github.com/nold-ai/changecost/pull/27)
+records exact head `06511bfdb613a01ec942f48f60f33438f8219b0f`, coordinator
+COMPLETE revision 161, input-generation 38 and digest
+`52887413d0308b680348b50bbde14725bbbbb8f309a29874c081c1091d2ccb7e`.
+Both Linux jobs and current-head Codex/CodeRabbit acceptance completed; issue #26
+is closed and PR #27 merged as `131799f640caac6c2ee68dc6904d331a4203f825`.
+
+The three unchecked boxes 5.3, 7.2 and 7.3 above remain immutable publication-time
+snapshots. Their actual final obligations were subsequently fulfilled in that
+canonical receipt. They do not represent unfinished implementation at archival.
+No checkbox is changed and no historical RED, original negative pilot outcome,
+rollout limitation or cost claim is rewritten. The receipt retains all 13 batch
+events and 54.1554815 measured review/fix minutes within its 105.67495325-minute
+ceiling; those partial windows are not total effort or billing.
+
+This reconciliation reads the published authoritative receipt. The historical
+raw local ledger was unavailable for replay in this checkout; no replay is
+claimed. Archival does not claim unproven effective configuration behavior or
+waive future checks. The original historical narrative above retains its date
+and scope, including its earlier open/unmerged status.

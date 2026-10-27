@@ -1,6 +1,6 @@
 # Agent instructions
 
-## Current delivery checkpoint, 2026-10-26 Europe/Berlin
+## Current delivery checkpoint, 2026-10-27 Europe/Berlin
 
 PR #47 merged the finite Codex reader and three local-session changes at
 `ffd8dff568f11e6e9283b00badbce6c98a0b5580`. The maintainer requested native CLI
@@ -11,8 +11,11 @@ full unqualified assurance did not pass. This exception grants no future waiver.
 The exact finite reader is delivered; broader readers and native demand, billing
 and calibration authority remain separate. On 2026-10-26 the maintainer subsequently
 authorized offline evaluation #17 implementation, verification and PR promotion.
-Its synthetic CLI/API is implemented locally pending complete verification and
-publication. Live assessment and merge remain unauthorized. Earlier dated
+Its synthetic CLI/API merged in PR #48 on 2026-10-27 at
+`401e43ed63a9da3e39f55fc29d1e7160d1d06d2e`. The maintainer subsequently selected
+live-assessment preparation while keeping #17 active. Only planning is authorized;
+live collection, real-outcome inspection and further runtime implementation remain
+separate. The repository is public as confirmed on 2026-10-27; Project 3 remains private. Earlier dated
 statements below retain their historical scope.
 
 ## Start here
@@ -104,3 +107,13 @@ contracts. Offline demand records and explicit quote mode are accepted and archi
 12 requirements and 47 scenarios synchronized by the OpenSpec CLI. Native
 readers, calibration and release publication remain separate. See
 [forecasting](docs/forecasting.md) and [change order](openspec/CHANGE_ORDER.md).
+
+Current 2026-10-27 reconciliation: the offline PR #48 source passed both supported
+host matrix/native jobs in main run 40563257194 attempt 2, with all ten native members
+executed/passing and no UNKNOWN evidence. This does not erase earlier archived
+exceptions or historical prior-RED gaps. Follow [live preparation](docs/pilot/live-assessment.md)
+for #17's unimplemented real-evidence boundary and pending operator decisions.
+Native CLI archival of dev-workflow-02 synchronized 18 added and three modified
+requirements, retaining its three unchecked historical publication milestones and
+original negative pilot. Five changes remain active; see the dated lifecycle audit
+in [change order](openspec/CHANGE_ORDER.md). No other active change is currently eligible for archival.

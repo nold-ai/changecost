@@ -845,58 +845,58 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/PREPARATION_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/PREPARATION_EVIDENCE.md",
       "owner": "behavioral-evidence",
       "sources": [
-        "openspec/changes/dev-workflow-02-behavioral-evidence/PREPARATION_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/PREPARATION_EVIDENCE.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/TDD_EVIDENCE.md",
       "owner": "behavioral-evidence",
       "sources": [
-        "openspec/changes/dev-workflow-02-behavioral-evidence/TDD_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/design.md",
+      "path": "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/design.md",
       "owner": "behavioral-evidence",
       "sources": [
-        "openspec/changes/dev-workflow-02-behavioral-evidence/design.md"
+        "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/proposal.md",
+      "path": "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/proposal.md",
       "owner": "behavioral-evidence",
       "sources": [
-        "openspec/changes/dev-workflow-02-behavioral-evidence/proposal.md"
+        "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/specs/behavioral-evidence-review/spec.md",
+      "path": "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/specs/behavioral-evidence-review/spec.md",
       "owner": "behavioral-evidence",
       "sources": [
-        "openspec/changes/dev-workflow-02-behavioral-evidence/specs/behavioral-evidence-review/spec.md"
+        "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/specs/behavioral-evidence-review/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/tasks.md",
+      "path": "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/tasks.md",
       "owner": "behavioral-evidence",
       "sources": [
-        "openspec/changes/dev-workflow-02-behavioral-evidence/tasks.md"
+        "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/tasks.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dev-workflow-02-behavioral-evidence/specs/bounded-review-session/spec.md",
+      "path": "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/specs/bounded-review-session/spec.md",
       "owner": "behavioral-evidence",
       "sources": [
-        "openspec/changes/dev-workflow-02-behavioral-evidence/specs/bounded-review-session/spec.md"
+        "openspec/changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/specs/bounded-review-session/spec.md"
       ],
       "kind": "manual"
     },
@@ -1454,6 +1454,27 @@
         "src/changecost/evaluation*.py",
         "tests/test_evaluation*.py",
         "examples/evaluation/*.json"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/pilot/live-assessment.md",
+      "owner": "pilot-evaluation",
+      "sources": [
+        "docs/pilot/live-assessment.md",
+        "src/changecost/evaluation.py",
+        "openspec/changes/pilot-02-calibration-evaluation/design.md",
+        "openspec/changes/pilot-02-calibration-evaluation/tasks.md",
+        "openspec/changes/pilot-02-calibration-evaluation/specs/pilot-evaluation/spec.md",
+        "docs/providers/source-feasibility.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/behavioral-evidence-review/spec.md",
+      "owner": "behavioral-evidence",
+      "sources": [
+        "openspec/specs/behavioral-evidence-review/spec.md"
       ],
       "kind": "manual"
     }

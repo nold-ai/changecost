@@ -30,7 +30,7 @@ Documentation: docs/pilot/evaluation.md, docs/pilot/findings.md, and docs/provid
 Verification: the scenarios in [the capability spec](specs/pilot-evaluation/spec.md),
 strict OpenSpec validation, applicable quality gates and truthful review evidence.
 The evaluator, input models, metric helpers, synthetic fixtures and tests are
-implemented locally pending complete verification and PR publication. No new
+merged in PR #48 at `401e43ed63a9da3e39f55fc29d1e7160d1d06d2e`. No new
 runtime dependencies, normal-store migration or live collection are introduced.
 
 ## Non-goals
@@ -74,5 +74,21 @@ evidence and prior local database versions; do not erase financial history.
 - Tracking verified: 2026-09-28; implementation is unstarted, unassigned and undated.
 - Preparation refreshed: 2026-10-26 (Europe/Berlin), against `ffd8dff568f11e6e9283b00badbce6c98a0b5580`. Issue #17 remains User Story under #5 in private Project 3, Todo. Native blockers #11, #12, #15, #16 and #35 are closed.
 - Preparation disposition on 2026-10-26: locally prepared and unpublished; preparation alone authorized no runtime.
-- Subsequent runtime authorization on 2026-10-26: offline implementation, verification and PR promotion. As of 2026-10-27 the synthetic CLI/API is implemented locally pending complete verification and publication. Live assessment, provider approval, calibration claims and merge remain outside authorization.
+- Subsequent runtime authorization on 2026-10-26: offline implementation, verification and PR promotion. The synthetic CLI/API subsequently merged in PR #48 on 2026-10-27. The maintainer then selected live preparation only with #17 active; collection, real-outcome inspection, provider/measurement approval and further runtime implementation remain separate.
 <!-- tracking:end -->
+
+## Live preparation checkpoint, 2026-10-27 Europe/Berlin
+
+The maintainer selected "Prepare the live assessment; keep #17 active" and chose
+a planning PR. Offline implementation is merged in PR #48. Earlier local-delivery
+statements retain their historical scope. This preparation changes planning and
+lifecycle documentation only; no live collection, real-outcome inspection, runtime
+implementation, provider admission or private-data publication is authorized.
+
+The [live guide](../../../docs/pilot/live-assessment.md) provides pending operator
+fields, a private documentation-only manifest, frozen rubric and task closure checks.
+A real-evidence entrypoint is unimplemented, independently of dataset availability.
+The synthetic evaluator and its economic/demand coverage policies cannot establish
+native authority. The [design checkpoint](design.md#live-preparation-checkpoint-2026-10-27-europeberlin)
+records current prerequisites, risks and scope. Historical prior-RED gaps, live
+assessment and conditional integration remain open. #17 is not closed or archived.

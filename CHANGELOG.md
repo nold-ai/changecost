@@ -3,6 +3,18 @@
 
 ## Unreleased
 
+- Prepare #17's separate live assessment with pending operator decisions, a private
+  documentation-only manifest, authority/runtime gates and per-task closure checks.
+  Require task 3.4 to reference approved published aggregates before closure.
+  Keep #17 active and its historical TDD obligations unchecked. Record PR #48's
+  merged offline implementation and passing post-merge host/native assurance.
+  No live collection, outcomes, source approval or runtime behavior is added.
+
+- Archive dev-workflow-02 through the native OpenSpec CLI with verified main-spec
+  synchronization: 18 added and three modified requirements. Preserve three unchecked
+  historical publication milestones, the original negative pilot and rollout limits.
+  Retain CLI warnings and keep the other five unfinished changes active.
+
 - Simplify offline evaluator validation and replay control flow while preserving
   synthetic report values, chronological admission and comparison-error exits.
   Resolve native complexity and CLI result-type findings without changing gates.
