@@ -5,6 +5,7 @@
 
 - Prepare #17's separate live assessment with pending operator decisions, a private
   documentation-only manifest, authority/runtime gates and per-task closure checks.
+  Require task 3.4 to reference approved published aggregates before closure.
   Keep #17 active and its historical TDD obligations unchecked. Record PR #48's
   merged offline implementation and passing post-merge host/native assurance.
   No live collection, outcomes, source approval or runtime behavior is added.

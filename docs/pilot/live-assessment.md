@@ -119,7 +119,7 @@ also retains historical TDD and full-story integration obligations.
 | 3.1 | Current prerequisite evidence, selected lane authorization, exact reader/source approval, complete measurement policy and permitted cohort/consent. | Pending operator and authority decisions. |
 | 3.2 | Real replay through the approved boundary with frozen manifest, registration, actual report, environment, input/store bytes and separately measured wall time. | Blocked by 3.0 and 3.1. No live command is supplied here. |
 | 3.3 | Shared eligible truth, independent/dependent counts, additional availability, uncertainty, all-outcome denominators and compatible-unit rehearsal benefit. | Pending authorized execution and sufficient truth. |
-| 3.4 | Reviewed publishable aggregate calibration/width where supported, attribution, abandoned share, unknowns and baseline, with every count/unit/denominator. | Pending results and disclosure permission. |
+| 3.4 | Approved published aggregate calibration/width where supported, attribution, abandoned share, unknowns and baseline, with every count/unit/denominator and a reference to the approved publication. | Pending results, disclosure permission and publication. |
 | 3.5 | Actual rubric outcome and continue/pivot/not-yet-validated rationale in findings.md, with gaps and next evidence. | Pending results. |
 | 3.6 | If criteria pass, genuine supported measured receipt bound to exact ecosystem/component/population/input/policy versions and review/withdrawal evidence. Otherwise record no-receipt reason. | Pending supported receipt path and passing evidence. |
 
