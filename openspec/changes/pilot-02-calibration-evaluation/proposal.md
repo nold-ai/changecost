@@ -6,10 +6,10 @@ The pilot must test whether local task dimensions, ecosystem comparisons and opt
 
 ## What Changes
 
+- Deliver a deterministic offline report from portable synthetic history and a pre-registered protocol, reusing existing quote replay and demand validation.
 - Define a reproducible chronological evaluation protocol and repository-wide baseline, with matched availability and one initial quote per change.
 - Report attribution, calibration, quote width, abandoned expenditure and runtime/storage overhead.
 - Publish aggregate findings and limitations using safe fixtures; classify unsupported or insufficient evidence explicitly.
-
 - Require full-change truth coverage and freeze truth revisions/cutoff separately from quote-time evidence.
 
 ## Capabilities
@@ -24,11 +24,14 @@ None; delivered main capabilities are preserved. New additive requirements are d
 
 ## Impact
 
-Future implementation affects the standalone Python CLI and local evidence workflow.
+The separately authorized offline implementation adds `evaluate-synthetic` to the
+standalone Python CLI and a public evaluation API using disposable local stores.
 Documentation: docs/pilot/evaluation.md, docs/pilot/findings.md, and docs/providers/source-feasibility.md.
 Verification: the scenarios in [the capability spec](specs/pilot-evaluation/spec.md),
 strict OpenSpec validation, applicable quality gates and truthful review evidence.
-No runtime files or dependencies are introduced by this planning proposal.
+The evaluator, input models, metric helpers, synthetic fixtures and tests are
+implemented locally pending complete verification and PR publication. No new
+runtime dependencies, normal-store migration or live collection are introduced.
 
 ## Non-goals
 
@@ -69,4 +72,7 @@ evidence and prior local database versions; do not erase financial history.
 - Project: [ChangeCost](https://github.com/orgs/nold-ai/projects/3) — private, status Todo.
 - Source: maintainer-approved pilot plan, 2026-09-28 (Europe/Berlin).
 - Tracking verified: 2026-09-28; implementation is unstarted, unassigned and undated.
+- Preparation refreshed: 2026-10-26 (Europe/Berlin), against `ffd8dff568f11e6e9283b00badbce6c98a0b5580`. Issue #17 remains User Story under #5 in private Project 3, Todo. Native blockers #11, #12, #15, #16 and #35 are closed.
+- Preparation disposition on 2026-10-26: locally prepared and unpublished; preparation alone authorized no runtime.
+- Subsequent runtime authorization on 2026-10-26: offline implementation, verification and PR promotion. As of 2026-10-27 the synthetic CLI/API is implemented locally pending complete verification and publication. Live assessment, provider approval, calibration claims and merge remain outside authorization.
 <!-- tracking:end -->

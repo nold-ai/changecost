@@ -1,0 +1,143 @@
+{
+  "schema": "changecost/evaluation-protocol-v1",
+  "version": "synthetic-20261026-v1",
+  "provenance": "synthetic_fixture_only",
+  "registered_at": "2026-09-27T10:00:00+00:00",
+  "economic_scope": {
+    "repository_id": "repo",
+    "economic": {
+      "economic_kind": "monetary",
+      "unit": "USD",
+      "basis": "billed",
+      "currency": "USD"
+    },
+    "start": null,
+    "end": null
+  },
+  "economic_minimum": 20,
+  "formula": "exact-errors-wilson95-scenario-median/v1",
+  "methods": [
+    "repository",
+    "dimensional",
+    "transfer",
+    "rehearsal"
+  ],
+  "cases": [
+    {
+      "id": "target",
+      "change": {
+        "kind": "change",
+        "record_id": "08d6ae95d77d3b9501c552b0cc95ad709501da5fd68c54a29706deb191a859d6"
+      },
+      "forecast_at": "2026-09-29T10:00:01+00:00",
+      "truth_at": "2026-09-29T10:00:04+00:00",
+      "updates": []
+    },
+    {
+      "id": "learning-target",
+      "change": {
+        "kind": "change",
+        "record_id": "learning-08d6ae95d77d3b9501c552b0cc95ad709501da5fd68c54a29706deb191a859d6"
+      },
+      "forecast_at": "2026-10-11T10:00:09+00:00",
+      "truth_at": "2026-10-11T10:00:14+00:00",
+      "adaptive": {
+        "assessment": {
+          "kind": "task_assessment",
+          "record_id": "learning-evaluation-assessment"
+        },
+        "ecosystem": {
+          "kind": "ecosystem",
+          "record_id": "learning-eco"
+        },
+        "policy": {
+          "kind": "demand_validation_policy",
+          "record_id": "learning-rubric"
+        }
+      },
+      "updates": []
+    },
+    {
+      "id": "cold-target",
+      "change": {
+        "kind": "change",
+        "record_id": "cold-08d6ae95d77d3b9501c552b0cc95ad709501da5fd68c54a29706deb191a859d6"
+      },
+      "forecast_at": "2026-10-11T10:00:03+00:00",
+      "truth_at": "2026-10-11T10:00:08+00:00",
+      "adaptive": {
+        "assessment": {
+          "kind": "task_assessment",
+          "record_id": "cold-evaluation-assessment"
+        },
+        "ecosystem": {
+          "kind": "ecosystem",
+          "record_id": "cold-eco"
+        },
+        "policy": {
+          "kind": "demand_validation_policy",
+          "record_id": "cold-rubric"
+        }
+      },
+      "updates": []
+    },
+    {
+      "id": "transfer-target",
+      "change": {
+        "kind": "change",
+        "record_id": "transfer-08d6ae95d77d3b9501c552b0cc95ad709501da5fd68c54a29706deb191a859d6"
+      },
+      "forecast_at": "2026-10-11T10:00:09+00:00",
+      "truth_at": "2026-10-11T10:00:14+00:00",
+      "adaptive": {
+        "assessment": {
+          "kind": "task_assessment",
+          "record_id": "transfer-evaluation-assessment"
+        },
+        "ecosystem": {
+          "kind": "ecosystem",
+          "record_id": "transfer-eco"
+        },
+        "policy": {
+          "kind": "demand_validation_policy",
+          "record_id": "transfer-rubric"
+        }
+      },
+      "updates": []
+    },
+    {
+      "id": "rehearsal-target",
+      "change": {
+        "kind": "change",
+        "record_id": "rehearsal-08d6ae95d77d3b9501c552b0cc95ad709501da5fd68c54a29706deb191a859d6"
+      },
+      "forecast_at": "2026-10-11T10:00:09+00:00",
+      "truth_at": "2026-10-11T10:00:14+00:00",
+      "adaptive": {
+        "assessment": {
+          "kind": "task_assessment",
+          "record_id": "rehearsal-evaluation-assessment-plain"
+        },
+        "ecosystem": {
+          "kind": "ecosystem",
+          "record_id": "rehearsal-eco"
+        },
+        "policy": {
+          "kind": "demand_validation_policy",
+          "record_id": "rehearsal-rubric"
+        },
+        "rehearsal_assessment": {
+          "kind": "task_assessment",
+          "record_id": "rehearsal-evaluation-assessment"
+        }
+      },
+      "updates": []
+    }
+  ],
+  "observation_at": "2026-10-11T10:00:14+00:00",
+  "source_gaps": [
+    "native_truth_unapproved",
+    "cursor_money_unverified"
+  ],
+  "minimum_independent_truth": 1
+}

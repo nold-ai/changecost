@@ -325,3 +325,11 @@ admission and availability. Native records confer no demand or financial authori
 Current code reads old bundles. Older binaries can reject this additive kind.
 Before rollback, retain a SQLite backup and portable export; preserve native history
 and recover the backup into a separate path with a compatible current checkout.
+
+## Isolated synthetic experiments
+
+The [evaluation protocol](pilot/evaluation.md) wraps existing portable records in
+a declared delivery timeline. It adds no PortableRecord kind or SQLite migration.
+The destination computes its own forecasts in a temporary store. Imported forecasts
+remain claims without local computation authority. Report-only metric models and
+normalized temporary IDs do not enter exports or create validation receipts.

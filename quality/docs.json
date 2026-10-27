@@ -1059,34 +1059,34 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/design.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/design.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/design.md"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/proposal.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/proposal.md"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/specs/codex-local-import/spec.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/specs/codex-local-import/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/specs/codex-local-import/spec.md"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/specs/codex-local-import/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/tasks.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/tasks.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/tasks.md"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/tasks.md"
       ],
       "kind": "manual"
     },
@@ -1196,44 +1196,44 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/PREPARATION_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/PREPARATION_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/PREPARATION_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/PREPARATION_EVIDENCE.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/specs/change-run-contracts/spec.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/specs/change-run-contracts/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/specs/change-run-contracts/spec.md"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/specs/change-run-contracts/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
-        "openspec/changes/provider-03-codex-local-import/PROPOSED_PROFILE.json"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/PROPOSED_PROFILE.json"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/TDD_EVIDENCE.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md",
-        "openspec/changes/provider-03-codex-local-import/specs/codex-local-import/spec.md",
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/TDD_EVIDENCE.md",
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/specs/codex-local-import/spec.md",
         "docs/providers/source-profiles.json",
         "quality/source_admission.py",
         "quality/source_feasibility.py",
@@ -1243,10 +1243,10 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-03-codex-local-import/specs/bounded-review-session/spec.md",
+      "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/specs/bounded-review-session/spec.md",
       "owner": "specifications",
       "sources": [
-        "openspec/changes/provider-03-codex-local-import/specs/bounded-review-session/spec.md"
+        "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/specs/bounded-review-session/spec.md"
       ],
       "kind": "manual"
     },
@@ -1266,47 +1266,47 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-01-local-sessions/proposal.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/proposal.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-01-local-sessions/proposal.md"
+        "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-01-local-sessions/design.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/design.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-01-local-sessions/design.md"
+        "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-01-local-sessions/tasks.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/tasks.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-01-local-sessions/tasks.md"
+        "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/tasks.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-01-local-sessions/specs/local-sessions/spec.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/specs/local-sessions/spec.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-01-local-sessions/specs/local-sessions/spec.md"
+        "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/specs/local-sessions/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-01-local-sessions/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/TDD_EVIDENCE.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-01-local-sessions/TDD_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-02-codex-observations/design.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/design.md",
       "owner": "local-sessions",
       "sources": [
         "src/changecost/sessions.py",
@@ -1317,7 +1317,7 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-02-codex-observations/proposal.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/proposal.md",
       "owner": "local-sessions",
       "sources": [
         "src/changecost/sessions.py",
@@ -1328,7 +1328,7 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-02-codex-observations/specs/local-sessions/spec.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/specs/local-sessions/spec.md",
       "owner": "local-sessions",
       "sources": [
         "src/changecost/sessions.py",
@@ -1339,7 +1339,7 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-02-codex-observations/tasks.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/tasks.md",
       "owner": "local-sessions",
       "sources": [
         "src/changecost/sessions.py",
@@ -1350,7 +1350,7 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-02-codex-observations/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/TDD_EVIDENCE.md",
       "owner": "local-sessions",
       "sources": [
         "src/changecost/sessions.py",
@@ -1361,42 +1361,99 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-03-codex-provisional-loop/proposal.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/proposal.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-03-codex-provisional-loop/proposal.md"
+        "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-03-codex-provisional-loop/design.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/design.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-03-codex-provisional-loop/design.md"
+        "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-03-codex-provisional-loop/tasks.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/tasks.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-03-codex-provisional-loop/tasks.md"
+        "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/tasks.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md"
+        "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/dogfood-03-codex-provisional-loop/specs/codex-provisional-sessions/spec.md",
+      "path": "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/specs/codex-provisional-sessions/spec.md",
       "owner": "local-sessions",
       "sources": [
-        "openspec/changes/dogfood-03-codex-provisional-loop/specs/codex-provisional-sessions/spec.md"
+        "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/specs/codex-provisional-sessions/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/codex-local-import/spec.md",
+      "owner": "codex-local-import",
+      "sources": [
+        "openspec/specs/codex-local-import/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/local-sessions/spec.md",
+      "owner": "local-sessions",
+      "sources": [
+        "openspec/specs/local-sessions/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/specs/codex-provisional-sessions/spec.md",
+      "owner": "codex-provisional-sessions",
+      "sources": [
+        "openspec/specs/codex-provisional-sessions/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/pilot/evaluation.md",
+      "owner": "pilot-evaluation",
+      "sources": [
+        "docs/pilot/evaluation.md",
+        "src/changecost/evaluation*.py",
+        "tests/test_evaluation*.py",
+        "examples/evaluation/*.json"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/pilot/findings.md",
+      "owner": "pilot-evaluation",
+      "sources": [
+        "docs/pilot/findings.md",
+        "src/changecost/evaluation*.py",
+        "tests/test_evaluation*.py",
+        "examples/evaluation/*.json"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/pilot-02-calibration-evaluation/TDD_EVIDENCE.md",
+      "owner": "pilot-evaluation",
+      "sources": [
+        "openspec/changes/pilot-02-calibration-evaluation/TDD_EVIDENCE.md",
+        "src/changecost/evaluation*.py",
+        "tests/test_evaluation*.py",
+        "examples/evaluation/*.json"
       ],
       "kind": "manual"
     }

@@ -106,8 +106,8 @@ a manual target. Start retries must retain the original source, labels and guess
 Default history remains manual; use `--source codex` for the separate provisional
 history. Core demand, billing, calibration, canonical profiles and approval counts
 receive no authority from this experiment. See the
-[provisional implementation evidence](../openspec/changes/dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md)
-for actual focused checks and remaining acceptance work.
+[provisional implementation evidence](../openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md)
+for focused checks, completed PR #47 scoped acceptance and retained assurance limits.
 
 ## Attach the approved finite Codex observations
 
@@ -215,10 +215,12 @@ directory. It never populates the default real store.
 Manual totals and cohort choices can be wrong. The finite native bridge provides
 partial diagnostics only, without full-Change demand, economic or billing authority.
 The separate provisional counter target above does not widen that finite approval. Local focused checks are
-recorded in the [implementation evidence](../openspec/changes/dogfood-01-local-sessions/TDD_EVIDENCE.md).
-Local persistence/correction review is closed. Aggregate Linux/Python assurance,
-final provider review and PR acceptance remain pending. The bridge's local checks
-are recorded separately in [native observation evidence](../openspec/changes/dogfood-02-codex-observations/TDD_EVIDENCE.md).
+recorded in the [implementation evidence](../openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/TDD_EVIDENCE.md).
+Local persistence/correction review and PR #47's required provider reviews and
+scoped acceptance are complete. Full unqualified Linux/Python assurance remains
+incomplete under the accepted Python 3.11 native coverage UNKNOWN timeout exception.
+Archival preserves that failed mandatory check and grants no future waiver. The bridge's local checks
+are recorded separately in [native observation evidence](../openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/TDD_EVIDENCE.md).
 
 Manual-only databases remain schema v1 and stay readable without migration. Existing
 manual start, finish, correction and retry work on v1, v2 and v3. The first accepted

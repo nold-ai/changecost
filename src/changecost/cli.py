@@ -97,6 +97,29 @@ def execute(operation) -> None:
         raise typer.Exit(2) from exc
 
 
+@app.command("evaluate-synthetic")
+def evaluate_synthetic_command(
+    history: Annotated[Path, typer.Option(help="Portable declared synthetic history.")],
+    protocol: Annotated[Path, typer.Option(help="Pre-registered evaluation protocol.")],
+    measure_runs: Annotated[
+        int, typer.Option(help="Separate overhead measurements, 0 to 20 runs.")
+    ] = 0,
+) -> None:
+    """Report an isolated synthetic evaluation without using the runtime store."""
+    from changecost.evaluation import evaluate_synthetic
+
+    result = None
+
+    def operation():
+        nonlocal result
+        result = evaluate_synthetic(history, protocol, measure_runs=measure_runs)
+        return result
+
+    execute(operation)
+    if result is not None and result["core"]["economic"]["status"] == "comparison_error":
+        raise typer.Exit(2)
+
+
 session_app = typer.Typer(help="Local provisional manual or Codex session estimates and totals.")
 app.add_typer(session_app, name="session")
 

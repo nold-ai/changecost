@@ -5,7 +5,14 @@ context: |
   Offline contracts, bind, lifecycle-only settle and explain are delivered on main.
   Normalized reconciliation merged in PR #28 on 2026-10-02 and is accepted/archived
   with synchronized main specs; final verification and limitations remain archived.
-  One exact finite Codex diagnostic reader is implemented locally pending full assurance. Quotes merged in PR #32 on 2026-10-03 and were
+  One exact finite Codex diagnostic reader and three session changes merged in PR #47
+  and were CLI-archived on 2026-10-26. Their 19 requirements/67 scenarios and twelve
+  unchecked tasks retain the accepted Python 3.11 native coverage UNKNOWN timeout
+  exception, not passing full assurance or a future waiver. Evaluation #17 is
+  separately authorized for offline implementation, verification and PR promotion
+  on 2026-10-26. Its synthetic CLI/API is implemented locally pending complete
+  verification and publication. Stage 3 live assessment and merge remain unauthorized.
+  Provisional counters are not complete native truth. Quotes merged in PR #32 on 2026-10-03 and were
   archived through the native CLI on 2026-10-04 with synchronized empirical-quotes
   main specs. Calibration and source approval remain To-Validate.
   Advisory #16 merged in PR #34 on 2026-10-06 and is archived with synchronized
@@ -16,7 +23,7 @@ context: |
   retain zero approvals. On 2026-10-23 the maintainer authorized canonical activation
   of one approved finite Codex diagnostic usage mapping and contributor admission
   controls. The register now has 24 profiles and one usage approval. Finite reader runtime
-  was separately authorized on 2026-10-24 and is implemented locally; source activation grants no demand/billing authority. Offline adaptive demand #35 merged in PR #43, with the issue-44
+  was separately authorized on 2026-10-24 and delivered in PR #47; source activation grants no demand/billing authority. Offline adaptive demand #35 merged in PR #43, with the issue-44
   correction in PR #45, and was accepted on 2026-10-18 and CLI-archived here on 2026-10-23. Its 12
   requirements/47 scenarios and accepted historical proof limits are retained.
   Normalized imports exist, but trusted financial coverage/replay supports synthetic
@@ -41,7 +48,7 @@ context: |
   contracts/lifecycle is archived; settlement reconciliation implementation was authorized on 2026-09-29.
   Selected defaults: Python 3.11+, Typer, Pydantic, SQLite, Decimal; uv/Hatchling,
   pytest, Ruff, BasedPyright. Personal Cursor/Copilot use was the original pilot plan.
-  The selected first-test path is offline demand plus a planned Codex reader, subject
+  The selected first-test path has delivered offline demand and a finite Codex reader, subject
   to independent native accounting approval and later measured evaluation.
   quote, bind, settle, check and explain have implemented offline contracts and
   changecost/v1 portable artifacts; native collection remains separate.
@@ -49,7 +56,7 @@ context: |
   Planning revision approved 2026-10-07: #9 closes through reviewed capability
   dispositions/gaps, not universal optional-export availability. Native support
   still needs independent semantics; demand eligibility and billed money are separate.
-  The finite Codex reader is implemented locally; broader Codex and Claude readers remain plans. Offline adaptive demand is accepted and
+  The finite Codex reader is delivered; broader Codex and Claude readers remain plans. Offline adaptive demand is accepted and
   archived after PR #45; native approval and calibration remain separate.
   Demand starts at zero knowledge, learns locally, tests matched ecosystem transfer
   hypotheses and requires scoped chronological validation before accuracy claims.

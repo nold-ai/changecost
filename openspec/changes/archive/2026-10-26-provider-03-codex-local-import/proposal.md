@@ -31,7 +31,7 @@ and accounting rather than assumptions from file presence.
 Future reader, additive portable contract, graph validation and source-specific
 policy tests, using an explicit native mode in the existing settle command and
 the core store transaction. Documentation: provider feasibility, the
-Codex/Claude metrics guide, CLI/settlement and [forecasting](../../../docs/forecasting.md).
+Codex/Claude metrics guide, CLI/settlement and [forecasting](../../../../docs/forecasting.md).
 This delivery adds plans only, no runtime reader or collection.
 
 ## Non-goals
@@ -41,10 +41,10 @@ new telemetry, provider API, paid model request, prompt retention or inferred su
 
 ## Dependencies
 
-[Source feasibility #9](../archive/2026-10-08-pilot-01-source-feasibility/proposal.md) and delivered
-[reconciliation #12](../archive/2026-10-02-settlement-01-reconciliation/proposal.md).
+[Source feasibility #9](../2026-10-08-pilot-01-source-feasibility/proposal.md) and delivered
+[reconciliation #12](../2026-10-02-settlement-01-reconciliation/proposal.md).
 Demand use additionally requires its own policy under
-[adaptive demand](../archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md); that feature
+[adaptive demand](../2026-10-23-forecast-01-local-adaptive-demand/proposal.md); that feature
 does not depend on this reader for its offline/synthetic implementation.
 Reader delivery/archive depends on #9/#12 and its approved source policy, not #35.
 Adaptive-demand integration is conditional on #35 delivery and a separately

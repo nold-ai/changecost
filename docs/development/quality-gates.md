@@ -868,7 +868,7 @@ retain the 23 historical profiles unchanged and unapproved.
 This is contributor-only validation. It does not open source snapshots, reproduce
 projection quantities, authenticate independent reviewers or implement a runtime
 reader. The existing inspection CLI still reports semantic approval false. The
-[Codex activation evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+[Codex activation evidence](../../openspec/changes/archive/2026-10-26-provider-03-codex-local-import/TDD_EVIDENCE.md)
 records actual negative/repair tests, checks and independent verification. Missing
 SpecFact/native/Linux/provider assurance remains incomplete; no gate is waived.
 

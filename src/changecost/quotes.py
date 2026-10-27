@@ -311,11 +311,13 @@ def matching_peers(records, change, peers, fields, valid, availability, context=
     ]
 
 
-def select_cohort(records, change, peers, minimum, availability, context=None):
+def select_cohort(
+    records, change, peers, minimum, availability, context=None, *, repository_only=False
+):
     evaluations = []
     selected = []
     chosen = "repository"
-    for level, fields in LEVELS:
+    for level, fields in LEVELS[-1:] if repository_only else LEVELS:
         valid = not fields or (
             feature_valid(records, change, availability, context)
             and all(getattr(change.features, f) is not None for f in fields)
@@ -333,11 +335,11 @@ def select_cohort(records, change, peers, minimum, availability, context=None):
     return selected, chosen, evaluations
 
 
-def estimate(records, change, scope, minimum, cutoff, availability):
+def estimate(records, change, scope, minimum, cutoff, availability, *, repository_only=False):
     context = SnapshotIndex(records, scope)
     peers, exclusions, dependencies = evaluate_peers(records, change, scope, availability, context)
     selected, chosen, evaluations = select_cohort(
-        records, change, peers, minimum, availability, context
+        records, change, peers, minimum, availability, context, repository_only=repository_only
     )
     amounts = sorted((p.amount for p in selected), key=Decimal)
     n = len(amounts)

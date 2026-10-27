@@ -34,6 +34,11 @@ Implemented command surface:
 - `changecost check --record-id`
 - `changecost check --record-kind`
 - `changecost check --unit`
+- `changecost evaluate-synthetic`
+- `changecost evaluate-synthetic --help`
+- `changecost evaluate-synthetic --history`
+- `changecost evaluate-synthetic --measure-runs`
+- `changecost evaluate-synthetic --protocol`
 - `changecost explain`
 - `changecost explain --basis`
 - `changecost explain --change-id`

@@ -14,8 +14,8 @@ planned. PR #45 merged on 2026-10-18 at 23:47:47 Europe/Berlin. Its final live
 verification index records accepted #35 implementation and correction evidence.
 
 The separately requested actual CLI archive in this checkout succeeded on
-2026-10-23. It created the [forecast archive](../archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md)
-and synchronized [adaptive demand](../../specs/adaptive-demand/spec.md).
+2026-10-23. It created the [forecast archive](../2026-10-23-forecast-01-local-adaptive-demand/proposal.md)
+and synchronized [adaptive demand](../../../specs/adaptive-demand/spec.md).
 Readback preserved all 12 requirements/47 scenarios and the exact original delta
 hash `f9e7cac1af7dffb86c15cdc9c64a34932658f52333bb462f20e5405f7b29b03b`.
 No main spec was copied or manually merged. The original separate unpublished
@@ -40,7 +40,7 @@ selected files. Remote API acquisition remains outside this reader scope. The
 reference also describes listing that can repair metadata, so a remotely invoked
 list/read workflow is not substituted for explicit read-only file acquisition.
 
-The [canonical source register](../../../docs/providers/source-profiles.json)
+The [canonical source register](../../../../docs/providers/source-profiles.json)
 at initial preparation contained 23 profiles and zero approvals. Its
 historical Desktop producer 0.159.0-alpha.12.1 representation remains partial and
 is not relabeled from installed CLI 0.139.0. That initial preparation inspected no

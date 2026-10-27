@@ -5,7 +5,7 @@
 See [proposal](proposal.md) and [capability spec](specs/pilot-evaluation/spec.md).
 The Python runtime, normalized reconciliation, economic Quotes and advisory
 workflow are delivered. This design describes future source/evaluation behavior;
-trusted financial coverage remains synthetic billed USD.
+financial verification remains limited to synthetic billed USD.
 
 ## Goals / Non-Goals
 
@@ -15,14 +15,14 @@ trusted financial coverage remains synthetic billed USD.
 
 ## Decisions
 
-1. Replay quotes in timestamp order using only revisions available at each cutoff in the Quote's store context. Apply destination availability to every dependency; portable origin timestamps cannot establish local historical knowledge. Report cross-store replay_unavailable separately and exclude it from scoring without backdating imports. Both candidate and repository-wide baseline use identical unit/basis, eligibility, population, minimum count and quantile method; the baseline omits narrow cohort features. The candidate's final repository fallback is exactly the baseline cohort, so availability must match: both priced when it meets the minimum, otherwise both unpriced. Score paired priced cases and report jointly unpriced cases with counts/reasons. If observed availability differs, report a comparison/configuration error and stop accuracy reporting for that run rather than treating it as a supported pilot outcome.
+1. Replay quotes in timestamp order using only revisions available at each cutoff in the Quote's store context. Apply destination availability to every dependency; portable origin timestamps cannot establish local historical knowledge. Report cross-store replay_unavailable separately and exclude it from scoring without backdating imports. Both candidate and repository-wide baseline use identical unit/basis, eligibility, population, minimum count of 20 and quantile method; the baseline omits narrow cohort features. The candidate's final repository fallback is exactly the baseline cohort, so availability must match: both priced when it meets the minimum, otherwise both unpriced. Score paired priced cases and report jointly unpriced cases with counts/reasons. If observed availability differs, report a comparison/configuration error and stop accuracy reporting for that run rather than treating it as a supported pilot outcome.
 
 Use one initial pre-run Quote per evaluated Change, with the frozen feature snapshot
 and cutoff defined by the [estimator contract](../archive/2026-10-04-quote-01-empirical-estimation/design.md#feature-selection-and-capture-time).
-Later diagnostic quotes do not create extra observations. Missing features lead to
+Later diagnostic quotes do not create extra observations. Exclude the target Change and every linked attempt and revision from its own historical peers, transfer calibration and validation inputs. Report later updates separately, including updates after the target becomes terminal. Missing features lead to
 repository fallback for the candidate, not removal of baseline-eligible history.
 
-2. Report p50/p90 empirical coverage as count(actual <= quantile)/priced comparable count, with numerator and denominator; report signed errors and interval width p90-p50 in original units. Include sample-count uncertainty (for example Wilson intervals for coverage), not a claim that observed 90% is a guarantee. Require the same full-change coverage contract for evaluation truth as for historical quote peers; reconciled partial intervals are not actual total-change costs. Freeze and report a separate truth as-of cutoff and selected complete settlement/coverage revisions for reproducibility, including later corrections known at that cutoff without leaking them into quote-time history. Cases with unavailable complete truth remain in reported exclusion/unknown counts, outside accuracy denominators; never score them as zero.
+2. Report p50/p90 empirical coverage as count(actual <= quantile)/priced comparable count, with numerator and denominator; report signed errors and interval width p90-p50 in original units. Include sample-count uncertainty (for example Wilson intervals for coverage), not a claim that observed 90% is a guarantee. Require the same full-change coverage contract for evaluation truth as for historical quote peers; reconciled partial intervals are not actual total-change costs. Freeze and report a separate truth as-of cutoff and selected complete settlement/coverage revisions for reproducibility, including later corrections known at that cutoff without leaking them into quote-time history. Unknown, partial and provisional Codex thread counters cannot establish full-change demand truth or billing authority. Cases with unavailable complete truth remain in reported exclusion/unknown counts, outside accuracy denominators; never score them as zero.
 
 3. Attribution reports provider-backed bound, manually bound and unbound record counts separately, plus their comparable economic totals. Denominator is all eligible observed records, not only those already bound. Missing money contributes to unknown counts. Report duplicate/conflict/pending-correction rates and completeness alongside apparent binding coverage.
 
@@ -31,6 +31,59 @@ repository fallback for the candidate, not removal of baseline-eligible history.
 5. Measure CLI wall time in milliseconds and local storage/input bytes for stated fixture sizes and runtime environment; report repeated measurements with method rather than universal speed claims. No external telemetry service is required.
 
 6. Pre-register the protocol and decision rubric before live results: compare paired calibration and width against the baseline; report feasibility and overhead separately. If intervals/sample size do not support improvement, classify as not yet validated. A source unavailable at the gate is a recorded coverage gap, not synthetic live support; the 2026-10-07 revision makes adapter prerequisites lane-specific without approving unavailable mappings. No fixed sample target from the research guarantees success.
+
+## Runnable outcome and reuse
+
+After separate implementation authorization, a contributor supplies portable
+synthetic history and a versioned, pre-registered protocol to the local CLI or API
+and receives a deterministic aggregate report. The report compares frozen initial
+forecasts against the broad repository baseline, separates adaptive availability,
+and records omitted cases with truth eligibility and exclusion reasons. Stable
+inputs, destination availability and protocol versions produce identical report
+content. Measured wall time and environment belong in a separate section.
+
+Reuse `src/changecost/quotes.py` replay and destination-availability checks and
+`src/changecost/demand.py` validation computation. Existing synthetic receipt
+computation does not replace pilot protocol registration. Add only missing case
+orchestration, aggregate metrics and report output. Preserve the delivered economic
+and adaptive contracts rather than introducing a parallel estimator or validation
+engine. Document invocation in `docs/pilot/evaluation.md` and qualified conclusions
+in `docs/pilot/findings.md`. Neither document exists at this preparation baseline.
+
+Accepting the offline protocol and synthetic report proves reproducibility only.
+It does not complete live assessment, approve collection or produce a measured
+full-change calibration receipt. Each live lane needs separate explicit
+authorization and complete eligible truth before the registered rubric can
+support a scoped accuracy conclusion.
+
+## Preparation checkpoint, 2026-10-26
+
+This documentation-only preparation uses fresh main
+`ffd8dff568f11e6e9283b00badbce6c98a0b5580`. The integration owner is the sole
+writer for lifecycle, correlated docs and issue synchronization. The scoped
+artifact writer owns only this change's proposal, design, tasks and capability
+spec. No runtime boundary changes, runtime probe or new provider approval apply.
+
+Inspection confirms reusable `quote_reproduced` and `inspect_quote` in
+`src/changecost/quotes.py`, and `compute_validation`, `validation_reproduced` and
+`case_metrics` in `src/changecost/demand.py`. The missing deliverable is evaluation
+orchestration and reporting. The independent upfront obligation review identified
+this distinction before these edits.
+
+Native blockers #11, #12, #15, #16 and #35 are closed. PR #47's four changes are
+archived with synchronized main specs. Their 12 unchecked historical tasks and
+the narrow Linux Python 3.11 native timeout UNKNOWN exception remain limitations.
+Archival does not turn them into passing evidence. Finite Codex diagnostic usage
+and provisional thread summaries do not provide complete evaluation truth.
+
+Primary risks are leakage across availability cutoffs, selection bias from omitted
+truth, and synthetic results misrepresented as calibration. Frozen cutoffs,
+explicit denominators and separate live acceptance address those risks. No
+external capability claim is added. Relevant checks are selected strict OpenSpec
+validation and the integration owner's documentation gates and affected scope
+review. No product tests are claimed for this preparation. Future runtime cost
+and duration remain unmeasured. Roll back only this preparation's artifact diff,
+preserving archival and unrelated edits.
 
 ## Dependencies and evidence
 
@@ -104,3 +157,67 @@ Synthetic/offline protocol can be implemented before native readers. Each live
 lane requires its approved reader/policy and separate evaluation authorization.
 One unavailable provider cannot block another. Register, approve, implement and
 evaluate are distinct statuses; no native readiness or accuracy is claimed now.
+
+## Authorized offline implementation synthesis, 2026-10-26
+
+The maintainer now authorizes offline tasks 2.1 through 2.7. Live assessment,
+provider admission, merge and release remain separate. The sole implementation
+writer owns the runtime delta until handoff; verification owns aggregate checks.
+
+The selected design uses a portable Bundle, ordered deliveries, one forecast and
+one truth checkpoint per Change, and optional diagnostic update checkpoints.
+`evaluate_synthetic(history, protocol, measure_runs=0)` owns strict parsing and a
+disposable Store with an injected clock. The additive `evaluate-synthetic` command
+prints a safe JSON report without opening the ordinary application database.
+No portable record kind or persistent schema migration is added.
+
+Economic comparison reuses `quotes.estimate`, its peer eligibility and nearest-rank
+quantiles. An optional repository-only selector defaults to existing behavior.
+The report-only baseline uses the candidate's exact cutoff and fixed minimum 20.
+Imported forecasts retain foreign authority and remain replay unavailable.
+Truth is scored when its checkpoint occurs and retained before future deliveries.
+Scored and omitted truth are distinct immutable outcomes with cutoff, revision,
+dependency and linked-attempt references. Generated destination IDs are normalized;
+portable input references are retained. Any economic availability asymmetry
+suppresses every accuracy metric for that run.
+
+Adaptive observed summaries and transfer scenarios have separate denominators.
+All new measurement calls explicitly use observed-summary/v4. Scenario diagnostics
+use the median, minimum and maximum of the emitted scenario array and exact signed
+point error, never observed quantiles or measured-validation receipts. Rehearsal
+uses its own same-assessment broad comparator. Net benefit subtracts overhead from
+absolute-error reduction only when units match. Dedicated fixture tests exercise
+local successful validation, later overlapping failure and scoped future withdrawal.
+
+The protocol registers exact identities, formula versions, coverage Wilson 95%
+intervals rounded to six decimal places, promotion limits and source gaps before
+target assessments/work. Synthetic provenance is an assertion, not a real-data
+detector. Unsupported native kinds and unknown fields reject with safe errors.
+The permanent conclusion is synthetic_only_not_yet_validated.
+
+The critical proofs are foreign import refusal, exact 20-peer repository fallback
+and unchanged results after later truth corrections. The first fixture expects
+USD 10 p50, USD 18 p90, USD 8 width and USD -5 signed p50 error against USD 15
+truth. Test those before expanding report metadata. Main remains
+ffd8dff568f11e6e9283b00badbce6c98a0b5580. Existing archive and planning edits are
+preserved. No new external costs apply; execution overhead remains unmeasured.
+Rollback removes the additive evaluator and optional selector without migrating
+or deleting user data.
+
+
+## Offline protocol review and boundary correction, 2026-10-27
+
+Independent documentation review accepted protocol `synthetic-20261026-v1` for
+synthetic-only evaluation at prospective tree
+`81c39ff0ea8447b9b44558cc1917270254d41360`. Its reviewed formula is
+`exact-errors-wilson95-scenario-median/v1`; all four methods, scoped policy rubric,
+registration/arrival ordering and separate forecast/truth cutoffs are concrete.
+Task 2.1 is therefore complete for the offline scope. The review and actual
+correction RED/GREEN evidence are recorded in [TDD_EVIDENCE.md](TDD_EVIDENCE.md).
+Historical compound TDD gaps and unauthorized Stage 3 live assessment remain open.
+
+Numeric bounds cover the Unicode decimal digits accepted by existing numeric
+models before those models or exact arithmetic run. A central traversal checks
+component unit/basis identifiers, including selected policy and nested rehearsal
+budget/overhead, before report generation. These are bounded synthetic input
+contracts, not proof that caller-supplied records are fictional.

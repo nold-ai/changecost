@@ -120,3 +120,12 @@ The peer-growth regression checks retain all candidate diagnostics at fixture si
 unchanged post-computation store once for those assertions. This avoids repeated
 SQLite graph reads in test setup while retaining every peer check and the existing
 record-visit bounds; it does not change Quote computation or historical replay.
+
+## Evaluation baseline
+
+The offline [synthetic evaluator](pilot/evaluation.md) computes a report-only broad
+repository baseline at the stored candidate's exact cutoff. It reuses the existing
+complete peer selection and nearest-rank calculation with fixed minimum 20. The
+optional internal `repository_only` selector defaults to the existing ordered
+cohorts; ordinary Quote computation, stored metadata and historical replay remain
+unchanged. A report baseline is not a new stored Quote or imported replay receipt.

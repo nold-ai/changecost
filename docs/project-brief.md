@@ -1,6 +1,23 @@
 # Project brief
 
-Status: **pilot planning / To-Validate**, updated 2026-10-18 (Europe/Berlin).
+Status: **pilot planning / To-Validate**, updated 2026-10-26 (Europe/Berlin).
+
+The finite Codex diagnostic reader and three local-session changes merged in
+[PR #47](https://github.com/nold-ai/changecost/pull/47). Native CLI archival on
+2026-10-26 synchronized 19 requirements and 67 scenarios. Their archives retain
+twelve unchecked compound tasks and the accepted Python 3.11 native coverage
+UNKNOWN capsule-timeout exception. Provider reviews and scoped acceptance are
+complete; full unqualified assurance remains incomplete. No future check is waived.
+
+[Evaluation #17](../openspec/changes/pilot-02-calibration-evaluation/proposal.md)
+now has a locally implemented deterministic offline synthetic comparison,
+reusing existing replay and validation. The maintainer authorized implementation,
+verification and PR promotion on 2026-10-26; complete verification and publication
+remain pending. Live assessment, complete native truth and
+release readiness remain separate. Provisional session lifetime counters do not
+establish full-change demand or billing. Earlier dated checkpoints below preserve
+their historical scope.
+
 All approved pilot changes belong to the first **unreleased 0.x alpha/preview
 feasibility study**. No product version has been published. The current package is
 `0.1.0.dev0`; internal artifact labels do not imply a product 1.0 release or stable
@@ -177,3 +194,12 @@ Linux and provider assurance. The 24-profile canonical register and its one usag
 approval are unchanged. Broader readers, live collection, native learning, billing,
 calibration and release publication remain separate. Earlier pending statements
 record their dated stages. Package 0.1.0.dev0 remains unreleased.
+
+### Offline evaluation implementation, 2026-10-26
+
+The maintainer subsequently authorized evaluation #17's offline implementation.
+`evaluate-synthetic` now produces a reproducible report from declared portable
+synthetic history and a pre-registered protocol. This implementation uses disposable
+stores, preserves foreign replay refusal and never promotes synthetic success to
+live calibration. See [evaluation](pilot/evaluation.md). The live pilot, broader
+native approval, merge and release remain separate gates.

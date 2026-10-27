@@ -302,3 +302,12 @@ changes. The checked package derivative is generated from the sole source regist
 not hand-maintained. Synthetic reader controls substitute only the private test
 loader; they never broaden production approval. Keep the original 23 profiles,
 approved semantic payload and historical proof bytes intact.
+
+### Reproduce evaluation fixtures
+
+Run `uv run --locked changecost evaluate-synthetic --history examples/evaluation/history.json --protocol examples/evaluation/protocol.json`
+from the repository root. The deterministic core is independent of the optional
+`--measure-runs` timing envelope. Preserve imported-forecast refusal, independent
+truth cutoffs, matched economic minimum 20 and distinct scenario metrics when
+editing this path. Follow the [evaluation guide](docs/pilot/evaluation.md); the
+synthetic experiment grants no native authority or live evaluation approval.

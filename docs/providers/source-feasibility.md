@@ -561,8 +561,8 @@ pin the reviewed P/R, and changed admissions need independent review.
 
 The development CLI still reports `semantic_approval: false` for structural
 inspection; canonical activation does not change that report's meaning. The
-[bound semantic disposition](../../openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md#independent-finite-mapping-approval)
-and [activation evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+[bound semantic disposition](../../openspec/changes/archive/2026-10-26-provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md#independent-finite-mapping-approval)
+and [activation evidence](../../openspec/changes/archive/2026-10-26-provider-03-codex-local-import/TDD_EVIDENCE.md)
 record the separate decisions. No runtime reader, packaged admission, collection,
 native demand projection or financial authority is enabled.
 
@@ -576,6 +576,6 @@ rejects stale derivatives. Runtime imports no contributor quality tooling. An
 installed package needs an update to learn about later revocation. Only the frozen
 source SHA, selected ordinals and canonical projection are supported.
 
-[The reader evidence](../../openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+[The reader evidence](../../openspec/changes/archive/2026-10-26-provider-03-codex-local-import/TDD_EVIDENCE.md)
 records local implementation checks and outstanding assurance. Broader source
 compatibility, demand and financial authority remain separate gates.
