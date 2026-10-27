@@ -1,63 +1,86 @@
-# Import existing local Claude coding-session metadata
+# Import existing Claude Code project JSONL metadata
 
 ## Why
 
-Ordinary local Claude coding sessions contain candidate usage evidence without
-Enterprise exports. Safe local learning requires verified version-specific identity
-and accounting rather than assumptions from file presence.
+Existing Claude Code project logs are candidate evidence for local coding work
+without Enterprise exports. A useful reader needs independently approved,
+version-specific accounting and corrections rather than inferred totals.
 
 ## What Changes
 
-- Accept explicitly selected existing local coding-session files under independently approved source profiles.
-- Normalize allowlisted usage/model/identity/interval metadata with versioned deduplication, correction and ownership policy.
-- Bind evidence manually to existing Changes/Runs; expose incomplete, unsupported and conflicting observations.
-- Keep demand eligibility and billed settlement authority separate.
+- Select explicitly supplied existing Claude Code project JSONL files as the first lane.
+- Plan a reusable approved-profile reader, not a finite diagnostic snapshot substitute.
+- Preserve allowlisted native quantities, stable identities, immutable corrections and exact replay.
+- Return safe evidence references for separate manual Evidence -> Run -> Change binding.
+- Expose missing quantities, unresolved accounting and partial coverage without creating demand or monetary authority.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `claude-local-import`: Offline approved Claude local coding metadata import.
+- `claude-local-import`: Approved offline Claude Code project JSONL import.
 
 ### Modified Capabilities
 
-None; native accounting policies must be prepared explicitly and do not grant
-financial authority merely by importing records.
+None at this preparation checkpoint. Existing portable native contracts must
+first be checked against independently approved Claude semantics. Any required
+contract change needs an explicit delta before implementation.
 
 ## Impact
 
-Future reader/normalization and source-specific policy tests, using the existing
-settle file workflow and core store. Documentation: provider feasibility, the
-Codex/Claude metrics guide, CLI/settlement and [forecasting](../../../docs/forecasting.md).
-This delivery adds plans only, no runtime reader or collection.
+The future runnable outcome is an explicit `settle --import-claude-project` import
+under an approved source profile and selected snapshot hash. It stores native
+facts atomically, returns exact evidence references and supports approved replay
+and corrections. Existing manual binding remains separate. This command is
+planned, not implemented by preparation.
+
+A Claude-owned reader can reuse the Store and binding APIs. The native graph
+currently accepts Codex only; source admission and portable-record fit need
+independent review before Claude support. See [design](design.md). Affected docs
+include provider metrics, CLI/settlement and forecasting guidance, change order,
+changelog and generated references where applicable.
 
 ## Non-goals
 
-No automatic scanning/watch service, ordinary chat import, account settings,
-new telemetry, provider API, paid model request, prompt retention or inferred subscription charges.
+No private source inspection, source activation, runtime implementation or live
+collection in preparation. Desktop coding transcripts, IDE, SDK/result streams,
+JSON containers and SQLite/index acquisition are deferred surfaces. Ordinary chat,
+automatic scanning, telemetry changes, provider API calls, paid model requests,
+prompt retention and inferred subscription charges remain excluded. Complete
+native demand, billed money, calibration and #17 live assessment remain separate.
 
-## Dependencies
+## Dependencies and readiness
 
-[Source feasibility #9](../archive/2026-10-08-pilot-01-source-feasibility/proposal.md) and delivered
-[reconciliation #12](../archive/2026-10-02-settlement-01-reconciliation/proposal.md).
-Demand use additionally requires its own policy under
-[adaptive demand](../archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md); that feature
-does not depend on this reader for its offline/synthetic implementation.
-Reader delivery/archive depends on #9/#12 and its approved source policy, not #35.
-Adaptive-demand integration is conditional on #35 delivery and a separately
-approved demand policy; otherwise it is recorded as deferred follow-up.
+[Source feasibility #9](../archive/2026-10-08-pilot-01-source-feasibility/proposal.md)
+and [reconciliation #12](../archive/2026-10-02-settlement-01-reconciliation/proposal.md)
+are delivered and their native prerequisite issues are closed. Every Claude
+profile remains unapproved. Producer binding, identity, repeated-message meaning,
+overlap, cache inclusion, corrections/resets and root/subagent finality remain
+implementation blockers. Structural receipts and SDK documentation do not approve
+persisted-log accounting.
+
+[Adaptive demand #35](../archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md)
+is delivered, but a Claude measurement/coverage policy remains separate. Its
+conditional integration is not a reader delivery/archive blocker. Financial
+coverage and calibration are not implied by source approval or manual binding.
 
 ## Risks and rollback
 
-Duplicate/corrected counters, partial lineage and private content -> approved
-accounting policy, safe allowlists and conservative gaps. Scoped revert preserves
-originals and imported history; any later migration needs backup/recovery tests.
+Double counting, misclassified corrections and unintended admission broadening
+require approved accounting, immutable revision tests and unchanged Codex
+regressions. Preparation rollback reverts only this planning/documentation scope,
+preserving native originals, approvals, records, ignored receipts and archived
+limitations. Later schema changes require backup/recovery proof.
 
 ## Source Tracking
 
-Planning approved 2026-10-07; native User Story under Attribution and settlement
-#7 / Epic #4. GitHub issue: [#37](https://github.com/nold-ai/changecost/issues/37). Todo, unassigned,
-undated; the user requested publication of these plans in a planning-only PR.
-Implementation remains unstarted.
+Planning was originally approved on 2026-10-07 and published through planning
+PR #38. On 2026-10-27 (Europe/Berlin), the maintainer selected Claude Code project
+JSONL first and authorized this planning/issue reconciliation. It preserves this
+change identity and all ten unchecked implementation tasks. The refreshed
+preparation is local/unpublished until a new disposition is chosen and executed;
+no new PR, source approval or implementation is claimed.
 
-Native type/parent/dependencies/private-project Todo read back on 2026-10-07.
+Native User Story [#37](https://github.com/nold-ai/changecost/issues/37) remains
+open under feature #7 / Epic #4. Native readback retains closed #9/#12
+prerequisites, private Project 3 Todo, no assignee and no delivery dates.

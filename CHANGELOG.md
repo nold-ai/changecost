@@ -3,6 +3,13 @@
 
 ## Unreleased
 
+- Prepare Claude #37 for an explicitly selected Claude Code project JSONL reader
+  with approved version-specific accounting, immutable corrections and separate
+  manual binding. Record the NativeUsage compatibility/admission blockers and
+  defer other Claude surfaces without substituting finite diagnostics. Preserve
+  ten unchecked implementation tasks, source approvals and #17's open obligations.
+  This planning refresh adds no source inspection, runtime or collection.
+
 - Prepare #17's separate live assessment with pending operator decisions, a private
   documentation-only manifest, authority/runtime gates and per-task closure checks.
   Require task 3.4 to reference approved published aggregates before closure.
