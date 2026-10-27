@@ -135,7 +135,7 @@ jobs:
           --include-tests --bug-hunt --enforcement full --json
           --out .specfact/selected-review-session-diagnostic.json
       - name: Collect privacy-safe runtime metadata
-        if: always()
+        if: always() && hashFiles('.specfact/code-review.json') != ''
         env:
           UV_PYTHON: ${{ matrix.python }}
         run: .venv/bin/python -m quality.runtime_diagnostics .specfact/code-review.json "$HOME/.cache/specfact/code-review/project-runtimes-v2" .specfact/runtime-diagnostic.json

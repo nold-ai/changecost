@@ -273,6 +273,28 @@ def test_cli_error_is_bounded_private_and_nonzero(tmp_path, capsys):
     assert not captured.out and "CANARY" not in captured.err
 
 
+@pytest.mark.parametrize("valid", [False, True])
+def test_present_report_cli_retains_validation(tmp_path, valid, capsys):
+    from quality.runtime_diagnostics import main
+
+    report, cache, _, _ = fixture(tmp_path)
+    if not valid:
+        report.write_text("{PRIVATE_CANARY")
+    output = tmp_path / "diagnostic.json"
+    assert main([str(report), str(cache), str(output)]) == (0 if valid else 2)
+    result = json.loads(output.read_text())
+    assert result["status"] == ("collected" if valid else "unavailable_or_invalid")
+    if valid:
+        assert result["packages"] == [{"name": "pytest", "version": "9.1.1", "requested": True}]
+    else:
+        assert result == {
+            "schema": "changecost/runtime-diagnostic-v1",
+            "status": "unavailable_or_invalid",
+        }
+    captured = capsys.readouterr()
+    assert "CANARY" not in output.read_text() + captured.out + captured.err
+
+
 def test_output_bound_and_graph_validation(tmp_path):
     from quality.runtime_diagnostics import encode_output, observation_graph
 

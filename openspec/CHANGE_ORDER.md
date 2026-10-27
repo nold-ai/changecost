@@ -548,3 +548,12 @@ This refreshed preparation is local/unpublished pending its reviewed diff and a
 new planning-PR-versus-scoped-stash choice. Historical planning publication remains
 recorded. #17 remains active with live 3.0-3.6, historical 1.2/2.3-2.6 and conditional
 integration/acceptance obligations open. Dev03 trial 5.1-5.3 remains separate.
+
+## Scoped PR #50 CI correction
+
+The maintainer separately authorized
+[optional runtime diagnostic applicability](changes/fix-optional-runtime-diagnostics/proposal.md)
+in [PR #50](https://github.com/nold-ai/changecost/pull/50) on 2026-10-27. This
+contributor correction preserves required native review failures and remains
+pending exact-head Linux/provider acceptance. It adds no Claude reader runtime
+or source authority and does not complete issue #37 or live evaluation #17.

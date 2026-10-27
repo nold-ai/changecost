@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Skip optional CI runtime diagnostics when no native review report exists;
+  preserve required-review failures and validation of present reports.
+
 - Prepare Claude #37 for an explicitly selected Claude Code project JSONL reader
   with approved version-specific accounting, immutable corrections and separate
   manual binding. Record the NativeUsage compatibility/admission blockers and

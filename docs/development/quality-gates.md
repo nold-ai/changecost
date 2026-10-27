@@ -647,7 +647,12 @@ lifecycle controls and content-bound delta review. Final required gates remain m
 ## Privacy-safe runtime timeout diagnostics
 
 The existing Repository quality workflow collects a small metadata diagnostic
-before its always-run evidence upload, including when native review fails. It
+when the native report exists, before its always-run evidence upload, including
+when native review fails. A documentation-only run with no report skips collection;
+the required review gate still rejects missing evidence for behavior changes, and
+present malformed metadata still fails collection. See the scoped
+[CI correction](../../openspec/changes/fix-optional-runtime-diagnostics/TDD_EVIDENCE.md).
+It
 matches the report's supported `project-runtime-layer-v2` identity to one bounded,
 one-level cache descriptor and verifies the canonical descriptor digest/context.
 The collector reads metadata only, follows no linked ancestors/files, rejects

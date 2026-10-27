@@ -1477,6 +1477,46 @@
         "openspec/specs/behavioral-evidence-review/spec.md"
       ],
       "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/TDD_EVIDENCE.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/design.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/proposal.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/specs/python-foundation/spec.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/specs/python-foundation/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/tasks.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/tasks.md"
+      ],
+      "kind": "manual"
     }
   ],
   "immutable": {
