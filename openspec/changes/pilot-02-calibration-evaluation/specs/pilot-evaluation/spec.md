@@ -8,7 +8,7 @@ The pilot must test whether change-level cohorts add value over repository-wide 
 
 ### Requirement: Leakage-free baseline comparison
 
-Evaluation SHALL compare the candidate and repository-wide baseline chronologically using the same eligible evidence and economic units, scoring one initial pre-run Quote per Change. Their priced/unpriced availability SHALL match under shared repository fallback; unexpected asymmetry SHALL be reported as a comparison error rather than scored.
+Evaluation SHALL compare the candidate and repository-wide baseline chronologically using the same eligible evidence and economic units, scoring one initial pre-run Quote per Change. Their priced/unpriced availability SHALL match under shared repository fallback with a minimum of 20 comparable Changes; unexpected asymmetry SHALL be reported as a comparison error rather than scored.
 
 #### Scenario: Future correction
 
@@ -58,6 +58,34 @@ truth SHALL remain visible in exclusion counts, outside accuracy denominators.
 - **GIVEN** a complete corrected settlement available after the quote but before the declared truth cutoff
 - **WHEN** the evaluation is replayed
 - **THEN** the fixed truth revision is scored while quote reconstruction uses only its earlier evidence cutoff, and corrections after the truth cutoff affect neither result.
+
+#### Scenario: Provisional Codex counters are not complete truth
+
+- **GIVEN** a terminal Change has only unknown, partial or provisional Codex thread counters
+- **WHEN** evaluation selects full-change measured truth
+- **THEN** the report retains the exclusion reason outside accuracy denominators and infers neither total-change demand nor billed money from those counters.
+
+### Requirement: Deterministic offline evaluation report
+
+Evaluation SHALL accept portable synthetic history and a versioned pre-registered
+protocol through a documented local CLI or API, reuse existing quote replay and
+demand validation, and produce deterministic aggregate report content. It SHALL
+report scored and omitted cases with truth eligibility, compare frozen initial
+forecasts against the broad repository baseline, and separate later updates.
+Synthetic report acceptance SHALL NOT establish live calibration or complete the
+separately authorized pilot assessment.
+
+#### Scenario: Reproduce a synthetic report
+
+- **GIVEN** the same portable synthetic history, destination availability and pre-registered protocol version
+- **WHEN** a contributor repeats the documented evaluation
+- **THEN** aggregate report content and exclusion counts match, adaptive availability remains separate from economic matched availability, and overhead measurements are labeled separately.
+
+#### Scenario: Exclude the target and keep updates separate
+
+- **GIVEN** a target Change has multiple attempts, revisions and later diagnostic forecasts
+- **WHEN** the initial forecast is evaluated
+- **THEN** all target attempts and revisions remain outside its peer, transfer calibration and validation inputs, exactly one initial forecast is scored, and later updates remain separate even after terminal completion.
 
 ### Requirement: Explicit metric denominators
 
@@ -130,3 +158,40 @@ Adaptive evaluation SHALL pre-register historical/dimensional/transfer/rehearsal
 - **GIVEN** many samples or an expensive rehearsal without passing scoped metrics
 - **WHEN** promotion is assessed
 - **THEN** sample count and assessment effort alone do not establish calibrated accuracy
+
+### Requirement: Safe synthetic experiment boundary
+
+The offline evaluator SHALL use an isolated disposable store, strict versioned
+inputs, asserted synthetic provenance and allowlisted report fields. It SHALL NOT
+restore imported computation receipts, inspect transcripts or open the ordinary
+runtime database. Unsupported native kinds and malformed inputs SHALL fail safely.
+
+#### Scenario: Preserve destination authority
+
+- **GIVEN** portable foreign forecasts and backdated origin observations
+- **WHEN** an isolated synthetic experiment imports them
+- **THEN** they remain replay_unavailable and are never scored as local computations.
+
+#### Scenario: Scenario diagnostics are not observed quantiles
+
+- **GIVEN** transfer emits scenario arrays without observed summaries
+- **WHEN** the registered diagnostic formula computes their median and extent
+- **THEN** the report labels scenario diagnostics with separate support, donor and truth counts and creates no validation receipt.
+
+#### Scenario: Safe repeated execution
+
+- **GIVEN** a valid asserted synthetic experiment and an existing runtime database
+- **WHEN** the command runs twice or rejects an unsafe input
+- **THEN** the runtime database is unchanged, core results are deterministic, errors contain no rejected values, and optional timing is separate.
+
+#### Scenario: Bound every accepted numeric spelling
+
+- **GIVEN** decimal or rational numeric strings using ASCII or Unicode decimal digits
+- **WHEN** either a numeric string exceeds 256 characters or its decimal exponent has magnitude above 256
+- **THEN** evaluation rejects it before model parsing and exact arithmetic, without echoing the value; bounded equivalent spellings retain exact numeric semantics.
+
+#### Scenario: Safe nested component identifiers
+
+- **GIVEN** an economic or demand component, including policy and rehearsal budget/overhead components
+- **WHEN** its unit or basis violates the report identifier grammar of 1–200 ASCII letters, digits, underscores, periods, colons and hyphens starting with a letter or digit
+- **THEN** evaluation rejects the input before computation or report projection without echoing the identifier.

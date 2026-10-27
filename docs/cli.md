@@ -213,3 +213,12 @@ lists the supported profile and boundaries. No scan, watch, account setting or
 provider request runs. A later manual Evidence binding is separate from import.
 Invalid mode combinations exit 2 before acquisition or database publication.
 A successful receipt names local Evidence selectors and diagnostic counts only.
+
+## Synthetic evaluation
+
+`changecost evaluate-synthetic --history examples/evaluation/history.json --protocol examples/evaluation/protocol.json`
+prints a deterministic report from an asserted synthetic portable timeline. It
+uses disposable stores and ignores the ordinary `--db` destination. Optional
+`--measure-runs 5` adds separate timing observations. Invalid inputs and economic
+comparison errors exit with code 2. See the [evaluation guide](pilot/evaluation.md)
+for case checkpoints, safe inputs, formulas and the permanent synthetic-only limit.

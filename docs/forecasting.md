@@ -183,3 +183,35 @@ measurement policy. Even after exact manual binding, the existing synthetic-only
 learning and financial guards remain unchanged. Broader readers, native demand
 projection, calibration and evaluated outcomes need their own authorization and
 evidence. See [finite import](settlement.md#import-the-approved-finite-codex-diagnostics).
+
+
+## Evaluation preparation, 2026-10-26
+
+[Evaluation #17](../openspec/changes/pilot-02-calibration-evaluation/proposal.md)
+is selected for offline protocol and deterministic synthetic-report preparation.
+Reuse the existing economic quote replay and synthetic demand validation rather
+than introducing another forecasting algorithm. Economic comparisons retain the
+minimum of 20, identical populations and matched repository-fallback availability.
+Adaptive additional availability is reported separately.
+
+The report freezes forecast inputs and truth at separate cutoffs, excludes the
+target Change and all its attempts, and scores one initial forecast per Change.
+Missing or partial truth remains visible outside accuracy denominators. Zero
+denominators yield an unavailable result with a reason. Live assessment still
+requires its own authorization and complete compatible truth policies.
+
+PR #47 delivered finite diagnostics and provisional thread-lifetime counters,
+with native CLI archival on 2026-10-26. Neither establishes full-change demand,
+verified billing or measured calibration. Source coverage, finality and subagent
+inclusion remain unknown. A synthetic report cannot complete live pilot assessment
+or promote native accuracy. No evaluation runtime is implemented by this preparation.
+
+## Offline evaluation implementation, 2026-10-26
+
+The additive `evaluate-synthetic` command now compares frozen forecasts from
+portable declared synthetic history and a registered protocol in a disposable
+store. It reuses the current demand algorithm explicitly and preserves historical
+validation defaults. Report-only broad economic estimation retains minimum 20.
+Observed summaries, transfer scenarios and rehearsal overhead remain distinct.
+See the [evaluation guide](pilot/evaluation.md) and [findings](pilot/findings.md).
+Live assessment and calibration remain separately authorized work.

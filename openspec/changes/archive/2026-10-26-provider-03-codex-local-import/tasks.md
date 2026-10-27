@@ -89,3 +89,14 @@ until current evidence satisfies it. Neither recovery nor a private push is acce
 - [ ] 4.3 Complete independent affected-scope closure and final repository/provider/Linux assurance, then record the actual canonical recovery and current PR evidence without resetting history.
 
 Tasks 3.3 and 3.4 retain their full incomplete assurance and delivery obligations.
+
+
+## Archival disposition, 2026-10-26 Europe/Berlin
+
+The maintainer requested native CLI archival after PR #47 merged, retaining all
+three unchecked compound tasks. Provider reviews, publication and scoped acceptance
+are complete according to the final PR evidence. Full unqualified Linux assurance
+remains incomplete under the accepted native capsule-timeout exception. See the
+[appended acceptance evidence](TDD_EVIDENCE.md#accepted-delivery-and-archival-disposition-2026-10-26-europeberlin).
+These boxes preserve incomplete or compound obligations; archival does not mark
+them passed or extend the exception to another change.

@@ -292,3 +292,11 @@ Missing measurements remain unknown. Broader Codex and Claude readers, approved 
 accounting and measured pilot evaluation remain separate planned changes.
 Missing optional exports/admin access did not block accepted capability closeout;
 it did not approve native lanes or establish forecasting accuracy.
+
+### Offline synthetic evaluation
+
+`changecost evaluate-synthetic --history examples/evaluation/history.json --protocol examples/evaluation/protocol.json`
+replays a declared synthetic timeline in a disposable store and prints economic,
+adaptive, attribution and abandoned-spend metrics. It does not open the normal
+runtime database or validate live accuracy. See the
+[reproduction guide](docs/pilot/evaluation.md) and [findings](docs/pilot/findings.md).

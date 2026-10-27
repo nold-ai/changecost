@@ -1,5 +1,20 @@
 # Agent instructions
 
+## Current delivery checkpoint, 2026-10-26 Europe/Berlin
+
+PR #47 merged the finite Codex reader and three local-session changes at
+`ffd8dff568f11e6e9283b00badbce6c98a0b5580`. The maintainer requested native CLI
+archival with all twelve unchecked compound tasks retained. The archives preserve
+the accepted Python 3.11 host's native coverage UNKNOWN timeout exception and
+failed mandatory check. Required provider reviews and scoped acceptance completed;
+full unqualified assurance did not pass. This exception grants no future waiver.
+The exact finite reader is delivered; broader readers and native demand, billing
+and calibration authority remain separate. On 2026-10-26 the maintainer subsequently
+authorized offline evaluation #17 implementation, verification and PR promotion.
+Its synthetic CLI/API is implemented locally pending complete verification and
+publication. Live assessment and merge remain unauthorized. Earlier dated
+statements below retain their historical scope.
+
 ## Start here
 
 1. Read this file and [docs/agent-rules/INDEX.md](docs/agent-rules/INDEX.md).

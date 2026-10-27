@@ -201,7 +201,7 @@
   },
   {
     "path": "docs/forecasting.md",
-    "title": "Adaptive demand — offline implementation",
+    "title": "Adaptive demand \u2014 offline implementation",
     "description": "Offline local demand policy, observed learning, transfer and separate native validation gates."
   },
   {
@@ -215,9 +215,9 @@
     "description": "Accepted offline demand contracts and explicit CLI mode, archived after PR #45 with financial authority preserved."
   },
   {
-    "path": "openspec/changes/provider-03-codex-local-import/proposal.md",
+    "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md",
     "title": "Codex local-reader proposal",
-    "description": "Finite diagnostic reader and portable native facts implemented locally; broader native demand and publication remain separate."
+    "description": "Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception."
   },
   {
     "path": "openspec/changes/provider-04-claude-local-import/proposal.md",
@@ -245,24 +245,24 @@
     "description": "CLI-synchronized offline demand contracts, chronological local learning and scoped transfer; native approval and calibration remain separate."
   },
   {
-    "path": "openspec/changes/provider-03-codex-local-import/PREPARATION_EVIDENCE.md",
+    "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/PREPARATION_EVIDENCE.md",
     "title": "Codex reader preparation evidence",
-    "description": "Current code/protocol inspection, architecture alternatives and unresolved source-accounting and native-assurance gates."
+    "description": "Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception."
   },
   {
     "title": "Codex native accounting evidence",
-    "path": "openspec/changes/provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md",
-    "description": "Native observations, historical denied candidates and exact finite semantic approval; canonical activation remains separate from reader implementation."
+    "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/NATIVE_ACCOUNTING_EVIDENCE.md",
+    "description": "Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception."
   },
   {
     "title": "Codex finite producer binding",
-    "path": "openspec/changes/provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
-    "description": "Retained approved exact snapshot policy; finite runtime implemented locally, broader admission and authority remain separate."
+    "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/PRODUCER_BINDING_POLICY.md",
+    "description": "Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception."
   },
   {
     "title": "Codex finite mapping activation evidence",
-    "path": "openspec/changes/provider-03-codex-local-import/TDD_EVIDENCE.md",
-    "description": "Historical activation plus separately authorized finite runtime TDD, source replay and explicit remaining assurance."
+    "path": "openspec/changes/archive/2026-10-26-provider-03-codex-local-import/TDD_EVIDENCE.md",
+    "description": "Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception."
   },
   {
     "title": "Local provisional sessions",
@@ -271,22 +271,42 @@
   },
   {
     "title": "Local session implementation evidence",
-    "path": "openspec/changes/dogfood-01-local-sessions/TDD_EVIDENCE.md",
-    "description": "Actual CLI red/green evidence and deterministic walkthrough; full assurance and acceptance remain pending."
+    "path": "openspec/changes/archive/2026-10-26-dogfood-01-local-sessions/TDD_EVIDENCE.md",
+    "description": "Archived manual-session red/green and CLI proof after PR #47; retained unchecked tasks and accepted native timeout exception."
   },
   {
     "title": "Finite Codex session observations",
-    "path": "openspec/changes/dogfood-02-codex-observations/proposal.md",
-    "description": "Explicit exact-source partial diagnostics beside frozen manual estimates; no native totals or learning."
+    "path": "openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/proposal.md",
+    "description": "Archived exact finite session diagnostics after PR #47; partial facts grant no totals or learning authority, and assurance limits remain recorded."
   },
   {
     "title": "Native session observation evidence",
-    "path": "openspec/changes/dogfood-02-codex-observations/TDD_EVIDENCE.md",
-    "description": "Scoped red/green, migration, exclusion and actual-source proofs with local independent closure; full assurance and provider/PR acceptance remain separate."
+    "path": "openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/TDD_EVIDENCE.md",
+    "description": "Archived exact finite session diagnostics after PR #47; partial facts grant no totals or learning authority, and assurance limits remain recorded."
   },
   {
     "title": "Provisional Codex session implementation",
-    "path": "openspec/changes/dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md",
-    "description": "Focused CLI, revisions, counter, migration, privacy, manual isolation and actual-source proof with local independent closure; full assurance and provider/PR acceptance remain separate."
+    "path": "openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md",
+    "description": "Archived provisional capture loop after PR #47; immutable source counters retain unknown coverage and accepted native assurance limits."
+  },
+  {
+    "path": "openspec/changes/pilot-02-calibration-evaluation/proposal.md",
+    "title": "Offline evaluation change",
+    "description": "Locally implemented deterministic synthetic evaluation, pending complete verification and publication; live assessment remains separately gated."
+  },
+  {
+    "title": "Synthetic evaluation",
+    "path": "docs/pilot/evaluation.md",
+    "description": "Reproduce isolated chronological economic and adaptive evaluation with explicit metric denominators."
+  },
+  {
+    "title": "Evaluation findings",
+    "path": "docs/pilot/findings.md",
+    "description": "Synthetic results, source gaps and the not-yet-validated decision."
+  },
+  {
+    "title": "Evaluation implementation evidence",
+    "path": "openspec/changes/pilot-02-calibration-evaluation/TDD_EVIDENCE.md",
+    "description": "Actual failing/passing checks, executable examples and retained proof limitations."
   }
 ]

@@ -1,15 +1,15 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary reconciled **2026-10-12**.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary reconciled **2026-10-26**.
 The Python foundation and supplemental bounded-review workflow are delivered and
 archived. Source-feasibility #9 is closed after capability reconciliation merged in
 PR #39 on 2026-10-08 and native CLI archival synchronized its evidence gates.
 The 23 historical profiles remain unapproved. One additional finite Codex diagnostic
 usage mapping was independently approved and canonically activated on 2026-10-23;
-native reader implementation and broader accounting authority remain separate.
+the exact reader subsequently merged in PR #47; broader accounting authority remains separate.
 Core-02 (#11) merged in PR #25 and is
 archived with synchronized main specs. Settlement reconciliation merged in PR #28
-on 2026-10-02 and is accepted/archived with synchronized main specs. Provider
+on 2026-10-02 and is accepted/archived with synchronized main specs. Broader provider
 implementation and live collection require a subsequent request.
 
 Supplemental contributor workflow: [#23](https://github.com/nold-ai/changecost/issues/23)
@@ -53,7 +53,7 @@ authorized trial remain pending.
 ## Local provisional session dogfood
 
 On 2026-10-25 Europe/Berlin the maintainer authorized
-[dogfood-01-local-sessions](changes/dogfood-01-local-sessions/proposal.md) to deliver
+[dogfood-01-local-sessions](changes/archive/2026-10-26-dogfood-01-local-sessions/proposal.md) to deliver
 a runnable manual before-session estimate, after-session actual/error and later
 cohort learning. Its local independent closure and runnable CLI proof are complete.
 Full supported Linux assurance and acceptance remain separate. No GitHub issue or
@@ -62,7 +62,7 @@ The separate SQLite store has no automatic collection, full-Change demand or bil
 authority. Source approvals and the separate finite-reader work stay unchanged.
 
 The same day's subsequent explicit authorization adds
-[dogfood-02-codex-observations](changes/dogfood-02-codex-observations/proposal.md).
+[dogfood-02-codex-observations](changes/archive/2026-10-26-dogfood-02-codex-observations/proposal.md).
 It connects only the exact approved finite source as partial diagnostics beside an
 unchanged manual estimate. No typed total is required for observation. Arbitrary
 new/appended sessions, native totals, learning and automatic core bindings remain
@@ -73,7 +73,7 @@ manual-session and reader evidence remains preserved; no merge is authorized.
 No release, merge or deployment is authorized here.
 
 On the same date, the maintainer explicitly authorized
-[dogfood-03-codex-provisional-loop](changes/dogfood-03-codex-provisional-loop/proposal.md)
+[dogfood-03-codex-provisional-loop](changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/proposal.md)
 for new selected local Codex sessions, source-reported lifetime counters, provisional
 target error and separate cohort learning. It is implemented locally with additive
 v3 captures, focused checks, actual-source CLI proof and local independent closure.
@@ -105,7 +105,7 @@ core numeric, billing or calibration authority is granted.
 | [quote-01-empirical-estimation](changes/archive/2026-10-04-quote-01-empirical-estimation/proposal.md) | [#15](https://github.com/nold-ai/changecost/issues/15) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#12](https://github.com/nold-ai/changecost/issues/12) `settlement-01-reconciliation` |
 | [workflow-01-advisory-ci](changes/archive/2026-10-06-workflow-01-advisory-ci/proposal.md) | [#16](https://github.com/nold-ai/changecost/issues/16) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#15](https://github.com/nold-ai/changecost/issues/15) `quote-01-empirical-estimation` |
 | [forecast-01-local-adaptive-demand](changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md) | [#35](https://github.com/nold-ai/changecost/issues/35) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16); native lanes require applicable approved readers/policies |
-| [provider-03-codex-local-import](changes/provider-03-codex-local-import/proposal.md) | [#36](https://github.com/nold-ai/changecost/issues/36) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
+| [provider-03-codex-local-import](changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md) | [#36](https://github.com/nold-ai/changecost/issues/36) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
 | [provider-04-claude-local-import](changes/provider-04-claude-local-import/proposal.md) | [#37](https://github.com/nold-ai/changecost/issues/37) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
 | [pilot-02-calibration-evaluation](changes/pilot-02-calibration-evaluation/proposal.md) | [#17](https://github.com/nold-ai/changecost/issues/17) | [#5](https://github.com/nold-ai/changecost/issues/5) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16), [#35](https://github.com/nold-ai/changecost/issues/35); native adapters are lane-specific |
 
@@ -414,7 +414,7 @@ is authorized by this archive.
 
 ## Selected Codex reader preparation, 2026-10-23 Europe/Berlin
 
-The maintainer selected [Codex reader #36](changes/provider-03-codex-local-import/proposal.md)
+The maintainer selected [Codex reader #36](changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md)
 for preparation and architect review in planning mode. Fresh main is
 `6b6fab30e8030e04fc1a2d803000c640c9f64479`. Native readback confirms User Story,
 parent #7, closed blocked-by #9/#12 and private project #3 Todo. These relationships
@@ -436,7 +436,7 @@ Codex diagnostic profile/proof in the canonical register, admission checks and
 historical-baseline maintenance. The register has **24 profiles, one finite usage
 approval**; the original 23 profiles are unchanged and retain zero approvals.
 This supersedes earlier zero-total-approval inventory statements only for this
-new profile. [The activation evidence](changes/provider-03-codex-local-import/TDD_EVIDENCE.md)
+new profile. [The activation evidence](changes/archive/2026-10-26-provider-03-codex-local-import/TDD_EVIDENCE.md)
 records contributor checks and independent verification. Reader implementation
 stays blocked and unstarted, as do runtime eligibility and native demand/financial
 authority. No collection, publication or release is authorized.
@@ -450,3 +450,39 @@ open; the planning PR did not complete runtime delivery. Closed prerequisites
 #9/#12 and parent #7 remain unchanged. The canonical register remains 24 profiles
 with one finite usage approval. No broader reader, native demand, billing, live
 collection, calibration, release or publication follows.
+
+
+## Accepted finite reader and sessions, 2026-10-26 Europe/Berlin
+
+[PR #47](https://github.com/nold-ai/changecost/pull/47) merged at
+`ffd8dff568f11e6e9283b00badbce6c98a0b5580`. The native CLI archived
+[the finite reader](changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md),
+[manual sessions](changes/archive/2026-10-26-dogfood-01-local-sessions/proposal.md),
+[finite observations](changes/archive/2026-10-26-dogfood-02-codex-observations/proposal.md)
+and [provisional captures](changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/proposal.md).
+Synchronization added 19 requirements and 67 scenarios. All twelve unchecked
+compound tasks remain in the archives. Required provider reviews, publication and
+scoped acceptance completed. The accepted Python 3.11 host's native coverage
+UNKNOWN timeout and failed mandatory check remain incomplete assurance; no future
+check is waived. #36 is CLOSED/completed. Earlier pending statements are historical.
+
+The maintainer selected [evaluation #17](changes/pilot-02-calibration-evaluation/proposal.md)
+for preparation. Its native blocked-by issues #11/#12/#15/#16/#35 are all closed.
+User Story, parent #5 and private project #3 Todo are unchanged. The immediate
+planned outcome is a deterministic synthetic report using existing quote replay
+and demand validation. Protocol/harness acceptance and separately authorized live
+assessment remain distinct; the whole story is not completed by synthetic results.
+Finite diagnostics and provisional lifetime counters cannot establish complete
+native truth. This preparation is local/unpublished and implements no evaluation
+runtime, collection, billing or release.
+
+
+## Offline evaluation runtime supersession, 2026-10-27 Europe/Berlin
+
+The maintainer's subsequent 2026-10-26 authorization supersedes the preparation-only
+boundary above for evaluation #17. The local branch implements the isolated
+`evaluate-synthetic` CLI/API and deterministic economic/adaptive report. Complete
+verification and PR publication remain pending. Independent review accepts the
+concrete offline protocol; compound historical prior-RED gaps remain recorded.
+Synthetic results do not complete the User Story or authorize Stage 3 live
+assessment, source approval, calibration claims, merge or release.

@@ -158,3 +158,37 @@ which exited 0 with 145 passed. Before/after outputs are retained in
 `.changecost/dogfood/adopted-fixture-red.log` and `adopted-fixture-green.log`.
 The manifest now includes that twentieth test path. Runtime source was unchanged
 by this fixture correction. Both correction batches remain in the existing ledger.
+
+
+## Accepted delivery and archival disposition, 2026-10-26 Europe/Berlin
+
+[PR #47](https://github.com/nold-ai/changecost/pull/47) merged at
+`ffd8dff568f11e6e9283b00badbce6c98a0b5580`. The accepted reviewed head was
+`8cc0c681b71d430fd44b0cc874f4f7585b76d73f`, compared with
+`4fcc9432ef46252470dfa9390bdb4ff31247dd43`. GitHub readback on 2026-10-26
+confirms the merged PR includes this change, all three session changes and the
+finite diagnostic reader. Required current-head Codex and CodeRabbit code reviews
+completed without actionable findings; scoped acceptance and publication occurred.
+
+The maintainer accepted the narrow native capsule timeout exception for that
+head. Both ordinary host suites passed 3,525 tests. The Python 3.13.14 host's
+mandatory check and all ten native analyzers passed with PASS_WITH_ADVISORY. The
+Python 3.11.15 host's mandatory check failed because native pytest coverage remained
+UNKNOWN after `sandbox_launch_failed:timeout` at the unchanged 300-second deadline.
+The two native target runtimes report Linux x86-64 CPython 3.13.11, independently of
+the host matrix versions. The canonical helper remains INCOMPLETE under unchanged
+gate policy. This exception establishes neither passing full assurance nor a waiver
+for future changes. [The final CI run](https://github.com/nold-ai/changecost/actions/runs/40242126948)
+preserves both passing and failing results. Historical evidence above remains intact.
+
+The maintainer explicitly requested native CLI archival despite the retained
+unchecked compound tasks. Completed provider-review, publication and acceptance
+sub-obligations are evidenced by PR #47. Full unqualified supported-Linux assurance
+remains incomplete. All three unchecked boxes are preserved rather than relabelled
+as passing. Any remaining tracking/readback sub-obligation stays incomplete unless
+separately evidenced. Archive synchronization is performed only by `openspec archive`.
+
+No new source approval, complete native demand, billing, calibration, collection,
+release or publication authority follows from archival. The canonical register
+retains 24 profiles and one finite usage approval. Rollback uses a focused revert
+that preserves accepted evidence and any existing local runtime data.

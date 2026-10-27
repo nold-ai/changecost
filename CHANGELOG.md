@@ -3,6 +3,22 @@
 
 ## Unreleased
 
+- Simplify offline evaluator validation and replay control flow while preserving
+  synthetic report values, chronological admission and comparison-error exits.
+  Resolve native complexity and CLI result-type findings without changing gates.
+
+- Add isolated `evaluate-synthetic` CLI/API reporting with versioned synthetic timelines,
+  independent truth cutoffs, exact economic baseline comparison, adaptive/scenario
+  metrics, attribution and abandoned-spend denominators. Optional timing remains
+  separate. Imported forecasts retain no local authority; live calibration is unvalidated.
+
+- Archive the finite Codex reader and three local-session changes delivered by
+  PR #47 through the native OpenSpec CLI. Synchronize 19 requirements and 67
+  scenarios, retaining twelve unchecked compound tasks and the accepted Python
+  3.11 native capsule-timeout exception. Reconcile evaluation #17 as an offline
+  protocol and deterministic synthetic-report plan; live assessment and complete
+  native truth remain separately gated.
+
 - Measure the real session demo in the pytest process while retaining its eight
   actual CLI commands and process entrypoint retry check. Close the native wrapper
   coverage gap without changing required analyzers, selection or deadlines.
