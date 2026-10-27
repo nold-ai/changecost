@@ -66,6 +66,7 @@
 - [Synthetic evaluation](docs/pilot/evaluation.md): Reproduce isolated chronological economic and adaptive evaluation with explicit metric denominators.
 - [Evaluation findings](docs/pilot/findings.md): Synthetic results, source gaps and the not-yet-validated decision.
 - [Evaluation implementation evidence](openspec/changes/pilot-02-calibration-evaluation/TDD_EVIDENCE.md): Actual failing/passing checks, executable examples and retained proof limitations.
+- [Live assessment preparation](docs/pilot/live-assessment.md): pending operator decisions, private manifest and separate live authority/runtime gates.
 
 ## Local skills
 

@@ -48,7 +48,8 @@ computation does not replace pilot protocol registration. Add only missing case
 orchestration, aggregate metrics and report output. Preserve the delivered economic
 and adaptive contracts rather than introducing a parallel estimator or validation
 engine. Document invocation in `docs/pilot/evaluation.md` and qualified conclusions
-in `docs/pilot/findings.md`. Neither document exists at this preparation baseline.
+in `docs/pilot/findings.md`. Both documents were absent at the historical preparation baseline. They now exist
+and describe the offline implementation merged in PR #48.
 
 Accepting the offline protocol and synthetic report proves reproducibility only.
 It does not complete live assessment, approve collection or produce a measured
@@ -221,3 +222,43 @@ models before those models or exact arithmetic run. A central traversal checks
 component unit/basis identifiers, including selected policy and nested rehearsal
 budget/overhead, before report generation. These are bounded synthetic input
 contracts, not proof that caller-supplied records are fictional.
+
+## Live preparation checkpoint, 2026-10-27 Europe/Berlin
+
+The maintainer selected "Prepare the live assessment; keep #17 active" and chose
+a planning PR. This authorizes documentation and lifecycle reconciliation only.
+The offline synthetic CLI/API is merged in [PR #48](https://github.com/nold-ai/changecost/pull/48)
+at `401e43ed63a9da3e39f55fc29d1e7160d1d06d2e`. Earlier local-delivery and missing-document
+claims above describe their dated baseline, not current delivery status.
+
+The [live assessment guide](../../../docs/pilot/live-assessment.md) defines the
+private operator decisions, frozen documentation-only manifest, rubric and per-task
+closure evidence. The chosen lane, cohort, independent truth minimum/rubric values,
+consent and separate evaluation/source/complete-measurement/publication approvals
+remain pending. Source approval cannot confer measurement or evaluation authority.
+The finite Codex admission is not complete Change/Run/child truth. The existing
+economic and demand coverage policies and evaluator accept synthetic evidence only.
+A separately authorized real-evidence boundary remains unimplemented even if a
+permitted complete dataset becomes available. No new schema, live endpoint, code
+flag, provider admission or collection is introduced by this preparation.
+
+Freeze registration before target outcomes, disclose prior exposure, and preserve
+original-store authority and destination availability. Use separate forecast/truth
+cutoffs, one initial forecast per Change, target/attempt/revision exclusion and
+repeat-task dependence. Preserve economic min-20 matched identity/population/
+availability and separate adaptive observed/quantile/scenario denominators.
+Unknown truth is not zero. All retries and abandonment remain visible; overhead
+net benefit needs compatible units. Stop on failed authority, chronology or privacy
+checks. A failed rubric produces no passing receipt.
+
+Fresh prerequisite inspection confirms #11, #12, #15, #16 and #35 closed. This is
+current readiness evidence only. It does not retroactively satisfy task 1.2's
+before-behavior chronology or tasks 2.3-2.6's missing historical prior-RED evidence.
+All existing unchecked compound and live tasks remain unchecked. Full integration
+and archival remain conditional on actual acceptance; #17 remains active.
+
+Planning rollback reverts this prepared diff. No paid infrastructure, automatic
+collection, live dataset inspection or outcome claim is authorized. Relevant checks
+are strict OpenSpec, documentation ownership/links, generated index and metadata;
+aggregate assurance belongs to verification. Confidence is high for the shipped
+synthetic boundary, medium for future readiness pending operator decisions.

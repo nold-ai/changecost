@@ -21,6 +21,8 @@ Offline protocol and synthetic-report acceptance do not complete the following l
 
 ## 3. Pilot assessment
 
+- [ ] 3.0 Specify and separately authorize the real-evidence boundary, then implement and verify its safe input/authority checks, isolated local storage and reproducible replay. The existing synthetic-only evaluator and coverage policies cannot execute live assessment.
+
 - [ ] 3.1 Confirm the forecast/core prerequisites and each enabled lane's approved reader/measurement policy plus actual evaluation authorization; missing other providers remain reported gaps, not universal blockers.
 - [ ] 3.2 Run authorized evidence replay and overhead measurements with recorded environment and input sizes; verify reports distinguish real observations from synthetic tests and omit sensitive data.
 - [ ] 3.3 Evaluate shared eligible truth and additional availability separately with all-outcome/abandoned denominators, uncertainty and rehearsal overhead; record unvalidated conclusions when criteria do not pass.
@@ -48,3 +50,18 @@ documentation reviewer recorded review of protocol
 `synthetic-20261026-v1` on 2026-10-27; concrete evidence and limits are recorded in
 [TDD_EVIDENCE.md](TDD_EVIDENCE.md). This does not establish live preregistration
 or complete any Stage 3 task.
+
+## Live preparation checkpoint, 2026-10-27 Europe/Berlin
+
+The offline implementation merged in PR #48. The maintainer selected preparation
+only and kept #17 active. No existing task checkbox changes in this reconciliation.
+Current evidence confirms prerequisite #11/#12/#15/#16/#35 closed; it cannot
+retroactively satisfy task 1.2's before-behavior chronology or the missing compound
+prior-RED evidence in 2.3-2.6. Later passing tests and main assurance do not repair it.
+
+Task 3.0 exposes the missing real-evidence runtime boundary. Its implementation and
+all live execution need separate authorization. Tasks 3.1-3.6 require actual scoped
+approvals, frozen preregistration, complete truth and reviewed results. Use the
+[live guide's closure table](../../../docs/pilot/live-assessment.md#close-the-live-tasks-with-actual-evidence).
+Full integration 4.1-4.3 remains conditional on actual acceptance. Preparation does
+not authorize collection, inspect outcomes, generate a live receipt or archive #17.

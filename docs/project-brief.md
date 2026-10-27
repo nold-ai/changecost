@@ -10,11 +10,11 @@ UNKNOWN capsule-timeout exception. Provider reviews and scoped acceptance are
 complete; full unqualified assurance remains incomplete. No future check is waived.
 
 [Evaluation #17](../openspec/changes/pilot-02-calibration-evaluation/proposal.md)
-now has a locally implemented deterministic offline synthetic comparison,
-reusing existing replay and validation. The maintainer authorized implementation,
-verification and PR promotion on 2026-10-26; complete verification and publication
-remain pending. Live assessment, complete native truth and
-release readiness remain separate. Provisional session lifetime counters do not
+has a deterministic offline synthetic comparison merged in PR #48 on 2026-10-27,
+reusing existing replay and validation. The maintainer selected
+[live-assessment preparation](pilot/live-assessment.md) while keeping #17 active.
+Real-evidence execution remains unimplemented; live assessment, complete native
+truth and release readiness remain separate. Provisional session lifetime counters do not
 establish full-change demand or billing. Earlier dated checkpoints below preserve
 their historical scope.
 
@@ -37,7 +37,7 @@ adapters and live collection are still outside this change.
 
 ## Confirmed direction
 
-- ChangeCost remains a private, standalone NOLD AI project under Apache-2.0.
+- ChangeCost is a standalone NOLD AI project under Apache-2.0. The repository is public as confirmed on 2026-10-27; Project 3 remains private.
 - Assess task demand for individuals, small teams and enterprise developers using ordinary local coding-agent metadata; economic reconciliation remains separately gated.
 - Python 3.11+, Typer, Pydantic, standard-library SQLite and Decimal.
 - `pyproject.toml`, uv with a committed lockfile, Hatchling, pytest, Ruff and BasedPyright
@@ -203,3 +203,19 @@ synthetic history and a pre-registered protocol. This implementation uses dispos
 stores, preserves foreign replay refusal and never promotes synthetic success to
 live calibration. See [evaluation](pilot/evaluation.md). The live pilot, broader
 native approval, merge and release remain separate gates.
+
+### Live preparation and lifecycle, 2026-10-27 Europe/Berlin
+
+The offline implementation is merged; its post-merge supported host/native matrix
+passed in [run 40563257194 attempt 2](https://github.com/nold-ai/changecost/actions/runs/40563257194/attempts/2).
+This proves source assurance, not live accuracy. Historical chronological TDD gaps
+remain recorded. The selected preparation adds no live reader, measurement approval,
+runtime boundary or private dataset. Operator choices, original registration,
+independent complete truth and publication permission remain pending in the
+[live guide](pilot/live-assessment.md).
+
+The native CLI archived dev-workflow-02 with verified main-spec synchronization and
+retained historical warnings. The [lifecycle audit](../openspec/CHANGE_ORDER.md#lifecycle-audit-2026-10-27-europeberlin)
+keeps five unfinished changes active, including #17. Repository publicity grants no
+permission to commit raw evidence or publish private aggregates. No release or
+package version changes follow from preparation or archival.

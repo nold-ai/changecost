@@ -10,8 +10,15 @@ context: |
   unchecked tasks retain the accepted Python 3.11 native coverage UNKNOWN timeout
   exception, not passing full assurance or a future waiver. Evaluation #17 is
   separately authorized for offline implementation, verification and PR promotion
-  on 2026-10-26. Its synthetic CLI/API is implemented locally pending complete
-  verification and publication. Stage 3 live assessment and merge remain unauthorized.
+  on 2026-10-26. Its synthetic CLI/API merged in PR #48 on 2026-10-27 at
+  401e43ed63a9da3e39f55fc29d1e7160d1d06d2e. The maintainer then selected live-assessment
+  preparation with #17 active. Real-evidence runtime remains unimplemented; collection,
+  real-outcome inspection, source/measurement approval and live execution are separate.
+  The post-merge main run 40563257194 attempt 2 passed both host/native jobs with all
+  ten native members passing and no UNKNOWN evidence. Historical TDD gaps remain.
+  Native CLI archival of dev-workflow-02 synchronized 18 added and three modified
+  requirements while retaining three unchecked historical publication milestones.
+  Five other changes remain active for actual unfinished work.
   Provisional counters are not complete native truth. Quotes merged in PR #32 on 2026-10-03 and were
   archived through the native CLI on 2026-10-04 with synchronized empirical-quotes
   main specs. Calibration and source approval remain To-Validate.
@@ -31,7 +38,9 @@ context: |
   with local replay. Source approval alone cannot enable provider numeric authority.
   ChangeCost (nold-ai/changecost) is a standalone NOLD AI project exploring
   cost estimates and settlement for AI-assisted software changes.
-  Phase: unreleased 0.x alpha/preview feasibility study; private; Apache-2.0.
+  Phase: unreleased 0.x alpha/preview feasibility study; Apache-2.0.
+  Repository public as confirmed on 2026-10-27; Project 3 remains private.
+  Publicity is no approval to commit private evidence or publish aggregates.
   All approved pilot changes belong to the first pre-v1 product; no version is published.
   Keep package 0.1.0.dev0 and evolve current internal schemas without a public v2
   compatibility programme; schema labels do not imply released product versions.

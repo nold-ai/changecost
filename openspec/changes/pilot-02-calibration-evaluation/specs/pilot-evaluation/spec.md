@@ -195,3 +195,30 @@ runtime database. Unsupported native kinds and malformed inputs SHALL fail safel
 - **GIVEN** an economic or demand component, including policy and rehearsal budget/overhead components
 - **WHEN** its unit or basis violates the report identifier grammar of 1–200 ASCII letters, digits, underscores, periods, colons and hyphens starting with a letter or digit
 - **THEN** evaluation rejects the input before computation or report projection without echoing the identifier.
+
+### Requirement: Separate prospective live authority and execution
+
+Live assessment SHALL require separate evaluation authorization, exact selected-lane
+source/reader approval, complete measurement authority and permitted data/consent.
+Publication SHALL require approval of the proposed aggregate disclosure. The live
+protocol SHALL freeze its manifest, rubric and independent-unit rule before target
+outcomes, disclose prior exposure, preserve original-store authority and separate
+forecast and truth cutoffs. Synthetic execution SHALL NOT satisfy these obligations.
+
+#### Scenario: Dataset without real-evidence execution
+
+- **GIVEN** a permitted complete dataset but only the shipped synthetic evaluator
+- **WHEN** a contributor prepares a live assessment
+- **THEN** live execution remains blocked pending a separately authorized implemented real-evidence boundary, without relabeling real input as synthetic.
+
+#### Scenario: Prior exposure or changed registration
+
+- **GIVEN** an analyst has seen target outcomes or changes a frozen manifest
+- **WHEN** the assessment is reviewed
+- **THEN** the original registration and amendments remain visible, prior exposure prevents a prospective claim for those cases, and unreviewed changes block the affected run.
+
+#### Scenario: Analysis without publication approval or passing rubric
+
+- **GIVEN** authorized analysis with no aggregate publication approval or a failed rubric
+- **WHEN** the contributor proposes findings and validation
+- **THEN** unauthorized aggregates are not published, a failed rubric creates no passing receipt, and live tasks and archival remain incomplete until actual acceptance evidence exists.

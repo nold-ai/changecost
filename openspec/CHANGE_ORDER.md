@@ -1,6 +1,6 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary reconciled **2026-10-26**.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary reconciled **2026-10-27**.
 The Python foundation and supplemental bounded-review workflow are delivered and
 archived. Source-feasibility #9 is closed after capability reconciliation merged in
 PR #39 on 2026-10-08 and native CLI archival synchronized its evidence gates.
@@ -18,7 +18,7 @@ review context and bounding correction loops. It is a sub-issue of [#6](https://
 change the original nine-change product delivery order; the 2026-10-07 adaptive expansion below is separate.
 
 Supplemental behavioral-evidence pilot: [#26](https://github.com/nold-ai/changecost/issues/26)
-tracks [dev-workflow-02-behavioral-evidence](changes/dev-workflow-02-behavioral-evidence/proposal.md),
+tracks [dev-workflow-02-behavioral-evidence](changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/proposal.md),
 a contributor workflow under #6, merged in
 [PR #27](https://github.com/nold-ai/changecost/pull/27). Its 2026-09-30 in-place
 post-replan phase preserves the original pilot outcome and adds scoped recovery,
@@ -486,3 +486,47 @@ verification and PR publication remain pending. Independent review accepts the
 concrete offline protocol; compound historical prior-RED gaps remain recorded.
 Synthetic results do not complete the User Story or authorize Stage 3 live
 assessment, source approval, calibration claims, merge or release.
+
+## Lifecycle audit, 2026-10-27 Europe/Berlin
+
+This checkpoint supersedes earlier local/unpublished status statements above.
+Evaluation #17's offline implementation merged in [PR #48](https://github.com/nold-ai/changecost/pull/48)
+at `401e43ed63a9da3e39f55fc29d1e7160d1d06d2e`. The post-merge
+[main run, attempt 2](https://github.com/nold-ai/changecost/actions/runs/40563257194/attempts/2)
+passed both supported host/native matrix jobs, all ten native members executed
+and passing, no UNKNOWN evidence, `PASS_WITH_ADVISORY`. Earlier timeouts and the
+separate initial main billing/pre-start block remain historical, without a root-cause
+claim. Current source assurance does not complete live assessment or missing prior-RED.
+
+The maintainer selected live-assessment preparation and kept #17 active. The
+[live guide](../docs/pilot/live-assessment.md) names pending operator choices and
+separate authority/runtime gates. A complete dataset alone cannot supply the missing
+real-evidence entrypoint or native measurement approval. The repository is public
+as confirmed on this date. The private [Project 3](https://github.com/orgs/nold-ai/projects/3)
+and existing parent/dependency relationships remain unchanged. No visibility change
+was performed by preparation.
+
+| Change | Disposition | Evidence and remaining work |
+| --- | --- | --- |
+| dev-workflow-02-behavioral-evidence, #26 | CLI archived | PR #27 canonical COMPLETE receipt revision 161 supersedes historical publication snapshots. Issue #26 is already closed. Original negative pilot, rollout limits and unchecked 5.3/7.2/7.3 remain preserved. |
+| pilot-02-calibration-evaluation, #17 | Active | Offline report merged. Historical compound prior-RED gaps, real-evidence boundary, live 3.1-3.6 and conditional integration/acceptance remain unfinished. Preparation does not close the issue. |
+| dev-workflow-03-risk-first-execution, #40 | Active | Guidance accepted in PR #42; bounded trial 5.1-5.3 remains unfinished. Later guidance use does not replace its measured trial/report. |
+| provider-04-claude-local-import, #37 | Active | Ten tasks remain unimplemented, including independent source approval and reader. |
+| provider-02-cursor-import, #14 | Active | Fifteen source/research/parser/binding/acceptance tasks remain unimplemented. |
+| provider-01-copilot-import, #13 | Active | Fifteen source/research/parser/binding/acceptance tasks remain unimplemented. |
+
+The completed command was `openspec archive dev-workflow-02-behavioral-evidence --yes`.
+Native CLI synchronization added 17 behavioral requirements with 30 scenarios and
+one bounded native-completion requirement with seven scenarios. It modified three
+bounded requirements with 15 scenarios and preserved the other 24 bounded requirements.
+Archive readback verified original artifact hashes, substantive delta blocks and
+unchanged prior requirements. CLI whitespace normalization adds no normative change.
+The CLI warned about three unchecked historical publication tasks and a nonblocking
+proposal warning. The append-only archival reconciliation explains their accepted
+canonical supersession. It does not fabricate historical checks or replay the absent
+raw ledger. No other change is eligible for archival now.
+
+Preparation is planning only. No live data, source-admission bytes, runtime policy,
+quality-tool implementation, release or version changes are included. Rollback reverts
+the preparation/archive diff without deleting original evidence; do not rerun archival
+or mark outstanding tasks complete to hide a limitation.

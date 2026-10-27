@@ -28,7 +28,7 @@ record final gate evidence rather than assuming these early checks cover edits.
 
 ## Tool experiments and current limitations
 
-See [pilot report](../../../docs/lessons-learned/behavioral-evidence-pilot.md) and its
+See [pilot report](../../../../docs/lessons-learned/behavioral-evidence-pilot.md) and its
 sanitized JSON ledger for actual SpecFact attempts, exits, elapsed seconds, failed
 setup, unbound analysis and the distinct CrossHair/security-scanner controls.
 Native reports and copied-input fingerprints are ignored under `.specfact/behavioral-pilot/`.

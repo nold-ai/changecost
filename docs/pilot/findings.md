@@ -38,3 +38,26 @@ Aggregate assurance and independent reviews belong to the verification stage.
 Unchecked chronological TDD obligations are retained where later regression
 variants lack a separately recorded pre-implementation failure. This is a stated
 limit, not a passing check or future waiver.
+
+## Current checkpoint, 2026-10-27 Europe/Berlin
+
+The offline implementation merged in [PR #48](https://github.com/nold-ai/changecost/pull/48)
+at `401e43ed63a9da3e39f55fc29d1e7160d1d06d2e`, with the verified source tree
+`2df0883b75cb3b78503fd358550255c01c854405`. Post-merge
+[main assurance run, attempt 2](https://github.com/nold-ai/changecost/actions/runs/40563257194/attempts/2)
+passed both supported host matrix jobs. Each native report records all ten required
+members executed and passed, no UNKNOWN evidence, and `PASS_WITH_ADVISORY`.
+The source inventory has 303 members and digest
+`dba3a52fe4bc8c57ef90a1e8b97a614a71675ad6a279471a7d572d3f84aa8fbc`.
+This is assurance of that merged source, not live calibration evidence or assurance
+of future preparation edits. Earlier PR timeout reports and the separate initial
+main billing/pre-start block remain historical evidence. No root cause is inferred.
+
+The maintainer selected preparation while keeping #17 active. The
+[live guide](live-assessment.md) records pending lane/cohort/operator decisions,
+separate approvals, private manifest, chronology and rubric fields. No real dataset
+or live outcomes were inspected during this preparation. A real-evidence runtime
+boundary remains unimplemented independently of dataset availability. Synthetic
+coverage policies cannot confer native demand or economic authority. Tasks 3.0-3.6,
+historical prior-RED obligations and conditional full-story integration remain open.
+The conclusion remains not yet validated, with no passing live receipt.

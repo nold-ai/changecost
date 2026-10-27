@@ -308,5 +308,10 @@
     "title": "Evaluation implementation evidence",
     "path": "openspec/changes/pilot-02-calibration-evaluation/TDD_EVIDENCE.md",
     "description": "Actual failing/passing checks, executable examples and retained proof limitations."
+  },
+  {
+    "title": "Live assessment preparation",
+    "path": "docs/pilot/live-assessment.md",
+    "description": "pending operator decisions, private manifest and separate live authority/runtime gates."
   }
 ]

@@ -130,3 +130,12 @@ and the default-preserving baseline selector rolls back this feature. Review
 current [findings](findings.md) and the selected change's
 [TDD evidence](../../openspec/changes/pilot-02-calibration-evaluation/TDD_EVIDENCE.md)
 before relying on its assurance status.
+
+## Prepare the separate live lane
+
+The offline implementation merged in [PR #48](https://github.com/nold-ai/changecost/pull/48)
+on 2026-10-27. Follow the [live assessment preparation guide](live-assessment.md)
+for pending operator decisions and future closure checks. Its private manifest is
+documentation only. The real-evidence entrypoint and source/complete-measurement
+approvals remain missing; the command above remains synthetic only. Preparation
+keeps #17 active and authorizes no live collection or outcome inspection.
