@@ -260,3 +260,34 @@ rejects every other digest before persistence. Unknown served model, time, backe
 presence and finality remain explicit. Partial reported parent lineage does not
 prove full descendant or task coverage. Historical observations above retain their
 original scopes. Claude and broader Codex compatibility remain unimplemented.
+
+## Claude project-reader preparation, 2026-10-27 Europe/Berlin
+
+The maintainer selected existing Claude Code project JSONL as the first lane for
+[Claude #37](../../openspec/changes/provider-04-claude-local-import/proposal.md).
+The intended outcome is a reusable approved-profile reader with version-specific
+accounting, immutable corrections, exact replay and separate manual binding.
+It has not been narrowed to a finite diagnostic snapshot. Desktop coding
+transcripts, IDE, SDK/result streams, JSON containers and SQLite/index acquisition
+remain deferred; ordinary chat remains excluded. All ten implementation tasks
+remain unchecked and every Claude source profile remains unapproved.
+
+Existing Store and binding APIs are reusable infrastructure. Native graph validation
+still requires Codex evidence, while NativeUsage has closed category/scope/ownership
+constraints. The [design checkpoint](../../openspec/changes/provider-04-claude-local-import/design.md#approval-to-contract-execution-checkpoint)
+requires independent Claude accounting approval and demonstrated contract fit
+before implementation. Codex's finite replay algorithm is not a correction policy
+for revised Claude project messages. No approval transfers between these providers.
+
+The [SDK cost guide](https://code.claude.com/docs/en/agent-sdk/cost-tracking) and
+[monitoring reference](https://code.claude.com/docs/en/monitoring-usage), accessed
+2026-10-27, describe stream accounting and estimated costs. They do not establish
+the installed producer's persisted project-log contract. The current `claude`
+symlink points to a 2.1.257 binary path; this preparation did not execute it or
+inspect private source files. Installation does not establish a historical
+record's producer, account regime or accounting semantics.
+
+No source-register approval, collector, runtime command or financial/native-demand
+authority is added. Delivered #35 removes only its delivery dependency; a Claude
+measurement/coverage policy remains separate. Evaluation #17's live boundary,
+historical evidence gaps and integration obligations remain open.
