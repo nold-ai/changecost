@@ -108,7 +108,11 @@ def packaged_admission(register):
 
     if validate_register(register):
         raise ValueError("invalid canonical source register")
-    profiles = [p for p in register["profiles"] if "admission" in p]
+    profiles = [
+        p
+        for p in register["profiles"]
+        if p.get("admission", {}).get("kind") == "finite-snapshot-admission-v1"
+    ]
     if len(profiles) != 1:
         raise ValueError("expected one finite mapping")
     profile = profiles[0]
@@ -239,9 +243,15 @@ def _producer_valid(profile, a):
 
 def admission_valid(profile, evidence):
     """Check finite metadata and native proof relations without reading any source."""
+    if (
+        isinstance(profile.get("admission"), dict)
+        and profile["admission"].get("kind") == "claude-project-version-admission-v1"
+    ):
+        return _claude_admission_valid(profile, evidence)
     if "admission" not in profile:
         return not (
-            profile["provider"] == "Codex" and profile["capabilities"]["usage"] == "supported"
+            profile["provider"] in {"Codex", "Claude"}
+            and profile["capabilities"]["usage"] == "supported"
         )
     a = profile["admission"]
     if not _shape(a, ADMISSION_KEYS):
@@ -304,3 +314,54 @@ def _native_usage_proof_valid(profile, evidence, a):
         and evidence[proofs[0]["evidence_id"]]["origin"] == "native"
         and evidence[proofs[0]["evidence_id"]]["sha256"] == a["source_sha256"]
     )
+
+
+def _claude_admission_valid(profile, evidence):
+    from quality.source_feasibility import profile_digest
+
+    approved_profile_digests = {
+        "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "7e3cf00757e1eca8c91782848c59913a9e19bb39b78c7a15edf7be370b906b55",
+    }
+    if profile_digest(profile) not in approved_profile_digests:
+        return False
+    a = profile["admission"]
+    proofs = [proof for proof in profile["approvals"] if proof["capability"] == "usage"]
+    if len(proofs) != 1:
+        return False
+    native = evidence.get(a["native_evidence_id"], {})
+    producer = evidence.get(a["producer_evidence_id"], {})
+    return (
+        proofs[0]["evidence_id"] == native.get("id")
+        and native.get("origin") == "native"
+        and producer.get("origin") == "producer"
+        and proofs[0]["sha256"] == native.get("sha256")
+        and proofs[0]["decisions"] == a["decisions"]
+    )
+
+
+def packaged_claude_admission(register, profile_id="claude-project-2-1-215-request-stages"):
+    from quality.source_feasibility import profile_digest, validate_register
+
+    if validate_register(register):
+        raise ValueError("invalid canonical source register")
+    profiles = [
+        p
+        for p in register["profiles"]
+        if p.get("admission", {}).get("kind") == "claude-project-version-admission-v1"
+        and p["id"] == profile_id
+    ]
+    if len(profiles) != 1:
+        raise ValueError("expected one approved Claude mapping")
+    profile = profiles[0]
+    proof = next(proof for proof in profile["approvals"] if proof["capability"] == "usage")
+    return {
+        "profile_id": profile["id"],
+        "profile_digest": profile_digest(profile),
+        "approval_digest": hashlib.sha256(
+            json.dumps(
+                proof, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False
+            ).encode()
+        ).hexdigest(),
+        "admission": profile["admission"],
+    }

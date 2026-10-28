@@ -215,3 +215,17 @@ validation defaults. Report-only broad economic estimation retains minimum 20.
 Observed summaries, transfer scenarios and rehearsal overhead remain distinct.
 See the [evaluation guide](pilot/evaluation.md) and [findings](pilot/findings.md).
 Live assessment and calibration remain separately authorized work.
+
+### Claude diagnostic observations
+
+The [Claude project reader](settlement.md#import-approved-claude-project-diagnostics)
+preserves approved 2.1.215 serialized request stages and four separate categories.
+Manual binding supplies attribution only. These partial native observations cannot
+create demand observations, billed money or calibrated forecasts. A separate native
+measurement/coverage policy and chronological validation remain necessary.
+
+The exact Desktop 2.1.308 root terminal mapping now supplies the same four separate
+native categories through explicit import. It admits no partial stages, children
+or quantity corrections. Its source approval grants no measurement/coverage policy,
+served-model proof or numerical demand, money or calibration authority. Evaluation
+#17 and all real-evidence obligations remain open.

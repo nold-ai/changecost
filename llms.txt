@@ -1,6 +1,6 @@
 # ChangeCost
 
-> Private, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. One finite Codex diagnostic snapshot is supported; broader provider operations remain planned.
+> Public, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. One finite Codex snapshot and approved Claude 2.1.215 project diagnostics are supported; broader provider operations remain planned.
 
 ## Project and evidence
 
@@ -48,7 +48,7 @@
 - [Adaptive-demand evidence and decisions](docs/research/adaptive-demand-evidence.md): Primary research limits, bounded local discovery, architecture decisions and exact remaining native proof.
 - [Adaptive-demand proposal](openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md): Accepted offline demand contracts and explicit CLI mode, archived after PR #45 with financial authority preserved.
 - [Codex local-reader proposal](openspec/changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md): Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception.
-- [Claude local-reader proposal](openspec/changes/provider-04-claude-local-import/proposal.md): Planned explicit offline coding-session metadata, revised usage and estimated-money boundaries.
+- [Claude local-reader proposal](openspec/changes/provider-04-claude-local-import/proposal.md): Implemented exact 2.1.215 project diagnostics and Desktop 2.1.308 root terminal diagnostics; profile-specific corrections, replay and atomic conflicts; aggregate verification pending.
 - [Adaptive-demand preparation evidence](openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md): Planning recovery, independent review, backlog reconciliation and local assurance limits.
 - [Risk-first execution guidance and pending trial](openspec/changes/dev-workflow-03-risk-first-execution/proposal.md): Implemented contributor guidance for critical-assumption proof, evidence-based triage and existing review handoffs; publication acceptance and a separately authorized trial remain pending.
 - [Adaptive demand implementation evidence](openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/TDD_EVIDENCE.md): Actual synthetic TDD, accepted Linux/provider evidence, CLI archival and preserved historical proof/review limits.
@@ -67,6 +67,7 @@
 - [Evaluation findings](docs/pilot/findings.md): Synthetic results, source gaps and the not-yet-validated decision.
 - [Evaluation implementation evidence](openspec/changes/pilot-02-calibration-evaluation/TDD_EVIDENCE.md): Actual failing/passing checks, executable examples and retained proof limitations.
 - [Live assessment preparation](docs/pilot/live-assessment.md): pending operator decisions, private manifest and separate live authority/runtime gates.
+- [Claude reader implementation evidence](openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md): Actual focused RED/GREEN, canonical CLI import and recovery, with outstanding aggregate assurance.
 
 ## Local skills
 

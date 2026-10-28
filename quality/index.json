@@ -222,7 +222,7 @@
   {
     "path": "openspec/changes/provider-04-claude-local-import/proposal.md",
     "title": "Claude local-reader proposal",
-    "description": "Planned explicit offline coding-session metadata, revised usage and estimated-money boundaries."
+    "description": "Implemented exact 2.1.215 project diagnostics and Desktop 2.1.308 root terminal diagnostics; profile-specific corrections, replay and atomic conflicts; aggregate verification pending."
   },
   {
     "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md",
@@ -313,5 +313,10 @@
     "title": "Live assessment preparation",
     "path": "docs/pilot/live-assessment.md",
     "description": "pending operator decisions, private manifest and separate live authority/runtime gates."
+  },
+  {
+    "title": "Claude reader implementation evidence",
+    "path": "openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md",
+    "description": "Actual focused RED/GREEN, canonical CLI import and recovery, with outstanding aggregate assurance."
   }
 ]

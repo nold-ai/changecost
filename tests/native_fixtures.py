@@ -91,9 +91,13 @@ def synthetic_source(tmp_path, counts=(0, 1), responses=None):
     raw = b"".join(json.dumps(row).encode() + b"\n" for row in rows)
     path = tmp_path / "PRIVATE-source.jsonl"
     path.write_bytes(raw)
-    canonical = json.loads(
-        (Path(__file__).parents[1] / "docs/providers/source-profiles.json").read_text()
-    )["profiles"][-1]
+    canonical = next(
+        profile
+        for profile in json.loads(
+            (Path(__file__).parents[1] / "docs/providers/source-profiles.json").read_text()
+        )["profiles"]
+        if profile["id"] == "codex-desktop-0163-finite-diagnostics"
+    )
     admission = canonical["admission"]
     admission.update(
         source_sha256=hashlib.sha256(raw).hexdigest(),

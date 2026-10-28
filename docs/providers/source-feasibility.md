@@ -77,6 +77,8 @@ versions were inspected separately; see [their metric assessment](codex-claude-m
 | copilot-hosted-local-discovery / VS Code 1.139.1; Chat 0.67.0; recorded copilotVersion 0.0.0; event schema 1 / Current Personal Free (maintainer-confirmed) | partial | partial | unverified | unverified |
 | cursor-local-discovery / 3.22.7; internal _v 18 / Current Free (maintainer-confirmed); historical Basic label preserved separately | unverified | partial | unverified | unverified |
 | codex-desktop-0163-finite-diagnostics / 0.163.0-alpha.10.2 / Historical authentication unknown; no monetary authority | supported | partial | unverified | unverified |
+| claude-project-2-1-215-request-stages / 2.1.215 / Historical authentication unknown; no monetary authority | supported | partial | unverified | unverified |
+| claude-desktop-2-1-308-root-terminal / 2.1.308 / Historical authentication unknown; no monetary authority | supported | partial | unverified | unverified |
 <!-- source-profile-matrix:end -->
 
 ### Cursor evidence correction
@@ -579,3 +581,41 @@ source SHA, selected ordinals and canonical projection are supported.
 [The reader evidence](../../openspec/changes/archive/2026-10-26-provider-03-codex-local-import/TDD_EVIDENCE.md)
 records local implementation checks and outstanding assurance. Broader source
 compatibility, demand and financial authority remain separate gates.
+
+## Claude project activation, 2026-10-28 Europe/Berlin
+
+The register now contains 25 profiles and two usage approvals. The original 24
+profile objects, including the finite Codex approval, remain unchanged. The added
+Claude Code 2.1.215 project profile has independent exact candidate-4 approval and
+mapping `claude-project-request-stage-r4`. Its generated package supplies the
+[explicit offline reader](../settlement.md#import-approved-claude-project-diagnostics).
+The source grammar and serialized-stage corrections are narrowly approved; backend
+coverage, demand, billed money and calibration remain separate. Other Claude
+versions and surfaces retain their existing dispositions. Historical dated counts
+above describe their original checkpoints.
+
+## Desktop 2.1.308 activation, 2026-10-28 Europe/Berlin
+
+The register contains 26 profiles with three usage approvals. Its original 25
+profile objects and existing proofs are unchanged. Independent approval binds
+Desktop q3 digest `d942dcb33a80294a7f25d4d4c9f31523e1e5338b02e84efd715a32aaa86f1708`.
+The [native statement](evidence/claude-desktop-2-1-308-native-observations.md) and
+[producer association](evidence/claude-desktop-2-1-308-producer-binding.md) retain
+byte-exact historical draft wording. Approval was appended after review; those
+headers and the profile's original draft requirement are frozen evidence.
+
+The local reader accepts only exact root terminal four-counter observations.
+Literal zero is preserved, while missing/null, partial/child, changed quantities
+and unknown grammar reject atomically. The mapping is reusable for its approved
+shape, not a finite file whitelist. Existing 2.1.215 and Codex approvals remain
+separate. No source approval grants runtime assurance, full coverage or economic,
+native demand, model, ownership or calibration authority.
+
+The later independently approved q4 revision uses mapping
+`claude-desktop-root-terminal-r2`. It adds closed `cost-state` and `mode` metadata
+exclusions while retaining every contributor and accounting constraint. Opaque
+`modelUsage`, costs, duration, line counts and mode values grant no native facts,
+billing or demand authority. Unexpected keys or present message/direct usage still
+reject. This replaces the unpublished q3 candidate; its canonical profile, proof,
+asset and source statements remain frozen in local history. No real q3 Desktop
+facts were stored. Authored prototype bundles have no compatibility promise.

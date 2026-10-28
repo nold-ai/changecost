@@ -3,12 +3,22 @@
 
 ## Unreleased
 
-- Prepare Claude #37 for an explicitly selected Claude Code project JSONL reader
-  with approved version-specific accounting, immutable corrections and separate
-  manual binding. Record the NativeUsage compatibility/admission blockers and
-  defer other Claude surfaces without substituting finite diagnostics. Preserve
-  ten unchecked implementation tasks, source approvals and #17's open obligations.
-  This planning refresh adds no source inspection, runtime or collection.
+- Enforce UTF-8 parsing before Claude JSON interpretation so UTF-16/32 cannot
+  bypass the depth bound; preserve UTF-8 BOM compatibility and byte line boundaries.
+- Add independently approved Desktop 2.1.308 root terminal import through the
+  existing Claude project operation. Preserve four present integer counters and
+  first provenance; reject partial/child/correction shapes and cross-profile
+  identity conflicts atomically. Exclude approved cost-state/mode metadata without
+  interpreting modelUsage or costs. Keep exact 2.1.215 corrections and finite Codex
+  intact. This adds no collection, demand, billing or calibration authority.
+
+- Implement explicit Claude Code 2.1.215 project JSONL import under independently
+  approved mapping r4. Preserve four nullable categories, atomic partial-to-terminal
+  corrections, accepted-stage replay and separate manual binding. Initial combined
+  stages record eight history revisions at current import time. Add portable-history
+  checks and safe acquisition diagnostics. Other versions, surfaces, collection,
+  demand, financial and calibration authority remain excluded. Focused checks pass;
+  aggregate and supported-Linux verification remain pending.
 
 - Prepare #17's separate live assessment with pending operator decisions, a private
   documentation-only manifest, authority/runtime gates and per-task closure checks.

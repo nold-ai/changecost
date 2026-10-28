@@ -38,7 +38,9 @@ compares supplied projections with official contracts and records their limits.
 Its [v2 review](docs/providers/enterprise-v2-schema-review.md) adds reported VS Code
 message counters and checks synthetic examples without claiming native compatibility.
 Work OTel is reported disabled; custom session-log hook output is the next evidence source.
-One exact finite Codex diagnostic profile is approved and its local reader is implemented; broader source support remains unapproved. The token research
+One exact finite Codex diagnostic profile, the Claude Code 2.1.215 project
+profile and the Desktop 2.1.308 root terminal profile are approved, with explicit local readers implemented. Other versions and
+source surfaces remain outside these approvals. The token research
 case requires one record. Supported or partial source claims retain field meanings;
 partial or unverified claims retain unresolved evidence requirements. Inspection
 keeps malformed nested cases and unrepresentable UTC endpoints controlled, and
@@ -248,9 +250,10 @@ Provider collection and calibration remain separate gates.
 
 Source feasibility includes [offline development evidence checks](docs/providers/source-feasibility.md#executable-closeout-checks-2026-10-03).
 Issue #9 is closed after accepted capability reconciliation in PR #39 and native
-CLI archival. The register now contains 24 profiles: the 23 historical profiles
-retain zero approvals, and one exact finite Codex diagnostic mapping has native
-usage approval. The finite reader is implemented locally under the separate 2026-10-24 authorization; activation alone grants
+CLI archival. The register now contains 26 profiles. The 23 historical profiles
+retain zero approvals; the exact finite Codex diagnostic mapping and Claude Code
+2.1.215 project mapping and Desktop 2.1.308 root terminal mapping have native usage approval. Their readers are locally
+implemented under separate authorizations; activation alone grants
 no demand, financial or complete-accounting authority.
 CLI controls exercise safe private-manifest reports, changed-hash rejection and
 matrix drift/repair; structural success does not approve native provider profiles.
@@ -300,3 +303,10 @@ replays a declared synthetic timeline in a disposable store and prints economic,
 adaptive, attribution and abandoned-spend metrics. It does not open the normal
 runtime database or validate live accuracy. See the
 [reproduction guide](docs/pilot/evaluation.md) and [findings](docs/pilot/findings.md).
+
+The explicit [Claude project import](docs/settlement.md#import-approved-claude-project-diagnostics)
+supports approved Claude Code 2.1.215 serialized request diagnostics and exact Desktop
+2.1.308 root terminal diagnostics. Both preserve four separate categories and manual
+binding. Only 2.1.215 admits the approved partial-to-terminal correction history.
+Other versions, demand, billed money and calibration remain outside this approval.
+Focused implementation checks pass; aggregate supported-host verification is pending.
