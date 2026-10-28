@@ -311,6 +311,31 @@ def _desktop_contributor(row, policy, ordinal):
         raise ClaudeProjectImportError("unsupported_source_quantity", ordinal)
 
 
+def _contributor_lineage(row, ordinal):
+    child, agent = row.get("isSidechain"), row.get("agentId")
+    if (
+        type(child) is not bool
+        or (child and not isinstance(agent, str))
+        or (not child and agent is not None)
+    ):
+        raise ClaudeProjectImportError("invalid_source_lineage", ordinal)
+    if agent is not None:
+        _identifier(agent, ordinal)
+    return child, agent
+
+
+def _contributor_observation(message, policy, ordinal):
+    if "stop_reason" not in message:
+        raise ClaudeProjectImportError("unsupported_source_stage", ordinal)
+    stop = message["stop_reason"]
+    if stop is not None and stop not in policy["terminal_stop_reasons"]:
+        raise ClaudeProjectImportError("unsupported_source_stage", ordinal)
+    values = tuple(message["usage"].get(category) for category in policy["source_categories"])
+    if any(value is not None and (type(value) is not int or value < 0) for value in values):
+        raise ClaudeProjectImportError("unsupported_source_quantity", ordinal)
+    return values, stop
+
+
 def _contributor(row, policy, ordinal, desktop=False):
     message = row.get("message")
     if (
@@ -327,23 +352,8 @@ def _contributor(row, policy, ordinal, desktop=False):
     _identifier(row.get("uuid"), ordinal)
     if row.get("version") != policy["producer"]["engine_version"]:
         raise ClaudeProjectImportError("unsupported_producer", ordinal)
-    child, agent = row.get("isSidechain"), row.get("agentId")
-    if (
-        type(child) is not bool
-        or (child and not isinstance(agent, str))
-        or (not child and agent is not None)
-    ):
-        raise ClaudeProjectImportError("invalid_source_lineage", ordinal)
-    if agent is not None:
-        _identifier(agent, ordinal)
-    if "stop_reason" not in message:
-        raise ClaudeProjectImportError("unsupported_source_stage", ordinal)
-    stop = message["stop_reason"]
-    if stop is not None and stop not in policy["terminal_stop_reasons"]:
-        raise ClaudeProjectImportError("unsupported_source_stage", ordinal)
-    values = tuple(message["usage"].get(category) for category in policy["source_categories"])
-    if any(value is not None and (type(value) is not int or value < 0) for value in values):
-        raise ClaudeProjectImportError("unsupported_source_quantity", ordinal)
+    child, agent = _contributor_lineage(row, ordinal)
+    values, stop = _contributor_observation(message, policy, ordinal)
     metadata = (session, agent, request, response, row["version"], child)
     return metadata, values, stop
 

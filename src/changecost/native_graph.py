@@ -45,10 +45,7 @@ def validate_native(records):
     _validate_claude(records)
 
 
-def _claude_record_valid(record, evidence, selected):
-    from changecost.claude_local import _revision_id
-
-    envelope = selected.envelope
+def _claude_association_valid(record, evidence, envelope):
     policy = envelope["admission"]
     return (
         evidence.provider == "Claude"
@@ -62,19 +59,23 @@ def _claude_record_valid(record, evidence, selected):
             "profile_digest": envelope["profile_digest"],
             "approval_digest": envelope["approval_digest"],
         }
-        and record.source_category in policy["source_categories"].values()
-        and record.accounting_scope == "request"
-        and (
-            (
-                record.finality == "final"
-                and record.quantity is not None
-                and record.previous is None
-                and record.reason is None
-            )
-            if selected.kind == "desktop308"
-            else record.finality in {"partial", "final"}
+    )
+
+
+def _claude_stage_valid(record, selected):
+    if selected.kind == "desktop308":
+        return (
+            record.finality == "final"
+            and record.quantity is not None
+            and record.previous is None
+            and record.reason is None
         )
-        and record.model is None
+    return record.finality in {"partial", "final"}
+
+
+def _claude_diagnostics_valid(record):
+    return (
+        record.model is None
         and record.model_version is None
         and record.interval.state == "unknown"
         and record.scope_completeness == "unknown"
@@ -85,8 +86,36 @@ def _claude_record_valid(record, evidence, selected):
             for key, value in record.ownership.model_dump().items()
             if key not in {"state", "session"}
         )
+    )
+
+
+def _claude_record_valid(record, evidence, selected):
+    from changecost.claude_local import _revision_id
+
+    return (
+        _claude_association_valid(record, evidence, selected.envelope)
+        and record.source_category in selected.envelope["admission"]["source_categories"].values()
+        and record.accounting_scope == "request"
+        and _claude_stage_valid(record, selected)
+        and _claude_diagnostics_valid(record)
         and record.record_id == _revision_id(record)
     )
+
+
+def _claude_cohort_validations(cohort, policy):
+    if set(cohort) != set(policy["source_categories"].values()):
+        raise ContractError("incomplete Claude stage cohort")
+    availability = {(r.origin_store_id, r.recorded_at, r.effective_at) for r in cohort.values()}
+    if len(availability) != 1:
+        raise ContractError("incoherent Claude stage cohort availability")
+
+
+def _claude_refinement(record, predecessor, policy):
+    expected = None if predecessor is None else ("native_usage", predecessor.record_id)
+    actual = None if record.previous is None else (record.previous.kind, record.previous.record_id)
+    reason = policy["refinement_reason"] if predecessor is not None else None
+    if actual != expected or record.reason != reason:
+        raise ContractError("invalid Claude refinement predecessor or reason")
 
 
 def _claude_cohorts(event, policy):
@@ -107,24 +136,12 @@ def _claude_cohorts(event, policy):
     if len(provenance) != 1:
         raise ContractError("conflicting Claude first provenance")
     for cohort in stages.values():
-        if set(cohort) != set(policy["source_categories"].values()):
-            raise ContractError("incomplete Claude stage cohort")
-        availability = {(r.origin_store_id, r.recorded_at, r.effective_at) for r in cohort.values()}
-        if len(availability) != 1:
-            raise ContractError("incoherent Claude stage cohort availability")
+        _claude_cohort_validations(cohort, policy)
     partial = stages.get("partial", {})
     for stage, cohort in stages.items():
         for category, record in cohort.items():
             predecessor = partial.get(category) if stage == "final" else None
-            expected = None if predecessor is None else ("native_usage", predecessor.record_id)
-            actual = (
-                None
-                if record.previous is None
-                else (record.previous.kind, record.previous.record_id)
-            )
-            reason = policy["refinement_reason"] if predecessor is not None else None
-            if actual != expected or record.reason != reason:
-                raise ContractError("invalid Claude refinement predecessor or reason")
+            _claude_refinement(record, predecessor, policy)
 
 
 def _has_claude_claim(record, evidence, envelope):

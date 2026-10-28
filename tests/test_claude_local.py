@@ -5,6 +5,7 @@ import os
 from datetime import UTC, datetime
 
 import pytest
+from rich.text import Text
 from typer.testing import CliRunner
 
 from changecost.cli import app
@@ -105,8 +106,18 @@ def test_partial_refinement_both_replays_and_actual_recovery(reader, tmp_path):
     assert len(facts(store)) == 8
     final = {f.source_category: f.quantity for f in facts(store) if f.finality == "final"}
     assert final == dict(zip(CATEGORIES, TERMINAL, strict=True))
-    originals = {f.source_category: f for f in facts(store) if f.previous is None}
-    for fact in facts(store):
+    _assert_refinement_provenance(facts(store))
+    restored = Store(tmp_path / "restored", clock=lambda: NOW)
+    restored.import_bundle(loads_bundle(dumps_bundle(before)))
+    for target in (Store(store.path, clock=lambda: NOW), restored):
+        _assert_replayed_history(module, target, (a, b, a, b), first.evidence_refs, before.records)
+    assert "PRIVATE" not in dumps_bundle(before)
+    _assert_unknown_diagnostic_authority(facts(store))
+
+
+def _assert_refinement_provenance(records):
+    originals = {f.source_category: f for f in records if f.previous is None}
+    for fact in records:
         original = originals[fact.source_category]
         assert fact.first_acquisition_digest == original.first_acquisition_digest
         assert fact.first_admission == original.first_admission
@@ -115,23 +126,23 @@ def test_partial_refinement_both_replays_and_actual_recovery(reader, tmp_path):
             assert fact.previous is not None
             assert fact.previous.record_id == original.record_id
             assert fact.reason == "claude-serialized-stage-refinement"
-    restored = Store(tmp_path / "restored", clock=lambda: NOW)
-    restored.import_bundle(loads_bundle(dumps_bundle(before)))
-    for target in (Store(store.path, clock=lambda: NOW), restored):
-        for old in (a, b, a, b):
-            replay = module.import_claude_project(target, old)
-            assert replay.inserted_fact_count == replay.corrected_fact_count == 0
-            assert replay.replayed_fact_count == 4
-            assert replay.evidence_refs == first.evidence_refs
-        assert target.records() == before.records
-    assert "PRIVATE" not in dumps_bundle(before)
+
+
+def _assert_replayed_history(module, target, selections, evidence_refs, records):
+    for old in selections:
+        replay = module.import_claude_project(target, old)
+        assert replay.inserted_fact_count == replay.corrected_fact_count == 0
+        assert replay.replayed_fact_count == 4
+        assert replay.evidence_refs == evidence_refs
+    assert target.records() == records
+
+
+def _assert_unknown_diagnostic_authority(records):
     assert all(
-        f.backend_presence == f.scope_completeness == f.interval.state == "unknown"
-        for f in facts(store)
+        f.backend_presence == f.scope_completeness == f.interval.state == "unknown" for f in records
     )
     assert all(
-        f.ownership.state == "unknown" and f.coverage == "partial_observed_subset"
-        for f in facts(store)
+        f.ownership.state == "unknown" and f.coverage == "partial_observed_subset" for f in records
     )
 
 
@@ -437,7 +448,7 @@ def test_cli_success_returns_safe_exact_references(reader, tmp_path):
 def test_cli_help_exposes_selected_claude_project_mode():
     result = CliRunner().invoke(app, ["settle", "--help"], env={"COLUMNS": "160"})
     assert result.exit_code == 0
-    assert "--import-claude-project" in result.output
+    assert "--import-claude-project" in Text.from_ansi(result.output).plain
 
 
 @pytest.mark.parametrize(
@@ -648,25 +659,30 @@ def _corrupt_history(module, payload, native, final, partial, evidence, fault):
     if fault in mutations:
         target, field, value = mutations[fault]
         target[field] = value
-    elif fault == "provider-and-surface":
+        return
+    if fault == "provider-and-surface":
         _forge_provider_and_surface(module, payload, native, evidence)
-    elif fault == "cohort":
+        return
+    if fault == "cohort":
         payload["records"].remove(final)
-    elif fault == "cycle":
+        return
+    if fault == "cycle":
         partial["previous"] = {"kind": "native_usage", "record_id": final["record_id"]}
         partial["reason"] = "claude-serialized-stage-refinement"
-    elif fault == "fork":
+        return
+    if fault == "fork":
         from changecost.models import NativeUsage
 
         duplicate = dict(final, quantity=99)
         duplicate["record_id"] = module._revision_id(NativeUsage.model_validate(duplicate))
         payload["records"].append(duplicate)
-    elif fault == "backdated":
+        return
+    if fault == "backdated":
         for row in native:
             if row["finality"] == "final":
                 row["recorded_at"] = row["effective_at"] = "2026-10-27T00:00:00Z"
-    else:
-        raise AssertionError("unknown test fault")
+        return
+    raise AssertionError("unknown test fault")
 
 
 def _rehash_native_history(module, payload):

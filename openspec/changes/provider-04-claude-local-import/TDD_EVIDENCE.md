@@ -305,3 +305,52 @@ Private native paths, hashes, identities and quantities remain ignored. Final
 code/docs review and aggregate/native assurance remain owned by verification.
 #17 obligations, archived exceptions, two accumulated correction batches and the
 existing PR binding remain intact. Only prospective measured active time is added.
+
+## CI failure repair on 2026-10-29 Europe/Berlin
+
+Supported-Linux run 40782816882 at `10dac19988427d7354bd25acc1a3ffd240439f4f`
+failed the ordinary help assertion on both Python 3.11.15 and 3.13.14 hosts.
+Each native report ran all ten required analyzers, with nine passing and Radon
+failing. Neither native report had UNKNOWN required evidence. These failures
+remain historical failures; the local checks below do not replace Linux assurance.
+
+The help failure reproduced before editing with this command, exit 1 and one
+failed test. Help itself exited zero. The complete option literal was absent
+from raw ANSI-styled output and present after `Text.from_ansi(output).plain`.
+
+```sh
+UV_PYTHON=/Users/dom/.local/bin/python3.13 UV_OFFLINE=1 FORCE_COLOR=1 \
+TERM=xterm-256color COLUMNS=160 uv run --locked pytest -q \
+tests/test_claude_local.py::test_cli_help_exposes_selected_claude_project_mode
+```
+
+The assertion now normalizes ANSI presentation and still requires the complete
+`--import-claude-project` option. The same command passed one test after editing.
+A second invocation with `NO_COLOR=1 TERM=dumb COLUMNS=160` also passed one test.
+No product option, CLI parser or help text changed.
+
+The five blocking native findings were cyclomatic complexity 20 in `_contributor`,
+24 in `_claude_record_valid`, 16 in `_claude_cohorts`, 28 in the lifecycle/recovery
+test, and eight nested control-flow levels in `_corrupt_history`. Cohesive helpers
+now separate source lineage and observation grammar, exact admission association,
+diagnostic meaning, lifecycle policy, cohort availability and refinement links.
+Test helpers preserve provenance, replay and diagnostic assertions. Independent
+terminating fault branches retain every corruption case and relationship rehash.
+The test file retains all 74 assertions.
+
+A local cached Radon 6.0.1 probe reproduced those four complexity measurements
+before editing and measured 6, 6, 8 and 11 afterward. The installed review module's
+unchanged AST nesting functions measured the fixture dispatch at three levels
+afterward. No new helper exceeds complexity 12. This scoped metric proof does
+not claim execution of the supported-Linux native aggregate. Thresholds,
+suppressions, tool policy, source admissions and public APIs remain unchanged.
+
+The eight-file Claude/Codex reader, admission and native-usage regression command
+passed 509 tests. The complete local suite, using the forced-color environment
+above and `uv run --locked pytest -q`, passed 3,875 tests and four subtests in
+31.09 seconds on Python 3.13.14 with four workers. Counts overlap and are not
+cumulative. Scoped Ruff check/format and BasedPyright passed. Exact commands,
+logs, metric script and hashes are saved in the ignored `ci-fix-owner` directory.
+Final local leaves, independent closure, supported-Linux assurance and current-head
+provider obligations remain under the verification stage owner. No native source
+was inspected or collected during this repair. Original estimate remains UNKNOWN.

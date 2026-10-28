@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+- Simplify Claude source validation and native-history checks while preserving
+  admission, diagnostic and refinement behavior. Normalize ANSI styling in the
+  CLI help test and retain all lifecycle and corruption assertions. The failed
+  Linux CI evidence remains recorded; fresh supported-Linux assurance is required.
+
 - Enforce UTF-8 parsing before Claude JSON interpretation so UTF-16/32 cannot
   bypass the depth bound; preserve UTF-8 BOM compatibility and byte line boundaries.
 - Add independently approved Desktop 2.1.308 root terminal import through the
