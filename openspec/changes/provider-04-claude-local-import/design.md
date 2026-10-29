@@ -349,3 +349,28 @@ frozen; no real q3 Desktop facts existed. Disposable authored q3 stores are reta
 without a claim of binary compatibility. The first 25 profiles remain unchanged.
 The separately identified depth/encoding defect is corrected by UTF-8-only parsing
 with retained byte line boundaries, not by changing provider accounting rules.
+
+## Transaction-local history lookup, 2026-10-29 Europe/Berlin
+
+The approved PR #50 performance correction stays within architecture B's
+provider-owned module. `_persist` builds one `event_identity` index from all
+retained `NativeUsage` records inside the existing `Store.apply` callback.
+`_persist_event` receives the matching facts through a required private argument.
+No profile, provider or repository filter may discard a global identity conflict.
+Evidence lookup and the four-state reducer keep their existing rules.
+
+The parser emits one event per validated identity after grouping repeated rows and
+stages. The callback reads its original snapshot and returns additions separately.
+The index therefore needs no updates during the batch and never survives the
+transaction. Store loading, full graph validation and atomic commit stay unchanged.
+The index adds temporary references proportional to retained native facts; it is
+not a memory bound or a change to the source size limits.
+
+A deterministic public-API regression counts whole-record visits within the
+callback as history and incoming events grow. It checks a linear work bound,
+actual persistence, replay, refinement, provenance and conflict rollback for both
+approved shapes. It does not assert elapsed time or an exact private call sequence.
+The original repeatable prototype evidence supports removing the scan, not a
+production SLA or complete assurance. Public APIs, schemas, admissions, Codex and
+financial, demand and calibration authority remain unchanged. Rollback restores
+the prior lookup without rewriting persisted history.

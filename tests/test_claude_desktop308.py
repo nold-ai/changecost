@@ -1,6 +1,8 @@
 import copy
 import hashlib
 import json
+from collections.abc import Mapping
+from datetime import UTC, datetime
 
 import pytest
 from typer.testing import CliRunner
@@ -569,3 +571,155 @@ def test_q4_metadata_opaque_values_create_no_facts_or_authority(tmp_path, kind):
     assert result.fact_count == result.inserted_fact_count == 4
     assert {r.kind for r in store.records()} == {"evidence", "native_usage"}
     assert "modelUsage" not in dumps_bundle(store.export_bundle())
+
+
+class _CountedRecords(Mapping):
+    def __init__(self, records):
+        self.records = records
+        self.visits = 0
+
+    def __getitem__(self, key):
+        return self.records[key]
+
+    def __len__(self):
+        return len(self.records)
+
+    def __iter__(self):
+        for key in self.records:
+            self.visits += 1
+            yield key
+
+
+@pytest.fixture
+def history_work(monkeypatch):
+    envelopes = []
+    for approved in reader._claude_admissions():
+        envelope = copy.deepcopy(approved.envelope)
+        envelope.update(
+            profile_id="synthetic-" + approved.kind,
+            profile_digest=("a" if approved.kind == "terminal215" else "b") * 64,
+            approval_digest=("c" if approved.kind == "terminal215" else "d") * 64,
+        )
+        envelopes.append(reader._ApprovedClaude(approved.kind, envelope))
+    monkeypatch.setattr(reader, "_claude_admissions", lambda: tuple(envelopes))
+    samples = []
+    apply = Store.apply
+
+    def measured_apply(store, operation):
+        def measured(records, store_id, now):
+            before = copy.deepcopy(records)
+            counted = _CountedRecords(records)
+            try:
+                return operation(counted, store_id, now)
+            finally:
+                samples.append((len(records), counted.visits))
+                assert counted == records == before
+
+        return apply(store, measured)
+
+    monkeypatch.setattr(Store, "apply", measured_apply)
+    return samples
+
+
+def _seed_mixed_history(store, tmp_path, count):
+    for kind, row in (("terminal215", terminal), ("desktop308", assistant)):
+        selected = selection(
+            tmp_path,
+            [row(f"retained-{kind}-{index}") for index in range(count)],
+            "synthetic-" + kind,
+            "retained-" + kind + ".jsonl",
+        ).model_copy(update={"repository_id": "other-repository"})
+        assert reader.import_claude_project(store, selected).inserted_fact_count == 4 * count
+
+
+def _assert_linear_history_work(samples, incoming_events):
+    retained, visits = samples[-1]
+    assert visits <= 3 * (retained + incoming_events), (retained, incoming_events, visits)
+
+
+@pytest.mark.parametrize("kind,row", [("terminal215", terminal), ("desktop308", assistant)])
+@pytest.mark.parametrize("retained_events,incoming_events", [(30, 6), (60, 12)])
+def test_growing_history_import_replay_and_conflicts(
+    tmp_path, history_work, kind, row, retained_events, incoming_events
+):
+    store = Store(tmp_path / "db", clock=lambda: datetime(2026, 10, 29, tzinfo=UTC))
+    _seed_mixed_history(store, tmp_path, retained_events)
+    selected = selection(
+        tmp_path,
+        [row(f"incoming-{index}") for index in range(incoming_events)],
+        "synthetic-" + kind,
+    )
+    result = reader.import_claude_project(store, selected)
+    assert result.inserted_fact_count == result.fact_count == 4 * incoming_events
+    assert result.corrected_fact_count == result.replayed_fact_count == 0
+    _assert_linear_history_work(history_work, incoming_events)
+    before = store.export_bundle()
+    replay = reader.import_claude_project(store, selected)
+    assert replay.replayed_fact_count == 4 * incoming_events
+    assert replay.inserted_fact_count == replay.corrected_fact_count == 0
+    assert replay.evidence_refs == result.evidence_refs
+    assert store.export_bundle() == before
+    _assert_linear_history_work(history_work, incoming_events)
+    other_kind, other_row = (
+        ("desktop308", assistant) if kind == "terminal215" else ("terminal215", terminal)
+    )
+    for conflict_kind, conflict_row, repository in (
+        (other_kind, other_row, "repo"),
+        (kind, row, "different-repository"),
+    ):
+        conflict = selection(
+            tmp_path,
+            [conflict_row("new-before-conflict"), conflict_row("incoming-0")],
+            "synthetic-" + conflict_kind,
+            "conflict.jsonl",
+        ).model_copy(update={"repository_id": repository})
+        with pytest.raises(reader.ClaudeProjectImportError, match="native_identity_conflict"):
+            reader.import_claude_project(store, conflict)
+        assert store.export_bundle() == before
+        _assert_linear_history_work(history_work, 2)
+
+
+@pytest.mark.parametrize("retained_events,incoming_events", [(30, 6), (60, 12)])
+def test_growing_history_refinement_and_old_stage_replay(
+    tmp_path, history_work, retained_events, incoming_events
+):
+    store = Store(tmp_path / "db", clock=lambda: datetime(2026, 10, 29, tzinfo=UTC))
+    _seed_mixed_history(store, tmp_path, retained_events)
+    partials = [terminal(f"incoming-{index}") for index in range(incoming_events)]
+    for row in partials:
+        row["message"]["stop_reason"] = None
+    finals = copy.deepcopy(partials)
+    for row in finals:
+        row["uuid"] += "-final"
+        row["message"]["stop_reason"] = "end_turn"
+        row["message"]["usage"]["output_tokens"] += 1
+    partial = selection(tmp_path, partials, "synthetic-terminal215", "partial.jsonl")
+    combined = selection(tmp_path, partials + finals, "synthetic-terminal215", "combined.jsonl")
+    first = reader.import_claude_project(store, partial)
+    assert first.inserted_fact_count == 4 * incoming_events
+    _assert_linear_history_work(history_work, incoming_events)
+    refined = reader.import_claude_project(store, combined)
+    assert refined.inserted_fact_count == refined.corrected_fact_count == 4 * incoming_events
+    assert refined.evidence_refs == first.evidence_refs
+    _assert_linear_history_work(history_work, incoming_events)
+    before = store.export_bundle()
+    _assert_refinement_history(before.records, incoming_events)
+    for selected in (partial, combined):
+        replay = reader.import_claude_project(store, selected)
+        assert replay.replayed_fact_count == 4 * incoming_events
+        assert replay.inserted_fact_count == replay.corrected_fact_count == 0
+        assert replay.evidence_refs == first.evidence_refs
+        assert store.export_bundle() == before
+        _assert_linear_history_work(history_work, incoming_events)
+
+
+def _assert_refinement_history(records, event_count):
+    originals = {r.record_id: r for r in records if isinstance(r, NativeUsage)}
+    corrections = [r for r in originals.values() if r.previous is not None]
+    assert len(corrections) == 4 * event_count
+    for fact in corrections:
+        assert fact.previous is not None
+        original = originals[fact.previous.record_id]
+        assert fact.first_acquisition_digest == original.first_acquisition_digest
+        assert fact.first_admission == original.first_admission
+        assert fact.evidence == original.evidence

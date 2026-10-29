@@ -354,3 +354,71 @@ logs, metric script and hashes are saved in the ignored `ci-fix-owner` directory
 Final local leaves, independent closure, supported-Linux assurance and current-head
 provider obligations remain under the verification stage owner. No native source
 was inspected or collected during this repair. Original estimate remains UNKNOWN.
+
+## PR #50 retained-history work correction, 2026-10-29 Europe/Berlin
+
+Finding `pr50-coderabbit-history-scan` is a confirmed repeated scan in the atomic
+persistence callback. The approved correction keeps architecture B and all public
+interfaces. Before edits, the worker captured HEAD
+`1518e57aaea4a61e323ebfe973566eca00ae8899`, base
+`c424eb8ac67b51af087dbe71a1516a24281c90a1`, canonical revision 115, input generation
+26, existing private signatures, snapshot assumptions and all 48 scoped file
+hashes in ignored `promotion-20261029/history-scan-fix` output. The coordinator
+retains sole Git, PR and review-session ownership. Existing budgets are preserved.
+
+The new growing-history scenario and design preceded tests and source edits.
+The first command below ran against the unchanged runtime and exited 1 with six
+failures at the new work bound. Six incoming events against 300 retained records
+visited 1,800 records; twelve against 600 visited 7,200. Each test had already
+confirmed actual inserts and result counts before the work assertion failed.
+
+```sh
+.venv/bin/python -m pytest tests/test_claude_desktop308.py -k growing_history -n 0 -q
+```
+
+`_persist` now builds one index of every retained NativeUsage by global event
+identity inside `Store.apply`. Its sole `_persist_event` call passes a required
+matching-facts argument. No provider, profile or repository filter is added.
+The callback snapshot is unchanged on success and conflict. Parsed authored
+inputs with repeated rows and both 2.1.215 stages produced twelve distinct events
+from 48 rows; Desktop repeated rows produced twelve distinct events from 24 rows.
+The parser's existing request/message metadata checks and one-group-per-event
+construction justify leaving the index unchanged during the callback.
+
+An initial post-change run exposed a test-oracle error comparing freshly exported
+bundle timestamps. The new tests now use a fixed authored clock. The counter uses
+the Mapping iteration contract rather than incompatible dict view overrides.
+The final test body was rerun against the complete original runtime loaded from
+the immutable HEAD into the normal module by ignored `baseline_check.py`. It
+again failed all six cases at the work bound. Original RED and intermediate failed
+logs are retained, not reported as passes. The same six tests pass on the changed
+runtime, including replay, refinement, old-stage replay, first provenance,
+cross-profile conflicts in both orders and cross-repository conflict rollback.
+The assertion permits linear whole-record visits in retained records plus incoming
+events. It does not mirror a private helper sequence or assert wall-clock time.
+
+Focused regression command, exit 0 with 409 passing tests:
+
+```sh
+.venv/bin/python -m pytest tests/test_claude_local.py tests/test_claude_desktop308.py tests/test_claude_admission.py tests/test_codex_local.py tests/test_native_usage.py tests/test_store.py -q
+```
+
+Scoped Ruff check/format and BasedPyright pass for the two changed Python files.
+Strict OpenSpec validation and generated-reference check pass. Generated outputs
+remain unchanged. Local cached Radon 6.0.1 and the installed nesting evaluator
+check the changed functions without invoking unsupported native aggregate review.
+New test functions and helpers have complexity at most twelve after grouping
+refinement-history assertions. This is scoped metric evidence, not Linux assurance.
+Commands, timestamps, source hashes and logs remain in the ignored correction
+output. No dependency, threshold, suppression, tool policy or test selection changed.
+
+The Unreleased version remains `0.1.0.dev0`; no release or schema bump is needed.
+User commands, APIs, admission assets, source profiles, portable schemas, Codex,
+financial, demand and calibration authority remain unchanged. Existing manual
+documentation rationales are refreshed only for this performance-only source delta.
+No native/private input was inspected or collected. The index uses temporary
+references proportional to retained native facts. Full store loading and graph
+validation remain; no production timing, timeout or memory bound is claimed.
+Rollback restores the previous private lookup without changing retained records.
+Aggregate, staged, independent closure and fresh supported-Linux/provider evidence
+remain the coordinator's obligations before publication or green certification.

@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+- Index retained Claude event history once per atomic import, preserving global
+  identity conflicts, replay, refinement and first provenance as history grows.
+
 - Skip optional CI runtime diagnostics when no native review report exists;
   preserve required-review failures and validation of present reports.
 

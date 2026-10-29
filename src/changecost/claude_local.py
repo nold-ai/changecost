@@ -507,11 +507,10 @@ def _stage_additions(history, incoming):
     return set()
 
 
-def _persist_event(records, store_id, now, event, incoming, envelope):
+def _persist_event(records, store_id, now, event, incoming, envelope, prior_facts):
     history = {}
-    for record in records.values():
-        if isinstance(record, NativeUsage) and record.event_identity == event.identity:
-            history.setdefault(record.finality, {})[record.source_category] = record
+    for record in prior_facts:
+        history.setdefault(record.finality, {})[record.source_category] = record
     new_stages = _stage_additions(history, incoming)
     evidence = records.get(("evidence", event.identity))
     additions = []
@@ -553,6 +552,10 @@ def _persist_event(records, store_id, now, event, incoming, envelope):
 
 
 def _persist(records, store_id, now, events, envelope, repository_id, source_digest):
+    history_by_event: dict[str, list[NativeUsage]] = {}
+    for record in records.values():
+        if isinstance(record, NativeUsage):
+            history_by_event.setdefault(record.event_identity, []).append(record)
     additions, evidence_refs = [], []
     inserted = corrected = replayed = 0
     for event in events:
@@ -562,7 +565,13 @@ def _persist(records, store_id, now, events, envelope, repository_id, source_dig
             if values is not None
         }
         accepted, evidence, corrections = _persist_event(
-            records, store_id, now, event, incoming, envelope
+            records,
+            store_id,
+            now,
+            event,
+            incoming,
+            envelope,
+            history_by_event.get(event.identity, ()),
         )
         count = sum(isinstance(record, NativeUsage) for record in accepted)
         inserted += count

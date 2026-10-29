@@ -115,6 +115,12 @@ atomically. Semantic identity SHALL be independent of filename, ordinal, batch a
 later acquisition digest. Corrections SHALL preserve predecessor and reason;
 unresolved conflicts SHALL reject without partial persistence.
 
+#### Scenario: Growing retained history has bounded lookup work
+
+- **GIVEN** an accepted selected snapshot with multiple events and a growing retained store containing unrelated events, repositories and approved profiles
+- **WHEN** the reader resolves accepted event history inside the atomic persistence callback
+- **THEN** whole-store history discovery is linear in retained records plus incoming events, with further history work restricted to matching event facts; inserts, replays, approved refinements and global identity conflicts preserve their existing results, first provenance and whole-batch rollback
+
 #### Scenario: Bound input and safe diagnostics
 
 - **GIVEN** more than 10 MiB, 10,000 records or depth 32, a symlink/nonregular source, duplicate keys, malformed/truncated JSONL or invalid/nonfinite quantities
