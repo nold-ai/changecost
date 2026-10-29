@@ -14,6 +14,18 @@ measurement authority remain missing. Never relabel real records as synthetic or
 rename a flag to bypass this boundary. Do not enable paid infrastructure or automatic
 collection to prepare this assessment.
 
+## Accepted baseline and future boundary, 2026-10-29 Europe/Berlin
+
+The [accepted main evaluation contract](../../openspec/specs/pilot-evaluation/spec.md)
+now records the already merged synthetic behavior. The active #17 delta is future
+live assessment. Preserve the baseline's independent forecast/truth cutoffs, paired
+repository baseline, metric units and every eligible, excluded and unknown denominator.
+A future live entrypoint must inherit those rules while adding separately approved
+source and measurement authority. The synthetic command continues to reject native
+and non-synthetic inputs. Original task checkboxes and chronological TDD evidence
+remain historical records. Archival of the accepted synthetic subset does not close
+#17 or any pending operator choice below.
+
 ## Record decisions before target outcomes
 
 Create a private operator record outside Git. Keep each pending field explicitly

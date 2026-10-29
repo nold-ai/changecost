@@ -63,3 +63,32 @@ transcript matches its approved q4 capture and imports 40 facts across ten event
 then replays without additions. This closes the earlier q3 current-file refusal
 for that capture only. The encoding correction awaits independent finding closure;
 aggregate/native assurance and publication tasks remain pending.
+
+## Merged delivery and archival disposition, 2026-10-29 Europe/Berlin
+
+PR #50 merged at `5cbe58a892f27c78088a82d95219a0cb57f922df`. Its exact reviewed
+head `4f4edd91aecd314aebeb02b1c70ee16aa7732d7f` has COMPLETE acceptance at
+review-session revision 127, generation 28. PR-event run 40934362577 passed both
+supported hosts, each with 3,886 tests and five separate installed-package checks.
+All ten required native analyzers ran/PASS with no UNKNOWN evidence or blockers.
+Current-head Codex and CodeRabbit completion, all thirteen report receipts and the
+verified history-scan correction were independently adjudicated. The earlier
+pending-assurance/publication statements above remain dated historical checkpoints.
+
+The maintainer requested strict CLI archival with incomplete historical obligations
+preserved. All ten original task lines and their four checked/six unchecked states
+remain unchanged. Their current clause dispositions are:
+
+| Original unchecked task | Current evidence and remaining obligation |
+| --- | --- |
+| 1.1 | Fresh merged-source, hierarchy and closed #9/#12 readback are verified. This does not recreate the original before-behavior chronology of every compound clause. |
+| 2.1 | Approved accounting, correction and replay behavior has current passing coverage and actual source-derived RED/GREEN. Complete historical preimplementation RED for every detailed scenario remains incomplete. |
+| 2.2 | Acquisition, privacy, refusal, atomicity and unchanged Codex behavior have current passing coverage. Complete historical scenario-by-scenario RED remains incomplete; later tests cannot manufacture it. |
+| 3.1 | Quantities, unknowns and source categories fit the exact approved profiles. Native demand measurement/#35 integration, financial authority and calibration remain separately gated and are not reader archival blockers. |
+| 3.3 | Current strict, local/staged, both supported-host/native and required provider acceptance passed. Original compound publication-time checkbox history remains preserved. |
+| 3.4 | Implementation, TDD evidence, recovery/rollback, PR publication/merge and native issue readback have current evidence. This archival/specs publication is a separate lifecycle step; historical proof gaps and all #17 obligations remain open. |
+
+These distinctions satisfy the six issue criteria for the exact reusable reader
+scope without claiming universal historical RED or completing broader source,
+live, demand, money or calibration work. Original forecasts, unmeasured usage and
+cost, source approvals, failed receipts and archived limitations remain unchanged.

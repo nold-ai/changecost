@@ -1,6 +1,21 @@
 schema: spec-driven
 
 context: |
+  Current checkpoint, 2026-10-29 Europe/Berlin: PR #50 merged exact approved Claude
+  Code 2.1.215 project and Desktop 2.1.308 root terminal readers plus the optional
+  runtime diagnostic correction at 5cbe58a892f27c78088a82d95219a0cb57f922df.
+  Accepted source run 40934362577 passed both supported hosts and all ten native
+  members without UNKNOWN evidence. This archival branch adds no runtime evidence.
+  Native CLI archival synchronized three changes: the Claude reader, diagnostic
+  correction and accepted workflow/offline-evaluation reconciliation. Main has
+  14 capabilities, 158 requirements and 615 scenarios. Six Claude and two diagnostic
+  correction historical unchecked tasks remain unchanged, including prior-RED gaps.
+  Four changes remain active: live evaluation #17, measured workflow trial #40,
+  and unimplemented Copilot #13 and Cursor #14. Preserve original #17/#40 task history.
+  The register has 26 profiles and three exact usage approvals, without demand,
+  billing or calibration authority. No live collection, private outcome inspection,
+  new runtime implementation, release publication or merge is authorized here.
+  The following dated checkpoints retain their historical scope.
   Core-02 merged in PR #25 on 2026-09-29 and is archived with synchronized main specs.
   Offline contracts, bind, lifecycle-only settle and explain are delivered on main.
   Normalized reconciliation merged in PR #28 on 2026-10-02 and is accepted/archived
@@ -18,7 +33,7 @@ context: |
   ten native members passing and no UNKNOWN evidence. Historical TDD gaps remain.
   Native CLI archival of dev-workflow-02 synchronized 18 added and three modified
   requirements while retaining three unchecked historical publication milestones.
-  Five other changes remain active for actual unfinished work.
+  Five other changes remained active at the 2026-10-27 checkpoint.
   Provisional counters are not complete native truth. Quotes merged in PR #32 on 2026-10-03 and were
   archived through the native CLI on 2026-10-04 with synchronized empirical-quotes
   main specs. Calibration and source approval remain To-Validate.
@@ -29,7 +44,7 @@ context: |
   Native CLI archival synchronized source feasibility; the 23 historical profiles
   retain zero approvals. On 2026-10-23 the maintainer authorized canonical activation
   of one approved finite Codex diagnostic usage mapping and contributor admission
-  controls. The register now has 24 profiles and one usage approval. Finite reader runtime
+  controls. The register then had 24 profiles and one usage approval. Finite reader runtime
   was separately authorized on 2026-10-24 and delivered in PR #47; source activation grants no demand/billing authority. Offline adaptive demand #35 merged in PR #43, with the issue-44
   correction in PR #45, and was accepted on 2026-10-18 and CLI-archived here on 2026-10-23. Its 12
   requirements/47 scenarios and accepted historical proof limits are retained.
@@ -65,7 +80,7 @@ context: |
   Planning revision approved 2026-10-07: #9 closes through reviewed capability
   dispositions/gaps, not universal optional-export availability. Native support
   still needs independent semantics; demand eligibility and billed money are separate.
-  The finite Codex reader is delivered; broader Codex and Claude readers remain plans. Offline adaptive demand is accepted and
+  At that checkpoint the finite Codex reader was delivered and broader readers remained plans. Offline adaptive demand is accepted and
   archived after PR #45; native approval and calibration remain separate.
   Demand starts at zero knowledge, learns locally, tests matched ecosystem transfer
   hypotheses and requires scoped chronological validation before accuracy claims.

@@ -172,7 +172,7 @@
   {
     "title": "Source profile register",
     "path": "docs/providers/source-profiles.json",
-    "description": "Canonical historical and separately reconciled local/inventory profiles, exact provenance and unresolved native approval."
+    "description": "Canonical 26-profile register with three exact diagnostic usage approvals; no demand, billing or calibration authority."
   },
   {
     "path": "openspec/specs/empirical-quotes/spec.md",
@@ -220,9 +220,9 @@
     "description": "Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception."
   },
   {
-    "path": "openspec/changes/provider-04-claude-local-import/proposal.md",
+    "path": "openspec/changes/archive/2026-10-29-provider-04-claude-local-import/proposal.md",
     "title": "Claude local-reader proposal",
-    "description": "Implemented exact 2.1.215 project diagnostics and Desktop 2.1.308 root terminal diagnostics; profile-specific corrections, replay and atomic conflicts; aggregate verification pending."
+    "description": "Accepted exact Claude Code 2.1.215 and Desktop 2.1.308 diagnostic readers from PR #50, CLI archived with six historical unchecked compound tasks retained."
   },
   {
     "path": "openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md",
@@ -232,7 +232,7 @@
   {
     "path": "openspec/changes/dev-workflow-03-risk-first-execution/proposal.md",
     "title": "Risk-first execution guidance and pending trial",
-    "description": "Implemented contributor guidance for critical-assumption proof, evidence-based triage and existing review handoffs; publication acceptance and a separately authorized trial remain pending."
+    "description": "Guidance accepted in PR #42 and synchronized through a separate CLI archive; active work is the separately authorized measured trial."
   },
   {
     "title": "Adaptive demand implementation evidence",
@@ -291,8 +291,8 @@
   },
   {
     "path": "openspec/changes/pilot-02-calibration-evaluation/proposal.md",
-    "title": "Offline evaluation change",
-    "description": "Locally implemented deterministic synthetic evaluation, pending complete verification and publication; live assessment remains separately gated."
+    "title": "Future live evaluation change",
+    "description": "Active future real-evidence assessment after merged PR #48 synthetic delivery; original historical task evidence remains unchanged."
   },
   {
     "title": "Synthetic evaluation",
@@ -316,7 +316,22 @@
   },
   {
     "title": "Claude reader implementation evidence",
-    "path": "openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md",
-    "description": "Actual focused RED/GREEN, canonical CLI import and recovery, with outstanding aggregate assurance."
+    "path": "openspec/changes/archive/2026-10-29-provider-04-claude-local-import/TDD_EVIDENCE.md",
+    "description": "Accepted merged-source host/native assurance, exact-profile import and recovery, with historical prior-RED proof gaps retained."
+  },
+  {
+    "path": "openspec/specs/claude-local-import/spec.md",
+    "title": "Accepted Claude local-import specification",
+    "description": "CLI-synchronized exact project and Desktop request categories, corrections, replay, acquisition and atomic conflicts."
+  },
+  {
+    "path": "openspec/specs/pilot-evaluation/spec.md",
+    "title": "Accepted offline evaluation specification",
+    "description": "CLI-synchronized synthetic economic and adaptive evaluation contracts from merged PR #48; future live assessment remains separate."
+  },
+  {
+    "path": "openspec/changes/archive/2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs/proposal.md",
+    "title": "Accepted workflow and evaluation reconciliation",
+    "description": "Native CLI archive of already delivered PR #42 guidance and PR #48 synthetic evaluation; future trial and live work remain active."
   }
 ]

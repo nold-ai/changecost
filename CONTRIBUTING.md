@@ -316,5 +316,5 @@ Claude project-reader changes must preserve the exact approved 2.1.215 mapping a
 its generated admission derivative. Run the focused Claude admission/history tests
 alongside finite Codex and NativeUsage regressions. Source approval, synthetic
 fixtures and local passing tests do not replace independent review or supported-host
-assurance. The [implementation evidence](openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md)
-records current scope and outstanding verification.
+assurance. The [implementation evidence](openspec/changes/archive/2026-10-29-provider-04-claude-local-import/TDD_EVIDENCE.md)
+records accepted PR #50 source assurance and retained historical proof gaps.

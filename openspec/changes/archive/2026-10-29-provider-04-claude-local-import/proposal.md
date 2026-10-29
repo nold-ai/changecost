@@ -51,15 +51,15 @@ native demand, billed money, calibration and #17 live assessment remain separate
 
 ## Dependencies and readiness
 
-[Source feasibility #9](../archive/2026-10-08-pilot-01-source-feasibility/proposal.md)
-and [reconciliation #12](../archive/2026-10-02-settlement-01-reconciliation/proposal.md)
+[Source feasibility #9](../2026-10-08-pilot-01-source-feasibility/proposal.md)
+and [reconciliation #12](../2026-10-02-settlement-01-reconciliation/proposal.md)
 are delivered and their native prerequisite issues are closed. Every Claude
 profile remains unapproved. The retained exact 2.1.215 producer trace and minimized
 native observations support a proposed bounded serialized-stage policy. Fresh
 independent approval of the revised exact profile remains the runtime gate.
 Structural receipts and SDK documentation do not approve persisted-log accounting.
 
-[Adaptive demand #35](../archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md)
+[Adaptive demand #35](../2026-10-23-forecast-01-local-adaptive-demand/proposal.md)
 is delivered, but a Claude measurement/coverage policy remains separate. Its
 conditional integration is not a reader delivery/archive blocker. Financial
 coverage and calibration are not implied by source approval or manual binding.
@@ -167,3 +167,18 @@ frozen; no real q3 Desktop facts existed. Disposable authored q3 stores are reta
 without a claim of binary compatibility. The first 25 profiles remain unchanged.
 The separately identified depth/encoding defect is corrected by UTF-8-only parsing
 with retained byte line boundaries, not by changing provider accounting rules.
+
+## Merged acceptance and archival scope, 2026-10-29 Europe/Berlin
+
+PR #50 is merged at `5cbe58a892f27c78088a82d95219a0cb57f922df`. The approved
+reusable CLI 2.1.215 reader and Desktop engine 2.1.308 root-terminal reader are
+implemented and accepted. Both supported PR-event host/native jobs and current-head
+Codex/CodeRabbit review passed at `4f4edd91aecd314aebeb02b1c70ee16aa7732d7f`.
+Earlier preparation, unpublished, unapproved and pending-runtime statements above
+retain their historical scope and are superseded for current delivery.
+
+The maintainer requested native CLI archival and reconciliation of #37. Preserve
+all original task checkbox states and detailed historical RED gaps, as classified
+in [tasks](tasks.md). Native demand, financial authority, calibration, broader
+Desktop lifecycle and #17 live assessment remain separate. This lifecycle change
+adds no runtime, collection, telemetry, provider call or retrospective measurement.

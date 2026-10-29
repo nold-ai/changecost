@@ -651,7 +651,7 @@ when the native report exists, before its always-run evidence upload, including
 when native review fails. A documentation-only run with no report skips collection;
 the required review gate still rejects missing evidence for behavior changes, and
 present malformed metadata still fails collection. See the scoped
-[CI correction](../../openspec/changes/fix-optional-runtime-diagnostics/TDD_EVIDENCE.md).
+[CI correction](../../openspec/changes/archive/2026-10-29-fix-optional-runtime-diagnostics/TDD_EVIDENCE.md).
 It
 matches the report's supported `project-runtime-layer-v2` identity to one bounded,
 one-level cache descriptor and verifies the canonical descriptor digest/context.

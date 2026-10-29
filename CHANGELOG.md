@@ -3,6 +3,14 @@
 
 ## Unreleased
 
+- Archive the exact Claude readers from merged PR #50, its optional-runtime
+  diagnostic correction and accepted workflow/offline-evaluation reconciliation
+  through the native OpenSpec CLI. Synchronize main specifications to 14
+  capabilities, 158 requirements and 615 scenarios. Preserve six Claude and two
+  correction historical unchecked tasks and all earlier accepted limitations.
+  Keep live evaluation #17, measured workflow trial #40, Copilot #13 and Cursor #14
+  active. This adds no runtime behavior, collection or provider authority.
+
 - Index retained Claude event history once per atomic import, preserving global
   identity conflicts, replay, refinement and first provenance as history grows.
 
@@ -29,7 +37,7 @@
   stages record eight history revisions at current import time. Add portable-history
   checks and safe acquisition diagnostics. Other versions, surfaces, collection,
   demand, financial and calibration authority remain excluded. Focused checks pass;
-  aggregate and supported-Linux verification remain pending.
+  aggregate and supported-Linux verification were pending at that implementation checkpoint. PR #50 subsequently passed both supported host jobs and all ten native members before acceptance.
 
 - Prepare #17's separate live assessment with pending operator decisions, a private
   documentation-only manifest, authority/runtime gates and per-task closure checks.

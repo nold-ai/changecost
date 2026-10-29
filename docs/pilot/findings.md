@@ -61,3 +61,13 @@ boundary remains unimplemented independently of dataset availability. Synthetic
 coverage policies cannot confer native demand or economic authority. Tasks 3.0-3.6,
 historical prior-RED obligations and conditional full-story integration remain open.
 The conclusion remains not yet validated, with no passing live receipt.
+
+
+## Accepted synthetic specification, 2026-10-29 Europe/Berlin
+
+Native CLI archival synchronized seven accepted synthetic requirements and
+22 scenarios into the [main evaluation specification](../../openspec/specs/pilot-evaluation/spec.md).
+The [reconciliation archive](../../openspec/changes/archive/2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs/proposal.md)
+records the already merged PR #48 contract. This supplies no new experiment,
+live receipt or prior-RED evidence. Original #17 task history remains intact;
+its active delta now describes the separate future live assessment.
