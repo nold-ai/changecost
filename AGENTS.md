@@ -1,6 +1,29 @@
 # Agent instructions
 
-## Current delivery checkpoint, 2026-10-27 Europe/Berlin
+## Current delivery checkpoint, 2026-10-29 Europe/Berlin
+
+PR #50 merged the two exact approved Claude readers and optional-runtime diagnostic
+correction at `5cbe58a892f27c78088a82d95219a0cb57f922df`. The accepted reviewed
+source passed both supported host jobs and all ten native members in
+[run 40934362577](https://github.com/nold-ai/changecost/actions/runs/40934362577),
+with no UNKNOWN evidence. This branch adds no runtime evidence.
+
+Native CLI archival synchronized the Claude reader, diagnostic correction and
+accepted workflow/offline-evaluation reconciliation into main specs. Main now has
+14 capabilities, 158 requirements and 615 scenarios. The Claude archive retains
+six unchecked historical compound tasks and their prior-RED proof gaps. The
+correction archive retains two historical unchecked milestones. Later assurance
+does not establish missing historical failures or erase earlier accepted exceptions.
+
+Four changes remain active for real future work. Evaluation #17 retains live
+assessment and its original task history. Dev-workflow-03 #40 retains the measured
+trial. Copilot #13 and Cursor #14 remain unimplemented. The canonical register has
+26 profiles and three usage approvals, confined to one finite Codex mapping and
+two exact Claude mappings. These grant no demand, billing or calibration authority.
+See the [current lifecycle audit](openspec/CHANGE_ORDER.md#lifecycle-audit-2026-10-29-europeberlin).
+No new collection, private outcome inspection or runtime implementation is authorized.
+
+## Historical delivery checkpoint, 2026-10-27 Europe/Berlin
 
 PR #47 merged the finite Codex reader and three local-session changes at
 `ffd8dff568f11e6e9283b00badbce6c98a0b5580`. The maintainer requested native CLI
@@ -108,7 +131,7 @@ contracts. Offline demand records and explicit quote mode are accepted and archi
 readers, calibration and release publication remain separate. See
 [forecasting](docs/forecasting.md) and [change order](openspec/CHANGE_ORDER.md).
 
-Current 2026-10-27 reconciliation: the offline PR #48 source passed both supported
+Historical 2026-10-27 reconciliation: the offline PR #48 source passed both supported
 host matrix/native jobs in main run 40563257194 attempt 2, with all ten native members
 executed/passing and no UNKNOWN evidence. This does not erase earlier archived
 exceptions or historical prior-RED gaps. Follow [live preparation](docs/pilot/live-assessment.md)
@@ -116,4 +139,4 @@ for #17's unimplemented real-evidence boundary and pending operator decisions.
 Native CLI archival of dev-workflow-02 synchronized 18 added and three modified
 requirements, retaining its three unchecked historical publication milestones and
 original negative pilot. Five changes remain active; see the dated lifecycle audit
-in [change order](openspec/CHANGE_ORDER.md). No other active change is currently eligible for archival.
+in [change order](openspec/CHANGE_ORDER.md). No other active change was eligible for archival at that checkpoint.

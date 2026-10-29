@@ -1,6 +1,6 @@
 # Pilot change order and GitHub mapping
 
-Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary reconciled **2026-10-27**.
+Planning baseline: **2026-09-28 (Europe/Berlin)**; current lifecycle summary reconciled **2026-10-29**.
 The Python foundation and supplemental bounded-review workflow are delivered and
 archived. Source-feasibility #9 is closed after capability reconciliation merged in
 PR #39 on 2026-10-08 and native CLI archival synchronized its evidence gates.
@@ -106,7 +106,7 @@ core numeric, billing or calibration authority is granted.
 | [workflow-01-advisory-ci](changes/archive/2026-10-06-workflow-01-advisory-ci/proposal.md) | [#16](https://github.com/nold-ai/changecost/issues/16) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#15](https://github.com/nold-ai/changecost/issues/15) `quote-01-empirical-estimation` |
 | [forecast-01-local-adaptive-demand](changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md) | [#35](https://github.com/nold-ai/changecost/issues/35) | [#8](https://github.com/nold-ai/changecost/issues/8) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16); native lanes require applicable approved readers/policies |
 | [provider-03-codex-local-import](changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md) | [#36](https://github.com/nold-ai/changecost/issues/36) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
-| [provider-04-claude-local-import](changes/provider-04-claude-local-import/proposal.md) | [#37](https://github.com/nold-ai/changecost/issues/37) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
+| [provider-04-claude-local-import](changes/archive/2026-10-29-provider-04-claude-local-import/proposal.md) | [#37](https://github.com/nold-ai/changecost/issues/37) | [#7](https://github.com/nold-ai/changecost/issues/7) | [#9](https://github.com/nold-ai/changecost/issues/9), [#12](https://github.com/nold-ai/changecost/issues/12) |
 | [pilot-02-calibration-evaluation](changes/pilot-02-calibration-evaluation/proposal.md) | [#17](https://github.com/nold-ai/changecost/issues/17) | [#5](https://github.com/nold-ai/changecost/issues/5) | [#11](https://github.com/nold-ai/changecost/issues/11), [#12](https://github.com/nold-ai/changecost/issues/12), [#15](https://github.com/nold-ai/changecost/issues/15), [#16](https://github.com/nold-ai/changecost/issues/16), [#35](https://github.com/nold-ai/changecost/issues/35); native adapters are lane-specific |
 
 ## Dependency graph
@@ -533,7 +533,7 @@ or mark outstanding tasks complete to hide a limitation.
 
 ## Claude preparation selection, 2026-10-27 Europe/Berlin
 
-The maintainer selected [Claude #37](changes/provider-04-claude-local-import/proposal.md)
+The maintainer selected [Claude #37](changes/archive/2026-10-29-provider-04-claude-local-import/proposal.md)
 for planning reconciliation, with existing Claude Code project JSONL first.
 The intended reusable reader retains approved accounting, corrections, replay and
 manual binding. Finite diagnostics are not a substitute. Other Claude surfaces
@@ -552,8 +552,88 @@ integration/acceptance obligations open. Dev03 trial 5.1-5.3 remains separate.
 ## Scoped PR #50 CI correction
 
 The maintainer separately authorized
-[optional runtime diagnostic applicability](changes/fix-optional-runtime-diagnostics/proposal.md)
+[optional runtime diagnostic applicability](changes/archive/2026-10-29-fix-optional-runtime-diagnostics/proposal.md)
 in [PR #50](https://github.com/nold-ai/changecost/pull/50) on 2026-10-27. This
 contributor correction preserves required native review failures and remains
 pending exact-head Linux/provider acceptance. It adds no Claude reader runtime
 or source authority and does not complete issue #37 or live evaluation #17.
+
+
+## Lifecycle audit, 2026-10-29 Europe/Berlin
+
+This checkpoint supersedes earlier current-status statements while retaining their
+historical scope. [PR #50](https://github.com/nold-ai/changecost/pull/50) merged
+at `5cbe58a892f27c78088a82d95219a0cb57f922df`. Its
+[quality run 40934362577](https://github.com/nold-ai/changecost/actions/runs/40934362577)
+passed both supported host jobs with 3,886 tests per host, five separate installed
+package checks and all ten native members passing without UNKNOWN evidence.
+Required provider reviews completed with no blockers in canonical receipt revision
+127. These are accepted source results, not new runtime checks of this archive branch.
+
+The maintainer authorized native CLI archival with incomplete historical evidence
+preserved. The actual commands were:
+
+```sh
+openspec archive fix-optional-runtime-diagnostics --yes
+openspec archive reconcile-accepted-workflow-and-offline-evaluation-specs --yes
+openspec archive provider-04-claude-local-import --yes
+```
+
+The diagnostic correction added one requirement and four scenarios to
+[python-foundation](specs/python-foundation/spec.md). The reconciliation added four
+requirements and 11 scenarios to [bounded-review-session](specs/bounded-review-session/spec.md)
+and seven synthetic requirements with 22 scenarios to the new
+[pilot-evaluation](specs/pilot-evaluation/spec.md) main capability. Claude added five
+requirements with 38 scenarios to [claude-local-import](specs/claude-local-import/spec.md).
+Readback matched the CLI-generated main requirements and retained metadata. Strict
+validation passed all 18 items. Main now has 14 capabilities, 158 requirements and
+615 scenarios. These counts describe the resulting files, not additional runtime scope.
+
+The register has 26 profiles and three exact diagnostic usage approvals. The finite
+Codex mapping and two Claude mappings grant no demand, billed-money or calibration
+authority. No new collection, private outcome inspection, paid invocation or runtime
+implementation belongs to this reconciliation. Copilot and Cursor remain unimplemented.
+
+| Active change | Remaining work |
+| --- | --- |
+| [pilot-02-calibration-evaluation, #17](changes/pilot-02-calibration-evaluation/proposal.md) | Future live assessment, real-evidence entrypoint and separately approved complete measurement. All 19 original task lines and historical TDD evidence remain intact. Its future delta inherits the accepted synthetic baseline and metric denominators. |
+| [dev-workflow-03-risk-first-execution, #40](changes/dev-workflow-03-risk-first-execution/proposal.md) | Measured bounded trial 5.1-5.3. All 15 original task lines and TDD evidence remain intact. Accepted guidance is synchronized by the separate reconciliation archive. |
+| [provider-01-copilot-import, #13](changes/provider-01-copilot-import/proposal.md) | Unimplemented reader and source-specific approval, binding and acceptance work. |
+| [provider-02-cursor-import, #14](changes/provider-02-cursor-import/proposal.md) | Unimplemented reader and source-specific approval, binding and acceptance work. |
+
+The accepted Claude archive preserves six original unchecked compound tasks,
+1.1, 2.1, 2.2, 3.1, 3.3 and 3.4. Current accepted-profile behavior and issue acceptance
+criteria do not prove every historical per-scenario pre-implementation failure.
+The diagnostic correction preserves two historical unchecked milestones. Its two
+current completion tasks record later fulfillment without rewriting those snapshots.
+The reconciliation's six tasks are complete. Earlier advisory review quota limits,
+finite Codex Python 3.11 native UNKNOWN timeout, grouped-RED proof gap and dev02
+negative pilot remain historical limitations. Later passing results do not repair
+those earlier evidence gaps or grant future waivers.
+
+All 16 native CLI archives are retained below. The first 13 preserve their earlier
+accepted contracts and limitations. The final three record this reconciliation.
+
+| CLI archive | Lifecycle |
+| --- | --- |
+| [2026-09-29-core-01-python-foundation](changes/archive/2026-09-29-core-01-python-foundation/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-09-29-core-02-change-run-contracts](changes/archive/2026-09-29-core-02-change-run-contracts/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-09-29-dev-workflow-01-bounded-review](changes/archive/2026-09-29-dev-workflow-01-bounded-review/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-02-settlement-01-reconciliation](changes/archive/2026-10-02-settlement-01-reconciliation/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-04-quote-01-empirical-estimation](changes/archive/2026-10-04-quote-01-empirical-estimation/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-06-workflow-01-advisory-ci](changes/archive/2026-10-06-workflow-01-advisory-ci/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-08-pilot-01-source-feasibility](changes/archive/2026-10-08-pilot-01-source-feasibility/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-23-forecast-01-local-adaptive-demand](changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-26-dogfood-01-local-sessions](changes/archive/2026-10-26-dogfood-01-local-sessions/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-26-dogfood-02-codex-observations](changes/archive/2026-10-26-dogfood-02-codex-observations/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-26-dogfood-03-codex-provisional-loop](changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-26-provider-03-codex-local-import](changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-27-dev-workflow-02-behavioral-evidence](changes/archive/2026-10-27-dev-workflow-02-behavioral-evidence/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-29-fix-optional-runtime-diagnostics](changes/archive/2026-10-29-fix-optional-runtime-diagnostics/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-29-provider-04-claude-local-import](changes/archive/2026-10-29-provider-04-claude-local-import/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+| [2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs](changes/archive/2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs/proposal.md) | Accepted archive; original evidence and unchecked tasks retained where present. |
+
+Rollback reverts this documentation and CLI-generated archive diff as a unit.
+Do not rerun the archive against existing destinations or rewrite historical task
+checkboxes to remove warnings. Publication and issue closeout require the final
+reviewed branch; this audit makes no merge, live assessment or release claim.

@@ -21,7 +21,7 @@ failed review. Preserve mandatory review failure and malformed-report errors.
 One workflow condition, focused synthetic regressions, the existing gate guide,
 and an Unreleased changelog entry. Track this contributor correction in
 [PR #50](https://github.com/nold-ai/changecost/pull/50), separately from
-[Claude reader planning](../provider-04-claude-local-import/proposal.md).
+[Claude reader planning](../2026-10-29-provider-04-claude-local-import/proposal.md).
 Verify locally and on the supported Ubuntu/Python matrix with both required
 providers. Revert the repair commit to roll back; retain historical evidence.
 

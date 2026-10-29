@@ -16,8 +16,8 @@ that approved Claude meanings fit those constraints.
 
 Historical project 2.1.275 observations contain revised message usage. Desktop
 transcripts and SDK/result streams are separate profiles. Every Claude approval
-remains empty at the revised-profile gate. See [native evidence requests](../../../docs/research/adaptive-demand-evidence.md)
-and [provider metrics](../../../docs/providers/codex-claude-metrics.md).
+remains empty at the revised-profile gate. See [native evidence requests](../../../../docs/research/adaptive-demand-evidence.md)
+and [provider metrics](../../../../docs/providers/codex-claude-metrics.md).
 
 ## Goals / Non-Goals
 
@@ -164,8 +164,8 @@ separate, with their unfinished obligations preserved.
 The retained exact-version producer control proves one 2.1.215 sidechain
 partial-to-terminal append. The two minimized historical native observations
 corroborate the four-category grouping grammar. The public
-[native statement](../../../docs/providers/evidence/claude-project-2-1-215-native-observations.md)
-and [producer statement](../../../docs/providers/evidence/claude-project-2-1-215-producer-controls.md)
+[native statement](../../../../docs/providers/evidence/claude-project-2-1-215-native-observations.md)
+and [producer statement](../../../../docs/providers/evidence/claude-project-2-1-215-producer-controls.md)
 have separate origins and exact digests in the draft profile. Original private
 acquisitions and projections remain in ignored bindings. Existing public discovery
 IDs are not exact-byte evidence for these new acquisitions. No further producer

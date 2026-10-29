@@ -264,7 +264,7 @@ original scopes. Claude and broader Codex compatibility remain unimplemented.
 ## Claude project-reader preparation, 2026-10-27 Europe/Berlin
 
 The maintainer selected existing Claude Code project JSONL as the first lane for
-[Claude #37](../../openspec/changes/provider-04-claude-local-import/proposal.md).
+[Claude #37](../../openspec/changes/archive/2026-10-29-provider-04-claude-local-import/proposal.md).
 The intended outcome is a reusable approved-profile reader with version-specific
 accounting, immutable corrections, exact replay and separate manual binding.
 It has not been narrowed to a finite diagnostic snapshot. Desktop coding
@@ -274,7 +274,7 @@ remain unchecked and every Claude source profile remains unapproved.
 
 Existing Store and binding APIs are reusable infrastructure. Native graph validation
 still requires Codex evidence, while NativeUsage has closed category/scope/ownership
-constraints. The [design checkpoint](../../openspec/changes/provider-04-claude-local-import/design.md#approval-to-contract-execution-checkpoint)
+constraints. The [design checkpoint](../../openspec/changes/archive/2026-10-29-provider-04-claude-local-import/design.md#approval-to-contract-execution-checkpoint)
 requires independent Claude accounting approval and demonstrated contract fit
 before implementation. Codex's finite replay algorithm is not a correction policy
 for revised Claude project messages. No approval transfers between these providers.
@@ -307,8 +307,9 @@ requires retained accepted A. Terminal-only first import cannot admit unseen A.
 Backend finality, full lineage and complete coverage remain unknown. Approval does
 not transfer to other versions or surfaces, nor confer demand, financial or
 calibration authority. Focused implementation evidence is recorded in the
-[active change](../../openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md);
-aggregate and supported-Linux assurance remain pending.
+[archived change](../../openspec/changes/archive/2026-10-29-provider-04-claude-local-import/TDD_EVIDENCE.md).
+Aggregate assurance was pending at this dated implementation checkpoint and was
+subsequently accepted with PR #50 as recorded below.
 
 ## Approved Desktop root terminal reader, 2026-10-28 Europe/Berlin
 
@@ -336,3 +337,19 @@ billing or demand authority. Unexpected keys or present message/direct usage sti
 reject. This replaces the unpublished q3 candidate; its canonical profile, proof,
 asset and source statements remain frozen in local history. No real q3 Desktop
 facts were stored. Authored prototype bundles have no compatibility promise.
+
+
+## Merged reader and archival checkpoint, 2026-10-29 Europe/Berlin
+
+[PR #50](https://github.com/nold-ai/changecost/pull/50) merged the two exact Claude
+readers at `5cbe58a892f27c78088a82d95219a0cb57f922df`. Both supported host jobs and
+all ten native members passed in [run 40934362577](https://github.com/nold-ai/changecost/actions/runs/40934362577),
+without UNKNOWN evidence. Native CLI archival synchronized five requirements and
+38 scenarios into [claude-local-import](../../openspec/specs/claude-local-import/spec.md).
+The [archive](../../openspec/changes/archive/2026-10-29-provider-04-claude-local-import/tasks.md)
+retains six unchecked historical compound tasks and the missing per-scenario prior-RED
+proof. The register has 26 profiles and three exact usage approvals. These are the
+finite Codex mapping and the two Claude mappings described above. No approval grants
+demand, billing, calibration or compatibility with other versions. Earlier pending
+statements describe their dated checkpoints. This reconciliation collected no source
+files and adds no runtime assurance beyond the accepted merged source.

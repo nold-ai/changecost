@@ -1,5 +1,9 @@
 # Evaluate attribution and chronological quote calibration
 
+## Current remaining scope, 2026-10-29 Europe/Berlin
+
+The shipped synthetic evaluator contract is synchronized in main through CLI archive `2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs`. This active change retains the real-evidence boundary, live/native extensions, actual assessment, conditional integration and incomplete historical proof. Earlier proposal/design text below remains planning history. The synthetic entrypoint still rejects native usage and non-synthetic providers, and no live work is complete.
+
 ## Why
 
 The pilot must test whether local task dimensions, ecosystem comparisons and optional rehearsal improve forecasts over simple historical baselines, including zero knowledge and changed ecosystems. Missing capabilities and small samples remain visible.
@@ -92,3 +96,31 @@ The synthetic evaluator and its economic/demand coverage policies cannot establi
 native authority. The [design checkpoint](design.md#live-preparation-checkpoint-2026-10-27-europeberlin)
 records current prerequisites, risks and scope. Historical prior-RED gaps, live
 assessment and conditional integration remain open. #17 is not closed or archived.
+
+## Accepted synthetic contract reconciliation, 2026-10-29 Europe/Berlin
+
+The maintainer requested archival of implemented contracts while retaining genuine
+future work. The reconciliation change records the shipped PR #48 synthetic
+evaluator in main through native OpenSpec archival. This note is applied only after
+that CLI archive and exact main-spec readback succeed. It does not archive or close
+#17. The accepted seven requirement identities and 22 synthetic scenarios are
+recorded in the reconciliation design. Main now owns their delivered clauses.
+The active delta contains full MODIFIED blocks only for complete truth, honest
+conclusion and scoped adaptive promotion, plus the unchanged ADDED separate live
+authority requirement. The MODIFIED blocks preserve every accepted synthetic
+clause and scenario while adding the explicitly future live duties. Other accepted
+requirements are referenced in main rather than repeated as ADDED here.
+
+The original delta at source HEAD `5cbe58a892f27c78088a82d95219a0cb57f922df` has
+SHA256 `418a7f8d737058b5b011eba0c6b11b0298d82c9bf4c48c5850663d1ca4ffb6d0`. Its original 19 task lines and checkbox bytes are preserved.
+Historical task 1.2 chronology and compound prior-RED duties 2.3 through 2.6 remain
+incomplete. Current passing synthetic behavior cannot recreate that history.
+Live tasks 3.0 through 3.6 and conditional integration 4.1 through 4.3 remain open.
+The synthetic entrypoint rejects native usage and non-synthetic providers outright.
+It does not ingest real Codex or Cursor records to produce native exclusion reports.
+No real-outcome inspection, collection, runtime implementation, passing live receipt,
+provider approval or aggregate publication is authorized by this reconciliation.
+
+See the accepted [pilot-evaluation main contract](../../specs/pilot-evaluation/spec.md)
+and [live assessment guide](../../../docs/pilot/live-assessment.md). All original
+TDD evidence and unchecked historical obligations remain unchanged.

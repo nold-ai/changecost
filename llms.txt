@@ -38,7 +38,7 @@
 - [Evidence reconciliation specification](openspec/specs/evidence-reconciliation/spec.md): Accepted normalized reconciliation, immutable computation and explicit coverage requirements synchronized by the OpenSpec archive CLI.
 - [Empirical quotes preparation](openspec/changes/archive/2026-10-04-quote-01-empirical-estimation/PREPARATION_EVIDENCE.md): Historical preparation against delivered cutoff/coverage contracts; later runtime evidence is separate.
 - [Empirical Quotes](docs/quotes.md): Offline synthetic peer estimation, exact quantiles, feature backoff and historical replay.
-- [Source profile register](docs/providers/source-profiles.json): Canonical historical and separately reconciled local/inventory profiles, exact provenance and unresolved native approval.
+- [Source profile register](docs/providers/source-profiles.json): Canonical 26-profile register with three exact diagnostic usage approvals; no demand, billing or calibration authority.
 - [Accepted empirical Quote specification](openspec/specs/empirical-quotes/spec.md): CLI-synchronized offline synthetic cohort, cutoff and provenance requirements from accepted PR #32.
 - [Advisory workflow preparation](openspec/changes/archive/2026-10-06-workflow-01-advisory-ci/PREPARATION_EVIDENCE.md): Historical advisory preparation; implementation merged in PR #34 and archival retains the accepted missing-code-review limitation.
 - [Optional advisory CI](docs/ci.md): Manually invoked local synthetic advice, escaped bounded summaries and technical failure exits.
@@ -48,9 +48,9 @@
 - [Adaptive-demand evidence and decisions](docs/research/adaptive-demand-evidence.md): Primary research limits, bounded local discovery, architecture decisions and exact remaining native proof.
 - [Adaptive-demand proposal](openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/proposal.md): Accepted offline demand contracts and explicit CLI mode, archived after PR #45 with financial authority preserved.
 - [Codex local-reader proposal](openspec/changes/archive/2026-10-26-provider-03-codex-local-import/proposal.md): Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception.
-- [Claude local-reader proposal](openspec/changes/provider-04-claude-local-import/proposal.md): Implemented exact 2.1.215 project diagnostics and Desktop 2.1.308 root terminal diagnostics; profile-specific corrections, replay and atomic conflicts; aggregate verification pending.
+- [Claude local-reader proposal](openspec/changes/archive/2026-10-29-provider-04-claude-local-import/proposal.md): Accepted exact Claude Code 2.1.215 and Desktop 2.1.308 diagnostic readers from PR #50, CLI archived with six historical unchecked compound tasks retained.
 - [Adaptive-demand preparation evidence](openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/PREPARATION_EVIDENCE.md): Planning recovery, independent review, backlog reconciliation and local assurance limits.
-- [Risk-first execution guidance and pending trial](openspec/changes/dev-workflow-03-risk-first-execution/proposal.md): Implemented contributor guidance for critical-assumption proof, evidence-based triage and existing review handoffs; publication acceptance and a separately authorized trial remain pending.
+- [Risk-first execution guidance and pending trial](openspec/changes/dev-workflow-03-risk-first-execution/proposal.md): Guidance accepted in PR #42 and synchronized through a separate CLI archive; active work is the separately authorized measured trial.
 - [Adaptive demand implementation evidence](openspec/changes/archive/2026-10-23-forecast-01-local-adaptive-demand/TDD_EVIDENCE.md): Actual synthetic TDD, accepted Linux/provider evidence, CLI archival and preserved historical proof/review limits.
 - [Accepted adaptive-demand specification](openspec/specs/adaptive-demand/spec.md): CLI-synchronized offline demand contracts, chronological local learning and scoped transfer; native approval and calibration remain separate.
 - [Codex reader preparation evidence](openspec/changes/archive/2026-10-26-provider-03-codex-local-import/PREPARATION_EVIDENCE.md): Archived finite diagnostic reader evidence after PR #47; exact approval retained, full assurance incomplete under the accepted native timeout exception.
@@ -62,12 +62,15 @@
 - [Finite Codex session observations](openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/proposal.md): Archived exact finite session diagnostics after PR #47; partial facts grant no totals or learning authority, and assurance limits remain recorded.
 - [Native session observation evidence](openspec/changes/archive/2026-10-26-dogfood-02-codex-observations/TDD_EVIDENCE.md): Archived exact finite session diagnostics after PR #47; partial facts grant no totals or learning authority, and assurance limits remain recorded.
 - [Provisional Codex session implementation](openspec/changes/archive/2026-10-26-dogfood-03-codex-provisional-loop/TDD_EVIDENCE.md): Archived provisional capture loop after PR #47; immutable source counters retain unknown coverage and accepted native assurance limits.
-- [Offline evaluation change](openspec/changes/pilot-02-calibration-evaluation/proposal.md): Locally implemented deterministic synthetic evaluation, pending complete verification and publication; live assessment remains separately gated.
+- [Future live evaluation change](openspec/changes/pilot-02-calibration-evaluation/proposal.md): Active future real-evidence assessment after merged PR #48 synthetic delivery; original historical task evidence remains unchanged.
 - [Synthetic evaluation](docs/pilot/evaluation.md): Reproduce isolated chronological economic and adaptive evaluation with explicit metric denominators.
 - [Evaluation findings](docs/pilot/findings.md): Synthetic results, source gaps and the not-yet-validated decision.
 - [Evaluation implementation evidence](openspec/changes/pilot-02-calibration-evaluation/TDD_EVIDENCE.md): Actual failing/passing checks, executable examples and retained proof limitations.
 - [Live assessment preparation](docs/pilot/live-assessment.md): pending operator decisions, private manifest and separate live authority/runtime gates.
-- [Claude reader implementation evidence](openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md): Actual focused RED/GREEN, canonical CLI import and recovery, with outstanding aggregate assurance.
+- [Claude reader implementation evidence](openspec/changes/archive/2026-10-29-provider-04-claude-local-import/TDD_EVIDENCE.md): Accepted merged-source host/native assurance, exact-profile import and recovery, with historical prior-RED proof gaps retained.
+- [Accepted Claude local-import specification](openspec/specs/claude-local-import/spec.md): CLI-synchronized exact project and Desktop request categories, corrections, replay, acquisition and atomic conflicts.
+- [Accepted offline evaluation specification](openspec/specs/pilot-evaluation/spec.md): CLI-synchronized synthetic economic and adaptive evaluation contracts from merged PR #48; future live assessment remains separate.
+- [Accepted workflow and evaluation reconciliation](openspec/changes/archive/2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs/proposal.md): Native CLI archive of already delivered PR #42 guidance and PR #48 synthetic evaluation; future trial and live work remain active.
 
 ## Local skills
 

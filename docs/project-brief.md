@@ -1,6 +1,17 @@
 # Project brief
 
-Status: **pilot planning / To-Validate**, updated 2026-10-26 (Europe/Berlin).
+Status: **pilot planning / To-Validate**, updated 2026-10-29 (Europe/Berlin).
+
+
+The 2026-10-29 lifecycle reconciliation archives the exact Claude readers delivered
+by [PR #50](https://github.com/nold-ai/changecost/pull/50), its diagnostic correction,
+and accepted workflow/offline-evaluation contracts through the native OpenSpec CLI.
+Main has 14 capabilities, 158 requirements and 615 scenarios. The register has
+26 profiles and three exact usage approvals, without demand, billing or calibration
+authority. [The current audit](../openspec/CHANGE_ORDER.md#lifecycle-audit-2026-10-29-europeberlin)
+keeps live evaluation #17, measured trial #40, Copilot #13 and Cursor #14 active.
+Historical task checkboxes and proof gaps remain intact. Earlier dated checkpoints
+below describe their original scope.
 
 The finite Codex diagnostic reader and three local-session changes merged in
 [PR #47](https://github.com/nold-ai/changecost/pull/47). Native CLI archival on

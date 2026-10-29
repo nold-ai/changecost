@@ -1,5 +1,9 @@
 # Proposal
 
+## Current remaining scope, 2026-10-29 Europe/Berlin
+
+The four delivered guidance requirements are synchronized in main through CLI archive `2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs`. This active change retains the unexecuted bounded trial and its evidence/recommendation tasks 5.1–5.3. Earlier proposal/design text below is preserved planning history; it does not make the implemented guidance pending again or claim that a trial occurred.
+
 ## Why
 
 The foundation and behavioral-evidence retrospectives record repeated late corrections and substantial assurance-tooling overhead without demonstrated billing or delivery savings. Move critical-assumption proof and finding adjudication earlier in the existing workflow so more effort produces useful, verified changes.
@@ -43,3 +47,29 @@ Confirmed direction: preserve assurance and lower avoidable overhead. The [found
 Pstack's [blast-radius practice](https://github.com/cursor/plugins/blob/main/pstack/skills/blast-radius/SKILL.md) and [lead-judgment guidance](https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/references/lead-judgment.md), accessed 2026-10-08 (Europe/Berlin), inform selective practices rather than authorize installing or executing upstream workflows.
 
 Added ceremony, weak probes and mistaken dismissal are mitigated by limited assumptions, explicit evidence boundaries and preserved defect/completion obligations. Confidence: high in feasibility, medium in defect-reduction benefit; billing savings remain unknown. Rollback removes the eventual guidance changes while retaining evidence and review history; abandoning this local proposal removes only its owned uncommitted files and closes tracking without deleting records. No user-store migration is required.
+
+## Accepted guidance reconciliation, 2026-10-29 Europe/Berlin
+
+The maintainer requested archival of implemented contracts while retaining genuine
+future work. The reconciliation change records the exact first four risk-first
+requirements and their 11 scenarios in main through native OpenSpec archival. This
+note is applied only after that CLI archive and exact main-spec readback succeed.
+The active delta retains the ADDED bounded adoption assessment and both scenarios.
+Main owns critical-assumption proof, compact checkpoints, evidence-based triage and
+unchanged completion controls. This does not archive or close #40.
+
+PR #42 merged at `5fe5e2e8f63dbf49eeeb77115ba19c67e063c21e`. Its exact reviewed
+head `2ddbabb6e94c185dd3c42da5a548510fb1e427b0` and final live acceptance receipt
+satisfy current publication and assurance duties 4.1 and 4.2. Their old unchecked
+checkboxes remain as dated historical snapshots, as do all original 15 task lines.
+The original delta at source HEAD `5cbe58a892f27c78088a82d95219a0cb57f922df` has
+SHA256 `aeda598e3b5e8c93c7d80d900d69b315d17e2875fc3e1fc6b19181b6e2387204`.
+
+Trial tasks 5.1 through 5.3 remain genuinely pending. No trial was selected,
+authorized or executed by this reconciliation. PR #50 usage records, later guidance
+use and performance detector measurements do not retrospectively constitute the
+trial. Setup versus recurring effort, phase/token/time observations and an actual
+retain/revise/withdraw recommendation still require the separately authorized trial.
+See the accepted [bounded-review-session main contract](../../specs/bounded-review-session/spec.md)
+and the [PR #42 acceptance receipt](https://github.com/nold-ai/changecost/pull/42).
+No historical TDD evidence, review budget or accepted limitation is changed.

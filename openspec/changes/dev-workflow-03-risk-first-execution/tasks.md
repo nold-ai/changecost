@@ -31,3 +31,29 @@ Guidance implementation and verification were authorized on 2026-10-08. Tasks ar
 - [ ] 5.1 Use one separately authorized bounded change as the trial and record preparation, first stable candidate and final handoff boundaries through existing evidence/receipts; verify measurement coverage, current-input identity, setup separation and unchanged assurance requirements, or leave this task pending with the missing authorization/evidence named.
 - [ ] 5.2 Report phase observations, available token categories, elapsed/active-time units, genuine early discoveries, later escapes and actual correction sets versus event counts; verify unknowns remain unknown, duplicate/control/tooling findings stay distinct and any historical comparison states its limits without causal or billing claims.
 - [ ] 5.3 Publish the evidence-backed retain/revise/withdraw recommendation in maintained lessons-learned documentation and synchronize the issue's actual acceptance state; verify documentation checks and current required acceptance evidence, retaining incomplete/negative outcomes and all original review history rather than marking trial success from planning completion.
+
+## Accepted guidance reconciliation, 2026-10-29 Europe/Berlin
+
+The maintainer requested archival of implemented contracts while retaining genuine
+future work. The reconciliation change records the exact first four risk-first
+requirements and their 11 scenarios in main through native OpenSpec archival. This
+note is applied only after that CLI archive and exact main-spec readback succeed.
+The active delta retains the ADDED bounded adoption assessment and both scenarios.
+Main owns critical-assumption proof, compact checkpoints, evidence-based triage and
+unchanged completion controls. This does not archive or close #40.
+
+PR #42 merged at `5fe5e2e8f63dbf49eeeb77115ba19c67e063c21e`. Its exact reviewed
+head `2ddbabb6e94c185dd3c42da5a548510fb1e427b0` and final live acceptance receipt
+satisfy current publication and assurance duties 4.1 and 4.2. Their old unchecked
+checkboxes remain as dated historical snapshots, as do all original 15 task lines.
+The original delta at source HEAD `5cbe58a892f27c78088a82d95219a0cb57f922df` has
+SHA256 `aeda598e3b5e8c93c7d80d900d69b315d17e2875fc3e1fc6b19181b6e2387204`.
+
+Trial tasks 5.1 through 5.3 remain genuinely pending. No trial was selected,
+authorized or executed by this reconciliation. PR #50 usage records, later guidance
+use and performance detector measurements do not retrospectively constitute the
+trial. Setup versus recurring effort, phase/token/time observations and an actual
+retain/revise/withdraw recommendation still require the separately authorized trial.
+See the accepted [bounded-review-session main contract](../../specs/bounded-review-session/spec.md)
+and the [PR #42 acceptance receipt](https://github.com/nold-ai/changecost/pull/42).
+No historical TDD evidence, review budget or accepted limitation is changed.
