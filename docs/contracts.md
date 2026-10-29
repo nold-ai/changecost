@@ -333,3 +333,15 @@ a declared delivery timeline. It adds no PortableRecord kind or SQLite migration
 The destination computes its own forecasts in a temporary store. Imported forecasts
 remain claims without local computation authority. Report-only metric models and
 normalized temporary IDs do not enter exports or create validation receipts.
+
+### Claude serialized request stages
+
+The approved 2.1.215 project reader uses existing `NativeUsage` fields unchanged.
+For this mapping, `partial` and `final` denote serialized request stages, with
+backend presence, coverage completeness and intervals still unknown. Four category
+cohorts share first acquisition/admission and Evidence. A final cohort either has
+no predecessor after terminal-only first import, or references all four retained
+partial predecessors with the fixed refinement reason. An initial combined source
+records both cohorts at current import time. Portable validation checks the exact
+mapping/provider association, complete cohorts, predecessor links and provenance.
+See [import behavior](settlement.md#import-approved-claude-project-diagnostics).

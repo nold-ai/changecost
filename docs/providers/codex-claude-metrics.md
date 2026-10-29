@@ -291,3 +291,48 @@ No source-register approval, collector, runtime command or financial/native-dema
 authority is added. Delivered #35 removes only its delivery dependency; a Claude
 measurement/coverage policy remains separate. Evaluation #17's live boundary,
 historical evidence gaps and integration obligations remain open.
+
+## Approved Claude project reader, 2026-10-28 Europe/Berlin
+
+The canonical `claude-project-2-1-215-request-stages` profile now carries independent
+usage approval for mapping `claude-project-request-stage-r4`. The explicit
+[project JSONL reader](../settlement.md#import-approved-claude-project-diagnostics)
+implements its closed grammar, four nullable categories, partial/terminal history
+and replay. The [minimized native observations](evidence/claude-project-2-1-215-native-observations.md)
+and [producer controls](evidence/claude-project-2-1-215-producer-controls.md) retain
+exact evidence boundaries. No source was reinspected during reader completion.
+
+A current-time initial A+B imports both observed stages atomically. A later B
+requires retained accepted A. Terminal-only first import cannot admit unseen A.
+Backend finality, full lineage and complete coverage remain unknown. Approval does
+not transfer to other versions or surfaces, nor confer demand, financial or
+calibration authority. Focused implementation evidence is recorded in the
+[active change](../../openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md);
+aggregate and supported-Linux assurance remain pending.
+
+## Approved Desktop root terminal reader, 2026-10-28 Europe/Berlin
+
+The exact `claude-desktop-2-1-308-root-terminal` profile has independent usage
+approval and local reader support through the existing project import operation.
+Its [native statement](evidence/claude-desktop-2-1-308-native-observations.md) and
+[producer statement](evidence/claude-desktop-2-1-308-producer-binding.md) are immutable.
+Their draft headers describe the frozen review input, not current approval status.
+Producer evidence is external Desktop metadata association, not a controlled probe.
+Every contributor requires exact engine and entrypoint; Desktop build is not checked.
+
+Four present exact nonnegative integer categories preserve literal zero without
+claiming native zero was observed. Missing/null, partial stages, children and changed
+quantities reject. Closed metadata and opaque API blob exclusions grant no nested
+accounting or complete-coverage authority. Global event identities prevent cross-profile
+duplicates; replay retains original provenance after reopen/recovery. Exact 2.1.215
+correction support and finite Codex remain intact. Broader versions/lifecycle, billing,
+demand, backend finality, served model and #17 calibration remain separate.
+
+The later independently approved q4 revision uses mapping
+`claude-desktop-root-terminal-r2`. It adds closed `cost-state` and `mode` metadata
+exclusions while retaining every contributor and accounting constraint. Opaque
+`modelUsage`, costs, duration, line counts and mode values grant no native facts,
+billing or demand authority. Unexpected keys or present message/direct usage still
+reject. This replaces the unpublished q3 candidate; its canonical profile, proof,
+asset and source statements remain frozen in local history. No real q3 Desktop
+facts were stored. Authored prototype bundles have no compatibility promise.

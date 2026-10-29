@@ -194,3 +194,8 @@ local ancestry checks. It preserves every budget and historical obligation while
 requiring a new input epoch, positive freshness floor and normal runtime PR binding.
 Retired sources cannot return through delayed observations. Recovery is no passing
 gate, provider approval, new allowance or waiver of supported-Linux assurance.
+
+The approved Claude 2.1.215 project mapping also has a generated admission derivative.
+Its focused tests preserve the original 24 profiles and finite Codex package, and
+check complete four-category stage history plus exact provider association. This
+local implementation adds no waiver of independent or supported-Linux assurance.

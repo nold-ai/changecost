@@ -24,7 +24,7 @@ NOT grant approval. The reader SHALL NOT collect data or change account settings
 
 #### Scenario: Other Claude surfaces
 
-- **GIVEN** ordinary chat, a Desktop coding transcript, IDE data, SDK/result stream, JSON container or SQLite/index source
+- **GIVEN** ordinary chat, an unapproved Desktop coding transcript, IDE data, SDK/result stream, JSON container or SQLite/index source
 - **WHEN** the project JSONL reader is requested
 - **THEN** it remains unsupported in this lane despite similar usage fields
 
@@ -65,6 +65,48 @@ precedence, additive totals or complete work from field presence.
 - **WHEN** compatibility is assessed
 - **THEN** the mapping remains blocked pending explicit reviewed contract amendment rather than relabeling facts, weakening Codex constraints or silently narrowing the reader outcome
 
+#### Scenario: Exact 2.1.215 serialized stages
+
+- **GIVEN** an independently approved exact 2.1.215 project profile and one event with coherent producer, session, optional agent, request and message metadata
+- **WHEN** the selected snapshot contains agreeing explicit-null rows and agreeing supported terminal rows
+- **THEN** null classifies partial and `end_turn` or `tool_use` classifies final serialized request stage, preserving four separate nullable categories with backend, interval, ownership and scope completeness unknown
+
+#### Scenario: Terminal reason normalization across snapshots
+
+- **GIVEN** accepted terminal facts and another valid snapshot of the same immutable event with equal four-category values but the other supported terminal reason
+- **WHEN** the snapshot is imported
+- **THEN** it is a no-op returning existing references because both supported reasons have the same canonical accounting meaning; raw reason history is neither stored nor hidden in revision fingerprints
+
+#### Scenario: Terminal reason disagreement inside one snapshot
+
+- **GIVEN** terminal rows for one event contain both `end_turn` and `tool_use`, even with equal quantities
+- **WHEN** per-snapshot grammar is validated before normalization
+- **THEN** the whole import rejects; missing, malformed or unsupported stop metadata also rejects
+
+#### Scenario: Error-looking usage without identity
+
+- **GIVEN** assistant usage lacks required session, request or message identity, including all-zero counters or client-error marker keys
+- **WHEN** contributor grammar is validated
+- **THEN** the import rejects atomically rather than skipping by missing identity, zero values or unverified error discriminators
+
+#### Scenario: Closed user exclusion
+
+- **GIVEN** a row with exact type `user`, a message object with exact role `user`, and no direct `usage` or `message.usage` member
+- **WHEN** the project snapshot is classified
+- **THEN** the row contributes no canonical facts; a missing/nonobject message, different role or present usage member, including null, rejects the entire snapshot
+
+#### Scenario: Closed metadata exclusions
+
+- **GIVEN** a row with exact type `attachment`, `queue-operation`, `last-prompt` or `mode` and no top-level `message` or direct `usage` member
+- **WHEN** the project snapshot is classified
+- **THEN** the row contributes no canonical facts and its nested payload grants no counter or coverage authority; a present message or usage member, including null, rejects the entire snapshot
+
+#### Scenario: Unknown row grammar
+
+- **GIVEN** any other row label, including `progress` or `system`, an incompatible excluded shape or an assistant without a proper message, role, usage or required identity
+- **WHEN** a snapshot also contains otherwise valid new assistant facts
+- **THEN** the entire import rejects without a generic type-name skip, recursive counter inspection or partial persistence
+
 ### Requirement: Safe atomic read-only import
 
 The reader SHALL allowlist bounded metadata from one stable read-only acquisition,
@@ -96,6 +138,36 @@ unresolved conflicts SHALL reject without partial persistence.
 - **GIVEN** an accepted original revision followed by a valid correction
 - **WHEN** the original accepted snapshot is imported again
 - **THEN** it is a no-op, does not restore old quantities and does not fork or rewrite history
+
+#### Scenario: Retained partial stage permits positive refinement
+
+- **GIVEN** accepted partial A and a later valid snapshot retaining canonical A in all four categories with the same immutable event metadata plus supported terminal B
+- **WHEN** the later snapshot is imported
+- **THEN** all four category revisions append once from their current partial predecessors with reason `claude-serialized-stage-refinement`, including when A and B have equal quantities
+
+#### Scenario: First combined source accepts both stages now
+
+- **GIVEN** a first valid snapshot contains partial A and terminal B for the same immutable event
+- **WHEN** it is imported under the explicit initial combined-stage policy
+- **THEN** four partial originals and four terminal corrections append atomically with current import timestamps, the same full-snapshot first acquisition/admission, exact category predecessors and the fixed refinement reason; only B supplies four current facts and no earlier import or acquisition is claimed
+
+#### Scenario: Combined first-import counts and replay
+
+- **GIVEN** initial A+B was accepted as two four-category cohorts, including when their quantities are equal
+- **WHEN** result counts, A+B, A-only and B-only replay, store reopen and bundle recovery are checked
+- **THEN** fact_count is four current selected categories, inserted_fact_count is eight history revisions on initial acceptance and corrected_fact_count is four predecessor-bearing revisions; later accepted replays add zero and C+B or C-only rejects atomically without summing historical quantities
+
+#### Scenario: Both accepted stages replay after refinement
+
+- **GIVEN** accepted partial A refined to terminal B
+- **WHEN** A, B, A and B are imported again, including after store reopen or current-version bundle recovery
+- **THEN** all imports return prior exact references with no downgrade or duplicates and unchanged first Evidence, acquisition and admission provenance
+
+#### Scenario: Unsupported refinement cannot create historical acceptance
+
+- **GIVEN** terminal-only first acceptance followed by an unseen partial, including a later combined snapshot containing that partial and known terminal B, a changed terminal vector, or partial A followed by a terminal snapshot without retained A
+- **WHEN** that snapshot includes otherwise valid new facts
+- **THEN** the entire batch rejects without any persistence or invented predecessor history
 
 #### Scenario: Conflicting or stale correction batch
 
@@ -145,3 +217,51 @@ demand learning, monetary settlement or calibration.
 - **GIVEN** a cost-like field or native usage under a subscription
 - **WHEN** a forecast or settlement is requested
 - **THEN** economic basis remains explicit, missing money differs from zero and no billed charge or calibrated demand authority is inferred
+
+### Requirement: Exact Desktop 2.1.308 root terminal mapping
+
+The reader SHALL additionally select the independently approved exact Desktop
+2.1.308 profile through the existing public import operation. It SHALL preserve
+2.1.215 corrections and finite Codex support without changing NativeUsage.
+
+#### Scenario: Root terminal import and semantic replay
+
+- **GIVEN** exact engine 2.1.308 and claude-desktop entrypoint on every assistant, isSidechain false, absent agentId, supported terminal reason and four present exact nonnegative integer quantities
+- **WHEN** import and same-semantic replay through a different path/hash run, including reopened store and bundle recovery
+- **THEN** four separate final facts are retained per event, literal zero is preserved, cache duration components are excluded, and original Evidence, acquisition, admission and timestamps survive replay
+
+#### Scenario: Unsupported Desktop stages and quantities
+
+- **GIVEN** a partial/null stop, child, missing/null/bool/negative counter, changed quantity, wrong producer, unknown key/type, malformed excluded row, predecessor or refinement reason
+- **WHEN** the snapshot or portable bundle also contains valid new facts
+- **THEN** the entire batch rejects without partial persistence or inherited 2.1.215 correction permission
+
+#### Scenario: Closed Desktop exclusions
+
+- **GIVEN** source rows use the approved per-type key subsets and required/absent members
+- **WHEN** user, metadata and API blob exclusions are evaluated
+- **THEN** user requires an object user-role message without immediate usage; metadata has no message or direct usage; API blobs have exactly hash/message/sessionId/type, opaque JSON message and no immediate message.usage if object; present-null usage rejects and no recursive accounting occurs
+
+#### Scenario: Global identity and exact association
+
+- **GIVEN** any of the seven recognized provider/surface/mapping/profile/proof claims from either approved mapping
+- **WHEN** retained records are validated
+- **THEN** exact evidence-profile policy applies and unknown, borrowed or mixed claims reject; Evidence ID equals event identity; cross-profile same-event conflicts reject atomically in either import order even for equal quantities, without including profile/version/path/hash in identity
+
+#### Scenario: Separate authority remains unknown
+
+- **GIVEN** accepted Desktop facts and external producer metadata association
+- **WHEN** results are returned
+- **THEN** backend finality, ownership, served model, complete coverage, money, demand and calibration are not granted; the external Desktop build is not runtime authenticated and broader Desktop lifecycle remains unsupported
+
+#### Scenario: Consistent UTF-8 wire boundary and depth enforcement
+
+- **GIVEN** a selected JSONL snapshot, including escaped quotes and nested ignored payloads
+- **WHEN** the Claude reader parses each byte-delimited line
+- **THEN** only UTF-8 text with an optional UTF-8 BOM is accepted; UTF-16/32 and malformed UTF-8 reject atomically, depth above 32 rejects, and valid U+2028/U+0085 characters inside strings do not create additional records
+
+#### Scenario: Approved Desktop cost-state and mode exclusions
+
+- **GIVEN** exact q4 approval and cost-state or mode rows within their closed top-level key upper bounds, with required type and absent message/direct usage
+- **WHEN** import validates those metadata rows, including opaque modelUsage or cost values
+- **THEN** they contribute no native facts, money, demand or inferred totals; unexpected keys and present-null message/usage reject the whole snapshot

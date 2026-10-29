@@ -14,6 +14,7 @@ import typer
 from typer._click.globals import get_current_context
 
 from changecost import operations
+from changecost.claude_local import ClaudeProjectImportError
 from changecost.codex_local import NativeImportError, select_codex_file
 from changecost.codex_session_counter import CounterError
 from changecost.models import (
@@ -83,7 +84,7 @@ def execute(operation) -> None:
         format = get_current_context().meta.get("format", "json")
         typer.echo(human(value) if format == "human" else json.dumps(value), err=True)
         raise typer.Exit(2) from exc
-    except NativeImportError as exc:
+    except (NativeImportError, ClaudeProjectImportError) as exc:
         diagnostic = exc.diagnostic.model_dump(exclude_none=True)
         value = dict(schema="changecost/error-v1", message="native import rejected", **diagnostic)
         format = get_current_context().meta.get("format", "json")
@@ -428,6 +429,7 @@ def settle(
     reason: str | None = None,
     import_evidence: Path | None = None,
     import_codex: Path | None = None,
+    import_claude_project: Path | None = None,
     source_profile: str | None = None,
     source_sha256: str | None = None,
     compute: bool = False,
@@ -439,7 +441,7 @@ def settle(
     source_start: str | None = None,
     source_end: str | None = None,
 ) -> None:
-    """Import finite Codex diagnostics, normalized economics, or declare/compute facts."""
+    """Import approved native diagnostics, normalized economics, or declare/compute facts."""
     economic_options = dict(
         economic_kind=economic_kind,
         unit=unit,
@@ -453,13 +455,21 @@ def settle(
     def perform():
         economic = import_evidence is not None or compute
         fields = operation_id is not None or any(v is not None for v in economic_options.values())
-        native = import_codex is not None or source_profile is not None or source_sha256 is not None
+        native = any(
+            value is not None
+            for value in (import_codex, import_claude_project, source_profile, source_sha256)
+        )
         if native:
-            return native_request(
+            if (import_codex is None) == (import_claude_project is None):
+                raise ContractError("select exactly one native import mode")
+            request = claude_native_request if import_claude_project is not None else native_request
+            return request(
                 context.obj,
                 dict(
                     repository_id=repository_id,
-                    path=import_codex,
+                    path=import_claude_project
+                    if import_claude_project is not None
+                    else import_codex,
                     profile_id=source_profile,
                     expected_sha256=source_sha256,
                 ),
@@ -518,6 +528,14 @@ def native_request(store, selection, conflicting_modes, conflicting_selectors):
     from changecost.codex_local import CodexSelection, import_codex_file
 
     return import_codex_file(store, CodexSelection.model_validate(selection))
+
+
+def claude_native_request(store, selection, conflicting_modes, conflicting_selectors):
+    if any(conflicting_modes) or any(value is not None for value in conflicting_selectors):
+        raise ContractError("settle modes are mutually exclusive")
+    from changecost.claude_local import ClaudeProjectSelection, import_claude_project
+
+    return import_claude_project(store, ClaudeProjectSelection.model_validate(selection))
 
 
 @app.command()

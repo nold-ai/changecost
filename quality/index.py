@@ -11,7 +11,7 @@ import typer.main
 import yaml
 
 from changecost.cli import app
-from quality.source_admission import packaged_admission
+from quality.source_admission import packaged_admission, packaged_claude_admission
 
 
 def render(root: Path) -> dict[str, str]:
@@ -20,8 +20,8 @@ def render(root: Path) -> dict[str, str]:
     lines = [
         "# ChangeCost",
         "",
-        "> Private, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. "
-        "One finite Codex diagnostic snapshot is supported; "
+        "> Public, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. "
+        "One finite Codex snapshot and approved Claude 2.1.215 project diagnostics are supported; "
         "broader provider operations remain planned.",
         "",
         "## Project and evidence",
@@ -64,7 +64,9 @@ def render(root: Path) -> dict[str, str]:
         "`quote` computes offline empirical estimates. "
         "`check` compares explicit historical records to compatible budgets, "
         "with valid unknown advice. `settle --import-codex` imports only the exact approved "
-        "finite diagnostic snapshot without demand or financial authority.",
+        "finite diagnostic snapshot. `settle --import-claude-project` imports approved "
+        "2.1.215 project and exact Desktop 2.1.308 root terminal diagnostics. "
+        "Neither grants demand or financial authority.",
         "",
     ]
     lines += [
@@ -80,6 +82,25 @@ def render(root: Path) -> dict[str, str]:
     return {
         "llms.txt": "\n".join(lines),
         "docs/commands.md": "\n".join(reference),
+        "src/changecost/claude_admission.json": json.dumps(
+            packaged_claude_admission(
+                json.loads((root / "docs/providers/source-profiles.json").read_text())
+            ),
+            indent=2,
+            ensure_ascii=True,
+            allow_nan=False,
+        )
+        + "\n",
+        "src/changecost/claude_desktop308_admission.json": json.dumps(
+            packaged_claude_admission(
+                json.loads((root / "docs/providers/source-profiles.json").read_text()),
+                "claude-desktop-2-1-308-root-terminal",
+            ),
+            indent=2,
+            ensure_ascii=True,
+            allow_nan=False,
+        )
+        + "\n",
         "src/changecost/codex_admission.json": json.dumps(
             admission, indent=2, ensure_ascii=True, allow_nan=False
         )

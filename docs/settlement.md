@@ -220,3 +220,89 @@ presence, completeness and finality remain unknown, including serialized zeros.
 Legacy snapshots and request categories are never added together. Manual binding
 creates no EconomicEvidence, SourceCoverage, demand observation or policy. Numeric
 financial and demand eligibility retain their existing synthetic-only guards.
+
+## Import approved Claude project diagnostics
+
+The explicit offline reader supports the approved Claude Code 2.1.215 project
+JSONL grammar. Choose one existing file and its SHA-256; no scanning or collection
+occurs. Source version declarations do not authenticate arbitrary files.
+
+```sh
+changecost settle --repository-id repo --import-claude-project selected.jsonl \
+  --source-profile claude-project-2-1-215-request-stages \
+  --source-sha256 SHA256_OF_SELECTED_FILE
+```
+
+The result returns exact `evidence_refs` for later manual Evidence-to-Run-to-Change
+binding. Import cannot be combined with binding or other settlement modes. The
+four distinct nullable categories are input, output, cache creation and cache read.
+Missing remains null; zero remains zero. They are not summed into a total.
+
+An initial partial A stores four NativeUsage records. A later snapshot retaining A
+and containing terminal B appends four corrections. An initial A+B snapshot stores
+both cohorts at the current import time, eight records with four predecessors;
+only B is current. Terminal-only first import stores four originals and rejects
+any later unseen partial, even beside known B. Accepted A-only, B-only and A+B replay
+without writes after refinement, including after reopen and current-version recovery.
+Changed quantities, absent retained A, forks or conflicting identities reject the
+whole batch. Supported terminal reasons normalize only after snapshot validation.
+
+`fact_count` counts four selected categories per event. `inserted_fact_count`
+counts newly stored history records, including corrections. `corrected_fact_count`
+counts those new records with predecessors. `replayed_fact_count` counts categories
+of fully replayed events. None of these counters measures tokens or billed money.
+
+Only allowlisted metadata persists. Paths, raw source identifiers, content and stop
+reasons do not. Reads reject symlinks, nonregular files, changed acquisition metadata,
+wrong hashes, more than 10 MiB, 10,000 records or nesting depth 32. Stable-read checks
+are not protection against every adversarial writer. Diagnostics use closed codes
+and optional record ordinals.
+
+Coverage, backend finality, lineage and interval remain unknown. No demand learning,
+economic settlement, calibration or compatibility with 2.1.257, 2.1.275, other Desktop versions,
+IDE or SDK streams follows. Preserve an exported bundle before rollback; older
+binaries need not accept the added provider association. Current-version recovery
+preserves first acquisition/admission and correction history.
+
+### Desktop 2.1.308 root terminal diagnostics
+
+Select `claude-desktop-2-1-308-root-terminal` with the same command and source hash.
+Every contributor must declare version `2.1.308`, entrypoint `claude-desktop` and
+`isSidechain=false`, with no `agentId` member. Only `end_turn` and `tool_use` are
+supported. Each of the four categories must be present as an exact nonnegative
+integer. Literal zero remains zero; missing, null, bool and negative values reject.
+Cache creation duration components are not added to the aggregate category.
+
+Desktop imports four final serialized-source facts per event. Partial stages,
+children, quantity changes and corrections are unsupported. Unknown row types or
+keys and malformed user/metadata/API blob shapes reject the whole batch. API blob
+messages are opaque JSON values with no immediate `usage` member when an object;
+no recursive counter extraction occurs. All records are validated before writes.
+
+Semantic replay from another path or hash preserves the first Evidence, acquisition,
+admission and timestamps, including after reopen and bundle recovery. Event identity
+excludes version and profile. Same-event observations under different profiles reject
+even when all quantities agree. This prevents a second contribution from inheriting
+another profile's approval. Existing 2.1.215 correction support is unchanged.
+
+The approval binds [native observations](providers/evidence/claude-desktop-2-1-308-native-observations.md)
+and [external producer association](providers/evidence/claude-desktop-2-1-308-producer-binding.md).
+Their frozen draft headers record their original stage; the canonical register now
+contains independent approval. External Desktop build metadata is not a runtime
+build check. Broader Desktop lifecycle, complete coverage, served model, backend
+finality, ownership, demand, money and calibration remain unproved.
+
+Claude project import accepts UTF-8 JSONL, with an optional UTF-8 BOM per line
+as a compatibility extension.
+UTF-16/32 and malformed UTF-8 reject before persistence. Byte-delimited JSONL
+lines retain valid Unicode line characters inside strings; escaped quotes do not
+waive the depth-32 bound. This applies to both approved Claude profiles.
+
+The later independently approved q4 revision uses mapping
+`claude-desktop-root-terminal-r2`. It adds closed `cost-state` and `mode` metadata
+exclusions while retaining every contributor and accounting constraint. Opaque
+`modelUsage`, costs, duration, line counts and mode values grant no native facts,
+billing or demand authority. Unexpected keys or present message/direct usage still
+reject. This replaces the unpublished q3 candidate; its canonical profile, proof,
+asset and source statements remain frozen in local history. No real q3 Desktop
+facts were stored. Authored prototype bundles have no compatibility promise.

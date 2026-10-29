@@ -20,7 +20,7 @@ def test_packaged_admission_is_generated_from_canonical_only(tmp_path):
     outputs = render(ROOT)
     assert "src/changecost/codex_admission.json" in outputs
     envelope = json.loads(outputs["src/changecost/codex_admission.json"])
-    p = register()["profiles"][-1]
+    p = finite(register())
     assert envelope["admission"] == p["admission"]
     assert envelope["profile_digest"] == research.profile_digest(p)
     assert (
@@ -48,6 +48,10 @@ def test_packaged_admission_is_generated_from_canonical_only(tmp_path):
 
 def register():
     return json.loads((ROOT / "docs/providers/source-profiles.json").read_text())
+
+
+def finite(data):
+    return next(p for p in data["profiles"] if p["id"] == "codex-desktop-0163-finite-diagnostics")
 
 
 def rebind(p):
@@ -99,7 +103,7 @@ FAULTS = [
 def test_rehashed_fault_and_repair(path, value):
     data = register()
     original = copy.deepcopy(data)
-    p = data["profiles"][-1]
+    p = finite(data)
     if path == "DELETE":
         del p["admission"]
         p["id"] = "renamed-codex"
@@ -124,7 +128,7 @@ def test_optional_admission_is_checked():
 
 def test_invalid_admission_public_boundaries(tmp_path):
     data = register()
-    p = data["profiles"][-1]
+    p = finite(data)
     p["admission"]["kind"] = "PRIVATE"
     rebind(p)
     path = tmp_path / "private.json"
@@ -149,7 +153,7 @@ def test_invalid_admission_public_boundaries(tmp_path):
 @pytest.mark.parametrize("fault", ["missing", "extra", "null", "list", "scalar"])
 def test_closed_nested_shapes(path, fault):
     data = register()
-    p = data["profiles"][-1]
+    p = finite(data)
     target = p["admission"]
     if path:
         target = target[path]
@@ -167,7 +171,7 @@ def test_closed_nested_shapes(path, fault):
 
 def test_finite_selectors_remain_data_and_repaired_control_accepts():
     data = register()
-    p = data["profiles"][-1]
+    p = finite(data)
     a = p["admission"]
     a["source_sha256"] = "1" * 64
     a["projection_sha256"] = "2" * 64
@@ -211,7 +215,7 @@ def test_historical_other_provider_usage_approval_is_unchanged():
 @pytest.mark.parametrize("boundary,valid", [("zero", True), ("whole_count", False)])
 def test_zero_based_ordinal_boundaries_preserve_cardinality(boundary, valid):
     data = register()
-    p = data["profiles"][-1]
+    p = finite(data)
     a = p["admission"]
     index = 0 if boundary == "zero" else -1
     ordinal = 0 if boundary == "zero" else a["whole_record_count"]
@@ -225,7 +229,7 @@ def test_zero_based_ordinal_boundaries_preserve_cardinality(boundary, valid):
 def test_finite_diagnostic_policy_rejects_retagged_supported_proof(capability):
     data = register()
     original = copy.deepcopy(data)
-    p = data["profiles"][-1]
+    p = finite(data)
     p["capabilities"][capability] = "supported"
     proof = copy.deepcopy(p["approvals"][0])
     proof["capability"] = capability

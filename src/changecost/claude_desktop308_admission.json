@@ -1,0 +1,445 @@
+{
+  "profile_id": "claude-desktop-2-1-308-root-terminal",
+  "profile_digest": "7e3cf00757e1eca8c91782848c59913a9e19bb39b78c7a15edf7be370b906b55",
+  "approval_digest": "394a1b5958dc85a5b0728ab2b82130fcc9d6ee768b65dcb253618f0371913750",
+  "admission": {
+    "limits": {
+      "bytes": 10485760,
+      "records": 10000,
+      "depth": 32,
+      "token_digits": 4096
+    },
+    "event_key_recipe": [
+      "claude-project-event-v1",
+      "Claude",
+      "project-jsonl",
+      "sessionId",
+      "agentId-or-null",
+      "requestId",
+      "message.id"
+    ],
+    "fact_key_recipe": [
+      "claude-project-fact-v1",
+      "event_identity",
+      "request",
+      "source_category"
+    ],
+    "revision_key_recipe": [
+      "claude-project-revision-v1",
+      "fact_identity",
+      "canonical_native_meaning_with_source_stage"
+    ],
+    "source_id_recipe": [
+      "claude-project-source-id-v1",
+      "kind(session,agent)",
+      "raw_source_value"
+    ],
+    "source_categories": {
+      "input_tokens": "input_tokens",
+      "output_tokens": "output_tokens",
+      "cache_creation_input_tokens": "cache_write_input_tokens",
+      "cache_read_input_tokens": "cached_input_tokens"
+    },
+    "terminal_stop_reasons": [
+      "end_turn",
+      "tool_use"
+    ],
+    "kind": "claude-project-version-admission-v1",
+    "mapping_revision": "claude-desktop-root-terminal-r2",
+    "format": "jsonl",
+    "producer": {
+      "engine_version": "2.1.308",
+      "client_surface": "project-jsonl",
+      "client_build": null
+    },
+    "required_entrypoint": "claude-desktop",
+    "external_observed_desktop_build": "3.6556.2",
+    "native_evidence_id": "claude-desktop-308-native-minimized",
+    "producer_evidence_id": "claude-desktop-308-producer-binding",
+    "producer_evidence_kind": "external-native-metadata-association-not-controlled-probe",
+    "decisions": {
+      "authority": "Admit only explicitly selected project-jsonl assistant rows that each declare exact version 2.1.308 and entrypoint claude-desktop, exact assistant role, object usage, isSidechain=false and absent agentId. Each of the four aggregate categories must be present and an exact nonnegative JSON integer, not bool. Preserve an explicit literal zero as serialized-source quantity zero, without claiming native zero was observed or proving backend truth; never impute missing/null as zero. Missing, null and negative quantities reject. Preserve four serialized-source categories without totals. This reusable observed-shape mapping is not a finite file hash whitelist. Desktop app 3.6556.2 is external provenance evidence only; no runtime build authentication, served-model, backend, money, demand or calibration authority.",
+      "interval": "Request interval, served model/version, ownership, backend presence and completeness remain unknown. Coverage is partial_observed_subset. Finality final means only an approved serialized terminal shape with end_turn or tool_use; it does not mean final backend quantity, task success or session completion. A parentUuid alone grants no root or descendant ownership. Do not infer intervals from timestamps.",
+      "replay": "Retain the existing provider/project-surface/session/optional-agent/request/message event identity and category fact identity. Version, profile, entrypoint, filename, row ordinal and acquisition hash never mint a second contribution. Validate bidirectional request/message uniqueness, coherent event metadata and duplicate UUID meaning within the snapshot. Repeated rows for one event must agree on all four quantities and one raw supported stop reason within a snapshot. Across independently valid snapshots, end_turn/tool_use project to the existing final canonical meaning. Exact previously accepted four-category semantic facts replay as no-ops with original first-admission/evidence/acquisition provenance. Any same-event cross-profile or cross-version observation must consult accepted history before admission; if producer/profile association conflicts, reject the whole batch and preserve all 2.1.215 facts, never create a new event or correction.",
+      "reset": "No counter differencing, inferred epochs, row-order winner, maxima or parentUuid precedence. New request/message identities are distinct events only after relationship checks. Same-event reset-looking changes, unsupported stage or producer changes reject the whole batch. Declared source version and entrypoint are source claims, not cryptographic authentication.",
+      "correction": "NO Desktop 2.1.308 partial-to-terminal refinement, child contribution or quantitative correction is approved. Initial valid root terminal observations create four facts. Equal canonical accepted facts replay without revisions. Partial/null-stop observations, terminal quantity changes, unseen conflicting revisions, lineage changes, forks and resets reject atomically. Reject unapproved shapes even when their quantities are zero or they resemble error markers. Preserve 2.1.215 correction behavior under its own unchanged approval. This deliberately narrow Desktop mapping is not completion of broader Desktop lifecycle/correction coverage.",
+      "exclusions": "Use only the closed per-type top-level key subsets and explicit required/absent member predicates in classification. Key unions are upper bounds, not proof that every key occurs on every row. User requires object message, exact role=user and absent direct/message usage. Listed metadata types require absent direct usage and absent message. api-request-blob is separate: exact top-level keys hash/message/sessionId/type must all be present, direct usage absent, and immediate message.usage absent if message is an object. Its message JSON type is opaque and not constrained by retained evidence; no recursive payload inspection, nested-counter authority or usage-free claim. Present null never satisfies an absence guard. Unknown type/key, malformed excluded shape or unexpected direct/immediate usage rejects the whole batch. Do not use adjacent metadata to authenticate contributors. Ignore cache duration components, API blobs, totals, content, timestamps, tools and requested model for accounting. No automatic Run/Change binding, all-attempt coverage, money, demand, calibration or NativeUsage serializer changes. Explicitly exclude cost-state and mode under their recorded closed key upper bounds and the same metadata required type and absent message/direct usage predicates. Ignore all cost-state cost, modelUsage, duration and line-count contents and opaque mode values. Do not recursively parse modelUsage, sum costs, or infer money, demand or total usage authority."
+    },
+    "classification": {
+      "contributing_type": "assistant",
+      "contributing_shape": {
+        "message": "object",
+        "message.role": "assistant",
+        "message.usage": "object",
+        "version": "2.1.308",
+        "entrypoint": "claude-desktop",
+        "isSidechain": false,
+        "absent_members": [
+          "agentId",
+          "usage"
+        ],
+        "required_identity_members": [
+          "sessionId",
+          "requestId",
+          "message.id",
+          "uuid"
+        ],
+        "stop_reason": [
+          "end_turn",
+          "tool_use"
+        ],
+        "quantities": "each category present; exact integer >= 0; bool rejected; literal zero preserved; missing/null reject",
+        "allowed_top_level_keys": [
+          "advisorModel",
+          "apiBlockIndex",
+          "attributionMcpServer",
+          "attributionMcpTool",
+          "attributionPlugin",
+          "attributionSkill",
+          "cwd",
+          "effort",
+          "entrypoint",
+          "gitBranch",
+          "isSidechain",
+          "message",
+          "parentUuid",
+          "perTurnEffort",
+          "requestId",
+          "requestRef",
+          "requestedModel",
+          "serverClassifierRequest",
+          "sessionId",
+          "thinkingDisplay",
+          "thinkingDurationMs",
+          "timestamp",
+          "type",
+          "userType",
+          "uuid",
+          "version",
+          "wireIngestContext",
+          "wireToolInputs"
+        ]
+      },
+      "user": {
+        "type": "user",
+        "message": "object",
+        "message.role": "user",
+        "allowed_top_level_keys": [
+          "cwd",
+          "entrypoint",
+          "gitBranch",
+          "isMeta",
+          "isSidechain",
+          "message",
+          "origin",
+          "parentUuid",
+          "permissionDecision",
+          "permissionMode",
+          "promptId",
+          "promptSource",
+          "queueSkipAttachments",
+          "queueSkipSlashCommands",
+          "queueTranscriptOnly",
+          "sandboxed",
+          "serverClassifierContext",
+          "sessionId",
+          "sourceToolAssistantUUID",
+          "sourceToolUseID",
+          "timestamp",
+          "toolUseResult",
+          "turnCompanion",
+          "turnOrigin",
+          "turnPosition",
+          "type",
+          "userType",
+          "uuid",
+          "version"
+        ],
+        "required_members": [
+          "type",
+          "message"
+        ],
+        "absent_members": [
+          "usage",
+          "message.usage"
+        ]
+      },
+      "metadata": [
+        {
+          "type": "agent-name",
+          "allowed_top_level_keys": [
+            "agentName",
+            "sessionId",
+            "type"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "api-request",
+          "allowed_top_level_keys": [
+            "base",
+            "cacheControl",
+            "id",
+            "keep",
+            "params",
+            "querySource",
+            "requestDigest",
+            "sessionId",
+            "shapeHash",
+            "tail",
+            "timestamp",
+            "type",
+            "version"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "api-request-shape",
+          "allowed_top_level_keys": [
+            "sessionId",
+            "shape",
+            "shapeHash",
+            "timestamp",
+            "type",
+            "version"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "atis-latch",
+          "allowed_top_level_keys": [
+            "atis",
+            "sessionId",
+            "type"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "attachment",
+          "allowed_top_level_keys": [
+            "attachment",
+            "cwd",
+            "entrypoint",
+            "gitBranch",
+            "isSidechain",
+            "parentUuid",
+            "rendered",
+            "renderedBesideToolResult",
+            "renderedInHumanTurn",
+            "renderedRole",
+            "sessionId",
+            "timestamp",
+            "type",
+            "userType",
+            "uuid",
+            "version"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "custom-title",
+          "allowed_top_level_keys": [
+            "customTitle",
+            "sessionId",
+            "type"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "file-history-snapshot",
+          "allowed_top_level_keys": [
+            "isSnapshotUpdate",
+            "messageId",
+            "snapshot",
+            "type"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "last-prompt",
+          "allowed_top_level_keys": [
+            "lastPrompt",
+            "leafUuid",
+            "sessionId",
+            "type"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "queue-operation",
+          "allowed_top_level_keys": [
+            "commandUuid",
+            "content",
+            "deliveryId",
+            "operation",
+            "reason",
+            "sessionId",
+            "timestamp",
+            "type"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "system",
+          "allowed_top_level_keys": [
+            "cwd",
+            "entrypoint",
+            "gitBranch",
+            "hasOutput",
+            "hookAdditionalContext",
+            "hookCount",
+            "hookErrors",
+            "hookInfos",
+            "isSidechain",
+            "level",
+            "parentUuid",
+            "preventedContinuation",
+            "sessionId",
+            "stopReason",
+            "subtype",
+            "timestamp",
+            "toolUseID",
+            "type",
+            "userType",
+            "uuid",
+            "version"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "cost-state",
+          "allowed_top_level_keys": [
+            "hasUnknownModelCost",
+            "modelUsage",
+            "sessionId",
+            "startTime",
+            "totalAPIDuration",
+            "totalAPIDurationWithoutRetries",
+            "totalCostUSD",
+            "totalDuration",
+            "totalLinesAdded",
+            "totalLinesRemoved",
+            "totalToolDuration",
+            "type"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        },
+        {
+          "type": "mode",
+          "allowed_top_level_keys": [
+            "mode",
+            "sessionId",
+            "type"
+          ],
+          "required_members": [
+            "type"
+          ],
+          "absent_members": [
+            "message",
+            "usage"
+          ]
+        }
+      ],
+      "api_request_blob": {
+        "type": "api-request-blob",
+        "allowed_top_level_keys": [
+          "hash",
+          "message",
+          "sessionId",
+          "type"
+        ],
+        "required_members": [
+          "hash",
+          "message",
+          "sessionId",
+          "type"
+        ],
+        "exact_top_level_keys": [
+          "hash",
+          "message",
+          "sessionId",
+          "type"
+        ],
+        "absent_members": [
+          "usage"
+        ],
+        "message": "opaque JSON value; retained projection does not establish its type",
+        "conditional_absence": "if message is object, usage key must not be present in message",
+        "nested_payload": "do not inspect recursively; no counter or completeness authority"
+      },
+      "member_absence": "key_not_present; present_null_is_not_absence",
+      "unknown_types_or_keys": "reject_whole_snapshot",
+      "key_union_semantics": "upper bound on allowed top-level keys; only required_members must be present; unknown fields reject",
+      "excluded_nested_payload": "ignored_without_counter_claims_or_recursive_inspection"
+    },
+    "initial_stage_policy": "terminal_only_root_observations",
+    "correction_policy": "reject_unapproved_partial_child_and_quantity_changes",
+    "cross_profile_event_policy": "shared_identity_replay_or_reject_never_duplicate"
+  }
+}
