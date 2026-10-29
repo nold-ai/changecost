@@ -368,6 +368,41 @@ def test_stale_native_report_is_not_reused(monkeypatch, tmp_path):
     assert review.run(tmp_path, set()) == ["SpecFact produced no review report"]
 
 
+def test_runtime_diagnostic_workflow_requires_present_report():
+    from pathlib import Path
+
+    import yaml
+
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.load((root / ".github/workflows/quality.yml").read_text(), Loader=yaml.BaseLoader)
+    steps = {step.get("name"): step for step in config["jobs"]["quality"]["steps"]}
+    collector = steps["Collect privacy-safe runtime metadata"]
+    assert collector["if"] == "always() && hashFiles('.specfact/code-review.json') != ''"
+    assert "continue-on-error" not in collector
+    assert steps["Preserve native review evidence"]["if"] == "always()"
+
+
+@pytest.mark.parametrize("path,required", [("guide.md", False), ("tests/test_example.py", True)])
+def test_absent_native_report_respects_review_applicability(monkeypatch, tmp_path, path, required):
+    import subprocess
+
+    from quality import review
+    from quality.__main__ import evidence_gate
+
+    calls = []
+
+    def no_report(args, **kwargs):
+        calls.append(args)
+        return subprocess.CompletedProcess(args, 0)
+
+    monkeypatch.setattr(review.external_tools, "executable", lambda root, name: "/external/" + name)
+    monkeypatch.setattr(review.subprocess, "run", no_report)
+    errors = evidence_gate("review", tmp_path, set(), {path})
+    assert errors == (["SpecFact produced no review report"] if required else [])
+    assert bool(calls) is required
+    assert not (tmp_path / ".specfact/code-review.json").exists()
+
+
 def test_changelog_exception_is_bound_and_editorial_only(tmp_path):
     from quality.metadata import validate
     from quality.repository import digest

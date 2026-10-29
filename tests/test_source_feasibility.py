@@ -168,8 +168,14 @@ def test_matrix_drift_and_original_register_has_no_approvals():
 
 def test_exact_finite_profile_and_proof_activation():
     data = registry()
-    assert len(data["profiles"]) == 24
-    activated = [p for p in data["profiles"] if p["approvals"]]
+    assert len(data["profiles"]) == 26
+    all_activated = [p for p in data["profiles"] if p["approvals"]]
+    assert {p["id"] for p in all_activated} == {
+        "codex-desktop-0163-finite-diagnostics",
+        "claude-project-2-1-215-request-stages",
+        "claude-desktop-2-1-308-root-terminal",
+    }
+    activated = [p for p in all_activated if p["provider"] == "Codex"]
     assert len(activated) == 1
     assert (
         research.profile_digest(activated[0])

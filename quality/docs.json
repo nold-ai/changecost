@@ -1477,6 +1477,70 @@
         "openspec/specs/behavioral-evidence-review/spec.md"
       ],
       "kind": "manual"
+    },
+    {
+      "path": "docs/providers/evidence/claude-project-2-1-215-native-observations.md",
+      "owner": "provider-04-claude-local-import",
+      "sources": [
+        "docs/providers/evidence/claude-project-2-1-215-native-observations.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "docs/providers/evidence/claude-project-2-1-215-producer-controls.md",
+      "owner": "provider-04-claude-local-import",
+      "sources": [
+        "docs/providers/evidence/claude-project-2-1-215-producer-controls.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md",
+      "owner": "provider-04-claude-local-import",
+      "sources": [
+        "openspec/changes/provider-04-claude-local-import/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/TDD_EVIDENCE.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/design.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/proposal.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/specs/python-foundation/spec.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/specs/python-foundation/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/fix-optional-runtime-diagnostics/tasks.md",
+      "owner": "contributor-ci",
+      "sources": [
+        "openspec/changes/fix-optional-runtime-diagnostics/tasks.md"
+      ],
+      "kind": "manual"
     }
   ],
   "immutable": {
@@ -1487,6 +1551,14 @@
     "docs/research/deep-research-sources.txt": {
       "sha256": "3589251b1e713445080e9698deca5093e0f72bb23d44c3e6a3b6eca252be3396",
       "reason": "Immutable maintainer-supplied citation export."
+    },
+    "docs/providers/evidence/claude-desktop-2-1-308-native-observations.md": {
+      "reason": "Byte-exact independently approved Desktop q4 source statement; q3 historical bytes remain frozen in the local source and implementation snapshots. Draft wording records review input; canonical proof records approval.",
+      "sha256": "3becddbfa1621db4628f19c3b3b32e1cce311a51bf347f9c095388e0c6763661"
+    },
+    "docs/providers/evidence/claude-desktop-2-1-308-producer-binding.md": {
+      "reason": "Byte-exact independently approved Desktop q3 source statement; historical draft wording retained. Current approval lives in canonical register.",
+      "sha256": "3a9e2563df85d4059cd90d8e8823127d74ad6989ae8658eb80489474ff82362a"
     }
   }
 }

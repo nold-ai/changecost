@@ -1333,6 +1333,694 @@
           "kind": "Exact tagged producer source; historicalbinary attestation notclaimed"
         }
       ]
+    },
+    {
+      "id": "claude-project-2-1-215-request-stages",
+      "provider": "Claude",
+      "surface": "Claude Code project JSONL serialized request stages",
+      "version": "2.1.215",
+      "tier": "Historical authentication unknown; no monetary authority",
+      "acquisition": "Explicitly selected existing bounded stable regular JSONL; reusable version-specific relationship policy; no collection",
+      "evidence": [
+        {
+          "id": "claude-project-215-native-minimized",
+          "origin": "native",
+          "sha256": "1fa1bd40c556447d9ca14a00e9b108389c46185fe08d6bda69e0037319a016d6",
+          "scope": "Exact minimized native observation and bounded same-source noncontributor-classification statement in docs/providers/evidence/claude-project-2-1-215-native-observations.md. Its digest binds the public derived statement, not private source bytes. The unchanged original projections and separately hash-checked reacquisition receipt are linked only in ignored bindings; controlled-producer exclusion observations remain separately identified."
+        },
+        {
+          "id": "claude-project-215-producer-controls",
+          "origin": "producer",
+          "sha256": "8f44434f78f743b0424ce7326b5a7ec4b7a5867259fa00baa7d7693a5383bcbe",
+          "scope": "Exact public statement in docs/providers/evidence/claude-project-2-1-215-producer-controls.md. Actual authenticated 2.1.215 serialization of authored synthetic backend values; separate from historical native observations and provider consumption."
+        }
+      ],
+      "capabilities": {
+        "usage": "supported",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "message.usage.input_tokens": "NativeUsage.input_tokens; separate serialized source count or null.",
+        "message.usage.output_tokens": "NativeUsage.output_tokens; separate serialized source count or null.",
+        "message.usage.cache_creation_input_tokens": "NativeUsage.cache_write_input_tokens; aggregate only, duration subcategories excluded.",
+        "message.usage.cache_read_input_tokens": "NativeUsage.cached_input_tokens; separate serialized source count or null.",
+        "sessionId/agentId/requestId/message.id": "Provider/project-surface namespaced contribution with bidirectional request/message uniqueness; no raw identity persistence.",
+        "message.stop_reason": "Explicit null classifies partial serialized request stage. end_turn and tool_use classify the same final canonical accounting stage after valid per-snapshot grammar. Raw reason is neither stored accounting data nor a semantic fingerprint input.",
+        "version/isSidechain/agentId": "Every contributing record declares exact version; coherent root or sidechain event metadata. isSidechain and agent alone never establish concrete parent/root ownership.",
+        "noncontributing record types": "Closed structural exclusions only: user with exact user message role and absent direct/message usage; attachment, queue-operation, last-prompt and mode with absent top-level message/direct usage. Present null fails absence. No progress/system/unknown-type skip."
+      },
+      "requirements": [
+        "Independent approval must bind this exact profile digest and the native minimized statement digest before numeric admission.",
+        "The reusable mapping applies relationship predicates to future explicitly selected snapshots, never a finite private acquisition hash whitelist.",
+        "NativeUsage, Store and bundle validation must preserve exact Claude provider/profile/producer association, immutable first admission, historical replay and linear category refinement.",
+        "Only end_turn and tool_use are admitted terminal reasons. The tool_use composition is an explicit Medium-confidence inference from root controlled persistence plus native sidechain observations.",
+        "Declared source version and identity are trusted source claims, not cryptographic file authentication. Adversarial writer protection and arbitrary terminal corrections are unsupported.",
+        "Native finality is mapping-scoped serialized request stage. Full task usage, native demand, economic and calibration policies remain separate.",
+        "The normalized terminal accounting meaning is deliberate: within-file raw reason agreement is validated before end_turn/tool_use project to final; across valid snapshots equal final category quantities are the same canonical facts. No source_stop_reason field, serializer change or hidden reason hash is introduced.",
+        "Assistant usage without required identity rejects even when all counters are zero or client-error marker keys are present. Marker values and a positive executable client-error discriminator were not retained.",
+        "Preserve the full positive partial-to-terminal quantitative correction route, quantity-equal stage advancement, all-accepted-history replay and immutable four-category provenance; normalization grants no terminal quantity correction.",
+        "Use the exact closed admission.classification grammar for contributing assistant, user and four metadata types. Type names alone are insufficient. Missing-key checks distinguish absence from present null. Unknown or mismatched rows reject the whole selected snapshot; excluded nested payloads supply no canonical counters or completeness claim.",
+        "For an initial valid combined A+B snapshot, accept four partial originals and four terminal corrections in one current-time transaction with the same full-snapshot first acquisition and first admission. Current selected facts remain four terminal categories, never a sum of history. Initial terminal-only B accepts no partial history and every later unseen partial rejects even when paired with B. Counts distinguish current selected category facts from inserted history revisions and corrected category revisions."
+      ],
+      "admission": {
+        "kind": "claude-project-version-admission-v1",
+        "mapping_revision": "claude-project-request-stage-r4",
+        "format": "jsonl",
+        "producer": {
+          "engine_version": "2.1.215",
+          "client_surface": "project-jsonl",
+          "client_build": null
+        },
+        "limits": {
+          "bytes": 10485760,
+          "records": 10000,
+          "depth": 32,
+          "token_digits": 4096
+        },
+        "event_key_recipe": [
+          "claude-project-event-v1",
+          "Claude",
+          "project-jsonl",
+          "sessionId",
+          "agentId-or-null",
+          "requestId",
+          "message.id"
+        ],
+        "fact_key_recipe": [
+          "claude-project-fact-v1",
+          "event_identity",
+          "request",
+          "source_category"
+        ],
+        "revision_key_recipe": [
+          "claude-project-revision-v1",
+          "fact_identity",
+          "canonical_native_meaning_with_source_stage"
+        ],
+        "source_id_recipe": [
+          "claude-project-source-id-v1",
+          "kind(session,agent)",
+          "raw_source_value"
+        ],
+        "source_categories": {
+          "input_tokens": "input_tokens",
+          "output_tokens": "output_tokens",
+          "cache_creation_input_tokens": "cache_write_input_tokens",
+          "cache_read_input_tokens": "cached_input_tokens"
+        },
+        "terminal_stop_reasons": [
+          "end_turn",
+          "tool_use"
+        ],
+        "refinement_reason": "claude-serialized-stage-refinement",
+        "native_evidence_id": "claude-project-215-native-minimized",
+        "producer_evidence_id": "claude-project-215-producer-controls",
+        "decisions": {
+          "authority": "Support only explicitly selected Claude Code 2.1.215 project JSONL assistant request observations under the approved relationship grammar. Preserve input, output, aggregate cache-creation and cache-read as four separate serialized-source categories. Missing is null, explicit zero is zero. No category sums, reconstructed total, served-model proof, backend-presence certainty or complete usage authority.",
+          "interval": "Request interval, served model/version, scope completeness and backend presence remain unknown. Coverage is partial_observed_subset. NativeUsage finality partial/final denotes only the approved serialized request stage, never backend finality, task success, complete coverage or an immutable future backend total. Ownership state remains unknown; reported session/agent identity alone supplies no concrete parent or root.",
+          "replay": "Use provider/project-surface/session/optional-agent/request/message contribution identity independent of version, profile, filename, ordinal, batch or acquisition hash. Validate request/message identity in both directions, coherent event metadata and within-file duplicate UUID semantics. Collapse agreeing four-category vectors within each validated stage. Semantic revision identity uses existing stored NativeUsage meaning, including category, nullable quantity, serialized partial/final stage and coherent immutable metadata. After valid per-snapshot grammar, end_turn and tool_use have identical canonical accounting meaning. Equal terminal quantities across snapshots replay as the same final facts even when those supported reasons differ. Raw stop reason is classifier input only, never stored or hidden in identifiers or fingerprints. Resolve ALL accepted revisions, including original partial A after final B, as no-ops with first Evidence, acquisition and admission provenance. Unknown conflicting revisions abort the whole batch.",
+          "reset": "No counter differencing, inferred epochs, lifecycle reset, row-order precedence, maxima or generic parentUuid precedence. New request/message identities in resumed sessions are separate events. Reset-looking same-event changes and unsupported producer versions or stop reasons reject. Runtime does not authenticate an arbitrary file merely from its declared version.",
+          "correction": "Within ONE selected snapshot and logical event, explicit null-stop rows must agree on one canonical four-category vector. Supported terminal rows must agree on one raw supported reason, end_turn or tool_use, and one canonical vector before normalization. Missing, malformed or unsupported stop metadata rejects. Mixed terminal reasons within one snapshot reject even if quantities agree. First import may be partial-only or terminal. A first snapshot containing both a valid partial A vector and a valid terminal B vector accepts both stages atomically: four partial originals and four terminal revisions with those originals as predecessors and the fixed refinement reason. Both stages are recorded at this import time under this acquisition; no earlier import or acquisition is claimed. Only terminal B contributes current facts. This is the sole same-snapshot initial refinement route. The retained-A later-snapshot rule below applies when partial A was accepted before the current import. Existing partial A may advance once to terminal B only when the later snapshot retains canonical A in all four categories with the same immutable logical metadata. Append all four category revisions once from their current partial predecessors with fixed reason claude-serialized-stage-refinement. Quantity-equal stage advancement still appends because partial/final stage differs. Accepted A and B replay without downgrade. Equal terminal counts with a supported reason difference across valid snapshots are NOOP by deliberate canonical equivalence, not an approved native reason-mutation claim. Unseen partial C after B, changed terminal quantities D, absent retained A for refinement, stale predecessor, fork, cycle, post-terminal quantity correction or reset rejects the whole batch. Cross-snapshot UUID continuity is not promised.",
+          "exclusions": "Only project-jsonl surface and exact 2.1.215 contributing producer grammar are supported. Do not transfer approval to 2.1.257, 2.1.275, Desktop, IDE, SDK/result streams, JSON containers or SQLite. The canonical selector contributes only assistant rows with a message object, exact assistant role and usage object plus all required validated identities/producer/stage metadata. Exclude type=user only with a message object, exact role=user, ABSENT message.usage member and ABSENT direct usage member. Exclude type in {attachment,queue-operation,last-prompt,mode} only with ABSENT top-level message member and ABSENT direct usage member. Absence means the member is not present; present null does not qualify. Unknown type labels, mismatched excluded shapes and unexpected usage on excluded types reject the whole snapshot. No progress, system or other type is approved. Ignore nested excluded payloads without inspecting them recursively or granting counter/completeness authority. Assistant usage rows missing required session/request/message identity MUST reject, including all-zero and error-looking rows. The retained client-error projection proves marker KEY NAMES only, not values or a usable positive skip discriminator; do not skip by missing identity, zero counters, isApiErrorMessage/error/apiErrorStatus presence or guessed model labels. Unknown contributor grammar rejects. Exclude cache_creation duration subcategories, server tools, totals, reasoning, estimates, money, content, timestamps as intervals and nearby headers as producer authority. Preserve separate exact manual Evidence-to-Run-to-Change binding. No raw stop-reason history, full root/descendant/all-attempt coverage, automatic binding, demand learning, financial or calibration authority. Existing NativeUsage fields/serialization, finite Codex admission and historical evidence/approvals stay unchanged."
+        },
+        "classification": {
+          "contributing_type": "assistant",
+          "contributing_shape": {
+            "message": "object",
+            "message.role": "assistant",
+            "message.usage": "object"
+          },
+          "user": {
+            "type": "user",
+            "message": "object",
+            "message.role": "user",
+            "absent_members": [
+              "message.usage",
+              "usage"
+            ]
+          },
+          "metadata": {
+            "types": [
+              "attachment",
+              "queue-operation",
+              "last-prompt",
+              "mode"
+            ],
+            "absent_members": [
+              "message",
+              "usage"
+            ]
+          },
+          "member_absence": "key_not_present; present_null_is_not_absence",
+          "unknown_types": "reject_whole_snapshot",
+          "excluded_nested_payload": "ignored_without_counter_claims_or_recursive_inspection"
+        },
+        "initial_stage_policy": "accept_observed_partial_and_terminal_atomically_at_current_import"
+      },
+      "approvals": [
+        {
+          "capability": "usage",
+          "evidence_id": "claude-project-215-native-minimized",
+          "sha256": "1fa1bd40c556447d9ca14a00e9b108389c46185fe08d6bda69e0037319a016d6",
+          "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+          "reviewer": "claude37/implement/exact-profile-4-delta-review",
+          "decisions": {
+            "authority": "Support only explicitly selected Claude Code 2.1.215 project JSONL assistant request observations under the approved relationship grammar. Preserve input, output, aggregate cache-creation and cache-read as four separate serialized-source categories. Missing is null, explicit zero is zero. No category sums, reconstructed total, served-model proof, backend-presence certainty or complete usage authority.",
+            "interval": "Request interval, served model/version, scope completeness and backend presence remain unknown. Coverage is partial_observed_subset. NativeUsage finality partial/final denotes only the approved serialized request stage, never backend finality, task success, complete coverage or an immutable future backend total. Ownership state remains unknown; reported session/agent identity alone supplies no concrete parent or root.",
+            "replay": "Use provider/project-surface/session/optional-agent/request/message contribution identity independent of version, profile, filename, ordinal, batch or acquisition hash. Validate request/message identity in both directions, coherent event metadata and within-file duplicate UUID semantics. Collapse agreeing four-category vectors within each validated stage. Semantic revision identity uses existing stored NativeUsage meaning, including category, nullable quantity, serialized partial/final stage and coherent immutable metadata. After valid per-snapshot grammar, end_turn and tool_use have identical canonical accounting meaning. Equal terminal quantities across snapshots replay as the same final facts even when those supported reasons differ. Raw stop reason is classifier input only, never stored or hidden in identifiers or fingerprints. Resolve ALL accepted revisions, including original partial A after final B, as no-ops with first Evidence, acquisition and admission provenance. Unknown conflicting revisions abort the whole batch.",
+            "reset": "No counter differencing, inferred epochs, lifecycle reset, row-order precedence, maxima or generic parentUuid precedence. New request/message identities in resumed sessions are separate events. Reset-looking same-event changes and unsupported producer versions or stop reasons reject. Runtime does not authenticate an arbitrary file merely from its declared version.",
+            "correction": "Within ONE selected snapshot and logical event, explicit null-stop rows must agree on one canonical four-category vector. Supported terminal rows must agree on one raw supported reason, end_turn or tool_use, and one canonical vector before normalization. Missing, malformed or unsupported stop metadata rejects. Mixed terminal reasons within one snapshot reject even if quantities agree. First import may be partial-only or terminal. A first snapshot containing both a valid partial A vector and a valid terminal B vector accepts both stages atomically: four partial originals and four terminal revisions with those originals as predecessors and the fixed refinement reason. Both stages are recorded at this import time under this acquisition; no earlier import or acquisition is claimed. Only terminal B contributes current facts. This is the sole same-snapshot initial refinement route. The retained-A later-snapshot rule below applies when partial A was accepted before the current import. Existing partial A may advance once to terminal B only when the later snapshot retains canonical A in all four categories with the same immutable logical metadata. Append all four category revisions once from their current partial predecessors with fixed reason claude-serialized-stage-refinement. Quantity-equal stage advancement still appends because partial/final stage differs. Accepted A and B replay without downgrade. Equal terminal counts with a supported reason difference across valid snapshots are NOOP by deliberate canonical equivalence, not an approved native reason-mutation claim. Unseen partial C after B, changed terminal quantities D, absent retained A for refinement, stale predecessor, fork, cycle, post-terminal quantity correction or reset rejects the whole batch. Cross-snapshot UUID continuity is not promised.",
+            "exclusions": "Only project-jsonl surface and exact 2.1.215 contributing producer grammar are supported. Do not transfer approval to 2.1.257, 2.1.275, Desktop, IDE, SDK/result streams, JSON containers or SQLite. The canonical selector contributes only assistant rows with a message object, exact assistant role and usage object plus all required validated identities/producer/stage metadata. Exclude type=user only with a message object, exact role=user, ABSENT message.usage member and ABSENT direct usage member. Exclude type in {attachment,queue-operation,last-prompt,mode} only with ABSENT top-level message member and ABSENT direct usage member. Absence means the member is not present; present null does not qualify. Unknown type labels, mismatched excluded shapes and unexpected usage on excluded types reject the whole snapshot. No progress, system or other type is approved. Ignore nested excluded payloads without inspecting them recursively or granting counter/completeness authority. Assistant usage rows missing required session/request/message identity MUST reject, including all-zero and error-looking rows. The retained client-error projection proves marker KEY NAMES only, not values or a usable positive skip discriminator; do not skip by missing identity, zero counters, isApiErrorMessage/error/apiErrorStatus presence or guessed model labels. Unknown contributor grammar rejects. Exclude cache_creation duration subcategories, server tools, totals, reasoning, estimates, money, content, timestamps as intervals and nearby headers as producer authority. Preserve separate exact manual Evidence-to-Run-to-Change binding. No raw stop-reason history, full root/descendant/all-attempt coverage, automatic binding, demand learning, financial or calibration authority. Existing NativeUsage fields/serialization, finite Codex admission and historical evidence/approvals stay unchanged."
+          }
+        }
+      ],
+      "references": [
+        {
+          "url": "https://code.claude.com/docs/en/monitoring-usage",
+          "accessed": "2026-10-28",
+          "kind": "Current monitoring interface context only; not historical project-log authority"
+        },
+        {
+          "url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/2.1.215",
+          "accessed": "2026-10-28",
+          "kind": "Exact-version official package provenance inspected in retained producer evidence; fresh web retrieval unavailable to this owner"
+        }
+      ]
+    },
+    {
+      "id": "claude-desktop-2-1-308-root-terminal",
+      "provider": "Claude",
+      "surface": "Claude Desktop embedded-engine project JSONL root terminal observations",
+      "version": "2.1.308",
+      "tier": "Historical authentication unknown; no monetary authority",
+      "acquisition": "Explicitly selected bounded stable regular JSONL under exact contributor version/entrypoint guards; frozen native evidence; no new collection",
+      "evidence": [
+        {
+          "id": "claude-desktop-308-native-minimized",
+          "origin": "native",
+          "sha256": "3becddbfa1621db4628f19c3b3b32e1cce311a51bf347f9c095388e0c6763661",
+          "scope": "Exact sanitized-native-evidence.md derived statement; not raw source bytes. Private frozen source bindings remain ignored."
+        },
+        {
+          "id": "claude-desktop-308-producer-binding",
+          "origin": "producer",
+          "sha256": "3a9e2563df85d4059cd90d8e8823127d74ad6989ae8658eb80489474ff82362a",
+          "scope": "Exact producer-binding-evidence.md external Desktop metadata association statement; not a controlled producer probe, runtime build check or raw metadata bytes."
+        }
+      ],
+      "capabilities": {
+        "usage": "supported",
+        "attribution": "partial",
+        "billed_money": "unverified",
+        "finality": "unverified"
+      },
+      "fields": {
+        "message.usage.input_tokens": "NativeUsage.input_tokens; separately preserved exact nonnegative serialized source integer; missing/null reject.",
+        "message.usage.output_tokens": "NativeUsage.output_tokens; separately preserved exact nonnegative serialized source integer; missing/null reject.",
+        "message.usage.cache_creation_input_tokens": "NativeUsage.cache_write_input_tokens; aggregate only, duration subcategories excluded.",
+        "message.usage.cache_read_input_tokens": "NativeUsage.cached_input_tokens; separately preserved exact nonnegative serialized source integer; missing/null reject."
+      },
+      "requirements": [
+        "Independent source approval must bind this exact profile digest, native statement and all six decisions before any numeric admission. approvals is empty in this draft.",
+        "The reusable mapping is limited to root terminal-shaped observations with four explicitly present exact nonnegative integer categories. Literal zero is preserved as source zero; missing/null reject. Native zero was not observed. This does not complete broader Desktop lifecycle or correction support.",
+        "Preserve immutable exact 2.1.215 profile, its positive correction route, and finite Codex mapping.",
+        "Every contributor independently declares exact engine 2.1.308 and entrypoint claude-desktop; external Desktop build metadata is not a JSONL runtime guard.",
+        "Unknown, partial, child, changed-quantity or malformed observations reject the whole selected batch without partial store writes.",
+        "Existing NativeUsage model and serializer remain unchanged. Unknown ownership, served model, request interval, backend presence and completeness remain explicit.",
+        "The message-bearing API blob exclusion intentionally has no message-type assertion because the retained projection did not record that type. Independent review must approve this explicit opaque-member policy or request additional bounded structural evidence."
+      ],
+      "admission": {
+        "limits": {
+          "bytes": 10485760,
+          "records": 10000,
+          "depth": 32,
+          "token_digits": 4096
+        },
+        "event_key_recipe": [
+          "claude-project-event-v1",
+          "Claude",
+          "project-jsonl",
+          "sessionId",
+          "agentId-or-null",
+          "requestId",
+          "message.id"
+        ],
+        "fact_key_recipe": [
+          "claude-project-fact-v1",
+          "event_identity",
+          "request",
+          "source_category"
+        ],
+        "revision_key_recipe": [
+          "claude-project-revision-v1",
+          "fact_identity",
+          "canonical_native_meaning_with_source_stage"
+        ],
+        "source_id_recipe": [
+          "claude-project-source-id-v1",
+          "kind(session,agent)",
+          "raw_source_value"
+        ],
+        "source_categories": {
+          "input_tokens": "input_tokens",
+          "output_tokens": "output_tokens",
+          "cache_creation_input_tokens": "cache_write_input_tokens",
+          "cache_read_input_tokens": "cached_input_tokens"
+        },
+        "terminal_stop_reasons": [
+          "end_turn",
+          "tool_use"
+        ],
+        "kind": "claude-project-version-admission-v1",
+        "mapping_revision": "claude-desktop-root-terminal-r2",
+        "format": "jsonl",
+        "producer": {
+          "engine_version": "2.1.308",
+          "client_surface": "project-jsonl",
+          "client_build": null
+        },
+        "required_entrypoint": "claude-desktop",
+        "external_observed_desktop_build": "3.6556.2",
+        "native_evidence_id": "claude-desktop-308-native-minimized",
+        "producer_evidence_id": "claude-desktop-308-producer-binding",
+        "producer_evidence_kind": "external-native-metadata-association-not-controlled-probe",
+        "decisions": {
+          "authority": "Admit only explicitly selected project-jsonl assistant rows that each declare exact version 2.1.308 and entrypoint claude-desktop, exact assistant role, object usage, isSidechain=false and absent agentId. Each of the four aggregate categories must be present and an exact nonnegative JSON integer, not bool. Preserve an explicit literal zero as serialized-source quantity zero, without claiming native zero was observed or proving backend truth; never impute missing/null as zero. Missing, null and negative quantities reject. Preserve four serialized-source categories without totals. This reusable observed-shape mapping is not a finite file hash whitelist. Desktop app 3.6556.2 is external provenance evidence only; no runtime build authentication, served-model, backend, money, demand or calibration authority.",
+          "interval": "Request interval, served model/version, ownership, backend presence and completeness remain unknown. Coverage is partial_observed_subset. Finality final means only an approved serialized terminal shape with end_turn or tool_use; it does not mean final backend quantity, task success or session completion. A parentUuid alone grants no root or descendant ownership. Do not infer intervals from timestamps.",
+          "replay": "Retain the existing provider/project-surface/session/optional-agent/request/message event identity and category fact identity. Version, profile, entrypoint, filename, row ordinal and acquisition hash never mint a second contribution. Validate bidirectional request/message uniqueness, coherent event metadata and duplicate UUID meaning within the snapshot. Repeated rows for one event must agree on all four quantities and one raw supported stop reason within a snapshot. Across independently valid snapshots, end_turn/tool_use project to the existing final canonical meaning. Exact previously accepted four-category semantic facts replay as no-ops with original first-admission/evidence/acquisition provenance. Any same-event cross-profile or cross-version observation must consult accepted history before admission; if producer/profile association conflicts, reject the whole batch and preserve all 2.1.215 facts, never create a new event or correction.",
+          "reset": "No counter differencing, inferred epochs, row-order winner, maxima or parentUuid precedence. New request/message identities are distinct events only after relationship checks. Same-event reset-looking changes, unsupported stage or producer changes reject the whole batch. Declared source version and entrypoint are source claims, not cryptographic authentication.",
+          "correction": "NO Desktop 2.1.308 partial-to-terminal refinement, child contribution or quantitative correction is approved. Initial valid root terminal observations create four facts. Equal canonical accepted facts replay without revisions. Partial/null-stop observations, terminal quantity changes, unseen conflicting revisions, lineage changes, forks and resets reject atomically. Reject unapproved shapes even when their quantities are zero or they resemble error markers. Preserve 2.1.215 correction behavior under its own unchanged approval. This deliberately narrow Desktop mapping is not completion of broader Desktop lifecycle/correction coverage.",
+          "exclusions": "Use only the closed per-type top-level key subsets and explicit required/absent member predicates in classification. Key unions are upper bounds, not proof that every key occurs on every row. User requires object message, exact role=user and absent direct/message usage. Listed metadata types require absent direct usage and absent message. api-request-blob is separate: exact top-level keys hash/message/sessionId/type must all be present, direct usage absent, and immediate message.usage absent if message is an object. Its message JSON type is opaque and not constrained by retained evidence; no recursive payload inspection, nested-counter authority or usage-free claim. Present null never satisfies an absence guard. Unknown type/key, malformed excluded shape or unexpected direct/immediate usage rejects the whole batch. Do not use adjacent metadata to authenticate contributors. Ignore cache duration components, API blobs, totals, content, timestamps, tools and requested model for accounting. No automatic Run/Change binding, all-attempt coverage, money, demand, calibration or NativeUsage serializer changes. Explicitly exclude cost-state and mode under their recorded closed key upper bounds and the same metadata required type and absent message/direct usage predicates. Ignore all cost-state cost, modelUsage, duration and line-count contents and opaque mode values. Do not recursively parse modelUsage, sum costs, or infer money, demand or total usage authority."
+        },
+        "classification": {
+          "contributing_type": "assistant",
+          "contributing_shape": {
+            "message": "object",
+            "message.role": "assistant",
+            "message.usage": "object",
+            "version": "2.1.308",
+            "entrypoint": "claude-desktop",
+            "isSidechain": false,
+            "absent_members": [
+              "agentId",
+              "usage"
+            ],
+            "required_identity_members": [
+              "sessionId",
+              "requestId",
+              "message.id",
+              "uuid"
+            ],
+            "stop_reason": [
+              "end_turn",
+              "tool_use"
+            ],
+            "quantities": "each category present; exact integer >= 0; bool rejected; literal zero preserved; missing/null reject",
+            "allowed_top_level_keys": [
+              "advisorModel",
+              "apiBlockIndex",
+              "attributionMcpServer",
+              "attributionMcpTool",
+              "attributionPlugin",
+              "attributionSkill",
+              "cwd",
+              "effort",
+              "entrypoint",
+              "gitBranch",
+              "isSidechain",
+              "message",
+              "parentUuid",
+              "perTurnEffort",
+              "requestId",
+              "requestRef",
+              "requestedModel",
+              "serverClassifierRequest",
+              "sessionId",
+              "thinkingDisplay",
+              "thinkingDurationMs",
+              "timestamp",
+              "type",
+              "userType",
+              "uuid",
+              "version",
+              "wireIngestContext",
+              "wireToolInputs"
+            ]
+          },
+          "user": {
+            "type": "user",
+            "message": "object",
+            "message.role": "user",
+            "allowed_top_level_keys": [
+              "cwd",
+              "entrypoint",
+              "gitBranch",
+              "isMeta",
+              "isSidechain",
+              "message",
+              "origin",
+              "parentUuid",
+              "permissionDecision",
+              "permissionMode",
+              "promptId",
+              "promptSource",
+              "queueSkipAttachments",
+              "queueSkipSlashCommands",
+              "queueTranscriptOnly",
+              "sandboxed",
+              "serverClassifierContext",
+              "sessionId",
+              "sourceToolAssistantUUID",
+              "sourceToolUseID",
+              "timestamp",
+              "toolUseResult",
+              "turnCompanion",
+              "turnOrigin",
+              "turnPosition",
+              "type",
+              "userType",
+              "uuid",
+              "version"
+            ],
+            "required_members": [
+              "type",
+              "message"
+            ],
+            "absent_members": [
+              "usage",
+              "message.usage"
+            ]
+          },
+          "metadata": [
+            {
+              "type": "agent-name",
+              "allowed_top_level_keys": [
+                "agentName",
+                "sessionId",
+                "type"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "api-request",
+              "allowed_top_level_keys": [
+                "base",
+                "cacheControl",
+                "id",
+                "keep",
+                "params",
+                "querySource",
+                "requestDigest",
+                "sessionId",
+                "shapeHash",
+                "tail",
+                "timestamp",
+                "type",
+                "version"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "api-request-shape",
+              "allowed_top_level_keys": [
+                "sessionId",
+                "shape",
+                "shapeHash",
+                "timestamp",
+                "type",
+                "version"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "atis-latch",
+              "allowed_top_level_keys": [
+                "atis",
+                "sessionId",
+                "type"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "attachment",
+              "allowed_top_level_keys": [
+                "attachment",
+                "cwd",
+                "entrypoint",
+                "gitBranch",
+                "isSidechain",
+                "parentUuid",
+                "rendered",
+                "renderedBesideToolResult",
+                "renderedInHumanTurn",
+                "renderedRole",
+                "sessionId",
+                "timestamp",
+                "type",
+                "userType",
+                "uuid",
+                "version"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "custom-title",
+              "allowed_top_level_keys": [
+                "customTitle",
+                "sessionId",
+                "type"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "file-history-snapshot",
+              "allowed_top_level_keys": [
+                "isSnapshotUpdate",
+                "messageId",
+                "snapshot",
+                "type"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "last-prompt",
+              "allowed_top_level_keys": [
+                "lastPrompt",
+                "leafUuid",
+                "sessionId",
+                "type"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "queue-operation",
+              "allowed_top_level_keys": [
+                "commandUuid",
+                "content",
+                "deliveryId",
+                "operation",
+                "reason",
+                "sessionId",
+                "timestamp",
+                "type"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "system",
+              "allowed_top_level_keys": [
+                "cwd",
+                "entrypoint",
+                "gitBranch",
+                "hasOutput",
+                "hookAdditionalContext",
+                "hookCount",
+                "hookErrors",
+                "hookInfos",
+                "isSidechain",
+                "level",
+                "parentUuid",
+                "preventedContinuation",
+                "sessionId",
+                "stopReason",
+                "subtype",
+                "timestamp",
+                "toolUseID",
+                "type",
+                "userType",
+                "uuid",
+                "version"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "cost-state",
+              "allowed_top_level_keys": [
+                "hasUnknownModelCost",
+                "modelUsage",
+                "sessionId",
+                "startTime",
+                "totalAPIDuration",
+                "totalAPIDurationWithoutRetries",
+                "totalCostUSD",
+                "totalDuration",
+                "totalLinesAdded",
+                "totalLinesRemoved",
+                "totalToolDuration",
+                "type"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            },
+            {
+              "type": "mode",
+              "allowed_top_level_keys": [
+                "mode",
+                "sessionId",
+                "type"
+              ],
+              "required_members": [
+                "type"
+              ],
+              "absent_members": [
+                "message",
+                "usage"
+              ]
+            }
+          ],
+          "api_request_blob": {
+            "type": "api-request-blob",
+            "allowed_top_level_keys": [
+              "hash",
+              "message",
+              "sessionId",
+              "type"
+            ],
+            "required_members": [
+              "hash",
+              "message",
+              "sessionId",
+              "type"
+            ],
+            "exact_top_level_keys": [
+              "hash",
+              "message",
+              "sessionId",
+              "type"
+            ],
+            "absent_members": [
+              "usage"
+            ],
+            "message": "opaque JSON value; retained projection does not establish its type",
+            "conditional_absence": "if message is object, usage key must not be present in message",
+            "nested_payload": "do not inspect recursively; no counter or completeness authority"
+          },
+          "member_absence": "key_not_present; present_null_is_not_absence",
+          "unknown_types_or_keys": "reject_whole_snapshot",
+          "key_union_semantics": "upper bound on allowed top-level keys; only required_members must be present; unknown fields reject",
+          "excluded_nested_payload": "ignored_without_counter_claims_or_recursive_inspection"
+        },
+        "initial_stage_policy": "terminal_only_root_observations",
+        "correction_policy": "reject_unapproved_partial_child_and_quantity_changes",
+        "cross_profile_event_policy": "shared_identity_replay_or_reject_never_duplicate"
+      },
+      "approvals": [
+        {
+          "capability": "usage",
+          "evidence_id": "claude-desktop-308-native-minimized",
+          "sha256": "3becddbfa1621db4628f19c3b3b32e1cce311a51bf347f9c095388e0c6763661",
+          "profile_digest": "7e3cf00757e1eca8c91782848c59913a9e19bb39b78c7a15edf7be370b906b55",
+          "reviewer": "Independent Codex source approval reviewer /root/desktop308_q4_exact_source_approval",
+          "reviewed_at": "2026-10-28T23:33:08.060704+01:00",
+          "decisions": {
+            "authority": "Admit only explicitly selected project-jsonl assistant rows that each declare exact version 2.1.308 and entrypoint claude-desktop, exact assistant role, object usage, isSidechain=false and absent agentId. Each of the four aggregate categories must be present and an exact nonnegative JSON integer, not bool. Preserve an explicit literal zero as serialized-source quantity zero, without claiming native zero was observed or proving backend truth; never impute missing/null as zero. Missing, null and negative quantities reject. Preserve four serialized-source categories without totals. This reusable observed-shape mapping is not a finite file hash whitelist. Desktop app 3.6556.2 is external provenance evidence only; no runtime build authentication, served-model, backend, money, demand or calibration authority.",
+            "interval": "Request interval, served model/version, ownership, backend presence and completeness remain unknown. Coverage is partial_observed_subset. Finality final means only an approved serialized terminal shape with end_turn or tool_use; it does not mean final backend quantity, task success or session completion. A parentUuid alone grants no root or descendant ownership. Do not infer intervals from timestamps.",
+            "replay": "Retain the existing provider/project-surface/session/optional-agent/request/message event identity and category fact identity. Version, profile, entrypoint, filename, row ordinal and acquisition hash never mint a second contribution. Validate bidirectional request/message uniqueness, coherent event metadata and duplicate UUID meaning within the snapshot. Repeated rows for one event must agree on all four quantities and one raw supported stop reason within a snapshot. Across independently valid snapshots, end_turn/tool_use project to the existing final canonical meaning. Exact previously accepted four-category semantic facts replay as no-ops with original first-admission/evidence/acquisition provenance. Any same-event cross-profile or cross-version observation must consult accepted history before admission; if producer/profile association conflicts, reject the whole batch and preserve all 2.1.215 facts, never create a new event or correction.",
+            "reset": "No counter differencing, inferred epochs, row-order winner, maxima or parentUuid precedence. New request/message identities are distinct events only after relationship checks. Same-event reset-looking changes, unsupported stage or producer changes reject the whole batch. Declared source version and entrypoint are source claims, not cryptographic authentication.",
+            "correction": "NO Desktop 2.1.308 partial-to-terminal refinement, child contribution or quantitative correction is approved. Initial valid root terminal observations create four facts. Equal canonical accepted facts replay without revisions. Partial/null-stop observations, terminal quantity changes, unseen conflicting revisions, lineage changes, forks and resets reject atomically. Reject unapproved shapes even when their quantities are zero or they resemble error markers. Preserve 2.1.215 correction behavior under its own unchanged approval. This deliberately narrow Desktop mapping is not completion of broader Desktop lifecycle/correction coverage.",
+            "exclusions": "Use only the closed per-type top-level key subsets and explicit required/absent member predicates in classification. Key unions are upper bounds, not proof that every key occurs on every row. User requires object message, exact role=user and absent direct/message usage. Listed metadata types require absent direct usage and absent message. api-request-blob is separate: exact top-level keys hash/message/sessionId/type must all be present, direct usage absent, and immediate message.usage absent if message is an object. Its message JSON type is opaque and not constrained by retained evidence; no recursive payload inspection, nested-counter authority or usage-free claim. Present null never satisfies an absence guard. Unknown type/key, malformed excluded shape or unexpected direct/immediate usage rejects the whole batch. Do not use adjacent metadata to authenticate contributors. Ignore cache duration components, API blobs, totals, content, timestamps, tools and requested model for accounting. No automatic Run/Change binding, all-attempt coverage, money, demand, calibration or NativeUsage serializer changes. Explicitly exclude cost-state and mode under their recorded closed key upper bounds and the same metadata required type and absent message/direct usage predicates. Ignore all cost-state cost, modelUsage, duration and line-count contents and opaque mode values. Do not recursively parse modelUsage, sum costs, or infer money, demand or total usage authority."
+          }
+        }
+      ],
+      "references": [
+        {
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+          "accessed": "2026-10-28",
+          "kind": "Primary API cache-category context only, freshly accessed by parent; not a versioned Desktop project-JSONL accounting contract."
+        },
+        {
+          "url": "https://code.claude.com/docs/en/desktop",
+          "accessed": "2026-10-28",
+          "kind": "Primary Desktop product/environment context only, freshly accessed by parent; no persisted accounting approval follows."
+        }
+      ]
     }
   ]
 }

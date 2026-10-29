@@ -3,6 +3,34 @@
 
 ## Unreleased
 
+- Index retained Claude event history once per atomic import, preserving global
+  identity conflicts, replay, refinement and first provenance as history grows.
+
+- Skip optional CI runtime diagnostics when no native review report exists;
+  preserve required-review failures and validation of present reports.
+
+- Simplify Claude source validation and native-history checks while preserving
+  admission, diagnostic and refinement behavior. Normalize ANSI styling in the
+  CLI help test and retain all lifecycle and corruption assertions. The failed
+  Linux CI evidence remains recorded; fresh supported-Linux assurance is required.
+
+- Enforce UTF-8 parsing before Claude JSON interpretation so UTF-16/32 cannot
+  bypass the depth bound; preserve UTF-8 BOM compatibility and byte line boundaries.
+- Add independently approved Desktop 2.1.308 root terminal import through the
+  existing Claude project operation. Preserve four present integer counters and
+  first provenance; reject partial/child/correction shapes and cross-profile
+  identity conflicts atomically. Exclude approved cost-state/mode metadata without
+  interpreting modelUsage or costs. Keep exact 2.1.215 corrections and finite Codex
+  intact. This adds no collection, demand, billing or calibration authority.
+
+- Implement explicit Claude Code 2.1.215 project JSONL import under independently
+  approved mapping r4. Preserve four nullable categories, atomic partial-to-terminal
+  corrections, accepted-stage replay and separate manual binding. Initial combined
+  stages record eight history revisions at current import time. Add portable-history
+  checks and safe acquisition diagnostics. Other versions, surfaces, collection,
+  demand, financial and calibration authority remain excluded. Focused checks pass;
+  aggregate and supported-Linux verification remain pending.
+
 - Prepare #17's separate live assessment with pending operator decisions, a private
   documentation-only manifest, authority/runtime gates and per-task closure checks.
   Require task 3.4 to reference approved published aggregates before closure.

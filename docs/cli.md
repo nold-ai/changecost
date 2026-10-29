@@ -222,3 +222,25 @@ uses disposable stores and ignores the ordinary `--db` destination. Optional
 `--measure-runs 5` adds separate timing observations. Invalid inputs and economic
 comparison errors exit with code 2. See the [evaluation guide](pilot/evaluation.md)
 for case checkpoints, safe inputs, formulas and the permanent synthetic-only limit.
+
+### Claude project import
+
+`settle --import-claude-project PATH --repository-id REPO --source-profile
+claude-project-2-1-215-request-stages --source-sha256 SHA` imports explicitly selected
+2.1.215 project JSONL diagnostics using the packaged approved mapping. It returns
+exact Evidence references and history/replay/correction counts. See the
+[Claude import guide](settlement.md#import-approved-claude-project-diagnostics)
+for count units, refinement, manual binding, limits and authority boundaries.
+
+Use `--source-profile claude-desktop-2-1-308-root-terminal` for the separately
+approved Desktop 2.1.308 root terminal grammar through the same import operation.
+Four present nonnegative integer counters are required; partial/child observations
+and corrections reject. Exact contributor version and entrypoint are required.
+Same-event cross-profile conflicts reject atomically. See the
+[Desktop limits](settlement.md#desktop-21308-root-terminal-diagnostics).
+
+Claude project import accepts UTF-8 JSONL, with an optional UTF-8 BOM per line
+as a compatibility extension.
+UTF-16/32 and malformed UTF-8 reject before persistence. Byte-delimited JSONL
+lines retain valid Unicode line characters inside strings; escaped quotes do not
+waive the depth-32 bound. This applies to both approved Claude profiles.

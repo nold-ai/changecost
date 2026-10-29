@@ -1,0 +1,100 @@
+{
+  "profile_id": "claude-project-2-1-215-request-stages",
+  "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+  "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5",
+  "admission": {
+    "kind": "claude-project-version-admission-v1",
+    "mapping_revision": "claude-project-request-stage-r4",
+    "format": "jsonl",
+    "producer": {
+      "engine_version": "2.1.215",
+      "client_surface": "project-jsonl",
+      "client_build": null
+    },
+    "limits": {
+      "bytes": 10485760,
+      "records": 10000,
+      "depth": 32,
+      "token_digits": 4096
+    },
+    "event_key_recipe": [
+      "claude-project-event-v1",
+      "Claude",
+      "project-jsonl",
+      "sessionId",
+      "agentId-or-null",
+      "requestId",
+      "message.id"
+    ],
+    "fact_key_recipe": [
+      "claude-project-fact-v1",
+      "event_identity",
+      "request",
+      "source_category"
+    ],
+    "revision_key_recipe": [
+      "claude-project-revision-v1",
+      "fact_identity",
+      "canonical_native_meaning_with_source_stage"
+    ],
+    "source_id_recipe": [
+      "claude-project-source-id-v1",
+      "kind(session,agent)",
+      "raw_source_value"
+    ],
+    "source_categories": {
+      "input_tokens": "input_tokens",
+      "output_tokens": "output_tokens",
+      "cache_creation_input_tokens": "cache_write_input_tokens",
+      "cache_read_input_tokens": "cached_input_tokens"
+    },
+    "terminal_stop_reasons": [
+      "end_turn",
+      "tool_use"
+    ],
+    "refinement_reason": "claude-serialized-stage-refinement",
+    "native_evidence_id": "claude-project-215-native-minimized",
+    "producer_evidence_id": "claude-project-215-producer-controls",
+    "decisions": {
+      "authority": "Support only explicitly selected Claude Code 2.1.215 project JSONL assistant request observations under the approved relationship grammar. Preserve input, output, aggregate cache-creation and cache-read as four separate serialized-source categories. Missing is null, explicit zero is zero. No category sums, reconstructed total, served-model proof, backend-presence certainty or complete usage authority.",
+      "interval": "Request interval, served model/version, scope completeness and backend presence remain unknown. Coverage is partial_observed_subset. NativeUsage finality partial/final denotes only the approved serialized request stage, never backend finality, task success, complete coverage or an immutable future backend total. Ownership state remains unknown; reported session/agent identity alone supplies no concrete parent or root.",
+      "replay": "Use provider/project-surface/session/optional-agent/request/message contribution identity independent of version, profile, filename, ordinal, batch or acquisition hash. Validate request/message identity in both directions, coherent event metadata and within-file duplicate UUID semantics. Collapse agreeing four-category vectors within each validated stage. Semantic revision identity uses existing stored NativeUsage meaning, including category, nullable quantity, serialized partial/final stage and coherent immutable metadata. After valid per-snapshot grammar, end_turn and tool_use have identical canonical accounting meaning. Equal terminal quantities across snapshots replay as the same final facts even when those supported reasons differ. Raw stop reason is classifier input only, never stored or hidden in identifiers or fingerprints. Resolve ALL accepted revisions, including original partial A after final B, as no-ops with first Evidence, acquisition and admission provenance. Unknown conflicting revisions abort the whole batch.",
+      "reset": "No counter differencing, inferred epochs, lifecycle reset, row-order precedence, maxima or generic parentUuid precedence. New request/message identities in resumed sessions are separate events. Reset-looking same-event changes and unsupported producer versions or stop reasons reject. Runtime does not authenticate an arbitrary file merely from its declared version.",
+      "correction": "Within ONE selected snapshot and logical event, explicit null-stop rows must agree on one canonical four-category vector. Supported terminal rows must agree on one raw supported reason, end_turn or tool_use, and one canonical vector before normalization. Missing, malformed or unsupported stop metadata rejects. Mixed terminal reasons within one snapshot reject even if quantities agree. First import may be partial-only or terminal. A first snapshot containing both a valid partial A vector and a valid terminal B vector accepts both stages atomically: four partial originals and four terminal revisions with those originals as predecessors and the fixed refinement reason. Both stages are recorded at this import time under this acquisition; no earlier import or acquisition is claimed. Only terminal B contributes current facts. This is the sole same-snapshot initial refinement route. The retained-A later-snapshot rule below applies when partial A was accepted before the current import. Existing partial A may advance once to terminal B only when the later snapshot retains canonical A in all four categories with the same immutable logical metadata. Append all four category revisions once from their current partial predecessors with fixed reason claude-serialized-stage-refinement. Quantity-equal stage advancement still appends because partial/final stage differs. Accepted A and B replay without downgrade. Equal terminal counts with a supported reason difference across valid snapshots are NOOP by deliberate canonical equivalence, not an approved native reason-mutation claim. Unseen partial C after B, changed terminal quantities D, absent retained A for refinement, stale predecessor, fork, cycle, post-terminal quantity correction or reset rejects the whole batch. Cross-snapshot UUID continuity is not promised.",
+      "exclusions": "Only project-jsonl surface and exact 2.1.215 contributing producer grammar are supported. Do not transfer approval to 2.1.257, 2.1.275, Desktop, IDE, SDK/result streams, JSON containers or SQLite. The canonical selector contributes only assistant rows with a message object, exact assistant role and usage object plus all required validated identities/producer/stage metadata. Exclude type=user only with a message object, exact role=user, ABSENT message.usage member and ABSENT direct usage member. Exclude type in {attachment,queue-operation,last-prompt,mode} only with ABSENT top-level message member and ABSENT direct usage member. Absence means the member is not present; present null does not qualify. Unknown type labels, mismatched excluded shapes and unexpected usage on excluded types reject the whole snapshot. No progress, system or other type is approved. Ignore nested excluded payloads without inspecting them recursively or granting counter/completeness authority. Assistant usage rows missing required session/request/message identity MUST reject, including all-zero and error-looking rows. The retained client-error projection proves marker KEY NAMES only, not values or a usable positive skip discriminator; do not skip by missing identity, zero counters, isApiErrorMessage/error/apiErrorStatus presence or guessed model labels. Unknown contributor grammar rejects. Exclude cache_creation duration subcategories, server tools, totals, reasoning, estimates, money, content, timestamps as intervals and nearby headers as producer authority. Preserve separate exact manual Evidence-to-Run-to-Change binding. No raw stop-reason history, full root/descendant/all-attempt coverage, automatic binding, demand learning, financial or calibration authority. Existing NativeUsage fields/serialization, finite Codex admission and historical evidence/approvals stay unchanged."
+    },
+    "classification": {
+      "contributing_type": "assistant",
+      "contributing_shape": {
+        "message": "object",
+        "message.role": "assistant",
+        "message.usage": "object"
+      },
+      "user": {
+        "type": "user",
+        "message": "object",
+        "message.role": "user",
+        "absent_members": [
+          "message.usage",
+          "usage"
+        ]
+      },
+      "metadata": {
+        "types": [
+          "attachment",
+          "queue-operation",
+          "last-prompt",
+          "mode"
+        ],
+        "absent_members": [
+          "message",
+          "usage"
+        ]
+      },
+      "member_absence": "key_not_present; present_null_is_not_absence",
+      "unknown_types": "reject_whole_snapshot",
+      "excluded_nested_payload": "ignored_without_counter_claims_or_recursive_inspection"
+    },
+    "initial_stage_policy": "accept_observed_partial_and_terminal_atomically_at_current_import"
+  }
+}

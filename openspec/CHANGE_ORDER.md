@@ -530,3 +530,30 @@ Preparation is planning only. No live data, source-admission bytes, runtime poli
 quality-tool implementation, release or version changes are included. Rollback reverts
 the preparation/archive diff without deleting original evidence; do not rerun archival
 or mark outstanding tasks complete to hide a limitation.
+
+## Claude preparation selection, 2026-10-27 Europe/Berlin
+
+The maintainer selected [Claude #37](changes/provider-04-claude-local-import/proposal.md)
+for planning reconciliation, with existing Claude Code project JSONL first.
+The intended reusable reader retains approved accounting, corrections, replay and
+manual binding. Finite diagnostics are not a substitute. Other Claude surfaces
+are deferred, and all ten implementation/evidence tasks remain unchecked.
+
+Native #9/#12 prerequisites are closed, but every Claude profile remains
+unapproved. Exact source accounting and portable-contract compatibility still
+block implementation. The delivered finite Codex mapping grants no Claude support.
+No dependency, source approval, runtime policy or private evidence changes here.
+
+This refreshed preparation is local/unpublished pending its reviewed diff and a
+new planning-PR-versus-scoped-stash choice. Historical planning publication remains
+recorded. #17 remains active with live 3.0-3.6, historical 1.2/2.3-2.6 and conditional
+integration/acceptance obligations open. Dev03 trial 5.1-5.3 remains separate.
+
+## Scoped PR #50 CI correction
+
+The maintainer separately authorized
+[optional runtime diagnostic applicability](changes/fix-optional-runtime-diagnostics/proposal.md)
+in [PR #50](https://github.com/nold-ai/changecost/pull/50) on 2026-10-27. This
+contributor correction preserves required native review failures and remains
+pending exact-head Linux/provider acceptance. It adds no Claude reader runtime
+or source authority and does not complete issue #37 or live evaluation #17.
