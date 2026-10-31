@@ -1,6 +1,6 @@
 # ChangeCost
 
-> Public, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. One finite Codex snapshot and approved Claude 2.1.215 project diagnostics are supported; broader provider operations remain planned.
+> Public, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. One finite Codex snapshot, compatible major-2 Claude diagnostics and major-0 provisional Codex counters are supported; broader provider operations remain planned.
 
 ## Project and evidence
 
@@ -71,6 +71,7 @@
 - [Accepted Claude local-import specification](openspec/specs/claude-local-import/spec.md): CLI-synchronized exact project and Desktop request categories, corrections, replay, acquisition and atomic conflicts.
 - [Accepted offline evaluation specification](openspec/specs/pilot-evaluation/spec.md): CLI-synchronized synthetic economic and adaptive evaluation contracts from merged PR #48; future live assessment remains separate.
 - [Accepted workflow and evaluation reconciliation](openspec/changes/archive/2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs/proposal.md): Native CLI archive of already delivered PR #42 guidance and PR #48 synthetic evaluation; future trial and live work remain active.
+- [Major producer compatibility](openspec/changes/provider-major-version-compatibility/proposal.md): Major-only Claude and provisional Codex compatibility with exact provenance and immutable native baselines; verification pending.
 
 ## Local skills
 

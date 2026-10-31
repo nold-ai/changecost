@@ -305,8 +305,11 @@ runtime database or validate live accuracy. See the
 [reproduction guide](docs/pilot/evaluation.md), [accepted synthetic specification](openspec/specs/pilot-evaluation/spec.md) and [findings](docs/pilot/findings.md). Live evaluation #17 remains active.
 
 The explicit [Claude project import](docs/settlement.md#import-approved-claude-project-diagnostics)
-supports approved Claude Code 2.1.215 serialized request diagnostics and exact Desktop
-2.1.308 root terminal diagnostics. Both preserve four separate categories and manual
-binding. Only 2.1.215 admits the approved partial-to-terminal correction history.
-Other versions, demand, billed money and calibration remain outside this approval.
-PR #50 merged at `5cbe58a892f27c78088a82d95219a0cb57f922df` after both supported host jobs and all ten native members passed. The [Claude archive](openspec/changes/archive/2026-10-29-provider-04-claude-local-import/TDD_EVIDENCE.md) preserves six unchecked historical tasks and prior-RED proof gaps. The [accepted specification](openspec/specs/claude-local-import/spec.md) covers only those exact mappings.
+supports compatible major-2 producers under separate Code and Desktop grammars.
+Use `claude-code-2` for serialized request stages or `claude-desktop-2` for root
+terminal diagnostics. Both preserve four separate categories and manual binding.
+Only the Code grammar admits the approved partial-to-terminal correction history.
+The original patch-bearing selectors remain accepted canonical IDs. Every fact
+retains its exact reported producer version. Major compatibility was authorized
+on 2026-10-31 Europe/Berlin; it grants no demand, billed money or calibration authority.
+PR #50 merged at `5cbe58a892f27c78088a82d95219a0cb57f922df` after both supported host jobs and all ten native members passed. The [Claude archive](openspec/changes/archive/2026-10-29-provider-04-claude-local-import/TDD_EVIDENCE.md) preserves six unchecked historical tasks and prior-RED proof gaps. The [accepted specification](openspec/specs/claude-local-import/spec.md) retains those baseline mappings. The [major compatibility change](openspec/changes/provider-major-version-compatibility/proposal.md) records the current policy and pending verification.

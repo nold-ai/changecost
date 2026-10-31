@@ -1597,6 +1597,78 @@
         "openspec/specs/claude-local-import/spec.md"
       ],
       "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-major-version-compatibility/tasks.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "openspec/changes/provider-major-version-compatibility/tasks.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-major-version-compatibility/design.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "openspec/changes/provider-major-version-compatibility/design.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-major-version-compatibility/proposal.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "openspec/changes/provider-major-version-compatibility/proposal.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-major-version-compatibility/specs/codex-local-import/spec.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "openspec/changes/provider-major-version-compatibility/specs/codex-local-import/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-major-version-compatibility/specs/claude-local-import/spec.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "openspec/changes/provider-major-version-compatibility/specs/claude-local-import/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-major-version-compatibility/specs/source-feasibility/spec.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "openspec/changes/provider-major-version-compatibility/specs/source-feasibility/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-major-version-compatibility/specs/codex-provisional-sessions/spec.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "openspec/changes/provider-major-version-compatibility/specs/codex-provisional-sessions/spec.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "openspec/changes/provider-major-version-compatibility/TDD_EVIDENCE.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "openspec/changes/provider-major-version-compatibility/TDD_EVIDENCE.md"
+      ],
+      "kind": "manual"
+    },
+    {
+      "path": "tests/fixtures/provider_major_legacy/README.md",
+      "owner": "provider-major-version-compatibility",
+      "sources": [
+        "tests/fixtures/provider_major_legacy/README.md"
+      ],
+      "kind": "manual"
     }
   ],
   "immutable": {

@@ -3,6 +3,15 @@
 
 ## Unreleased
 
+- Admit compatible major-2 Claude Code/Desktop producers through stable
+  `claude-code-2` and `claude-desktop-2` selectors while retaining exact producer
+  provenance, immutable baseline approvals and separate source grammars. Code
+  contributors now require an absent entrypoint member.
+- Admit compatible major-0 provisional Codex captures across minors, preserving
+  the historical target, frozen forecasts and exact producer/prefix continuity.
+  Finite Codex acquisition remains restricted to its exact approved bytes.
+
+
 - Archive the exact Claude readers from merged PR #50, its optional-runtime
   diagnostic correction and accepted workflow/offline-evaluation reconciliation
   through the native OpenSpec CLI. Synchronize main specifications to 14

@@ -336,7 +336,8 @@ normalized temporary IDs do not enter exports or create validation receipts.
 
 ### Claude serialized request stages
 
-The approved 2.1.215 project reader uses existing `NativeUsage` fields unchanged.
+The approved Code project grammar uses existing `NativeUsage` fields unchanged
+for compatible major-2 producers. The 2.1.215 approval remains an immutable baseline.
 For this mapping, `partial` and `final` denote serialized request stages, with
 backend presence, coverage completeness and intervals still unknown. Four category
 cohorts share first acquisition/admission and Evidence. A final cohort either has
@@ -345,3 +346,14 @@ partial predecessors with the fixed refinement reason. An initial combined sourc
 records both cohorts at current import time. Portable validation checks the exact
 mapping/provider association, complete cohorts, predecessor links and provenance.
 See [import behavior](settlement.md#import-approved-claude-project-diagnostics).
+
+
+The Desktop grammar also uses four separate categories, with final-only cohorts
+and no refinement. `claude-code-2` and `claude-desktop-2` resolve to existing
+canonical profiles before persistence. Complete producer metadata retains the
+exact valid reported version. Portable validation derives that producer from its
+baseline envelope by changing only engine_version under major compatibility, then
+compares the full producer and all profile/mapping/proof relationships. Coherent
+same-major events recover without rewriting historical approvals, while malformed,
+different-major or inconsistent event producers reject. Old canonical IDs and
+first provenance remain unchanged. Older readers may reject new-version records.

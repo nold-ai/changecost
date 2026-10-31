@@ -21,7 +21,8 @@ def render(root: Path) -> dict[str, str]:
         "# ChangeCost",
         "",
         "> Public, unreleased 0.x offline contracts, lifecycle and normalized settlement CLI. "
-        "One finite Codex snapshot and approved Claude 2.1.215 project diagnostics are supported; "
+        "One finite Codex snapshot, compatible major-2 Claude diagnostics and "
+        "major-0 provisional Codex counters are supported; "
         "broader provider operations remain planned.",
         "",
         "## Project and evidence",
@@ -65,7 +66,8 @@ def render(root: Path) -> dict[str, str]:
         "`check` compares explicit historical records to compatible budgets, "
         "with valid unknown advice. `settle --import-codex` imports only the exact approved "
         "finite diagnostic snapshot. `settle --import-claude-project` imports approved "
-        "2.1.215 project and exact Desktop 2.1.308 root terminal diagnostics. "
+        "major-2 Code and Desktop root terminal diagnostics using "
+        "claude-code-2 and claude-desktop-2. "
         "Neither grants demand or financial authority.",
         "",
     ]

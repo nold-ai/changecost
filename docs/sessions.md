@@ -57,12 +57,20 @@ finality and subagent inclusion remain UNKNOWN. Producer claims are unverified.
 Remove `--format human` for full safe JSON, exact ratios, source hashes, target
 semantics, immutable capture revisions and frozen forecast inputs.
 
-The separate `codex-desktop-session-counter/v1` mapping supports observed
-`Codex Desktop` producer versions `0.163.0-alpha.10.2` and `0.163.0-alpha.11.2`,
-with `vscode` or `subagent.thread_spawn` source metadata. The versions share one
-provisional target family, while captures and forecast inputs retain the actual
-version and source kind. Unsupported producers or shapes reject. These local
-observations do not authenticate a producer or approve its accounting semantics.
+The separate `codex-desktop-session-counter/v1` mapping supports compatible
+`Codex Desktop` major-0 producers with `vscode` or `subagent.thread_spawn` source
+metadata. The observed baseline versions are `0.163.0-alpha.10.2` and
+`0.163.0-alpha.11.2`. The maintainer authorized major-only compatibility on
+2026-10-31 Europe/Berlin, deliberately including different 0.x minors. Headers use
+complete ASCII MAJOR.MINOR.PATCH syntax with valid optional prerelease/build labels,
+without leading-zero core or numeric prerelease components, up to 512 characters.
+Malformed or major-1 versions and unsupported shapes reject.
+
+Captures and forecast inputs retain the exact reported version and source kind.
+The mapping, quantity basis, TARGET and `codex-desktop-observed-0163` family remain
+unchanged opaque persistent identifiers. Future comparable forecasts can pool new
+compatible major-0 captures across minors. Existing frozen forecast JSON never
+changes. Local declarations do not authenticate producers or approve accounting semantics.
 
 The reader streams only the explicit stable regular file through no-follow path
 traversal. Its separate limits are 128 MiB, 100,000 JSONL rows and JSON depth 32.
@@ -87,7 +95,8 @@ uv run --locked changecost --format human session capture-codex native-01 --file
 ```
 
 The earlier byte prefix must match exactly. Shrinks, rewrites, counter decreases,
-changed identity/repository and stale conflicting predecessors reject atomically.
+changed identity/repository or exact producer version and stale conflicting
+predecessors reject atomically. A same-major header rewrite is still a rewrite.
 Captures remain immutable. A retry of an older successful operation with identical
 old bytes returns its original `operation_revision`; the report still shows the
 latest capture. A correction can change an outcome on identical source bytes or

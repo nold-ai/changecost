@@ -14,7 +14,7 @@ import typer
 from typer._click.globals import get_current_context
 
 from changecost import operations
-from changecost.claude_local import ClaudeProjectImportError
+from changecost.claude_local import ClaudeProjectImportError, _claude_admissions
 from changecost.codex_local import NativeImportError, select_codex_file
 from changecost.codex_session_counter import CounterError
 from changecost.models import (
@@ -430,7 +430,14 @@ def settle(
     import_evidence: Path | None = None,
     import_codex: Path | None = None,
     import_claude_project: Path | None = None,
-    source_profile: str | None = None,
+    source_profile: Annotated[
+        str | None,
+        typer.Option(
+            help="Claude grammar selectors: "
+            + ", ".join(p.selector for p in _claude_admissions())
+            + "; original canonical profile IDs also accepted. Finite Codex uses its exact profile."
+        ),
+    ] = None,
     source_sha256: str | None = None,
     compute: bool = False,
     operation_id: str | None = None,
