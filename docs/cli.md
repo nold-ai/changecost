@@ -1,8 +1,10 @@
 # Offline lifecycle, settlement, Quote, demand and advisory CLI
 
-Install with the [README setup](../README.md#work-on-the-repository). Put the global
-`--db PATH` option before the subcommand. Its default is
-`.changecost/changecost.sqlite3`. All examples below are synthetic and work offline.
+Install with the [README setup](../README.md#quick-start). Put the global
+`--db PATH` option before the subcommand. The default database is
+`.changecost/changecost.sqlite3`. After the runtime-only setup, prefix commands below
+with `uv run --locked --no-dev`, or activate `.venv` first.
+All examples below are synthetic and work offline.
 Help and version succeed without creating a store; bare, invalid and unsupported
 operations exit nonzero. Read-only inspection of a missing store also fails without
 creating it. See the [generated option reference](commands.md) and [contracts](contracts.md).

@@ -155,7 +155,20 @@ create a packet and replan rather than continue a narrow fix loop.
 
 ## Local checks
 
-Follow [README setup](README.md#work-on-the-repository). Install actionlint 1.7.12
+Start with the [source checkout](README.md#quick-start), then install the contributor
+environment. Use uv 0.12.19 and Python 3.11 or newer. The tested interpreter matrix
+is 3.11.15 and 3.13.14. Run these commands from the repository root:
+
+```sh
+uv sync --locked --group build
+uv run --locked pre-commit install
+npm install --global @fission-ai/openspec@1.13.2
+```
+
+Hatchling builds the package, and `uv.lock` owns dependency resolution. Pydantic
+and Typer are runtime dependencies. SpecFact remains separate contributor tooling.
+
+Install actionlint 1.7.12
 (for example `go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12`) and
 put its binary on PATH. Install separate review tooling with
 `uv tool install specfact-cli==0.55.4`, then
