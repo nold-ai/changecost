@@ -33,7 +33,7 @@ test = [
     "uv==0.12.19",
     "pytest-xdist==3.8.0",
 ]
-dev = [{include-group = "test"}, "basedpyright==1.40.1"]
+dev = [{include-group = "test"}, "basedpyright==1.40.2"]
 build = ["hatchling>=1.27,<2"]
 
 [tool.hatch.build.targets.wheel]
