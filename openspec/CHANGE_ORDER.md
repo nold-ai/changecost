@@ -641,7 +641,7 @@ reviewed branch; this audit makes no merge, live assessment or release claim.
 
 ## Major compatibility implementation, 2026-10-31 Europe/Berlin
 
-The maintainer authorized [provider-major-version-compatibility](changes/provider-major-version-compatibility/proposal.md),
+The maintainer authorized [provider-major-version-compatibility](changes/archive/2026-11-03-provider-major-version-compatibility/proposal.md),
 tracked by [#52](https://github.com/nold-ai/changecost/issues/52), for major-only
 coding-agent admission. Compatible major-2 Claude Code/Desktop grammars and
 major-0 provisional Codex counters retain exact producer provenance and immutable
@@ -651,3 +651,47 @@ active through implementation verification and acceptance. Copilot/Cursor reader
 remain unimplemented. No new collection, model calls, billing, demand, calibration,
 merge or archival authority follows. Native selected-file validation and aggregate
 assurance remain separate pending obligations in the change tasks.
+
+## Compatibility assurance and archival, 2026-11-03 Europe/Berlin
+
+The maintainer requested actual completion of task 4.3 before archival and a
+delivery PR. PR #53 merged at `584ed7a17e4222610608440171de1f0774399dee`.
+Its final source `71f0828ad4793f39b5430016ca42b1cc3f8b50c7` has the identical
+tree. [Run 41710744495](https://github.com/nold-ai/changecost/actions/runs/41710744495)
+passed both supported hosts; independent inspection confirmed both actual native
+reports, all ten required members ran/PASS and no UNKNOWN evidence. Existing
+per-occurrence advisory dispositions were validated against unchanged finding
+fields and source contexts. Final-head Codex code review completed without findings.
+
+CodeRabbit CLI 0.9.2 subsequently reviewed all 43 changed paths at the exact final
+source against the final PR base and completed with zero findings. Hosted
+CodeRabbit review was skipped; a later full-review request was refused because
+the PR is closed and its check was cancelled. No hosted completion is inferred
+from the CLI. The ledger's supported source retirement remains blocked by that
+check state, with the original receipt and counters preserved. Delivery-PR checks
+and reviews do not retrospectively complete that administrative transition.
+The [archived task and evidence](changes/archive/2026-11-03-provider-major-version-compatibility/TDD_EVIDENCE.md)
+record actual task 4.3 completion after its earlier unchecked publication snapshot.
+All 12 compatibility tasks are now complete; original observations and review
+history remain preserved.
+
+The native command was `openspec archive provider-major-version-compatibility --yes`
+under pinned CLI 1.13.2 and schema `spec-driven`, with validation and normal spec
+synchronization. It archived the change at
+`changes/archive/2026-11-03-provider-major-version-compatibility/` and updated nine
+requirements across Claude import, finite Codex import, provisional Codex sessions
+and source feasibility. Exact readback retained every replacement requirement and
+scenario, all unaffected requirements and historical artifacts. Main now contains
+14 capabilities, 158 requirements and 628 scenarios. Strict validation passed all
+18 remaining active/specification items.
+
+The four earlier changes remain active and unchanged: live evaluation #17,
+measured workflow trial #40 and unimplemented Copilot #13 and Cursor #14. This is
+the seventeenth native archive. The canonical register remains at 26 profiles and
+three exact usage approvals. Major compatibility is a separate runtime policy;
+finite Codex acquisition remains exact and no new source, demand, money or
+calibration authority follows. No new runtime or private evidence is included.
+
+Issue #52 remains open pending delivery closeout; the archival delivery PR will
+carry the current acceptance index. Rollback reverts that archive/documentation
+commit as a unit while preserving original source data and review history.

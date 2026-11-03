@@ -158,3 +158,110 @@ bytes remained identical to the bound pre-native focused state.
 Final verification evidence is limited to the implemented slice. The canonical
 session remains incomplete until independent closure and aggregate/native/provider
 assurance complete. No passing local check is represented as full acceptance.
+
+## Task 4.3 completed before archival, 2026-11-03 Europe/Berlin
+
+This dated record supersedes the earlier pending-assurance statements for the
+accepted implementation. It does not rewrite their original observations or
+create missing historical RED evidence. The maintainer requested actual completion
+of task 4.3 before native CLI archival and a delivery PR.
+
+[PR #53](https://github.com/nold-ai/changecost/pull/53) merged at
+`584ed7a17e4222610608440171de1f0774399dee` on 2026-11-03 at 21:24:38
+Europe/Berlin. Its final source `71f0828ad4793f39b5430016ca42b1cc3f8b50c7`
+has the identical tree `3be93f23e250a764e1019ca59db4c1ca63d4d0c3`.
+The final comparison base is `3a6acb4574047edcd6c9aaadc24c6143e49829c0`.
+The integration changed five documentation files relative to the original
+reviewed implementation; runtime, tests and quality code remained byte-identical.
+Independent affected closure inspected the final documentation resolution and
+returned no findings. Its 177 compatibility tests and staged contract, hygiene,
+documentation, generated-reference and metadata checks passed before publication.
+
+### Supported host and native report readback
+
+[Run 41710744495](https://github.com/nold-ai/changecost/actions/runs/41710744495)
+passed both supported Ubuntu jobs, Python 3.11.15 and 3.13.14, for the exact final
+source. An independent audit downloaded both actual reports and run logs rather
+than accepting the green summary alone. Each host passed 4,063 tests and five
+installed-package checks. All thirteen aggregate leaves ran; dependency audit was
+explicitly inapplicable because locked audit inputs were unchanged.
+
+Both native reports concluded PASS_WITH_ADVISORY with assurance PASS, exit 0,
+unknown-required-evidence false and all ten required members ran/PASS. The existing
+evidence validator returned no errors. Both sidecars match the independently
+recomputed 352-file source digest
+`aa1866cdb3032cba22990cf558e7ce5123f04624fd717677da07e0b8c5a9d348`.
+
+| Python host | Final native report SHA256 |
+| --- | --- |
+| 3.11.15 | `1396e8ab44cad198d60b922874686539d8234523b49dae4a7c5cc6562b5a9a17` |
+| 3.13.14 | `889510f2e43c84ef454c222eadc14b0b137a560509a2bfe170d648e224b7213c` |
+
+Each report retains 3,797 nonblocking advisories. The independent audit verified
+every finding field and prior per-occurrence disposition, including report/index
+and source-context hashes. All 88 containing source files are byte-identical to
+the original reviewed implementation. The corresponding earlier disposition
+files have SHA256 `4ed906071fe7a47a23e7f89ca1f4b1024ea9dbfec30020342bf953bedd99b4b9`
+for Python 3.11 and `4f1b3745cf3861aed9a74dd06e075729d736aa774342646d705a2f0b5fe69dd0`
+for Python 3.13. Their applicability to the new report hashes was established by
+that exact comparison, not inferred from finding counts.
+
+### Final-source provider reviews
+
+The [Codex code-review summary](https://github.com/nold-ai/changecost/pull/53#issuecomment-6550540522)
+binds the full final source SHA and records completion at 21:15:50 Europe/Berlin
+with no findings or unresolved findings. This is code review, distinct from the
+older security-review metadata.
+
+The hosted CodeRabbit check remained SKIPPED after the documentation integration.
+One [incremental request](https://github.com/nold-ai/changecost/pull/53#issuecomment-6614694727)
+on the merged PR did not start a visible review. The missing source review was
+therefore completed using the existing authenticated CodeRabbit CLI 0.9.2 in a
+clean detached checkout of the exact final source. No paid override, account
+setting change or duplicate running review was introduced.
+
+```sh
+/Users/dom/.local/bin/coderabbit review --agent --committed --base-commit 3a6acb4574047edcd6c9aaadc24c6143e49829c0
+```
+
+The run started at 21:31:26 and completed by 21:36:16 Europe/Berlin. Exit was 0;
+the final event was `type: complete`, `status: review_completed`,
+`outcome: completed`, with zero findings. Its 43 reviewed paths exactly equal the
+final PR diff. The raw NDJSON SHA256 is
+`4888ab949e4aea9535780b284e9453c6999338059aa5ef23bae64911d8585eda`.
+The checkout remained clean and on the bound source throughout. This is an actual
+CLI provider review, not a claimed hosted review or a fabricated check status.
+
+The source reports, execution facts and independent audit are retained in ignored
+`.changecost/workflow/provider-major-version-compatibility-closeout/`. The existing
+review session and its original counters/history remain preserved; its historical
+COMPLETE result is not rebound to a later stage without the supported transition.
+
+The later [supported full-review request](https://github.com/nold-ai/changecost/pull/53#issuecomment-6615010777)
+was explicitly [refused because the PR is closed](https://github.com/nold-ai/changecost/pull/53#issuecomment-6615013346).
+Its hosted check concluded CANCELLED; the earlier SKIPPED check remains historical.
+The existing ledger's supported merged-stage retirement rejected the source
+check state without changing its binding or counters. Its historical receipt is
+preserved at revision 23 after the approved scope decision, with zero correction
+batches and the original measured time. No fresh session, fabricated provider
+completion or passing retirement is claimed. The archival delivery PR can collect
+its own actual checks/reviews, but these cannot retrospectively change the closed
+source PR's hosted outcome. This administrative acceptance limitation remains
+explicit and is not a runtime or review-tool repair in this change.
+
+Task 4.3 is now complete. This assurance covers the accepted implementation and
+its final documentation integration. The archival delivery has its own changed
+specification/documentation scope and requires current-head checks and reviews.
+Native Code entrypoint absence remains unverified beyond the recorded grammar
+controls; no new source approval, demand, billing or calibration authority follows.
+
+### Strict archival tooling
+
+The repository pins OpenSpec 1.13.2 in contributor setup and CI. The installed
+global 1.15.0 preflight failed thirteen existing items because long-requirement
+information became strict warnings. No specification was rewritten to satisfy a
+different tool version. The pinned 1.13.2 strict preflight passed all 19 items,
+including this change. Archival uses the pinned CLI with normal validation and
+spec synchronization, followed by exact requirement/scenario readback and all-item
+strict validation. Rollback reverts the eventual archive/documentation commit as
+a unit while preserving source records, original evidence and review history.

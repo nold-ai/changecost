@@ -1599,66 +1599,66 @@
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-major-version-compatibility/tasks.md",
+      "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/tasks.md",
       "owner": "provider-major-version-compatibility",
       "sources": [
-        "openspec/changes/provider-major-version-compatibility/tasks.md"
+        "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/tasks.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-major-version-compatibility/design.md",
+      "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/design.md",
       "owner": "provider-major-version-compatibility",
       "sources": [
-        "openspec/changes/provider-major-version-compatibility/design.md"
+        "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/design.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-major-version-compatibility/proposal.md",
+      "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/proposal.md",
       "owner": "provider-major-version-compatibility",
       "sources": [
-        "openspec/changes/provider-major-version-compatibility/proposal.md"
+        "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/proposal.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-major-version-compatibility/specs/codex-local-import/spec.md",
+      "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/specs/codex-local-import/spec.md",
       "owner": "provider-major-version-compatibility",
       "sources": [
-        "openspec/changes/provider-major-version-compatibility/specs/codex-local-import/spec.md"
+        "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/specs/codex-local-import/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-major-version-compatibility/specs/claude-local-import/spec.md",
+      "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/specs/claude-local-import/spec.md",
       "owner": "provider-major-version-compatibility",
       "sources": [
-        "openspec/changes/provider-major-version-compatibility/specs/claude-local-import/spec.md"
+        "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/specs/claude-local-import/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-major-version-compatibility/specs/source-feasibility/spec.md",
+      "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/specs/source-feasibility/spec.md",
       "owner": "provider-major-version-compatibility",
       "sources": [
-        "openspec/changes/provider-major-version-compatibility/specs/source-feasibility/spec.md"
+        "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/specs/source-feasibility/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-major-version-compatibility/specs/codex-provisional-sessions/spec.md",
+      "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/specs/codex-provisional-sessions/spec.md",
       "owner": "provider-major-version-compatibility",
       "sources": [
-        "openspec/changes/provider-major-version-compatibility/specs/codex-provisional-sessions/spec.md"
+        "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/specs/codex-provisional-sessions/spec.md"
       ],
       "kind": "manual"
     },
     {
-      "path": "openspec/changes/provider-major-version-compatibility/TDD_EVIDENCE.md",
+      "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/TDD_EVIDENCE.md",
       "owner": "provider-major-version-compatibility",
       "sources": [
-        "openspec/changes/provider-major-version-compatibility/TDD_EVIDENCE.md"
+        "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/TDD_EVIDENCE.md"
       ],
       "kind": "manual"
     },

@@ -335,8 +335,8 @@
     "description": "Native CLI archive of already delivered PR #42 guidance and PR #48 synthetic evaluation; future trial and live work remain active."
   },
   {
-    "title": "Major producer compatibility",
-    "path": "openspec/changes/provider-major-version-compatibility/proposal.md",
-    "description": "Major-only Claude and provisional Codex compatibility with exact provenance and immutable native baselines; verification pending."
+    "title": "Archived major producer compatibility",
+    "path": "openspec/changes/archive/2026-11-03-provider-major-version-compatibility/proposal.md",
+    "description": "Accepted major-only Claude and provisional Codex compatibility, completed task 4.3 assurance and native CLI archival with exact provenance and immutable baselines."
   }
 ]

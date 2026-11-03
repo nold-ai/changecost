@@ -1,6 +1,30 @@
 # Agent instructions
 
-## Current delivery checkpoint, 2026-10-29 Europe/Berlin
+## Current delivery checkpoint, 2026-11-03 Europe/Berlin
+
+PR #53 merged major-version compatibility at
+`584ed7a17e4222610608440171de1f0774399dee`, with the identical tree of final
+source `71f0828ad4793f39b5430016ca42b1cc3f8b50c7`. Task 4.3 is now complete
+after actual final-source native/Codex assurance and a CodeRabbit CLI review of
+all 43 changed paths with zero findings. The hosted CodeRabbit skip remains
+historical; it is not relabeled as a hosted review. See the dated acceptance
+record in the [archived evidence](openspec/changes/archive/2026-11-03-provider-major-version-compatibility/TDD_EVIDENCE.md).
+
+OpenSpec 1.13.2 native archival synchronized nine modified requirements and
+13 additional scenarios across four existing capabilities. Main now has
+14 capabilities, 158 requirements and 628 scenarios. All 12 compatibility tasks
+are complete. The archive retains the earlier pending-assurance observations,
+source grammar limits and original review history. This branch adds no runtime
+implementation or new source observations.
+
+Four changes remain active for genuine future work: live evaluation #17, measured
+workflow trial #40 and unimplemented Copilot #13 and Cursor #14. Their artifacts
+and task history are unchanged. The register still has 26 profiles and three exact
+usage approvals. Runtime major compatibility does not modify native baseline
+approvals or grant demand, billing or calibration authority. No collection,
+private outcome inspection, product model call or release is authorized here.
+
+## Historical delivery checkpoint, 2026-10-29 Europe/Berlin
 
 PR #50 merged the two exact approved Claude readers and optional-runtime diagnostic
 correction at `5cbe58a892f27c78088a82d95219a0cb57f922df`. The accepted reviewed
