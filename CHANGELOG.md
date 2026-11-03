@@ -11,6 +11,9 @@
   the historical target, frozen forecasts and exact producer/prefix continuity.
   Finite Codex acquisition remains restricted to its exact approved bytes.
 
+- Rewrite the README around a source quick start, isolated runnable examples,
+  current capabilities, and alpha limits. Move contributor setup into Contributing,
+  repair setup links, and clarify what to include in public support reports.
 
 - Archive the exact Claude readers from merged PR #50, its optional-runtime
   diagnostic correction and accepted workflow/offline-evaluation reconciliation
