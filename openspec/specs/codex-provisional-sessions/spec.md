@@ -25,8 +25,14 @@ The system SHALL freeze a Codex provisional target only when `start --source cod
 - **WHEN** manual start retry, finish/correct, forecast or default history runs
 - **THEN** Codex membership cannot be reinterpreted as manual, source switching rejects, manual partial exclusion remains, and native/manual errors and samples never pool
 
+#### Scenario: Compatible major-zero future cohorts
+
+- **GIVEN** old frozen forecasts and fresh compatible captures across major-0 minors and patches
+- **WHEN** the selected operation runs
+- **THEN** the historical mapping, quantity basis, producer-family and TARGET remain byte-identical, new comparable captures train future forecasts once, and historical frozen inputs remain unchanged
+
 ### Requirement: Bounded source-reported lifetime counter
-The system SHALL stream only one explicitly selected stable no-follow regular file with at most 128 MiB, 100,000 rows and depth 32. It SHALL reject duplicate members, nonfinite numbers, excessive numeric lexemes, missing or ambiguous identities and unsupported pinned producer shapes using safe fixed diagnostics. It SHALL retain only safe projected counter state and hashes.
+The system SHALL stream only one explicitly selected stable no-follow regular file with at most 128 MiB, 100,000 rows and depth 32. It SHALL reject duplicate members, nonfinite numbers, excessive numeric lexemes, missing or ambiguous identities and unsupported producer shapes or malformed/different-major versions using safe fixed diagnostics. It SHALL retain only safe projected counter state and hashes.
 
 #### Scenario: Overlapping counters and larger source
 - **GIVEN** a compatible source exceeding the finite reader bounds with repeated cumulative snapshots and overlapping categories/last counts
@@ -38,6 +44,12 @@ The system SHALL stream only one explicitly selected stable no-follow regular fi
 - **GIVEN** a missing identity, unsupported producer, malformed nonnull token payload, boolean/negative/overflow counter, decreasing counter, unstable file, symlink, duplicate member, excessive depth/bytes/rows or invalid JSON
 - **WHEN** capture runs
 - **THEN** it rejects without persisting private source values or modifying database/source bytes
+
+#### Scenario: Strict major-zero producer admission
+
+- **GIVEN** valid 0.164.0-alpha.10.2 or 0.165.1+build.001, or malformed/major-1 headers
+- **WHEN** the selected operation runs
+- **THEN** valid major-0 versions retain exact provenance and use unchanged six-category, source-kind, originator, integer and monotonicity checks; malformed or major-1 versions reject without mutation or private-value disclosure
 
 ### Requirement: Immutable captures with global identity and atomic retries
 The system SHALL bind one domain-separated provider identity hash of the header `id` (thread identity) to one attempt globally, excluding runtime `session_id`, path/repository/mapping from identity. An optional header `session_id` SHALL independently be a nonblank string of at most 512 characters and MAY differ from the thread identity. First capture SHALL bind one repository. Append refresh SHALL require an expected predecessor, nonblank reason, unchanged semantics/identity/repository, exact old-prefix hash, no shrink and no decreasing counter. Captures SHALL be immutable and supply one latest training sample per attempt.
@@ -64,6 +76,12 @@ The system SHALL bind one domain-separated provider identity hash of the header 
 - **GIVEN** a populated store
 - **WHEN** a prefix is rewritten, source shrinks, outcome changes without correction, predecessor is stale, or concurrent conflicting captures race
 - **THEN** the rejected transaction leaves database bytes unchanged without partial identity binding, capture, event or migration
+
+#### Scenario: Same-major header rewrite is not append
+
+- **GIVEN** an old capture, a true appended counter, or a header rewritten to another compatible version
+- **WHEN** the selected operation runs
+- **THEN** true append with predecessor/reason succeeds, header rewrite rejects, exact old operation retry remains idempotent, and source identity reuse cannot train a second attempt
 
 ### Requirement: Versioned store and readable safe output
 The system SHALL recognize exact v1/v2/v3 schemas, migrate writes atomically, preserve manual and finite history, and keep read-only v1/v2 reports unmigrated. Existing committed no-clobber bootstrap SHALL remain. Human output SHALL be concise while full safe JSON remains inspectable and control characters remain escaped.

@@ -1,6 +1,18 @@
 # Project brief
 
-Status: **pilot planning / To-Validate**, updated 2026-10-29 (Europe/Berlin).
+Status: **pilot planning / To-Validate**, updated 2026-11-03 (Europe/Berlin).
+
+PR #53 delivered compatible major-2 Claude and major-0 provisional Codex admission.
+Its task 4.3 is complete after inspected final-source native/Codex assurance and
+an actual CodeRabbit CLI review with zero findings. Native OpenSpec 1.13.2 archival
+has synchronized nine modified requirements and 13 additional scenarios. Main now
+has 14 capabilities, 158 requirements and 628 scenarios. The
+[compatibility archive](../openspec/changes/archive/2026-11-03-provider-major-version-compatibility/proposal.md)
+retains exact producer provenance, immutable native baselines and all historical
+evidence. The hosted CodeRabbit skip remains visible, distinct from CLI completion.
+Live evaluation #17, measured trial #40, Copilot #13 and Cursor #14 stay active.
+No runtime, source approval, collection, financial authority or release is added by
+this archival. The dated checkpoint paragraphs below retain their original scope.
 
 
 The 2026-10-29 lifecycle reconciliation archives the exact Claude readers delivered

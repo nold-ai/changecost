@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+- Complete provider compatibility task 4.3 with final-source assurance and archive
+  the accepted change through OpenSpec 1.13.2. Synchronize nine requirements and
+  13 additional scenarios, preserving source limits and historical review evidence.
+
 - Admit compatible major-2 Claude Code/Desktop producers through stable
   `claude-code-2` and `claude-desktop-2` selectors while retaining exact producer
   provenance, immutable baseline approvals and separate source grammars. Code

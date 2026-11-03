@@ -150,6 +150,12 @@ adapter work, not this source-feasibility closeout.
 - **WHEN** approval and capability-based closeout are assessed
 - **THEN** affected profile approvals stay incomplete with exact gaps; #9 can complete only after the capability inventory and reconciliation are independently reviewed, not from tooling success alone.
 
+#### Scenario: Immutable baseline and separate compatibility decision
+
+- **GIVEN** the maintainer-authorized 2026-10-31 major compatibility policy
+- **WHEN** the selected operation runs
+- **THEN** exact native baseline approvals and packaged envelopes remain immutable; runtime same-major compatibility creates no new observed-release proof, profile or billing/demand/calibration authority; future unimplemented Copilot/Cursor readers plan major-only compatibility subject to independent grammar approval
+
 ### Requirement: Bounded private offline source inspection
 
 The development-only inspector SHALL accept explicit registered profiles and

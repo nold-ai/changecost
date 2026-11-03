@@ -11,13 +11,14 @@ replay and manual work attribution without inferred demand or monetary authority
 
 The reader SHALL accept only explicitly selected existing Claude Code project
 JSONL files under independently approved producer/surface profiles. Approval
-SHALL establish version-specific persisted-log semantics; selected hashes,
+SHALL establish baseline persisted-log semantics; the separately authorized major
+compatibility policy SHALL admit only valid same-major producers under those semantics; selected hashes,
 installed binaries, structural receipts and another surface's documentation SHALL
 NOT grant approval. The reader SHALL NOT collect data or change account settings.
 
 #### Scenario: Unapproved or ambiguous producer
 
-- **GIVEN** a readable project log with an unknown version, incompatible profile or creation header that cannot identify later records' producer
+- **GIVEN** a readable project log with a malformed or different-major version, incompatible profile or creation header that cannot identify later records' producer
 - **WHEN** import is requested
 - **THEN** it rejects before persistence with a safe unsupported-profile diagnostic rather than inheriting approval from the header, installed CLI or nearby rows
 
@@ -32,6 +33,18 @@ NOT grant approval. The reader SHALL NOT collect data or change account settings
 - **GIVEN** caller-supplied profile/hash, synthetic fixtures or documentation without independent native approval
 - **WHEN** numeric import eligibility is checked
 - **THEN** it rejects before persistence and cannot activate a profile or substitute finite diagnostics for reusable reader support
+
+#### Scenario: Stable grammar selectors
+
+- **GIVEN** either claude-code-2 or claude-desktop-2, or its original canonical selector
+- **WHEN** the selected operation runs
+- **THEN** the selector resolves before persistence to its immutable baseline profile; unknown or ambiguous selectors reject and aliases grant no additional contribution
+
+#### Scenario: Strict same-major version syntax
+
+- **GIVEN** ASCII MAJOR.MINOR.PATCH with optional valid prerelease/build labels, including 2.1.309-alpha.1+build.001 and a different major-2 minor
+- **WHEN** the selected operation runs
+- **THEN** same-major valid versions preserve their exact spelling; missing components, leading-zero core or numeric prerelease components, whitespace, Unicode digits, signs, empty labels, trailing junk, nonstrings and different majors reject safely and atomically
 
 ### Requirement: Non-overlapping versioned accounting
 
@@ -66,7 +79,7 @@ precedence, additive totals or complete work from field presence.
 
 #### Scenario: Exact 2.1.215 serialized stages
 
-- **GIVEN** an independently approved exact 2.1.215 project profile and one event with coherent producer, session, optional agent, request and message metadata
+- **GIVEN** the independently approved 2.1.215 baseline project profile with a compatible major-2 producer and one event with coherent producer, session, optional agent, request and message metadata
 - **WHEN** the selected snapshot contains agreeing explicit-null rows and agreeing supported terminal rows
 - **THEN** null classifies partial and `end_turn` or `tool_use` classifies final serialized request stage, preserving four separate nullable categories with backend, interval, ownership and scope completeness unknown
 
@@ -105,6 +118,18 @@ precedence, additive totals or complete work from field presence.
 - **GIVEN** any other row label, including `progress` or `system`, an incompatible excluded shape or an assistant without a proper message, role, usage or required identity
 - **WHEN** a snapshot also contains otherwise valid new assistant facts
 - **THEN** the entire import rejects without a generic type-name skip, recursive counter inspection or partial persistence
+
+#### Scenario: Code source-family separation
+
+- **GIVEN** a Code-selected assistant with any present entrypoint, including null, Desktop or an unknown marker, in root-terminal, partial or child form, after another valid event
+- **WHEN** the selected operation runs
+- **THEN** the entire import rejects; absent-marker Code root/sidechain and approved refinement remain supported, while Desktop retains its exact marker, root-terminal and integer requirements
+
+#### Scenario: Actual producer survives projection
+
+- **GIVEN** fresh compatible Code 2.1.309 or 2.3.0, or Desktop 2.1.309 or 2.2.0, including prerelease/build
+- **WHEN** the selected operation runs
+- **THEN** each of four separate quantities and each supported stage retains the complete actual producer; no baseline-version substitution or extra authority occurs
 
 ### Requirement: Safe atomic read-only import
 
@@ -192,6 +217,24 @@ unresolved conflicts SHALL reject without partial persistence.
 - **WHEN** current-version roundtrip/recovery is exercised
 - **THEN** identities, quantities, first provenance and correction links survive without changing old records; rollback preserves backups/history and discloses older-binary limitations
 
+#### Scenario: Version and profile are not identity dimensions
+
+- **GIVEN** a previously accepted event and another exact version or grammar profile with equal quantities, in either import order
+- **WHEN** the selected operation runs
+- **THEN** the collision rejects without modifying any records, whereas distinct events from compatible versions coexist
+
+#### Scenario: Fixed pre-change recovery
+
+- **GIVEN** fixed old Code partial/final and Desktop exports with original IDs, producers, timestamps, proofs and corrections
+- **WHEN** the selected operation runs
+- **THEN** restoration, old-stage replay and mixing new-version events preserve every old record and first provenance
+
+#### Scenario: Portable producer association
+
+- **GIVEN** a fully rehashed portable graph with malformed or different-major producer, wrong producer surface or client build, or one inconsistent producer within an event
+- **WHEN** the selected operation runs
+- **THEN** import rejects atomically through complete producer association, while coherent same-major producers survive recovery and alias replay
+
 ### Requirement: Explicit binding and separate authorities
 
 The reader SHALL distinguish manual/provider/unbound attribution and native
@@ -225,13 +268,13 @@ demand learning, monetary settlement or calibration.
 
 ### Requirement: Exact Desktop 2.1.308 root terminal mapping
 
-The reader SHALL additionally select the independently approved exact Desktop
-2.1.308 profile through the existing public import operation. It SHALL preserve
+The reader SHALL additionally select the independently approved Desktop
+2.1.308 baseline profile with compatible major-2 producers through the existing public import operation. It SHALL preserve
 2.1.215 corrections and finite Codex support without changing NativeUsage.
 
 #### Scenario: Root terminal import and semantic replay
 
-- **GIVEN** exact engine 2.1.308 and claude-desktop entrypoint on every assistant, isSidechain false, absent agentId, supported terminal reason and four present exact nonnegative integer quantities
+- **GIVEN** a valid major-2 engine version and claude-desktop entrypoint on every assistant, isSidechain false, absent agentId, supported terminal reason and four present exact nonnegative integer quantities
 - **WHEN** import and same-semantic replay through a different path/hash run, including reopened store and bundle recovery
 - **THEN** four separate final facts are retained per event, literal zero is preserved, cache duration components are excluded, and original Evidence, acquisition, admission and timestamps survive replay
 
@@ -270,3 +313,9 @@ The reader SHALL additionally select the independently approved exact Desktop
 - **GIVEN** exact q4 approval and cost-state or mode rows within their closed top-level key upper bounds, with required type and absent message/direct usage
 - **WHEN** import validates those metadata rows, including opaque modelUsage or cost values
 - **THEN** they contribute no native facts, money, demand or inferred totals; unexpected keys and present-null message/usage reject the whole snapshot
+
+#### Scenario: Native observation is not compatibility proof
+
+- **GIVEN** baseline exact native observations and a compatible unobserved producer release
+- **WHEN** the selected operation runs
+- **THEN** the immutable envelope, register, approval/mapping digests and profile counts stay unchanged; compatibility is the dated maintainer decision and does not claim native verification of every release

@@ -151,6 +151,12 @@ The initial mapping SHALL admit only a canonically approved whole-file SHA and f
 - **WHEN** diagnostic facts are projected
 - **THEN** the zero remains a serialized observation with unknown backend presence and served model/version remain null; no configured-model join establishes them
 
+#### Scenario: Major compatibility cannot widen finite bytes
+
+- **GIVEN** a modified or appended finite source still reporting major zero
+- **WHEN** the selected operation runs
+- **THEN** the canonical whole-file hash, fixed membership, cardinality and projection checks remain exact and reject other bytes; compatible provisional capture is a separate contract
+
 ### Requirement: Canonical finite admission controls
 
 Contributor tooling SHALL validate finite Codex admission payloads and their native usage approval bindings before accepting the canonical register. Supported Codex usage SHALL require a recognized finite admission, with exact whole-source and projection digests, bounded sorted unique record membership, consistent classification/cardinality, the reviewed projection schema and partial diagnostic policy, fixed acquisition limits, and a producer claim matching its profile. The usage proof SHALL bind the same native source, profile and six decisions. Structural validity SHALL NOT authenticate semantic approval or enable a runtime reader. The 23 historical profiles SHALL retain their original content and zero approvals; only the independently approved finite diagnostic profile may be activated in this change.
