@@ -10,6 +10,7 @@ import stat
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from changecost.producer_versions import same_major
 from changecost.serialization import reject_constant, unique_members
 
 MAX_BYTES = 128 * 1024 * 1024
@@ -18,7 +19,7 @@ MAX_DEPTH = 32
 MAPPING = "codex-desktop-session-counter/v1"
 QUANTITY_BASIS = "latest-total-token-usage-total-tokens"
 PRODUCER_FAMILY = "codex-desktop-observed-0163"
-VERSIONS = {"0.163.0-alpha.10.2", "0.163.0-alpha.11.2"}
+OBSERVED_VERSION = "0.163.0-alpha.10.2"
 CATEGORIES = {
     "input_tokens",
     "cached_input_tokens",
@@ -181,10 +182,8 @@ def _header(payload: dict) -> dict:
         or len(runtime_identity) > 512
     ):
         raise CounterError("missing_source_identity")
-    if (
-        payload.get("originator") != "Codex Desktop"
-        or not isinstance(payload.get("cli_version"), str)
-        or payload["cli_version"] not in VERSIONS
+    if payload.get("originator") != "Codex Desktop" or not same_major(
+        payload.get("cli_version"), OBSERVED_VERSION
     ):
         raise CounterError("unsupported_source_header")
     return dict(

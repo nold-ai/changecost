@@ -45,7 +45,8 @@ def validate_native(records):
     _validate_claude(records)
 
 
-def _claude_association_valid(record, evidence, envelope):
+def _claude_association_valid(record, evidence, selected):
+    envelope = selected.envelope
     policy = envelope["admission"]
     return (
         evidence.provider == "Claude"
@@ -53,7 +54,7 @@ def _claude_association_valid(record, evidence, envelope):
         and evidence.record_id == record.event_identity
         and evidence.profile == envelope["profile_id"]
         and record.mapping_revision == policy["mapping_revision"]
-        and record.producer.model_dump() == policy["producer"]
+        and record.producer == selected.producer_for(record.producer.engine_version)
         and record.first_admission.model_dump()
         == {
             "profile_digest": envelope["profile_digest"],
@@ -93,7 +94,7 @@ def _claude_record_valid(record, evidence, selected):
     from changecost.claude_local import _revision_id
 
     return (
-        _claude_association_valid(record, evidence, selected.envelope)
+        _claude_association_valid(record, evidence, selected)
         and record.source_category in selected.envelope["admission"]["source_categories"].values()
         and record.accounting_scope == "request"
         and _claude_stage_valid(record, selected)

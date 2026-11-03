@@ -133,7 +133,7 @@ def test_desktop_strict_counters_reject_whole_batch(tmp_path, field, bad):
 @pytest.mark.parametrize(
     "key,value",
     [
-        ("version", "2.1.215"),
+        ("version", "3.1.215"),
         ("entrypoint", "cli"),
         ("entrypoint", None),
         ("isSidechain", True),

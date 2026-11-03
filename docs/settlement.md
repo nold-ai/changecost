@@ -223,13 +223,13 @@ financial and demand eligibility retain their existing synthetic-only guards.
 
 ## Import approved Claude project diagnostics
 
-The explicit offline reader supports the approved Claude Code 2.1.215 project
-JSONL grammar. Choose one existing file and its SHA-256; no scanning or collection
+The explicit offline reader supports valid major-2 producers under the approved
+Claude Code project JSONL grammar. Choose one existing file and its SHA-256; no scanning or collection
 occurs. Source version declarations do not authenticate arbitrary files.
 
 ```sh
 changecost settle --repository-id repo --import-claude-project selected.jsonl \
-  --source-profile claude-project-2-1-215-request-stages \
+  --source-profile claude-code-2 \
   --source-sha256 SHA256_OF_SELECTED_FILE
 ```
 
@@ -259,15 +259,17 @@ are not protection against every adversarial writer. Diagnostics use closed code
 and optional record ordinals.
 
 Coverage, backend finality, lineage and interval remain unknown. No demand learning,
-economic settlement, calibration or compatibility with 2.1.257, 2.1.275, other Desktop versions,
-IDE or SDK streams follows. Preserve an exported bundle before rollback; older
+economic settlement, calibration or compatibility with other grammars, IDE or SDK
+streams follows. Preserve an exported bundle before rollback; older
 binaries need not accept the added provider association. Current-version recovery
 preserves first acquisition/admission and correction history.
 
-### Desktop 2.1.308 root terminal diagnostics
+<a id="desktop-21308-root-terminal-diagnostics"></a>
 
-Select `claude-desktop-2-1-308-root-terminal` with the same command and source hash.
-Every contributor must declare version `2.1.308`, entrypoint `claude-desktop` and
+### Desktop root terminal diagnostics
+
+Select `claude-desktop-2` with the same command and source hash.
+Every contributor must declare a valid major-2 version, entrypoint `claude-desktop` and
 `isSidechain=false`, with no `agentId` member. Only `end_turn` and `tool_use` are
 supported. Each of the four categories must be present as an exact nonnegative
 integer. Literal zero remains zero; missing, null, bool and negative values reject.
@@ -283,7 +285,7 @@ Semantic replay from another path or hash preserves the first Evidence, acquisit
 admission and timestamps, including after reopen and bundle recovery. Event identity
 excludes version and profile. Same-event observations under different profiles reject
 even when all quantities agree. This prevents a second contribution from inheriting
-another profile's approval. Existing 2.1.215 correction support is unchanged.
+another profile's approval. Code correction support is unchanged.
 
 The approval binds [native observations](providers/evidence/claude-desktop-2-1-308-native-observations.md)
 and [external producer association](providers/evidence/claude-desktop-2-1-308-producer-binding.md).
@@ -306,3 +308,29 @@ billing or demand authority. Unexpected keys or present message/direct usage sti
 reject. This replaces the unpublished q3 candidate; its canonical profile, proof,
 asset and source statements remain frozen in local history. No real q3 Desktop
 facts were stored. Authored prototype bundles have no compatibility promise.
+
+### Producer compatibility and historical identities
+
+The maintainer authorized major-only compatibility on 2026-10-31 Europe/Berlin.
+Both grammars accept complete ASCII MAJOR.MINOR.PATCH versions with optional valid
+prerelease and build labels. Core numbers and numeric prerelease labels cannot have
+leading zeros. Versions are bounded to 512 characters. Different majors and malformed
+versions reject safely. Existing format, lineage, quantity and stage checks still
+apply, so a same-major format change can reject.
+
+Code contributors require an absent `entrypoint` member. Present null, Desktop,
+unknown and guessed Code markers reject. Desktop requires its exact marker and
+root-terminal shape. The public native Code evidence does not establish marker
+absence for every baseline file. Declared markers do not authenticate arbitrary files.
+
+The original selectors `claude-project-2-1-215-request-stages` and
+`claude-desktop-2-1-308-root-terminal` remain accepted. Aliases resolve to those
+canonical profile IDs before persistence. The packaged exact versions describe
+immutable observed baselines. Compatibility does not add native observations,
+profiles or approvals for each release. Facts retain the complete exact producer,
+including prerelease/build spelling, through export and recovery. Same-event
+cross-version or cross-profile changes reject in either order even for equal
+quantities. Distinct compatible events coexist without merging their categories.
+
+Keep an exported backup and access to an updated reader after admitting new versions.
+An older binary may reject them. Never delete accepted history to downgrade.

@@ -637,3 +637,17 @@ Rollback reverts this documentation and CLI-generated archive diff as a unit.
 Do not rerun the archive against existing destinations or rewrite historical task
 checkboxes to remove warnings. Publication and issue closeout require the final
 reviewed branch; this audit makes no merge, live assessment or release claim.
+
+
+## Major compatibility implementation, 2026-10-31 Europe/Berlin
+
+The maintainer authorized [provider-major-version-compatibility](changes/provider-major-version-compatibility/proposal.md),
+tracked by [#52](https://github.com/nold-ai/changecost/issues/52), for major-only
+coding-agent admission. Compatible major-2 Claude Code/Desktop grammars and
+major-0 provisional Codex counters retain exact producer provenance and immutable
+baseline approvals. Finite Codex bytes remain exact. The four earlier active
+changes and their historical tasks are unchanged; this additional change remains
+active through implementation verification and acceptance. Copilot/Cursor readers
+remain unimplemented. No new collection, model calls, billing, demand, calibration,
+merge or archival authority follows. Native selected-file validation and aggregate
+assurance remain separate pending obligations in the change tasks.

@@ -219,13 +219,21 @@ Live assessment and calibration remain separately authorized work.
 ### Claude diagnostic observations
 
 The [Claude project reader](settlement.md#import-approved-claude-project-diagnostics)
-preserves approved 2.1.215 serialized request stages and four separate categories.
+preserves the approved Code serialized request stages and four separate categories
+for compatible major-2 producers selected with `claude-code-2`.
 Manual binding supplies attribution only. These partial native observations cannot
 create demand observations, billed money or calibrated forecasts. A separate native
 measurement/coverage policy and chronological validation remain necessary.
 
-The exact Desktop 2.1.308 root terminal mapping now supplies the same four separate
-native categories through explicit import. It admits no partial stages, children
+The Desktop grammar selected with `claude-desktop-2` supplies the same four separate
+native categories through explicit compatible major-2 import. Each fact keeps its exact
+reported version; the immutable 2.1.215 and 2.1.308 approvals remain observed baselines. It admits no partial stages, children
 or quantity corrections. Its source approval grants no measurement/coverage policy,
 served-model proof or numerical demand, money or calibration authority. Evaluation
 #17 and all real-evidence obligations remain open.
+
+The separate provisional Codex session target accepts compatible major-0 producers,
+including different 0.x minors. Future same-target forecasts can pool those captures.
+Historical frozen forecasts and the opaque `codex-desktop-observed-0163` cohort ID
+stay unchanged. This counter contract does not grant Claude forecasts or native
+financial/demand authority. See [session capture](sessions.md) for append continuity.

@@ -1,0 +1,49 @@
+{
+  "algorithm": "codex-provisional-median/v1",
+  "amount": "200",
+  "input_guess": null,
+  "inputs": [
+    {
+      "completeness": "unknown",
+      "counter_snapshot_count": 3,
+      "coverage": "unknown",
+      "finality": "unknown",
+      "mapping_revision": "codex-desktop-session-counter/v1",
+      "outcome": "completed",
+      "producer_family": "codex-desktop-observed-0163",
+      "producer_verified": false,
+      "producer_version": "0.163.0-alpha.10.2",
+      "projection_sha256": "1187c3a27613357d72d437c84ac5fb2d7189e799508ba8684a8f223f0d4e5c48",
+      "quantity_basis": "latest-total-token-usage-total-tokens",
+      "reported_tokens": 200,
+      "repository_id": "repo",
+      "revision": 1,
+      "sequence": 2,
+      "session_id": "legacy-a",
+      "source_byte_count": 1591,
+      "source_identity_sha256": "65ba358da2c95cd6c92e6c7374531071a1556786cf94a7b4db46cffeede0e564",
+      "source_kind": "vscode",
+      "source_record_count": 4,
+      "source_sha256": "02941ab2ca5a44c86a029472a006beeb522be0011164e364732024254c9f29cf",
+      "start_sequence": 1,
+      "subagent_inclusion": "unknown"
+    }
+  ],
+  "outcomes": {
+    "abandoned": 0,
+    "completed": 1,
+    "failed": 0
+  },
+  "sample_count": 1,
+  "source": "cohort_median",
+  "summary": {
+    "maximum": "200",
+    "median": "200",
+    "minimum": "200"
+  },
+  "target": {
+    "mapping_revision": "codex-desktop-session-counter/v1",
+    "producer_family": "codex-desktop-observed-0163",
+    "quantity_basis": "latest-total-token-usage-total-tokens"
+  }
+}

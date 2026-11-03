@@ -96,9 +96,9 @@ versions and source shapes documented in each guide.
 | Source | Current preview support |
 | --- | --- |
 | Manual sessions | You supply measured token totals and declare their coverage. Estimates use comparable local history. |
-| Codex session counters | A provisional workflow reads a selected thread's lifetime counter from specific Desktop alpha versions. See [supported versions and limits](docs/sessions.md#capture-a-new-codex-session-without-typing-totals). |
+| Codex session counters | A provisional workflow reads a selected thread's lifetime counter from compatible major-0 producers. Exact versions and frozen forecasts are preserved. See [supported grammar and limits](docs/sessions.md#capture-a-new-codex-session-without-typing-totals). |
 | Codex diagnostics | The approved diagnostic reader accepts one exact finite snapshot. It supplies no session totals or learning. See [finite snapshot limits](docs/sessions.md#attach-the-approved-finite-codex-observations). |
-| Claude diagnostics | Explicit imports for Claude Code `2.1.215` project files and Desktop `2.1.308` root terminal files. See [import examples and limits](docs/settlement.md#import-approved-claude-project-diagnostics). |
+| Claude diagnostics | Explicit imports for compatible major-2 Code and Desktop producers through `claude-code-2` and `claude-desktop-2`, with separate source grammars and exact producer versions. See [import examples and limits](docs/settlement.md#import-approved-claude-project-diagnostics). |
 | Copilot and Cursor | Research and planned readers. No implemented native imports. |
 
 ## Alpha limits

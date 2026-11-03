@@ -333,5 +333,10 @@
     "path": "openspec/changes/archive/2026-10-29-reconcile-accepted-workflow-and-offline-evaluation-specs/proposal.md",
     "title": "Accepted workflow and evaluation reconciliation",
     "description": "Native CLI archive of already delivered PR #42 guidance and PR #48 synthetic evaluation; future trial and live work remain active."
+  },
+  {
+    "title": "Major producer compatibility",
+    "path": "openspec/changes/provider-major-version-compatibility/proposal.md",
+    "description": "Major-only Claude and provisional Codex compatibility with exact provenance and immutable native baselines; verification pending."
   }
 ]

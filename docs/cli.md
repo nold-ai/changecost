@@ -228,17 +228,19 @@ for case checkpoints, safe inputs, formulas and the permanent synthetic-only lim
 ### Claude project import
 
 `settle --import-claude-project PATH --repository-id REPO --source-profile
-claude-project-2-1-215-request-stages --source-sha256 SHA` imports explicitly selected
-2.1.215 project JSONL diagnostics using the packaged approved mapping. It returns
+claude-code-2 --source-sha256 SHA` imports explicitly selected compatible major-2
+Code project JSONL diagnostics using the immutable baseline mapping. It returns
 exact Evidence references and history/replay/correction counts. See the
 [Claude import guide](settlement.md#import-approved-claude-project-diagnostics)
 for count units, refinement, manual binding, limits and authority boundaries.
 
-Use `--source-profile claude-desktop-2-1-308-root-terminal` for the separately
-approved Desktop 2.1.308 root terminal grammar through the same import operation.
+Use `--source-profile claude-desktop-2` for the separately approved Desktop
+root terminal grammar with compatible major-2 producers through the same operation.
 Four present nonnegative integer counters are required; partial/child observations
-and corrections reject. Exact contributor version and entrypoint are required.
-Same-event cross-profile conflicts reject atomically. See the
+and corrections reject. Valid same-major versions and the exact Desktop entrypoint
+are required. Code requires an absent entrypoint. Original patch-bearing profile
+selectors remain accepted; facts always retain the exact reported version.
+Same-event cross-profile or cross-version conflicts reject atomically. See the
 [Desktop limits](settlement.md#desktop-21308-root-terminal-diagnostics).
 
 Claude project import accepts UTF-8 JSONL, with an optional UTF-8 BOM per line

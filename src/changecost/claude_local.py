@@ -13,8 +13,17 @@ from typing import Annotated, Literal
 
 from pydantic import Field, ValidationError
 
-from changecost.models import Digest, Evidence, Identifier, Model, NativeUsage, RecordRef
+from changecost.models import (
+    Digest,
+    Evidence,
+    Identifier,
+    Model,
+    NativeProducer,
+    NativeUsage,
+    RecordRef,
+)
 from changecost.operations import common
+from changecost.producer_versions import same_major
 from changecost.serialization import ContractError, reject_constant, unique_members
 from changecost.store import Store, reference
 
@@ -81,6 +90,7 @@ class ClaudeProjectImportError(ContractError):
 class _Event:
     identity: str
     session: str
+    producer: NativeProducer
     partial: Vector | None
     terminal: Vector | None
 
@@ -98,6 +108,16 @@ class _ApprovedClaude:
     kind: Literal["terminal215", "desktop308"]
     envelope: dict
 
+    @property
+    def selector(self) -> str:
+        return "claude-code-2" if self.kind == "terminal215" else "claude-desktop-2"
+
+    def producer_for(self, reported: object) -> NativeProducer | None:
+        baseline = self.envelope["admission"]["producer"]
+        if not same_major(reported, baseline["engine_version"]):
+            return None
+        return NativeProducer.model_validate({**baseline, "engine_version": reported})
+
 
 def _claude_admissions():
     resources: tuple[tuple[Literal["terminal215", "desktop308"], str], ...] = (
@@ -108,14 +128,17 @@ def _claude_admissions():
         _ApprovedClaude(kind, json.loads(files("changecost").joinpath(resource).read_text()))
         for kind, resource in resources
     )
-    if len({entry.envelope["profile_id"] for entry in catalogue}) != len(catalogue):
+    selectors = [
+        name for entry in catalogue for name in (entry.envelope["profile_id"], entry.selector)
+    ]
+    if len(set(selectors)) != len(selectors):
         raise ClaudeProjectImportError("unsupported_profile")
     return catalogue
 
 
 def _select_claude(profile_id):
     for entry in _claude_admissions():
-        if entry.envelope["profile_id"] == profile_id:
+        if profile_id in (entry.envelope["profile_id"], entry.selector):
             return entry
     raise ClaudeProjectImportError("unsupported_profile")
 
@@ -336,7 +359,8 @@ def _contributor_observation(message, policy, ordinal):
     return values, stop
 
 
-def _contributor(row, policy, ordinal, desktop=False):
+def _contributor(row, selected, ordinal):
+    policy = selected.envelope["admission"]
     message = row.get("message")
     if (
         not isinstance(message, dict)
@@ -344,21 +368,26 @@ def _contributor(row, policy, ordinal, desktop=False):
         or not isinstance(message.get("usage"), dict)
     ):
         raise ClaudeProjectImportError("unsupported_source_shape", ordinal)
-    if desktop:
+    if selected.kind == "desktop308":
         _desktop_contributor(row, policy, ordinal)
+    elif "entrypoint" in row:
+        raise ClaudeProjectImportError("unsupported_producer", ordinal)
     session = _identifier(row.get("sessionId"), ordinal)
     request = _identifier(row.get("requestId"), ordinal)
     response = _identifier(message.get("id"), ordinal)
     _identifier(row.get("uuid"), ordinal)
-    if row.get("version") != policy["producer"]["engine_version"]:
+    producer = selected.producer_for(row.get("version"))
+    if producer is None:
         raise ClaudeProjectImportError("unsupported_producer", ordinal)
     child, agent = _contributor_lineage(row, ordinal)
     values, stop = _contributor_observation(message, policy, ordinal)
     metadata = (session, agent, request, response, row["version"], child)
-    return metadata, values, stop
+    return metadata, producer, values, stop
 
 
-def _events(rows, policy, desktop=False):
+def _events(rows, selected):
+    policy = selected.envelope["admission"]
+    desktop = selected.kind == "desktop308"
     groups, requests, messages, uuids = {}, {}, {}, {}
     for ordinal, row in enumerate(rows):
         if _noncontributor(row, policy, ordinal, desktop):
@@ -369,13 +398,13 @@ def _events(rows, policy, desktop=False):
             if uuid in uuids and uuids[uuid] != meaning:
                 raise ClaudeProjectImportError("source_identity_mismatch", ordinal)
             uuids[uuid] = meaning
-        metadata, values, stop = _contributor(row, policy, ordinal, desktop)
+        metadata, producer, values, stop = _contributor(row, selected, ordinal)
         session, agent, request, response, _, _ = metadata
         for index, identity in ((requests, request), (messages, response)):
             if identity in index and index[identity] != metadata:
                 raise ClaudeProjectImportError("source_identity_mismatch", ordinal)
             index[identity] = metadata
-        group = groups.setdefault(metadata, {})
+        group = groups.setdefault(metadata, {"producer": producer})
         stage = "partial" if stop is None else "final"
         observation = (values, stop)
         if stage in group and group[stage] != observation:
@@ -385,6 +414,7 @@ def _events(rows, policy, desktop=False):
         _Event(
             _digest(["claude-project-event-v1", "Claude", "project-jsonl", *metadata[:4]]),
             _digest(["claude-project-source-id-v1", "session", metadata[0]]),
+            group["producer"],
             group["partial"][0] if "partial" in group else None,
             group["final"][0] if "final" in group else None,
         )
@@ -429,7 +459,7 @@ def _project(event, values, stage, envelope, repository_id, source_digest):
                 repository_id=repository_id,
                 evidence=RecordRef(kind="evidence", record_id=event.identity),
                 mapping_revision=policy["mapping_revision"],
-                producer=policy["producer"],
+                producer=event.producer,
                 first_acquisition_digest=source_digest,
                 first_admission={
                     "profile_digest": envelope["profile_digest"],
@@ -459,7 +489,7 @@ def import_claude_project(
         source_digest = hashlib.sha256(raw).hexdigest()
         if source_digest != selection.expected_sha256:
             raise ClaudeProjectImportError("unadmitted_source")
-        events = _events(_parse(raw), envelope["admission"], selected.kind == "desktop308")
+        events = _events(_parse(raw), selected)
         if not events:
             return ClaudeProjectImportResult(
                 evidence_refs=[],

@@ -1,0 +1,272 @@
+{
+  "schema": "changecost/v1",
+  "source": {
+    "store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+    "at": "2026-10-31T22:39:54.772313Z",
+    "sequence": 1
+  },
+  "records": [
+    {
+      "schema": "changecost/v1",
+      "record_id": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3",
+      "origin_store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "recorded_at": "2026-10-31T22:39:54.771146Z",
+      "effective_at": "2026-10-31T22:39:54.771146Z",
+      "kind": "evidence",
+      "provider": "Claude",
+      "surface": "project-jsonl",
+      "profile": "claude-desktop-2-1-308-root-terminal",
+      "identity_scope": "namespaced",
+      "source_key": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3",
+      "file_digest": null,
+      "ordinal": null
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "652c0c3e319db4af71d9dceb094b6990347c9d343c583117ac7923136806b5e7",
+      "origin_store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "recorded_at": "2026-10-31T22:39:54.771146Z",
+      "effective_at": "2026-10-31T22:39:54.771146Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3"
+      },
+      "mapping_revision": "claude-desktop-root-terminal-r2",
+      "producer": {
+        "engine_version": "2.1.308",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "de0eaea0eca074ffb9cb951a87b1dfd15339fecf18f90a63295b6ee12cc2cacc",
+      "first_admission": {
+        "profile_digest": "7e3cf00757e1eca8c91782848c59913a9e19bb39b78c7a15edf7be370b906b55",
+        "approval_digest": "394a1b5958dc85a5b0728ab2b82130fcc9d6ee768b65dcb253618f0371913750"
+      },
+      "event_identity": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3",
+      "source_category": "cached_input_tokens",
+      "accounting_scope": "request",
+      "quantity": 13,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "aa645d9905d94945756fa12bdccd4ea83c7a8bb8fa0dbb96f5cfa7602a6768fa",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "final",
+      "scope_completeness": "unknown",
+      "previous": null,
+      "reason": null
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "71ef5c85e784c64efa244391ea88a296d063b3b70954802362a55830da7bd98b",
+      "origin_store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "recorded_at": "2026-10-31T22:39:54.771146Z",
+      "effective_at": "2026-10-31T22:39:54.771146Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3"
+      },
+      "mapping_revision": "claude-desktop-root-terminal-r2",
+      "producer": {
+        "engine_version": "2.1.308",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "de0eaea0eca074ffb9cb951a87b1dfd15339fecf18f90a63295b6ee12cc2cacc",
+      "first_admission": {
+        "profile_digest": "7e3cf00757e1eca8c91782848c59913a9e19bb39b78c7a15edf7be370b906b55",
+        "approval_digest": "394a1b5958dc85a5b0728ab2b82130fcc9d6ee768b65dcb253618f0371913750"
+      },
+      "event_identity": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3",
+      "source_category": "output_tokens",
+      "accounting_scope": "request",
+      "quantity": 7,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "aa645d9905d94945756fa12bdccd4ea83c7a8bb8fa0dbb96f5cfa7602a6768fa",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "final",
+      "scope_completeness": "unknown",
+      "previous": null,
+      "reason": null
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "abda64e1632f9d51ee51d271eebe7ddd01196ad92c710b8b39c283d1af96aabb",
+      "origin_store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "recorded_at": "2026-10-31T22:39:54.771146Z",
+      "effective_at": "2026-10-31T22:39:54.771146Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3"
+      },
+      "mapping_revision": "claude-desktop-root-terminal-r2",
+      "producer": {
+        "engine_version": "2.1.308",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "de0eaea0eca074ffb9cb951a87b1dfd15339fecf18f90a63295b6ee12cc2cacc",
+      "first_admission": {
+        "profile_digest": "7e3cf00757e1eca8c91782848c59913a9e19bb39b78c7a15edf7be370b906b55",
+        "approval_digest": "394a1b5958dc85a5b0728ab2b82130fcc9d6ee768b65dcb253618f0371913750"
+      },
+      "event_identity": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3",
+      "source_category": "cache_write_input_tokens",
+      "accounting_scope": "request",
+      "quantity": 11,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "aa645d9905d94945756fa12bdccd4ea83c7a8bb8fa0dbb96f5cfa7602a6768fa",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "final",
+      "scope_completeness": "unknown",
+      "previous": null,
+      "reason": null
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "f0393d919b54ff70a62dc430fcff3ab42226277af791bf53cae87b5741db38fc",
+      "origin_store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "recorded_at": "2026-10-31T22:39:54.771146Z",
+      "effective_at": "2026-10-31T22:39:54.771146Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3"
+      },
+      "mapping_revision": "claude-desktop-root-terminal-r2",
+      "producer": {
+        "engine_version": "2.1.308",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "de0eaea0eca074ffb9cb951a87b1dfd15339fecf18f90a63295b6ee12cc2cacc",
+      "first_admission": {
+        "profile_digest": "7e3cf00757e1eca8c91782848c59913a9e19bb39b78c7a15edf7be370b906b55",
+        "approval_digest": "394a1b5958dc85a5b0728ab2b82130fcc9d6ee768b65dcb253618f0371913750"
+      },
+      "event_identity": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3",
+      "source_category": "input_tokens",
+      "accounting_scope": "request",
+      "quantity": 0,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "aa645d9905d94945756fa12bdccd4ea83c7a8bb8fa0dbb96f5cfa7602a6768fa",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "final",
+      "scope_completeness": "unknown",
+      "previous": null,
+      "reason": null
+    }
+  ],
+  "observations": [
+    {
+      "reference": {
+        "kind": "evidence",
+        "record_id": "464fbf73bca505be178c86f6368196cb817351ac8718e6c913346eb250f432f3"
+      },
+      "store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "available_at": "2026-10-31T22:39:54.771146Z",
+      "sequence": 1
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "652c0c3e319db4af71d9dceb094b6990347c9d343c583117ac7923136806b5e7"
+      },
+      "store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "available_at": "2026-10-31T22:39:54.771146Z",
+      "sequence": 1
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "71ef5c85e784c64efa244391ea88a296d063b3b70954802362a55830da7bd98b"
+      },
+      "store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "available_at": "2026-10-31T22:39:54.771146Z",
+      "sequence": 1
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "abda64e1632f9d51ee51d271eebe7ddd01196ad92c710b8b39c283d1af96aabb"
+      },
+      "store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "available_at": "2026-10-31T22:39:54.771146Z",
+      "sequence": 1
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "f0393d919b54ff70a62dc430fcff3ab42226277af791bf53cae87b5741db38fc"
+      },
+      "store_id": "cda505d3-f6f1-47f4-a415-500bd1a2798f",
+      "available_at": "2026-10-31T22:39:54.771146Z",
+      "sequence": 1
+    }
+  ]
+}

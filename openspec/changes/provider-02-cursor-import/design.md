@@ -86,3 +86,13 @@ Versioned measurement/coverage and historical replay policies must separately
 define demand-learning eligibility and billed-money authority. Tokens, nano-AIU,
 credits, estimated costs and subscription/billed charges remain distinct. No new
 runtime policy or adapter is delivered by this planning update.
+
+## Major-only producer compatibility policy, 2026-10-31 Europe/Berlin
+
+This reader remains unimplemented and its source approval remains pending. Once
+its grammar and accounting are independently approved, producer admission will
+compare strict complete versions by MAJOR only. Ordinary minor and patch updates
+will not require a new release-specific approval. Exact reported versions remain
+provenance, and same-major format/accounting changes can still reject. Existing
+source-family, identity, replay, privacy and authority gates remain required.
+Native baseline observations must not be rewritten as evidence for every release.

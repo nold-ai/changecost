@@ -1,0 +1,520 @@
+{
+  "schema": "changecost/v1",
+  "source": {
+    "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+    "at": "2026-10-31T22:39:54.770268Z",
+    "sequence": 2
+  },
+  "records": [
+    {
+      "schema": "changecost/v1",
+      "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.762425Z",
+      "effective_at": "2026-10-31T22:39:54.762425Z",
+      "kind": "evidence",
+      "provider": "Claude",
+      "surface": "project-jsonl",
+      "profile": "claude-project-2-1-215-request-stages",
+      "identity_scope": "namespaced",
+      "source_key": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "file_digest": null,
+      "ordinal": null
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "275d6696bf54f14ae3634833ccc0e2fc6de1be36baf80231a3df03cb3e4518fb",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.769081Z",
+      "effective_at": "2026-10-31T22:39:54.769081Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "mapping_revision": "claude-project-request-stage-r4",
+      "producer": {
+        "engine_version": "2.1.215",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "da502c384520d1118009c1326b29f5fee59e849c211e2cbccece15daa4f3a3f3",
+      "first_admission": {
+        "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5"
+      },
+      "event_identity": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "source_category": "output_tokens",
+      "accounting_scope": "request",
+      "quantity": 29,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "ad875e17f4a2bb07da87398f3035cccb45f00a87856cb4ed216a3c392c053a62",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "final",
+      "scope_completeness": "unknown",
+      "previous": {
+        "kind": "native_usage",
+        "record_id": "e21784ace6f626d4e444f4973e6a4478e682d5cb58b7e8388fb862548323c601"
+      },
+      "reason": "claude-serialized-stage-refinement"
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "32022e68357176305034a032e2da8f85f28239999d5cc764738f52f17432b9e6",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.769081Z",
+      "effective_at": "2026-10-31T22:39:54.769081Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "mapping_revision": "claude-project-request-stage-r4",
+      "producer": {
+        "engine_version": "2.1.215",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "da502c384520d1118009c1326b29f5fee59e849c211e2cbccece15daa4f3a3f3",
+      "first_admission": {
+        "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5"
+      },
+      "event_identity": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "source_category": "cache_write_input_tokens",
+      "accounting_scope": "request",
+      "quantity": 14,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "ad875e17f4a2bb07da87398f3035cccb45f00a87856cb4ed216a3c392c053a62",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "final",
+      "scope_completeness": "unknown",
+      "previous": {
+        "kind": "native_usage",
+        "record_id": "f4b43a74cfcdf42f8bdf6e169bfb535b0b0da6f198918ade90956a6c9aa4d975"
+      },
+      "reason": "claude-serialized-stage-refinement"
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "36532ce9bebbf4f9e54b41c7241d06e9ffcb8097f28f726734849ffc38845cb8",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.769081Z",
+      "effective_at": "2026-10-31T22:39:54.769081Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "mapping_revision": "claude-project-request-stage-r4",
+      "producer": {
+        "engine_version": "2.1.215",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "da502c384520d1118009c1326b29f5fee59e849c211e2cbccece15daa4f3a3f3",
+      "first_admission": {
+        "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5"
+      },
+      "event_identity": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "source_category": "cached_input_tokens",
+      "accounting_scope": "request",
+      "quantity": 13,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "ad875e17f4a2bb07da87398f3035cccb45f00a87856cb4ed216a3c392c053a62",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "final",
+      "scope_completeness": "unknown",
+      "previous": {
+        "kind": "native_usage",
+        "record_id": "b5bc6faae91f5334af6b0301d3e0d38a3484b8a30ad59b1d77d56641c1fd7345"
+      },
+      "reason": "claude-serialized-stage-refinement"
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "b4022a20d3e3a579f3f6ef11fde659e11dfdedf78bca6ce57e801daba4aaebe1",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.762425Z",
+      "effective_at": "2026-10-31T22:39:54.762425Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "mapping_revision": "claude-project-request-stage-r4",
+      "producer": {
+        "engine_version": "2.1.215",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "da502c384520d1118009c1326b29f5fee59e849c211e2cbccece15daa4f3a3f3",
+      "first_admission": {
+        "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5"
+      },
+      "event_identity": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "source_category": "input_tokens",
+      "accounting_scope": "request",
+      "quantity": 11,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "ad875e17f4a2bb07da87398f3035cccb45f00a87856cb4ed216a3c392c053a62",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "partial",
+      "scope_completeness": "unknown",
+      "previous": null,
+      "reason": null
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "b5bc6faae91f5334af6b0301d3e0d38a3484b8a30ad59b1d77d56641c1fd7345",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.762425Z",
+      "effective_at": "2026-10-31T22:39:54.762425Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "mapping_revision": "claude-project-request-stage-r4",
+      "producer": {
+        "engine_version": "2.1.215",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "da502c384520d1118009c1326b29f5fee59e849c211e2cbccece15daa4f3a3f3",
+      "first_admission": {
+        "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5"
+      },
+      "event_identity": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "source_category": "cached_input_tokens",
+      "accounting_scope": "request",
+      "quantity": 12,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "ad875e17f4a2bb07da87398f3035cccb45f00a87856cb4ed216a3c392c053a62",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "partial",
+      "scope_completeness": "unknown",
+      "previous": null,
+      "reason": null
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "d12d2a56127f5fc78d5efc8f111b5bee73e295311882796f44052f5f71a297c2",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.769081Z",
+      "effective_at": "2026-10-31T22:39:54.769081Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "mapping_revision": "claude-project-request-stage-r4",
+      "producer": {
+        "engine_version": "2.1.215",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "da502c384520d1118009c1326b29f5fee59e849c211e2cbccece15daa4f3a3f3",
+      "first_admission": {
+        "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5"
+      },
+      "event_identity": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "source_category": "input_tokens",
+      "accounting_scope": "request",
+      "quantity": 12,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "ad875e17f4a2bb07da87398f3035cccb45f00a87856cb4ed216a3c392c053a62",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "final",
+      "scope_completeness": "unknown",
+      "previous": {
+        "kind": "native_usage",
+        "record_id": "b4022a20d3e3a579f3f6ef11fde659e11dfdedf78bca6ce57e801daba4aaebe1"
+      },
+      "reason": "claude-serialized-stage-refinement"
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "e21784ace6f626d4e444f4973e6a4478e682d5cb58b7e8388fb862548323c601",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.762425Z",
+      "effective_at": "2026-10-31T22:39:54.762425Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "mapping_revision": "claude-project-request-stage-r4",
+      "producer": {
+        "engine_version": "2.1.215",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "da502c384520d1118009c1326b29f5fee59e849c211e2cbccece15daa4f3a3f3",
+      "first_admission": {
+        "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5"
+      },
+      "event_identity": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "source_category": "output_tokens",
+      "accounting_scope": "request",
+      "quantity": 1,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "ad875e17f4a2bb07da87398f3035cccb45f00a87856cb4ed216a3c392c053a62",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "partial",
+      "scope_completeness": "unknown",
+      "previous": null,
+      "reason": null
+    },
+    {
+      "schema": "changecost/v1",
+      "record_id": "f4b43a74cfcdf42f8bdf6e169bfb535b0b0da6f198918ade90956a6c9aa4d975",
+      "origin_store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "recorded_at": "2026-10-31T22:39:54.762425Z",
+      "effective_at": "2026-10-31T22:39:54.762425Z",
+      "kind": "native_usage",
+      "repository_id": "repo",
+      "evidence": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "mapping_revision": "claude-project-request-stage-r4",
+      "producer": {
+        "engine_version": "2.1.215",
+        "client_surface": "project-jsonl",
+        "client_build": null
+      },
+      "first_acquisition_digest": "da502c384520d1118009c1326b29f5fee59e849c211e2cbccece15daa4f3a3f3",
+      "first_admission": {
+        "profile_digest": "b79d44303e6b73075ea8f1ca2d8d26bc8153e8a19d39f0766b63b2c4aaafd16c",
+        "approval_digest": "18b331902d03497bdbd3503f092d59b4644ac7110868a227e73d4e68530979a5"
+      },
+      "event_identity": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df",
+      "source_category": "cache_write_input_tokens",
+      "accounting_scope": "request",
+      "quantity": 13,
+      "quantity_basis": "serialized_source",
+      "backend_presence": "unknown",
+      "model": null,
+      "model_version": null,
+      "interval": {
+        "state": "unknown",
+        "start": null,
+        "end": null
+      },
+      "ownership": {
+        "state": "unknown",
+        "thread": null,
+        "turn": null,
+        "session": "ad875e17f4a2bb07da87398f3035cccb45f00a87856cb4ed216a3c392c053a62",
+        "root_turn": null,
+        "header_parent_thread": null
+      },
+      "coverage": "partial_observed_subset",
+      "finality": "partial",
+      "scope_completeness": "unknown",
+      "previous": null,
+      "reason": null
+    }
+  ],
+  "observations": [
+    {
+      "reference": {
+        "kind": "evidence",
+        "record_id": "83396c269da2c4244d58f71d689940416b9d6ec56acb6e4781dbd09355ec05df"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.762425Z",
+      "sequence": 1
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "275d6696bf54f14ae3634833ccc0e2fc6de1be36baf80231a3df03cb3e4518fb"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.769081Z",
+      "sequence": 2
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "32022e68357176305034a032e2da8f85f28239999d5cc764738f52f17432b9e6"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.769081Z",
+      "sequence": 2
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "36532ce9bebbf4f9e54b41c7241d06e9ffcb8097f28f726734849ffc38845cb8"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.769081Z",
+      "sequence": 2
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "b4022a20d3e3a579f3f6ef11fde659e11dfdedf78bca6ce57e801daba4aaebe1"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.762425Z",
+      "sequence": 1
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "b5bc6faae91f5334af6b0301d3e0d38a3484b8a30ad59b1d77d56641c1fd7345"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.762425Z",
+      "sequence": 1
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "d12d2a56127f5fc78d5efc8f111b5bee73e295311882796f44052f5f71a297c2"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.769081Z",
+      "sequence": 2
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "e21784ace6f626d4e444f4973e6a4478e682d5cb58b7e8388fb862548323c601"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.762425Z",
+      "sequence": 1
+    },
+    {
+      "reference": {
+        "kind": "native_usage",
+        "record_id": "f4b43a74cfcdf42f8bdf6e169bfb535b0b0da6f198918ade90956a6c9aa4d975"
+      },
+      "store_id": "e3b32bca-39cd-4281-aced-ff5de3d31614",
+      "available_at": "2026-10-31T22:39:54.762425Z",
+      "sequence": 1
+    }
+  ]
+}
