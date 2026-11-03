@@ -30,7 +30,7 @@ test = [
     "pyyaml>=6",
     "types-pyyaml>=6",
     "pip-audit>=2.9,<3",
-    "uv==0.12.19",
+    "uv==0.13.6",
     "pytest-xdist==3.8.0",
 ]
 dev = [{include-group = "test"}, "basedpyright==1.40.1"]
