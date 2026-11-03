@@ -25,7 +25,7 @@ changecost = "changecost.cli:main"
 test = [
     "pytest>=8,<10",
     "ruff>=0.12,<1",
-    "pre-commit==4.6.2",
+    "pre-commit==4.7.0",
     "packaging>=25",
     "pyyaml>=6",
     "types-pyyaml>=6",
